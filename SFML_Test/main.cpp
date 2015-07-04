@@ -11,8 +11,11 @@ class Global {
 public:
 	static Global* Instance();
 
-	const int SCALE_X = 3; // factor
-	const int SCALE_Y = 3; // factor
+	const int SCREEN_WIDTH = 800;
+	const int SCREEN_HEIGHT = 500;
+
+	const int SCALE_X = 2; // factor
+	const int SCALE_Y = 2; // factor
 
 	const int TILE_WIDTH = SCALE_X * 40; // px
 	const int TILE_HEIGHT = SCALE_Y * 40; // px
@@ -131,11 +134,6 @@ ViewportCoordinate MapCoordinate::to_screen_coordinates() {
 	// calculate x screen coordinate
 	int screen_x = this->getX() * Global::Instance()->TILE_WIDTH + (this->getY() & 1) * Global::Instance()->TILE_WIDTH / 2;
 	int screen_y = this->getY() * Global::Instance()->TILE_HEIGHT_OVERLAP - (Global::Instance()->TILE_HEIGHT - Global::Instance()->TILE_HEIGHT_RHOMBUS);
-
-	ViewportCoordinate vc(screen_x, screen_y);
-
-	std::cout << "MAP: " << this->to_string() << " | SCREEN: " << vc.to_string() << std::endl;
-
 	return ViewportCoordinate(screen_x, screen_y);
 }
 
@@ -279,7 +277,7 @@ void Map::load_mapfile(std::string map_filename) {
 
 		ViewportCoordinate viewport_coord = map_coord.to_screen_coordinates();
 		sprite->setPosition((float)viewport_coord.getX(), (float)viewport_coord.getY());
-		sprite->setScale(sf::Vector2f(Global::Instance()->SCALE_X, Global::Instance()->SCALE_Y));
+		sprite->setScale(sf::Vector2f((float)Global::Instance()->SCALE_X, (float)Global::Instance()->SCALE_Y));
 
 		this->tiles[map_coord] = sprite;
 
@@ -316,8 +314,15 @@ std::string Map::to_string() {
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(800, 600), "SFML Test");
+	sf::RenderWindow window(sf::VideoMode(Global::Instance()->SCREEN_WIDTH, Global::Instance()->SCREEN_HEIGHT), "SFML Test");
 	window.setFramerateLimit(60);
+
+	float screen_middle_x = Global::Instance()->SCREEN_WIDTH / (float)2;
+	float screen_middle_y = Global::Instance()->SCREEN_HEIGHT / (float)2;
+
+	// set view
+	sf::View view(sf::Vector2f(screen_middle_x, screen_middle_y),
+		          sf::Vector2f((float)Global::Instance()->SCREEN_WIDTH, (float)Global::Instance()->SCREEN_HEIGHT));
 
 	// load tile textures
 	sf::Image tile1_nomask;
@@ -328,15 +333,34 @@ int main()
 	tile1->loadFromImage(tile1_nomask);
 	tile1->setSmooth(true);
 
+	sf::Image tile2_nomask;
+	tile2_nomask.loadFromFile("tile_grass.gif");
+	tile2_nomask.createMaskFromColor(sf::Color::Magenta);
+
+	sf::Texture* tile2 = new sf::Texture();
+	tile2->loadFromImage(tile2_nomask);
+	tile2->setSmooth(true);
+
 	Map map;
 	map.register_texture(tile1);
+	map.register_texture(tile2);
 	map.load_mapfile("map_test.txt");
 
-	std::cout << "MAP: " << std::endl << map.to_string() << std::endl;
+	// set initial mouse position
+	sf::Mouse::setPosition(sf::Vector2i(screen_middle_x, screen_middle_y), window);
 
 	// main loop
 	while (window.isOpen())
 	{
+		sf::Vector2i mouse_position = sf::Mouse::getPosition();
+
+		// move view depending on mouse position
+		//view.setCenter(static_cast<sf::Vector2f>(mouse_position));
+		view.move(static_cast<sf::Vector2f>(mouse_position) - view.getCenter());
+
+		// attach your viewport to the window. This must be called every render cycle!
+		window.setView(view);
+
 		// check for user clicking on x in upper right corner
 		sf::Event event;
 		while (window.pollEvent(event))
