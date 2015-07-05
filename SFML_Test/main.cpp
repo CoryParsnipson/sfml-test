@@ -1,159 +1,7 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <string>
-#include <sstream>
-#include <map>
+#include "dependencies.h"
 
-#include <SFML/Graphics.hpp>
-
-class Global {
-public:
-	static Global* Instance();
-
-	const int SCREEN_WIDTH = 800;
-	const int SCREEN_HEIGHT = 500;
-
-	const int SCALE_X = 2; // factor
-	const int SCALE_Y = 2; // factor
-
-	const int TILE_WIDTH = SCALE_X * 40; // px
-	const int TILE_HEIGHT = SCALE_Y * 40; // px
-	const int TILE_HEIGHT_RHOMBUS = SCALE_Y * 20; // px
-	const int TILE_HEIGHT_OVERLAP = TILE_HEIGHT_RHOMBUS / 2;
-
-private:
-	Global() {};
-	Global(const Global& g) {}; // seal off copy constructor
-
-	static Global* instance;
-};
-
-Global* Global::instance = NULL;
-
-Global* Global::Instance() {
-	if (!instance) {
-		instance = new Global();
-	}
-	return instance;
-}
-
-template <class T> class Coordinate {
-public:
-	Coordinate();
-	Coordinate(T x, T y);
-	Coordinate(Coordinate& c);
-	~Coordinate();
-
-	T getX() const;
-	T getY() const;
-
-	double magnitude() const;
-
-	// TODO: overload operators +, -, *, /
-
-protected:
-	T x;
-	T y;
-};
-
-template <class T>
-Coordinate<T>::Coordinate(T x, T y) :
-x(x),
-y(y)
-{
-}
-
-template <class T>
-Coordinate<T>::~Coordinate() {
-}
-
-template <class T>
-T Coordinate<T>::getX() const {
-	return this->x;
-}
-
-template <class T>
-T Coordinate<T>::getY() const {
-	return this->y;
-}
-
-template <class T>
-double Coordinate<T>::magnitude() const {
-	return std::sqrt(std::pow(this->x, 2) + std::pow(this->y, 2));
-}
-
-template <class T>
-bool operator<(const Coordinate<T>& l, const Coordinate<T>& r) {
-	return (l.magnitude() < r.magnitude());
-}
-
-template <class T>
-bool operator==(const Coordinate<T>& l, const Coordinate<T>& r) {
-	return (l.getX() == r.getX() && l.getY() == r.getY());
-}
-
-class ViewportCoordinate : public Coordinate < int > {
-public:
-	ViewportCoordinate(int x, int y);
-
-	std::string to_string() const;
-};
-
-ViewportCoordinate::ViewportCoordinate(int x, int y) :
-Coordinate(x, y)
-{
-}
-
-std::string ViewportCoordinate::to_string() const {
-	std::stringstream output;
-	output << "Screen Coord. (" << this->x << ", " << this->y << ")";
-	return output.str();
-}
-
-class MapCoordinate : public Coordinate<int> {
-public:
-	MapCoordinate(int x, int y);
-	MapCoordinate(const MapCoordinate& other);
-
-	ViewportCoordinate to_screen_coordinates();
-	std::string to_string() const;
-};
-
-MapCoordinate::MapCoordinate(int x, int y)
-: Coordinate<int>(x, y)
-{
-}
-
-MapCoordinate::MapCoordinate(const MapCoordinate& other) :
-Coordinate(other.getX(), other.getY())
-{
-}
-
-ViewportCoordinate MapCoordinate::to_screen_coordinates() {
-	// calculate x screen coordinate
-	int screen_x = this->getX() * Global::Instance()->TILE_WIDTH + (this->getY() & 1) * Global::Instance()->TILE_WIDTH / 2;
-	int screen_y = this->getY() * Global::Instance()->TILE_HEIGHT_OVERLAP - (Global::Instance()->TILE_HEIGHT - Global::Instance()->TILE_HEIGHT_RHOMBUS);
-	return ViewportCoordinate(screen_x, screen_y);
-}
-
-std::string MapCoordinate::to_string() const {
-	std::stringstream output;
-	output << "Map Coord. (" << this->x << ", " << this->y << ")";
-	return output.str();
-}
-
-bool operator<(const MapCoordinate& l, const MapCoordinate& r) {
-	// a natural way for comparison would be to compare magnitudes, but it is common for two completely different 2d vectors
-	// to have equal magnitude, causing < to return false. This is problematic to use as a map key...
-
-	//return (l.magnitude() < r.magnitude());
-	return (l.getX() < r.getX() || (l.getX() == r.getX() && l.getY() < r.getY()));
-}
-
-bool operator==(const MapCoordinate& l, const MapCoordinate& r) {
-	return (l.getX() == r.getX() && l.getY() == r.getY());
-}
+#include "Coordinate/ViewportCoordinate.h"
+#include "Coordinate/MapCoordinate.h"
 
 class MapFileReader {
 public:
@@ -277,7 +125,7 @@ void Map::load_mapfile(std::string map_filename) {
 
 		ViewportCoordinate viewport_coord = map_coord.to_screen_coordinates();
 		sprite->setPosition((float)viewport_coord.getX(), (float)viewport_coord.getY());
-		sprite->setScale(sf::Vector2f((float)Global::Instance()->SCALE_X, (float)Global::Instance()->SCALE_Y));
+		sprite->setScale(sf::Vector2f((float)Settings::Instance()->SCALE_X, (float)Settings::Instance()->SCALE_Y));
 
 		this->tiles[map_coord] = sprite;
 
@@ -314,15 +162,15 @@ std::string Map::to_string() {
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(Global::Instance()->SCREEN_WIDTH, Global::Instance()->SCREEN_HEIGHT), "SFML Test");
+	sf::RenderWindow window(sf::VideoMode(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT), "SFML Test");
 	window.setFramerateLimit(60);
 
-	float screen_middle_x = Global::Instance()->SCREEN_WIDTH / (float)2;
-	float screen_middle_y = Global::Instance()->SCREEN_HEIGHT / (float)2;
+	float screen_middle_x = Settings::Instance()->SCREEN_WIDTH / (float)2;
+	float screen_middle_y = Settings::Instance()->SCREEN_HEIGHT / (float)2;
 
 	// set view
 	sf::View view(sf::Vector2f(screen_middle_x, screen_middle_y),
-		          sf::Vector2f((float)Global::Instance()->SCREEN_WIDTH, (float)Global::Instance()->SCREEN_HEIGHT));
+		          sf::Vector2f((float)Settings::Instance()->SCREEN_WIDTH, (float)Settings::Instance()->SCREEN_HEIGHT));
 
 	// load tile textures
 	sf::Image tile1_nomask;
@@ -345,6 +193,8 @@ int main()
 	map.register_texture(tile1);
 	map.register_texture(tile2);
 	map.load_mapfile("map_test.txt");
+
+	std::cout << "MAP INFO: " << std::endl << map.to_string() << std::endl;
 
 	// set initial mouse position
 	sf::Mouse::setPosition(sf::Vector2i(screen_middle_x, screen_middle_y), window);
