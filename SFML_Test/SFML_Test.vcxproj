@@ -74,6 +74,8 @@
   <ItemGroup>
     <ClCompile Include="Coordinate\MapCoordinate.cpp" />
     <ClCompile Include="Coordinate\ViewportCoordinate.cpp" />
+    <ClCompile Include="Entities\Map.cpp" />
+    <ClCompile Include="FileReader\MapFileReader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Settings.cpp" />
   </ItemGroup>
@@ -82,6 +84,8 @@
     <ClInclude Include="Coordinate\MapCoordinate.h" />
     <ClInclude Include="Coordinate\ViewportCoordinate.h" />
     <ClInclude Include="dependencies.h" />
+    <ClInclude Include="Entities\Map.h" />
+    <ClInclude Include="FileReader\MapFileReader.h" />
     <ClInclude Include="Settings.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

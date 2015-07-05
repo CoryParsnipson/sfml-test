@@ -6,7 +6,6 @@
 template <class T>
 class Coordinate {
 public:
-	Coordinate();
 	Coordinate(T x, T y);
 	Coordinate(Coordinate& c);
 	virtual ~Coordinate() = 0; // make coordinate abstract class
@@ -19,14 +18,14 @@ public:
 	// TODO: overload operators +, -, *, /
 
 protected:
-	T x;
-	T y;
+	T first;
+	T second;
 };
 
 template <class T>
 Coordinate<T>::Coordinate(T x, T y) :
-x(x),
-y(y)
+first(x),
+second(y)
 {
 }
 
@@ -36,17 +35,17 @@ Coordinate<T>::~Coordinate() {
 
 template <class T>
 T Coordinate<T>::getX() const {
-	return this->x;
+	return this->first;
 }
 
 template <class T>
 T Coordinate<T>::getY() const {
-	return this->y;
+	return this->second;
 }
 
 template <class T>
 double Coordinate<T>::magnitude() const {
-	return std::sqrt(std::pow(this->x, 2) + std::pow(this->y, 2));
+	return std::sqrt(std::pow(this->first, 2) + std::pow(this->second, 2));
 }
 
 template <class T>

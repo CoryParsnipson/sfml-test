@@ -19,7 +19,7 @@ ViewportCoordinate MapCoordinate::to_screen_coordinates() {
 
 std::string MapCoordinate::to_string() const {
 	std::stringstream output;
-	output << "Map Coord. (" << this->x << ", " << this->y << ")";
+	output << "Map Coord. (" << this->first << ", " << this->second << ")";
 	return output.str();
 }
 

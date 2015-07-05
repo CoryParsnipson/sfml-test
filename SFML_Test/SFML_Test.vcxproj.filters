@@ -19,6 +19,18 @@
     <Filter Include="Source Files\Coordinate">
       <UniqueIdentifier>{be4ec8ab-06ee-4a81-9e8f-de483e9dc66b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\FileReader">
+      <UniqueIdentifier>{ff555211-5e04-4259-b7be-f2e693e5fb41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FileReader">
+      <UniqueIdentifier>{c3def83a-4792-468e-b3a4-954dcc8b32c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entities">
+      <UniqueIdentifier>{14441404-a0af-4d4b-9fa2-0d764af4ef58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entities">
+      <UniqueIdentifier>{f3571602-323c-437e-b24a-e6d24fff63c1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -32,6 +44,12 @@
     </ClCompile>
     <ClCompile Include="Coordinate\ViewportCoordinate.cpp">
       <Filter>Source Files\Coordinate</Filter>
+    </ClCompile>
+    <ClCompile Include="FileReader\MapFileReader.cpp">
+      <Filter>Source Files\FileReader</Filter>
+    </ClCompile>
+    <ClCompile Include="Entities\Map.cpp">
+      <Filter>Source Files\Entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -49,6 +67,12 @@
     </ClInclude>
     <ClInclude Include="Coordinate\ViewportCoordinate.h">
       <Filter>Header Files\Coordinate</Filter>
+    </ClInclude>
+    <ClInclude Include="FileReader\MapFileReader.h">
+      <Filter>Header Files\FileReader</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities\Map.h">
+      <Filter>Header Files\Entities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
