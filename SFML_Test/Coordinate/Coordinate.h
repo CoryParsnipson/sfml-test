@@ -16,16 +16,15 @@ public:
 	double magnitude() const;
 
 	// TODO: overload operators +, -, *, /
-
 protected:
-	T first;
-	T second;
+	T x;
+	T y;
 };
 
 template <class T>
-Coordinate<T>::Coordinate(T x, T y) :
-first(x),
-second(y)
+Coordinate<T>::Coordinate(T x, T y)
+: x(x)
+, y(y)
 {
 }
 
@@ -35,22 +34,29 @@ Coordinate<T>::~Coordinate() {
 
 template <class T>
 T Coordinate<T>::getX() const {
-	return this->first;
+	return x;
 }
 
 template <class T>
 T Coordinate<T>::getY() const {
-	return this->second;
+	return y;
 }
 
 template <class T>
 double Coordinate<T>::magnitude() const {
-	return std::sqrt(std::pow(this->first, 2) + std::pow(this->second, 2));
+	return std::sqrt(std::pow(this->getX(), 2) + std::pow(this->getY(), 2));
 }
 
 template <class T>
 bool operator<(const Coordinate<T>& l, const Coordinate<T>& r) {
-	return (l.magnitude() < r.magnitude());
+	if (l.magnitude() == r.magnitude()) {
+		if (l.getX() == r.getX()) {
+			return l.getY() < r.getY();
+		}
+
+		return l.getX() < r.getX();
+	}
+	return l.magnitude() < r.magnitude();
 }
 
 template <class T>
