@@ -12,9 +12,9 @@ Coordinate(other.getX(), other.getY())
 
 ViewportCoordinate MapCoordinate::to_screen_coordinates() {
 	// calculate x screen coordinate
-	int screen_x = this->getX() * Settings::Instance()->TILE_WIDTH + (this->getY() & 1) * Settings::Instance()->TILE_WIDTH / 2;
-	int screen_y = this->getY() * Settings::Instance()->TILE_HEIGHT_OVERLAP - (Settings::Instance()->TILE_HEIGHT - Settings::Instance()->TILE_HEIGHT_RHOMBUS);
-	return ViewportCoordinate(screen_x, screen_y);
+	float screen_x = this->getX() * Settings::Instance()->TILE_WIDTH + (this->getY() & 1) * Settings::Instance()->TILE_WIDTH / 2.f;
+	float screen_y = this->getY() * Settings::Instance()->TILE_HEIGHT_OVERLAP - (Settings::Instance()->TILE_HEIGHT - Settings::Instance()->TILE_HEIGHT_RHOMBUS);
+	return ViewportCoordinate((int)screen_x, (int)screen_y);
 }
 
 std::string MapCoordinate::to_string() const {

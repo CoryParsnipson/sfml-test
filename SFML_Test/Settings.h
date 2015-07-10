@@ -8,13 +8,13 @@ public:
 	const int SCREEN_WIDTH = 800;
 	const int SCREEN_HEIGHT = 500;
 
-	const int SCALE_X = 1; // factor
-	const int SCALE_Y = 1; // factor
+	const float SCALE_X = 1.5; // factor
+	const float SCALE_Y = 1.5; // factor
 
-	const int TILE_WIDTH = SCALE_X * 40; // px
-	const int TILE_HEIGHT = SCALE_Y * 40; // px
-	const int TILE_HEIGHT_RHOMBUS = SCALE_Y * 20; // px
-	const int TILE_HEIGHT_OVERLAP = TILE_HEIGHT_RHOMBUS / 2;
+	const float TILE_WIDTH = SCALE_X * 40; // px
+	const float TILE_HEIGHT = SCALE_Y * 40; // px
+	const float TILE_HEIGHT_RHOMBUS = SCALE_Y * 20; // px
+	const float TILE_HEIGHT_OVERLAP = TILE_HEIGHT_RHOMBUS / 2;
 
 private:
 	Settings() {};

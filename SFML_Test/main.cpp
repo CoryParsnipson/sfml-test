@@ -24,7 +24,6 @@ int main()
 
 	sf::Texture* tile1 = new sf::Texture();
 	tile1->loadFromImage(tile1_nomask);
-	tile1->setSmooth(true);
 
 	sf::Image tile2_nomask;
 	tile2_nomask.loadFromFile("tile_grass.gif");
@@ -32,7 +31,6 @@ int main()
 
 	sf::Texture* tile2 = new sf::Texture();
 	tile2->loadFromImage(tile2_nomask);
-	tile2->setSmooth(true);
 
 	Map map;
 	map.register_texture(tile1);
@@ -42,7 +40,7 @@ int main()
 	std::cout << "MAP INFO: " << std::endl << map.to_string() << std::endl;
 
 	// set initial mouse position
-	sf::Mouse::setPosition(sf::Vector2i(screen_middle_x, screen_middle_y), window);
+	//sf::Mouse::setPosition(sf::Vector2i(screen_middle_x, screen_middle_y), window);
 
 	// main loop
 	while (window.isOpen())
@@ -51,7 +49,7 @@ int main()
 
 		// move view depending on mouse position
 		//view.setCenter(static_cast<sf::Vector2f>(mouse_position));
-		view.move(static_cast<sf::Vector2f>(mouse_position) - view.getCenter());
+		//view.move(static_cast<sf::Vector2f>(mouse_position) - view.getCenter());
 
 		// attach your viewport to the window. This must be called every render cycle!
 		window.setView(view);
