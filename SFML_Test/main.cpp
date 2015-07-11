@@ -40,16 +40,22 @@ int main()
 	std::cout << "MAP INFO: " << std::endl << map.to_string() << std::endl;
 
 	// set initial mouse position
-	//sf::Mouse::setPosition(sf::Vector2i(screen_middle_x, screen_middle_y), window);
+	sf::Mouse::setPosition(sf::Vector2i((int)screen_middle_x, (int)screen_middle_y), window);
+	sf::RectangleShape cursor(sf::Vector2f(6, 6));
+	cursor.setPosition(sf::Vector2f(screen_middle_x, screen_middle_y) - cursor.getSize() / 2.f);
+	cursor.setFillColor(sf::Color::Red);
 
 	// main loop
 	while (window.isOpen())
 	{
-		sf::Vector2i mouse_position = sf::Mouse::getPosition();
+		sf::Vector2i mouse_position = sf::Mouse::getPosition(window);
 
 		// move view depending on mouse position
 		//view.setCenter(static_cast<sf::Vector2f>(mouse_position));
 		//view.move(static_cast<sf::Vector2f>(mouse_position) - view.getCenter());
+
+		// mouse dependent calculations here
+		cursor.setPosition(static_cast<sf::Vector2f>(mouse_position) - cursor.getSize() / 2.f);
 
 		// attach your viewport to the window. This must be called every render cycle!
 		window.setView(view);
@@ -68,6 +74,7 @@ int main()
 
 		// draw everything here
 		map.draw(window);
+		window.draw(cursor);
 
 		// end the current frame
 		window.display();
