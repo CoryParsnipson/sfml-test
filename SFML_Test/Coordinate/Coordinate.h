@@ -63,4 +63,9 @@ bool operator==(const Coordinate<T>& l, const Coordinate<T>& r) {
 	return (l.getX() == r.getX() && l.getY() == r.getY());
 }
 
+template <class T>
+Coordinate<T> operator-(const Coordinate<T>& l, const Coordinate<T>& r) {
+	return Coordinate<T>(l.getX() - r.getX(), l.getY() - r.getY());
+}
+
 #endif

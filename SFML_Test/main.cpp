@@ -46,7 +46,10 @@ int main()
 
 	sf::Vector2i mouse_position = sf::Mouse::getPosition(window);
 
-	Mouse m(window);
+	Mouse m(window, view);
+
+	// get starting view position
+	sf::Vector2f original_view = view.getCenter();
 
 	// main loop
 	while (window.isOpen())
@@ -59,16 +62,14 @@ int main()
 			{
 				window.close();
 			}
+			else if (event.type == sf::Event::KeyPressed) {
+				if (event.key.code == sf::Keyboard::Key::R) {
+					sf::Vector2f delta = original_view - view.getCenter();
+					view.move(delta);
+				}
+			}
+
 			m.process_event(event);
-		}
-
-		// click and drag to pan map
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-			sf::Vector2i mouse_new_position = sf::Mouse::getPosition(window);
-
-			sf::Vector2i mouse_delta = mouse_new_position - mouse_position;
-
-			view.move(static_cast<sf::Vector2f>(mouse_delta));
 		}
 
 // 		std::stringstream dbg_msg;
@@ -81,7 +82,7 @@ int main()
 		//view.move(static_cast<sf::Vector2f>(mouse_position) - view.getCenter());
 
 		// mouse dependent calculations here
-		cursor.setPosition(static_cast<sf::Vector2f>(mouse_position) - cursor.getSize() / 2.f);
+		cursor.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)) / 2.f);
 
 		// attach your viewport to the window. This must be called every render cycle!
 		window.setView(view);
