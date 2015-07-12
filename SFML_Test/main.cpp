@@ -10,6 +10,7 @@ int main()
 {
 	sf::RenderWindow window(sf::VideoMode(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT), "SFML Test");
 	window.setFramerateLimit(60);
+	window.setMouseCursorVisible(false);
 
 	float screen_middle_x = Settings::Instance()->SCREEN_WIDTH / (float)2;
 	float screen_middle_y = Settings::Instance()->SCREEN_HEIGHT / (float)2;
@@ -40,10 +41,6 @@ int main()
 
 	// set initial mouse position
 	sf::Mouse::setPosition(sf::Vector2i((int)screen_middle_x, (int)screen_middle_y), window);
-	sf::RectangleShape cursor(sf::Vector2f(6, 6));
-	cursor.setPosition(sf::Vector2f(screen_middle_x, screen_middle_y) - cursor.getSize() / 2.f);
-	cursor.setFillColor(sf::Color::Red);
-
 	sf::Vector2i mouse_position = sf::Mouse::getPosition(window);
 
 	Mouse m(window, view);
@@ -72,18 +69,6 @@ int main()
 			m.process_event(event);
 		}
 
-// 		std::stringstream dbg_msg;
-// 		dbg_msg << "Mouse Position: (" << sf::Mouse::getPosition().x << ", " << sf::Mouse::getPosition().y << ")\n";
-// 		dbg_msg << "Cursor Position: (" << cursor.getPosition().x << ", " << cursor.getPosition().y << ")\n";
-// 		std::cout << dbg_msg.str();
-
-		// move view depending on mouse position
-		//view.setCenter(static_cast<sf::Vector2f>(mouse_position));
-		//view.move(static_cast<sf::Vector2f>(mouse_position) - view.getCenter());
-
-		// mouse dependent calculations here
-		cursor.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)) / 2.f);
-
 		// attach your viewport to the window. This must be called every render cycle!
 		window.setView(view);
 
@@ -91,7 +76,7 @@ int main()
 
 		// draw everything here
 		map.draw(window);
-		window.draw(cursor);
+		window.draw(m.cursor);
 
 		// end the current frame
 		window.display();

@@ -25,6 +25,8 @@ public:
 	sf::Vector2i get_mouse_position();
 	sf::Vector2i get_last_mouse_position(int frames_to_go_back = 0);
 
+	sf::RectangleShape cursor;
+
 protected:
 	sf::RenderWindow& window;
 	sf::View& view;

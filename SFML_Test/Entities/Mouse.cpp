@@ -5,7 +5,11 @@
 Mouse::Mouse(sf::RenderWindow& window, sf::View& view)
 : window(window)
 , view(view)
+, cursor(sf::Vector2f(6, 6))
 {
+	cursor.setFillColor(sf::Color::Red);
+	//cursor.setOrigin()
+	cursor.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(this->window)));
 }
 
 void Mouse::process_event(sf::Event& event) {
@@ -34,6 +38,9 @@ void Mouse::process_event(sf::Event& event) {
 	case sf::Event::MouseMoved:
 		if (!(this->get_last_mouse_position() == sf::Vector2i(event.mouseMove.x, event.mouseMove.y))) {
 			this->add_mouse_position(event.mouseMove.x, event.mouseMove.y);
+
+			// mouse dependent calculations here
+			cursor.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
 
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 				std::stringstream mouse_msg;
