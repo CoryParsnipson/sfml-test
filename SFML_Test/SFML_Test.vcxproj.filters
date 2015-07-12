@@ -51,6 +51,9 @@
     <ClCompile Include="Entities\Map.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
+    <ClCompile Include="Entities\Mouse.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencies.h">
@@ -72,6 +75,12 @@
       <Filter>Header Files\FileReader</Filter>
     </ClInclude>
     <ClInclude Include="Entities\Map.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities\UX.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities\Mouse.h">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
   </ItemGroup>

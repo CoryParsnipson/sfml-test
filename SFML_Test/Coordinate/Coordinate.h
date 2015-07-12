@@ -7,7 +7,6 @@ template <class T>
 class Coordinate {
 public:
 	Coordinate(T x, T y);
-	Coordinate(Coordinate& c);
 	virtual ~Coordinate() = 0; // make coordinate abstract class
 
 	T getX() const;
