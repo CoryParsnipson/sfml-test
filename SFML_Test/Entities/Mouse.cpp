@@ -45,12 +45,12 @@ void Mouse::process_event(sf::Event& event) {
 			this->cursor.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
 
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-				std::stringstream mouse_msg;
-				mouse_msg << "Mouse move! (" << event.mouseMove.x << ", " << event.mouseMove.y << ")" << std::endl;
-				std::cout << mouse_msg.str();
+// 				std::stringstream mouse_msg;
+// 				mouse_msg << "Mouse move! (" << event.mouseMove.x << ", " << event.mouseMove.y << ")" << std::endl;
+// 				std::cout << mouse_msg.str();
 
 				// click and drag to pan map
-				sf::Vector2f map_delta = static_cast<sf::Vector2f>(this->get_mouse_position() - this->get_last_mouse_position());
+				sf::Vector2f map_delta = static_cast<sf::Vector2f>(this->get_last_mouse_position() - this->get_mouse_position());
 
 				map_delta.x = map_delta.x / window_resize_ratio.x;
 				map_delta.y = map_delta.y / window_resize_ratio.y;

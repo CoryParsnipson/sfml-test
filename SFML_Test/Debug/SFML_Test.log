@@ -1,18 +1,8 @@
-﻿Build started 7/12/2015 6:08:28 PM.
+﻿Build started 7/12/2015 6:13:22 PM.
      1>Project "C:\Users\ZHQ\Documents\Code\SFML_Test\SFML_Test\SFML_Test.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\Users\ZHQ\Documents\Code\SFML_Test\SFML-2.3\include" /IC:\Users\ZHQ\Documents\Code\SFML_Test\SFML_Test /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Coordinate\MapCoordinate.cpp Coordinate\ViewportCoordinate.cpp Entities\Map.cpp Entities\Mouse.cpp Entities\ScreenWriter.cpp FileReader\MapFileReader.cpp Settings.cpp main.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\Users\ZHQ\Documents\Code\SFML_Test\SFML-2.3\include" /IC:\Users\ZHQ\Documents\Code\SFML_Test\SFML_Test /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Entities\Mouse.cpp
          Mouse.cpp
-         Generating Code...
-         Compiling...
-         main.cpp
-         Settings.cpp
-         MapFileReader.cpp
-         ScreenWriter.cpp
-         Map.cpp
-         ViewportCoordinate.cpp
-         MapCoordinate.cpp
-         Generating Code...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\ZHQ\Documents\Code\SFML_Test\Debug\SFML_Test.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Users\ZHQ\Documents\Code\SFML_Test\SFML-2.3\lib" "sfml-graphics-d.lib" "sfml-window-d.lib" "sfml-system-d.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\ZHQ\Documents\Code\SFML_Test\Debug\SFML_Test.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\ZHQ\Documents\Code\SFML_Test\Debug\SFML_Test.lib" /MACHINE:X86 Debug\MapCoordinate.obj
          Debug\ViewportCoordinate.obj
@@ -27,4 +17,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:07.23
+Time Elapsed 00:00:01.27
