@@ -1,19 +1,22 @@
-#include "../dependencies.h"
-
 #include "Mouse.h"
 
 Mouse::Mouse(sf::RenderWindow& window, sf::View& view)
 : window(window)
 , view(view)
 , cursor(sf::Vector2f(6, 6))
+, previous_window_size(window.getSize())
+, window_resize_ratio(sf::Vector2f(1, 1))
 {
 	cursor.setFillColor(sf::Color::Red);
-	//cursor.setOrigin()
 	cursor.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(this->window)));
 }
 
 void Mouse::process_event(sf::Event& event) {
 	switch (event.type) {
+	// hax
+	case sf::Event::Resized:
+		window_resize_ratio = sf::Vector2f((float)event.size.width / this->previous_window_size.x, (float)event.size.height / this->previous_window_size.y);
+		break;
 	case sf::Event::MouseButtonPressed:
 		switch (event.mouseButton.button) {
 		case sf::Mouse::Left:
@@ -39,8 +42,7 @@ void Mouse::process_event(sf::Event& event) {
 		if (!(this->get_last_mouse_position() == sf::Vector2i(event.mouseMove.x, event.mouseMove.y))) {
 			this->add_mouse_position(event.mouseMove.x, event.mouseMove.y);
 
-			// mouse dependent calculations here
-			cursor.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
+			this->cursor.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
 
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 				std::stringstream mouse_msg;
@@ -48,7 +50,12 @@ void Mouse::process_event(sf::Event& event) {
 				std::cout << mouse_msg.str();
 
 				// click and drag to pan map
-				this->view.move(this->MOUSE_PAN_COEFFICIENT * static_cast<sf::Vector2f>(this->get_mouse_position() - this->get_last_mouse_position()));
+				sf::Vector2f map_delta = static_cast<sf::Vector2f>(this->get_mouse_position() - this->get_last_mouse_position());
+
+				map_delta.x = map_delta.x / window_resize_ratio.x;
+				map_delta.y = map_delta.y / window_resize_ratio.y;
+
+				this->view.move(this->MOUSE_PAN_COEFFICIENT * map_delta);
 			}
 		}
 		break;
@@ -77,4 +84,16 @@ sf::Vector2i Mouse::get_last_mouse_position(int frames_to_go_back /* = 0 */) {
 	for (int i = 0; i < frames_to_go_back, it != this->last_positions.begin(); --it, i++) {}
 
 	return sf::Vector2i(it->x, it->y);
+}
+
+void Mouse::draw(sf::RenderWindow& window) {
+	window.draw(this->cursor);
+}
+
+void Mouse::draw(sf::RenderWindow& window, sf::View& view) {
+	sf::View old_view = window.getView();
+
+	window.setView(view);
+	this->draw(window);
+	window.setView(old_view);
 }

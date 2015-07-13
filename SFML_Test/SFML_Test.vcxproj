@@ -76,6 +76,7 @@
     <ClCompile Include="Coordinate\ViewportCoordinate.cpp" />
     <ClCompile Include="Entities\Map.cpp" />
     <ClCompile Include="Entities\Mouse.cpp" />
+    <ClCompile Include="Entities\ScreenWriter.cpp" />
     <ClCompile Include="FileReader\MapFileReader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Settings.cpp" />
@@ -87,6 +88,7 @@
     <ClInclude Include="dependencies.h" />
     <ClInclude Include="Entities\Map.h" />
     <ClInclude Include="Entities\Mouse.h" />
+    <ClInclude Include="Entities\ScreenWriter.h" />
     <ClInclude Include="Entities\UX.h" />
     <ClInclude Include="FileReader\MapFileReader.h" />
     <ClInclude Include="Settings.h" />

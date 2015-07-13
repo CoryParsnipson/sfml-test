@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <tuple>
+#include <list>
 #include <map>
 
 #include <string>
@@ -13,6 +14,7 @@
 
 // SFML includes
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Font.hpp>
 
 // project includes
 #include "settings.h"
