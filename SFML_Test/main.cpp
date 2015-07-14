@@ -72,6 +72,15 @@ int main()
 					view_map.move(delta);
 				}
 			}
+			else if (event.type == sf::Event::Resized) {
+				// scale views to new window size
+				view_map.setSize((float)event.size.width, (float)event.size.height);
+				view_fixed.setSize((float)event.size.width, (float)event.size.height);
+
+				// adjust position of views to new window size
+				view_map.setCenter(event.size.width / 2.f, event.size.height / 2.f);
+				view_fixed.setCenter(event.size.width / 2.f, event.size.height / 2.f);
+			}
 
 			m.process_event(event);
 		}
