@@ -17,30 +17,31 @@ void Mouse::process_event(sf::Event& event) {
 	case sf::Event::MouseButtonPressed:
 		switch (event.mouseButton.button) {
 		case sf::Mouse::Left:
-			this->is_panning = true;
-			this->panning_anchor = this->get_mouse_position();
 			break;
 		case sf::Mouse::Right:
 			break;
 		case sf::Mouse::Middle:
+			this->is_panning = true;
+			this->panning_anchor = this->get_mouse_position();
 			break;
 		}
 		break;
 	case sf::Event::MouseButtonReleased:
 		switch (event.mouseButton.button) {
 		case sf::Mouse::Left:
-			this->is_panning = false;
-			this->panning_anchor = this->get_mouse_position();
 			break;
 		case sf::Mouse::Right:
 			break;
 		case sf::Mouse::Middle:
+			this->is_panning = false;
+			this->panning_anchor = this->get_mouse_position();
 			break;
 		}
 		break;
 	case sf::Event::MouseMoved:
 		// update the red dot on the screen to the current position
 		this->cursor.setPosition(static_cast<sf::Vector2f>(this->get_mouse_position()));
+
 		if (!this->is_panning) {
 			return;
 		}

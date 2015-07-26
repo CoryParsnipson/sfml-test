@@ -11,7 +11,7 @@ int main()
 {
 	sf::RenderWindow window(sf::VideoMode(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT), "SFML Test");
 	window.setFramerateLimit(60);
-	//window.setMouseCursorVisible(false);
+	window.setMouseCursorVisible(false);
 
 	float screen_middle_x = Settings::Instance()->SCREEN_WIDTH / (float)2;
 	float screen_middle_y = Settings::Instance()->SCREEN_HEIGHT / (float)2;
@@ -104,7 +104,17 @@ int main()
 		// attach to second view that is fixed wrt computer monitor
 		window.setView(view_fixed);
 		
+		// draw basic hud instructions
 		sw.write("SFML_Test");
+		sw.write("r: reset pan position", sf::Vector2i(0, 15));
+		sw.write("middle click: click and drag to pan", sf::Vector2i(0, 30));
+
+		//sf::Vector2i mouse_pos = m.get_mouse_position();
+		sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
+		std::stringstream mmsg;
+		mmsg << mouse_pos.x << ", " << mouse_pos.y;
+
+		sw.write(mmsg.str(), mouse_pos + sf::Vector2i(0, 5));
 
 		// end the current frame
 		window.display();
