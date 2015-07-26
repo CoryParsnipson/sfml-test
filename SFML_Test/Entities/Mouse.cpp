@@ -4,8 +4,7 @@ Mouse::Mouse(sf::RenderWindow& window, sf::View& view)
 : window(window)
 , view(view)
 , cursor(sf::Vector2f(6, 6))
-, previous_window_size(window.getSize())
-, window_resize_ratio(sf::Vector2f(1, 1))
+, is_panning(false)
 {
 	cursor.setFillColor(sf::Color::Red);
 	cursor.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(this->window)));
@@ -13,14 +12,15 @@ Mouse::Mouse(sf::RenderWindow& window, sf::View& view)
 
 void Mouse::process_event(sf::Event& event) {
 	switch (event.type) {
-	// hax
 	case sf::Event::Resized:
-		window_resize_ratio = sf::Vector2f((float)event.size.width / this->previous_window_size.x, (float)event.size.height / this->previous_window_size.y);
 		break;
 	case sf::Event::MouseButtonPressed:
 		switch (event.mouseButton.button) {
 		case sf::Mouse::Left:
+			this->is_panning = true;
+			std::cout << "Panning\n";
 
+			this->panning_anchor = this->get_mouse_position();
 			break;
 		case sf::Mouse::Right:
 			break;
@@ -31,6 +31,9 @@ void Mouse::process_event(sf::Event& event) {
 	case sf::Event::MouseButtonReleased:
 		switch (event.mouseButton.button) {
 		case sf::Mouse::Left:
+			this->is_panning = false;
+			std::cout << "not panning\n";
+			this->panning_anchor = this->get_mouse_position();
 			break;
 		case sf::Mouse::Right:
 			break;
@@ -39,34 +42,29 @@ void Mouse::process_event(sf::Event& event) {
 		}
 		break;
 	case sf::Event::MouseMoved:
-		if (!(this->get_last_mouse_position() == sf::Vector2i(event.mouseMove.x, event.mouseMove.y))) {
-			this->add_mouse_position(event.mouseMove.x, event.mouseMove.y);
-
-			this->cursor.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
-
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-// 				std::stringstream mouse_msg;
-// 				mouse_msg << "Mouse move! (" << event.mouseMove.x << ", " << event.mouseMove.y << ")" << std::endl;
-// 				std::cout << mouse_msg.str();
-
-				// click and drag to pan map
-				sf::Vector2f map_delta = static_cast<sf::Vector2f>(this->get_last_mouse_position() - this->get_mouse_position());
-
-				map_delta.x = map_delta.x / window_resize_ratio.x;
-				map_delta.y = map_delta.y / window_resize_ratio.y;
-
-				this->view.move(this->MOUSE_PAN_COEFFICIENT * map_delta);
-			}
+		// update the red dot on the screen to the current position
+		this->cursor.setPosition(static_cast<sf::Vector2f>(this->get_mouse_position()));
+		if (!this->is_panning) {
+			return;
 		}
+
+		std::cout << "w00t";
+
+		sf::Vector2i pos = this->get_mouse_position();
+
+		sf::Vector2f panning_delta = static_cast<sf::Vector2f>(pos - this->panning_anchor);
+		this->view.move(this->MOUSE_PAN_COEFFICIENT * panning_delta);
+
+		this->panning_anchor = pos;
 		break;
 	}
 }
 
 void Mouse::add_mouse_position(int x, int y) {
-	this->last_positions.push_back(sf::Vector2i(x, y));
+	this->last_positions.push_front(sf::Vector2i(x, y));
 
 	if (this->last_positions.size() > this->MOUSE_HISTORY_LENGTH) {
-		this->last_positions.pop_front();
+		this->last_positions.pop_back();
 	}
 }
 
@@ -75,13 +73,13 @@ sf::Vector2i Mouse::get_mouse_position() {
 	return sf::Vector2i(pos.x, pos.y);
 }
 
-sf::Vector2i Mouse::get_last_mouse_position(int frames_to_go_back /* = 0 */) {
-	if (this->last_positions.size() == 0) {
+sf::Vector2i Mouse::get_last_mouse_position(unsigned int frames_to_go_back /* = 0 */) {
+	if (frames_to_go_back >= this->last_positions.size()) {
 		return sf::Vector2i(0, 0);
 	}
 
-	std::list<sf::Vector2i>::iterator it = this->last_positions.end();
-	for (int i = 0; i < frames_to_go_back, it != this->last_positions.begin(); --it, i++) {}
+	std::list<sf::Vector2i>::iterator it = this->last_positions.begin();
+	for (unsigned int i = 0; it != this->last_positions.end(), i < frames_to_go_back; it++, i++) {}
 
 	return sf::Vector2i(it->x, it->y);
 }

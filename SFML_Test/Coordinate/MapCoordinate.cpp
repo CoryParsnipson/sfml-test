@@ -13,7 +13,10 @@ Coordinate(other.getX(), other.getY())
 ViewportCoordinate MapCoordinate::to_screen_coordinates() {
 	// calculate x screen coordinate
 	float screen_x = this->getX() * Settings::Instance()->TILE_WIDTH + (this->getY() & 1) * Settings::Instance()->TILE_WIDTH / 2.f;
-	float screen_y = this->getY() * Settings::Instance()->TILE_HEIGHT_OVERLAP - (Settings::Instance()->TILE_HEIGHT - Settings::Instance()->TILE_HEIGHT_RHOMBUS);
+	float screen_y = this->getY() * (Settings::Instance()->TILE_HEIGHT_OVERLAP) - (Settings::Instance()->TILE_HEIGHT - Settings::Instance()->TILE_HEIGHT_RHOMBUS);
+
+	// TODO: double check the above. Separate tiles might be overlapping... Make sure to settle on a "base height" and draw tiles to stay within bounds.
+
 	return ViewportCoordinate((int)screen_x, (int)screen_y);
 }
 

@@ -55,6 +55,13 @@ int main()
 	// get starting view position
 	sf::Vector2f original_view = view_map.getCenter();
 
+	// NOTE: window.mapPixelToCoords(const sf::Vector2i&, const sf::View&) -> use to make a sprite
+	// fixed against computer monitor (instead of using a second view)
+
+	// NOTE to the NOTE: This function does not preclude the usefulness of having
+	// multiple views. You might still want a separate view for user HUD just for
+	// semantics or convenience.
+
 	// main loop
 	while (window.isOpen())
 	{
