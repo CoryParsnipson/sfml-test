@@ -3,6 +3,9 @@
 
 #include "../dependencies.h"
 
+#include "Tile.h"
+
+// needed for comparison function in std::map with Vector2i as key
 struct vector2i_cmp {
 	bool operator()(const sf::Vector2i& l, const sf::Vector2i& r) const {
 		return (l.x < r.x || (l.x == r.x && l.y < r.y));
@@ -24,7 +27,7 @@ protected:
 	std::string map_filename;
 
 	std::vector<sf::Texture*> textures_tiles;
-	std::map<sf::Vector2i, sf::Sprite*, vector2i_cmp> tiles;
+	std::map<sf::Vector2i, Tile*, vector2i_cmp> tiles;
 };
 
 #endif

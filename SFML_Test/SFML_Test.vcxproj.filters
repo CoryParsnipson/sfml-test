@@ -45,6 +45,9 @@
     <ClCompile Include="Entities\ScreenWriter.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
+    <ClCompile Include="Entities\Tile.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencies.h">
@@ -66,6 +69,9 @@
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
     <ClInclude Include="Entities\ScreenWriter.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities\Tile.h">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
   </ItemGroup>
