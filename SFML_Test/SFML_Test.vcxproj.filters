@@ -13,12 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Coordinate">
-      <UniqueIdentifier>{8d5958ce-5b07-4e40-b867-ada568956309}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Coordinate">
-      <UniqueIdentifier>{be4ec8ab-06ee-4a81-9e8f-de483e9dc66b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\FileReader">
       <UniqueIdentifier>{ff555211-5e04-4259-b7be-f2e693e5fb41}</UniqueIdentifier>
     </Filter>
@@ -39,12 +33,6 @@
     <ClCompile Include="Settings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Coordinate\MapCoordinate.cpp">
-      <Filter>Source Files\Coordinate</Filter>
-    </ClCompile>
-    <ClCompile Include="Coordinate\ViewportCoordinate.cpp">
-      <Filter>Source Files\Coordinate</Filter>
-    </ClCompile>
     <ClCompile Include="FileReader\MapFileReader.cpp">
       <Filter>Source Files\FileReader</Filter>
     </ClCompile>
@@ -62,17 +50,8 @@
     <ClInclude Include="dependencies.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Coordinate\Coordinate.h">
-      <Filter>Header Files\Coordinate</Filter>
-    </ClInclude>
     <ClInclude Include="Settings.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Coordinate\MapCoordinate.h">
-      <Filter>Header Files\Coordinate</Filter>
-    </ClInclude>
-    <ClInclude Include="Coordinate\ViewportCoordinate.h">
-      <Filter>Header Files\Coordinate</Filter>
     </ClInclude>
     <ClInclude Include="FileReader\MapFileReader.h">
       <Filter>Header Files\FileReader</Filter>

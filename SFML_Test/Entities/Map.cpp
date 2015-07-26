@@ -1,6 +1,5 @@
 #include "Map.h"
 
-#include "../Coordinate/MapCoordinate.h"
 #include "../FileReader/MapFileReader.h"
 
 Map::Map() {
@@ -8,7 +7,7 @@ Map::Map() {
 
 Map::~Map() {
 	// delete all sprite pointers in the tilemap
-	std::map<MapCoordinate, sf::Sprite*>::const_iterator iterator;
+	std::map<sf::Vector2i, sf::Sprite*>::const_iterator iterator;
 	for (iterator = this->tiles.begin(); iterator != this->tiles.end(); iterator++) {
 		delete iterator->second;
 	}
@@ -27,13 +26,18 @@ void Map::load_mapfile(std::string map_filename) {
 		}
 
 		// generate map coordinates from mapfile line
-		MapCoordinate map_coord((*tokens)[0], (*tokens)[1]);
+		sf::Vector2i map_coord((*tokens)[0], (*tokens)[1]);
 
 		sf::Sprite* sprite = new sf::Sprite();
 		sprite->setTexture(*(this->textures_tiles[(*tokens)[2]]));
 
-		ViewportCoordinate viewport_coord = map_coord.to_screen_coordinates();
-		sprite->setPosition((float)viewport_coord.getX(), (float)viewport_coord.getY());
+		sf::Vector2f viewport_coord;
+		
+		// logical tile coordinate to screen coordinate conversion
+		viewport_coord.x = map_coord.x * Settings::Instance()->TILE_WIDTH + (map_coord.y & 1) * (Settings::Instance()->TILE_WIDTH / 2);
+		viewport_coord.y = map_coord.y * (Settings::Instance()->TILE_HEIGHT_RHOMBUS / 2) - Settings::Instance()->TILE_HEIGHT_OVERLAP;
+
+		sprite->setPosition(viewport_coord);
 		sprite->setScale(sf::Vector2f((float)Settings::Instance()->SCALE_X, (float)Settings::Instance()->SCALE_Y));
 
 		this->tiles[map_coord] = sprite;
@@ -52,7 +56,7 @@ int Map::register_texture(sf::Texture* texture) {
 }
 
 void Map::draw(sf::RenderWindow& window) {
-	std::map<MapCoordinate, sf::Sprite*>::const_iterator iterator;
+	std::map<sf::Vector2i, sf::Sprite*>::const_iterator iterator;
 	for (iterator = this->tiles.begin(); iterator != this->tiles.end(); iterator++) {
 		window.draw(*iterator->second);
 	}
@@ -61,9 +65,9 @@ void Map::draw(sf::RenderWindow& window) {
 std::string Map::to_string() {
 	std::string output;
 
-	std::map<MapCoordinate, sf::Sprite*>::const_iterator iterator;
+	std::map<sf::Vector2i, sf::Sprite*>::const_iterator iterator;
 	for (iterator = this->tiles.begin(); iterator != this->tiles.end(); iterator++) {
-		output += iterator->first.to_string() + "\n";
+		output += "Map (" + std::to_string(iterator->first.x) + ", " + std::to_string(iterator->first.y) + ")\n";
 	}
 
 	return output;

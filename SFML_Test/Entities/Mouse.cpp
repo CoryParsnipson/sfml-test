@@ -18,8 +18,6 @@ void Mouse::process_event(sf::Event& event) {
 		switch (event.mouseButton.button) {
 		case sf::Mouse::Left:
 			this->is_panning = true;
-			std::cout << "Panning\n";
-
 			this->panning_anchor = this->get_mouse_position();
 			break;
 		case sf::Mouse::Right:
@@ -32,7 +30,6 @@ void Mouse::process_event(sf::Event& event) {
 		switch (event.mouseButton.button) {
 		case sf::Mouse::Left:
 			this->is_panning = false;
-			std::cout << "not panning\n";
 			this->panning_anchor = this->get_mouse_position();
 			break;
 		case sf::Mouse::Right:
@@ -47,12 +44,9 @@ void Mouse::process_event(sf::Event& event) {
 		if (!this->is_panning) {
 			return;
 		}
-
-		std::cout << "w00t";
-
 		sf::Vector2i pos = this->get_mouse_position();
 
-		sf::Vector2f panning_delta = static_cast<sf::Vector2f>(pos - this->panning_anchor);
+		sf::Vector2f panning_delta = static_cast<sf::Vector2f>(this->panning_anchor - pos);
 		this->view.move(this->MOUSE_PAN_COEFFICIENT * panning_delta);
 
 		this->panning_anchor = pos;

@@ -3,7 +3,11 @@
 
 #include "../dependencies.h"
 
-#include "../Coordinate/MapCoordinate.h"
+struct vector2i_cmp {
+	bool operator()(const sf::Vector2i& l, const sf::Vector2i& r) const {
+		return (l.x < r.x || (l.x == r.x && l.y < r.y));
+	}
+};
 
 class Map {
 public:
@@ -20,7 +24,7 @@ protected:
 	std::string map_filename;
 
 	std::vector<sf::Texture*> textures_tiles;
-	std::map<MapCoordinate, sf::Sprite*> tiles;
+	std::map<sf::Vector2i, sf::Sprite*, vector2i_cmp> tiles;
 };
 
 #endif
