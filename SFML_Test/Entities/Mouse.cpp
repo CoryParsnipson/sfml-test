@@ -19,10 +19,10 @@ void Mouse::process_event(sf::Event& event) {
 		case sf::Mouse::Left:
 			break;
 		case sf::Mouse::Right:
-			break;
-		case sf::Mouse::Middle:
 			this->is_panning = true;
 			this->panning_anchor = this->get_mouse_position();
+			break;
+		case sf::Mouse::Middle:
 			break;
 		}
 		break;
@@ -31,10 +31,10 @@ void Mouse::process_event(sf::Event& event) {
 		case sf::Mouse::Left:
 			break;
 		case sf::Mouse::Right:
-			break;
-		case sf::Mouse::Middle:
 			this->is_panning = false;
 			this->panning_anchor = this->get_mouse_position();
+			break;
+		case sf::Mouse::Middle:
 			break;
 		}
 		break;

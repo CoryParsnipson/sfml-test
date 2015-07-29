@@ -5,6 +5,8 @@ class Settings {
 public:
 	static Settings* Instance();
 
+	const int FRAMERATE_LIMIT = 60;
+
 	const int SCREEN_WIDTH = 800;
 	const int SCREEN_HEIGHT = 500;
 

@@ -77,6 +77,7 @@
     <ClCompile Include="Entities\ScreenWriter.cpp" />
     <ClCompile Include="Entities\Tile.cpp" />
     <ClCompile Include="FileReader\MapFileReader.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Settings.cpp" />
   </ItemGroup>
@@ -88,6 +89,7 @@
     <ClInclude Include="Entities\Tile.h" />
     <ClInclude Include="Entities\UX.h" />
     <ClInclude Include="FileReader\MapFileReader.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="Settings.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
