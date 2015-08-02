@@ -12,6 +12,10 @@
 #include <string>
 #include <sstream>
 
+#include <stdexcept>
+
+#include <functional>
+
 // SFML includes
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Font.hpp>
