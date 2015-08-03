@@ -1,14 +1,8 @@
-﻿Build started 8/2/2015 1:20:36 AM.
+﻿Build started 8/2/2015 5:08:57 PM.
      1>Project "C:\Users\ZHQ\Documents\Code\SFML_Test\SFML_Test\SFML_Test.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\Users\ZHQ\Documents\Code\SFML_Test\SFML-2.3\include" /IC:\Users\ZHQ\Documents\Code\SFML_Test\SFML_Test /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Entities\TestFSM.cpp Util\FSM.cpp main.cpp
-         main.cpp
-         FSM.cpp
-     1>c:\users\zhq\documents\code\sfml_test\sfml_test\util\fsm.cpp(63): warning C4101: 'oor' : unreferenced local variable
-         Generating Code...
-         Compiling...
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\Users\ZHQ\Documents\Code\SFML_Test\SFML-2.3\include" /IC:\Users\ZHQ\Documents\Code\SFML_Test\SFML_Test /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Entities\TestFSM.cpp
          TestFSM.cpp
-         Generating Code...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\ZHQ\Documents\Code\SFML_Test\Debug\SFML_Test.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Users\ZHQ\Documents\Code\SFML_Test\SFML-2.3\lib" "sfml-graphics-d.lib" "sfml-window-d.lib" "sfml-system-d.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\ZHQ\Documents\Code\SFML_Test\Debug\SFML_Test.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\ZHQ\Documents\Code\SFML_Test\Debug\SFML_Test.lib" /MACHINE:X86 Debug\Map.obj
          Debug\Mouse.obj
@@ -25,4 +19,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:04.10
+Time Elapsed 00:00:01.29

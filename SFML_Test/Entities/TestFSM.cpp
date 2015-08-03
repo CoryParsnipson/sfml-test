@@ -14,8 +14,6 @@ TestFSM::TestFSM()
 
 	// add transitions
 	this->add_transition("idle", "state_1", [this](HasState::INPUT input) {
-		std::cout << "Testing for Transition between IDLE and STATE 1..." << std::endl;
-
 		if (this->test_data == 12) {
 			this->test_data = 21;
 			std::cout << "IDLE -> STATE 1" << std::endl;
@@ -26,8 +24,6 @@ TestFSM::TestFSM()
 	});
 
 	this->add_transition("state_1", "idle", [this](HasState::INPUT input) {
-		std::cout << "Testing for Transition between STATE 1 and IDLE..." << std::endl;
-
 		if (this->test_data == 21) {
 			this->test_data = 12;
 

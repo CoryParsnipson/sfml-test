@@ -14,24 +14,24 @@ public:
 
 		CANCEL,
 	};
-
 	typedef std::function<bool(HasState::INPUT)> transition_condition_fptr;
 
+	// ------------------------------------------------------------------------
+	// external API (!!)
+	// ------------------------------------------------------------------------
+	void set_init_state(std::string init_state_id);
+
+	void on();
+	void off();
+	virtual void reset();
+
+	void update(HasState::INPUT input);
+
+	// ------------------------------------------------------------------------
+	// constructors and destructors
+	// ------------------------------------------------------------------------
 	HasState();
 	virtual ~HasState() = 0; // abstract interface
-
-	void add_state(std::string state_id, void(*state_func)());
-	HasState::State* get_state(std::string state_id);
-
-	void add_transition(
-		std::string from_id,
-		std::string to_id,
-		transition_condition_fptr tc,
-		unsigned int transition_probability = 1
-	);
-
-	// recommended external API
-	void update(HasState::INPUT input);
 
 protected:
 	// ------------------------------------------------------------------------
@@ -39,13 +39,22 @@ protected:
 	// ------------------------------------------------------------------------
 	class Transition {
 	public:
+		static unsigned int next_id;
+
+		// constructors
 		Transition(std::string from, std::string to, transition_condition_fptr tc, unsigned int prob);
 
+		// public methods
+		bool will_transition(HasState::INPUT input);
+		unsigned int get_probability();
+
+		// public members
+		const unsigned int id;
 		const std::string id_state_to;
 		const std::string id_state_from;
 
 	protected:
-		unsigned int transition_probability;
+		unsigned int prob;
 		transition_condition_fptr tc;
 	};
 
@@ -56,35 +65,60 @@ protected:
 	public:
 		State(HasState* fsm, std::string state_id, void(*state_func)());
 
-		void register_transition(HasState::Transition& t);
+		void register_transition(HasState::Transition* t);
 		bool comes_from(std::string state_id);
 		bool goes_to(std::string state_id);
 
-	protected:
-		HasState* fsm; // pointer to parent FSM
+		bool has_transition_in(HasState::Transition* t);
+		bool has_transition_in(unsigned int id);
 
+		bool has_transition_out(HasState::Transition* t);
+		bool has_transition_out(unsigned int id);
+
+		// func ptr containing actions to perform upon transition to this state
+		const std::function<void()> state_func;
+
+		// given input, calculate the next state to transition to
+		HasState::State* transition(HasState::INPUT input);
+
+	protected:
+		bool has_transition(unsigned int id, std::list<HasState::Transition*>& l);
 		bool has_state(std::string state_id, std::list<HasState::State*>& l);
+
+		HasState* fsm; // pointer to parent FSM
 
 		std::string state_id;
 
-		// func ptr containing actions to perform upon transition to this state
-		void(*state_func)();
+		std::list<HasState::State*> state_to;
+		std::list<HasState::State*> state_from;
 
-		std::list<HasState::State*> out; // list of states that this can transition to
-		std::list<HasState::State*> in; // list of states that can transition to this
+		std::list<HasState::Transition*> transitions_out;
+		std::list<HasState::Transition*> transitions_in;
 	};
 
-	std::map<std::string, HasState::State*> states;
-	std::map<std::string, std::list<HasState::Transition> > transitions;
-};
+	// ------------------------------------------------------------------------
+	// internal functions to define states and transitions
+	// ------------------------------------------------------------------------
+	void add_state(std::string state_id, void(*state_func)());
+	HasState::State* get_state(std::string state_id);
 
-// define destructor here, so everything works
-inline HasState::~HasState() {
-	std::map<std::string, HasState::State*>::iterator it;
-	for (it = this->states.begin(); it != this->states.end(); it++) {
-		delete it->second;
-	}
-	this->states.clear();
-}
+	void add_transition(
+		std::string from_id,
+		std::string to_id,
+		transition_condition_fptr tc,
+		unsigned int transition_probability = 1
+		);
+
+	// ------------------------------------------------------------------------
+	// HasState member functions
+	// ------------------------------------------------------------------------
+	bool is_on;
+	std::string init_state_id;
+	HasState::State* current_state;
+
+	// master transition and state registries
+	std::list<HasState::Transition*> transitions;
+	std::map<std::string, HasState::State*> states;
+};
 
 #endif
