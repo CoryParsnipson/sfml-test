@@ -1,22 +1,18 @@
 #include "TestFSM.h"
 
 TestFSM::TestFSM()
-	: test_data(12)
+	: HasState("TestFSM")
+	, test_data(12)
 {
 	// create states
-	this->add_state("idle", []() {
-		std::cout << "ENTERING IDLE STATE" << std::endl;
-	});
-
-	this->add_state("state_1", []() {
-		std::cout << "ENTERING STATE 1" << std::endl;
-	});
+	this->add_state("idle", [this]() { this->state_idle(); });
+	this->add_state("state_1", [this]() { this->state_1(); });
 
 	// add transitions
 	this->add_transition("idle", "state_1", [this](HasState::INPUT input) {
 		if (this->test_data == 12) {
 			this->test_data = 21;
-			std::cout << "IDLE -> STATE 1" << std::endl;
+			std::cout << "  [transition: idle -> state 1]" << std::endl << std::endl;
 			return true;
 		}
 
@@ -27,10 +23,18 @@ TestFSM::TestFSM()
 		if (this->test_data == 21) {
 			this->test_data = 12;
 
-			std::cout << "STATE 1 -> IDLE" << std::endl;
+			std::cout << "  [transition: state 1 -> idle]" << std::endl << std::endl;
 			return true;
 		}
 
 		return false;
 	});
+}
+
+void TestFSM::state_idle() {
+	std::cout << this->name << ": idle" << std::endl;
+}
+
+void TestFSM::state_1() {
+	std::cout << this->name << ": state 1" << std::endl;
 }

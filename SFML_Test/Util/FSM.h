@@ -27,10 +27,12 @@ public:
 
 	void update(HasState::INPUT input);
 
+	const std::string name;
+
 	// ------------------------------------------------------------------------
 	// constructors and destructors
 	// ------------------------------------------------------------------------
-	HasState();
+	HasState(std::string name);
 	virtual ~HasState() = 0; // abstract interface
 
 protected:
@@ -63,7 +65,7 @@ protected:
 	// ------------------------------------------------------------------------
 	class State {
 	public:
-		State(HasState* fsm, std::string state_id, void(*state_func)());
+		State(HasState* fsm, std::string state_id, std::function<void()> state_func);
 
 		void register_transition(HasState::Transition* t);
 		bool comes_from(std::string state_id);
@@ -99,7 +101,7 @@ protected:
 	// ------------------------------------------------------------------------
 	// internal functions to define states and transitions
 	// ------------------------------------------------------------------------
-	void add_state(std::string state_id, void(*state_func)());
+	void add_state(std::string state_id, std::function<void()> state_func);
 	HasState::State* get_state(std::string state_id);
 
 	void add_transition(

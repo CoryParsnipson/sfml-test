@@ -23,7 +23,7 @@ unsigned int HasState::Transition::get_probability() {
 	return this->prob;
 }
 
-HasState::State::State(HasState* fsm, std::string state_id, void(*state_func)())
+HasState::State::State(HasState* fsm, std::string state_id, std::function<void()> state_func)
 	: fsm(fsm)
 	, state_id(state_id)
 	, state_func(state_func)
@@ -143,8 +143,9 @@ HasState::State* HasState::State::transition(HasState::INPUT input) {
 	return list_state[idx];
 }
 
-HasState::HasState()
-	: is_on(false)
+HasState::HasState(std::string name)
+	: name(name)
+	, is_on(false)
 {
 }
 
@@ -162,7 +163,7 @@ HasState::~HasState() {
 	}
 }
 
-void HasState::add_state(std::string state_id, void (*state_func)()) {
+void HasState::add_state(std::string state_id, std::function<void()> state_func) {
 	HasState::State* s = new HasState::State(this, state_id, state_func);
 
 	try {

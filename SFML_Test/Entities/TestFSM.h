@@ -8,6 +8,9 @@ public:
 	TestFSM();
 protected:
 	int test_data;
+
+	void state_idle();
+	void state_1();
 };
 
 #endif
