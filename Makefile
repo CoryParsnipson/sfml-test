@@ -4,7 +4,7 @@ CC = g++
 # compiler flags:
 # -g         adds debugging information to the executable file
 # -Wall      turns on most, but not all, compiler warnings
-CFLAGS = -g -Wall -m64
+CFLAGS = -g -Wall -std=c++11
 
 # path defines
 PROJECT_DIR := $(PWD)/SFML_Test
@@ -26,7 +26,7 @@ $(TARGET): $(PROJECT_DIR)/$(RUNNER_FILE)
 	@echo "  SFML_LIBRARY_DIR: $(SFML_LIBRARY_DIR)"
 	@echo ""
 
-	$(CC) $(CFLAGS) -std=c++11 -o $(TARGET) -c $(PROJECT_DIR)/$(RUNNER_FILE) -L$(SFML_LIBRARY_DIR) -I$(SFML_INCLUDE_DIR)
+	$(CC) $(CFLAGS) -o $(TARGET) -c $(PROJECT_DIR)/$(RUNNER_FILE) -L$(SFML_LIBRARY_DIR) -I$(SFML_INCLUDE_DIR)
 	
 	chmod a+x $(TARGET)
 
