@@ -21,6 +21,6 @@
 #include <SFML/Graphics/Font.hpp>
 
 // project includes
-#include "settings.h"
+#include "Settings.h"
 
 #endif
