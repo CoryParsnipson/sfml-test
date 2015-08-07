@@ -15,6 +15,11 @@ TARGET = main
 RUNNER_FILE := main.cpp
 
 DL_INCLUDES = -lsfml-window -lsfml-graphics -lsfml-system
+INCLUDE_PATHS = "SFML_Test:SFML_Test/Entities" 
+
+CXX_FILES = 
+CXX_FILES += $(PROJECT_DIR)/Util/FSM.cpp
+CXX_FILES += $(PROJECT_DIR)/Entities/TestFSM.cpp
 
 all: $(TARGET)
 
@@ -23,7 +28,7 @@ $(TARGET): $(PROJECT_DIR)/$(RUNNER_FILE)
 	@echo "  PROJECT_DIR: $(PROJECT_DIR)"
 	@echo ""
 
-	$(CC) $(CFLAGS) -o $(TARGET) $(PROJECT_DIR)/$(RUNNER_FILE) $(DL_INCLUDES) 
+	$(CC) $(CFLAGS) $(PROJECT_DIR)/$(RUNNER_FILE) $(CXX_FILES) -o $(TARGET) $(DL_INCLUDES) -I$(INCLUDE_PATHS) 
 	
 	chmod a+x $(TARGET)
 
