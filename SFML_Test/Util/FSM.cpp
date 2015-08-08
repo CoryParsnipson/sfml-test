@@ -6,16 +6,16 @@
 unsigned int HasState::Transition::next_id = 0;
 
 HasState::Transition::Transition(std::string from, std::string to, transition_condition_fptr tc, unsigned int prob)
-	: id_state_from(from)
+	: id(HasState::Transition::next_id)
+	, id_state_from(from)
 	, id_state_to(to)
-	, id(HasState::Transition::next_id)
 	, prob(prob)
 	, tc(tc)
 {
 	HasState::Transition::next_id++;
 }
 
-bool HasState::Transition::will_transition(HasState::INPUT input) {
+bool HasState::Transition::will_transition(int input) {
 	return this->tc(input);
 }
 
@@ -24,9 +24,9 @@ unsigned int HasState::Transition::get_probability() {
 }
 
 HasState::State::State(HasState* fsm, std::string state_id, std::function<void()> state_func)
-	: fsm(fsm)
+	: state_func(state_func)
+	, fsm(fsm)
 	, state_id(state_id)
-	, state_func(state_func)
 {
 }
 
@@ -102,7 +102,7 @@ bool HasState::State::has_state(std::string state_id, std::list<HasState::State*
 	return false;
 }
 
-HasState::State* HasState::State::transition(HasState::INPUT input) {
+HasState::State* HasState::State::transition(int input) {
 	unsigned int total_pr = 0;
 	std::vector<unsigned int> list_pr;
 	std::vector<HasState::State*> list_state;
@@ -235,7 +235,7 @@ void HasState::reset() {
 	// reset all state variables... somehow
 }
 
-void HasState::update(HasState::INPUT input) {
+void HasState::update(int input) {
 	if (this->init_state_id.empty() || !this->is_on) {
 		// TODO: exception or logging?
 

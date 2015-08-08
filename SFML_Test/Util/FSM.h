@@ -8,14 +8,6 @@ protected:
 	class State; // forward declaration of internal state class (see below)
 
 public:
-	enum INPUT {
-		NOP,
-		RESET,
-
-		CANCEL,
-	};
-	typedef std::function<bool(HasState::INPUT)> transition_condition_fptr;
-
 	// ------------------------------------------------------------------------
 	// external API (!!)
 	// ------------------------------------------------------------------------
@@ -25,7 +17,7 @@ public:
 	void off();
 	virtual void reset();
 
-	void update(HasState::INPUT input);
+	void update(int input);
 
 	const std::string name;
 
@@ -36,6 +28,8 @@ public:
 	virtual ~HasState() = 0; // abstract interface
 
 protected:
+	typedef std::function<bool(int)> transition_condition_fptr;
+
 	// ------------------------------------------------------------------------
 	// FSM transition subclass
 	// ------------------------------------------------------------------------
@@ -47,13 +41,13 @@ protected:
 		Transition(std::string from, std::string to, transition_condition_fptr tc, unsigned int prob);
 
 		// public methods
-		bool will_transition(HasState::INPUT input);
+		bool will_transition(int input);
 		unsigned int get_probability();
 
 		// public members
 		const unsigned int id;
-		const std::string id_state_to;
 		const std::string id_state_from;
+		const std::string id_state_to;
 
 	protected:
 		unsigned int prob;
@@ -81,7 +75,7 @@ protected:
 		const std::function<void()> state_func;
 
 		// given input, calculate the next state to transition to
-		HasState::State* transition(HasState::INPUT input);
+		HasState::State* transition(int input);
 
 	protected:
 		bool has_transition(unsigned int id, std::list<HasState::Transition*>& l);

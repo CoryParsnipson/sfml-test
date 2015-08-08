@@ -10,11 +10,11 @@ int main()
 	TestFSM* fsm = new TestFSM();
 
 	fsm->on();
-	fsm->update(HasState::INPUT::NOP);
-	fsm->update(HasState::INPUT::NOP);
-	fsm->update(HasState::INPUT::NOP);
-	fsm->update(HasState::INPUT::NOP);
-	fsm->update(HasState::INPUT::NOP);
+	fsm->update(0);
+	fsm->update(0);
+	fsm->update(0);
+	fsm->update(0);
+	fsm->update(0);
 
 	return 0;
 }
