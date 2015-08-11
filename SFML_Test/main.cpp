@@ -5,9 +5,10 @@
 
 int main()
 {
-	//Game* g = new Game();
-
-	TestFSM* fsm = new TestFSM();
+	Game* g = new Game();
+   g->loop();
+   
+	/*TestFSM* fsm = new TestFSM();
 
 	fsm->on();
 	fsm->update(0);
@@ -15,6 +16,6 @@ int main()
 	fsm->update(0);
 	fsm->update(0);
 	fsm->update(0);
-
+   */
 	return 0;
 }

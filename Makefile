@@ -1,5 +1,11 @@
-# the compiler
+# Makefile
+#
+# author: Cory Parsnipson, 2015
+#
+
+# makefile defines
 CC = g++
+TARGET = sfml_test
 
 # compiler flags:
 # -g         adds debugging information to the executable file
@@ -10,27 +16,26 @@ CFLAGS = -g -Wall -std=c++11
 # path defines
 PROJECT_DIR := $(PWD)/SFML_Test
 
-# main defines
-TARGET = main 
-RUNNER_FILE := main.cpp
-
+# dll stuff
 DL_INCLUDES = -lsfml-window -lsfml-graphics -lsfml-system
-INCLUDE_PATHS = "SFML_Test:SFML_Test/Entities" 
+
+# include paths
+INCLUDE_PATHS = SFML_Test SFML_Test/Entities
 
 CXX_FILES = 
-CXX_FILES += $(PROJECT_DIR)/Util/FSM.cpp
-CXX_FILES += $(PROJECT_DIR)/Entities/TestFSM.cpp
+CXX_FILES += $(PROJECT_DIR)/*.cpp
+CXX_FILES += $(PROJECT_DIR)/Util/*.cpp
+CXX_FILES += $(PROJECT_DIR)/Entities/*.cpp
+CXX_FILES += $(PROJECT_DIR)/FileReader/*.cpp
 
-all: $(TARGET)
-
-$(TARGET): $(PROJECT_DIR)/$(RUNNER_FILE)
+all: $(PROJECT_DIR)/$(RUNNER_FILE)
 	@echo ---- Making target: $(TARGET)
 	@echo "  PROJECT_DIR: $(PROJECT_DIR)"
 	@echo ""
 
-	$(CC) $(CFLAGS) $(PROJECT_DIR)/$(RUNNER_FILE) $(CXX_FILES) -o $(TARGET) $(DL_INCLUDES) -I$(INCLUDE_PATHS) 
+	$(CC) $(CFLAGS) $(CXX_FILES) -o $(TARGET) $(addprefix -I, $(INCLUDE_PATHS)) $(DL_INCLUDES)
 	
-	chmod a+x $(TARGET)
+	chmod a+x $(TARGET) 
 
 clean:
 	$(RM) $(TARGET)
