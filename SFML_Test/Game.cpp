@@ -3,8 +3,8 @@
 #include "Entities/Mouse.h"
 
 Game::Game()
-	: window(sf::VideoMode(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT), "SFML Test")
-	, sw(window)
+	: sw(window)
+	, window(sf::VideoMode(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT), "SFML Test")
 {
 	window.setFramerateLimit(Settings::Instance()->FRAMERATE_LIMIT);
 	window.setMouseCursorVisible(false);

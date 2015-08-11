@@ -3,14 +3,17 @@
 Mouse::Mouse(sf::RenderWindow& window, sf::View& view)
 : window(window)
 , view(view)
-, cursor(sf::Vector2f(6, 6))
 , is_panning(false)
+, cursor(sf::Vector2f(6, 6))
 {
 	cursor.setFillColor(sf::Color::Red);
 	cursor.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(this->window)));
 }
 
 void Mouse::process_event(sf::Event& event) {
+   sf::Vector2i pos;
+   sf::Vector2f panning_delta;
+
 	switch (event.type) {
 	case sf::Event::Resized:
 		break;
@@ -24,6 +27,8 @@ void Mouse::process_event(sf::Event& event) {
 			break;
 		case sf::Mouse::Middle:
 			break;
+      default:
+         break;
 		}
 		break;
 	case sf::Event::MouseButtonReleased:
@@ -36,6 +41,8 @@ void Mouse::process_event(sf::Event& event) {
 			break;
 		case sf::Mouse::Middle:
 			break;
+      default:
+         break;
 		}
 		break;
 	case sf::Event::MouseMoved:
@@ -45,13 +52,15 @@ void Mouse::process_event(sf::Event& event) {
 		if (!this->is_panning) {
 			return;
 		}
-		sf::Vector2i pos = this->get_mouse_position();
+		pos = this->get_mouse_position();
 
-		sf::Vector2f panning_delta = static_cast<sf::Vector2f>(this->panning_anchor - pos);
+		panning_delta = static_cast<sf::Vector2f>(this->panning_anchor - pos);
 		this->view.move(this->MOUSE_PAN_COEFFICIENT * panning_delta);
 
 		this->panning_anchor = pos;
 		break;
+   default:
+      break;
 	}
 }
 

@@ -45,7 +45,7 @@ void MapFileReader::restart_feed() {
 
 void MapFileReader::tokenize(std::vector<int>* tokens, std::string input_string, char delimiter) {
 	while (!input_string.empty()) {
-		int end = input_string.find_first_of(delimiter);
+		unsigned int end = input_string.find_first_of(delimiter);
 
 		if (end == std::string::npos) {
 			if (!input_string.empty()) {
