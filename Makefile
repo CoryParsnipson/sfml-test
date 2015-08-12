@@ -32,6 +32,7 @@ CXX_FILES += $(PROJECT_DIR)/Entities/*.cpp
 CXX_FILES += $(PROJECT_DIR)/FileReader/*.cpp
 
 .PHONY: for_debug for_release
+.DEFAULT_GOAL := for_debug
 
 for_debug: OUTPUT_DIR = $(OUTPUT_DIR_DEBUG)
 for_release: OUTPUT_DIR = $(OUTPUT_DIR_RELEASE)

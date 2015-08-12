@@ -3,7 +3,8 @@
 #include "Entities/Mouse.h"
 
 Game::Game()
-	: sw(window)
+   : HasState("Game")
+	, sw(window)
 	, window(sf::VideoMode(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT), "SFML Test")
 {
 	window.setFramerateLimit(Settings::Instance()->FRAMERATE_LIMIT);
@@ -11,8 +12,26 @@ Game::Game()
 
 	sw.load_font("retro", "retro.ttf");
 
-	// enter game loop
-	this->loop();
+   // set up states
+   this->add_state("start_menu", [this]() { this->start_menu(); });
+   this->add_state("map_menu", [this]() { this->map_menu(); });
+   this->add_state("builder", [this]() { this->builder(); });
+
+   this->add_transition("start_menu", "map_menu", [this](int input) {
+      std::cout << "Testing start menu transition..." << std::endl;
+      return (input == Game::INPUT::SPACE || input == Game::INPUT::ENTER);
+   });
+
+   this->add_transition("map_menu", "start_menu", [this](int input) {
+      std::cout << "Testing map menu transition..." << std::endl;
+      return (input == Game::INPUT::ESC);
+   });
+}
+
+Game::~Game() {
+}
+
+void Game::reset() {
 }
 
 void Game::loop() {
@@ -55,6 +74,9 @@ void Game::loop() {
 	// get starting view position
 	sf::Vector2f original_view = view_map.getCenter();
 
+   // game loop variables
+   Game::INPUT key_pressed = Game::INPUT::NOP;
+   
 	// NOTE: window.mapPixelToCoords(const sf::Vector2i&, const sf::View&) -> use to make a sprite
 	// fixed against computer monitor (instead of using a second view)
 
@@ -65,6 +87,8 @@ void Game::loop() {
 	// main loop
 	while (this->window.isOpen())
 	{
+      key_pressed = Game::INPUT::NOP;
+
 		sf::Event event;
 		while (this->window.pollEvent(event))
 		{
@@ -77,6 +101,15 @@ void Game::loop() {
 					sf::Vector2f delta = original_view - view_map.getCenter();
 					view_map.move(delta);
 				}
+            else if (event.key.code == sf::Keyboard::Key::Escape) {
+               key_pressed = Game::INPUT::ESC;
+            }
+            else if (event.key.code == sf::Keyboard::Key::Return) {
+               key_pressed = Game::INPUT::ENTER;
+            }
+            else if (event.key.code == sf::Keyboard::Key::Space) {
+               key_pressed = Game::INPUT::SPACE;
+            }
 			}
 			else if (event.type == sf::Event::Resized) {
 				// scale views to new window size
@@ -90,6 +123,11 @@ void Game::loop() {
 
 			m.process_event(event);
 		}
+   
+      if (key_pressed != Game::INPUT::NOP) {
+         // update game state
+         this->update(key_pressed);
+      }
 
 		// attach your viewport to the window. This must be called every render cycle!
 		this->window.setView(view_map);
@@ -124,4 +162,16 @@ void Game::loop() {
 
 void Game::process_event() {
 
+}
+
+void Game::start_menu() {
+   std::cout << "Entered start menu state." << std::endl;
+}
+
+void Game::map_menu() {
+   std::cout << "Entered map menu state." << std::endl;
+}
+
+void Game::builder() {
+   std::cout << "Entered builder state." << std::endl;
 }

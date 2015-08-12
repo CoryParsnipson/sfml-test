@@ -6,6 +6,8 @@
 int main()
 {
 	Game* g = new Game();
+
+   g->on(); // initialize game state
    g->loop();
    
 	/*TestFSM* fsm = new TestFSM();

@@ -121,6 +121,11 @@ HasState::State* HasState::State::transition(int input) {
 		total_pr += (*it)->get_probability();
 	}
 
+   // if list of out states with valid transitions is empty, we have received invalid input, ignore it
+   if (!list_state.size()) {
+      return nullptr;
+   }
+
 	// normalize probabilities of valid transations to percentages
 	std::vector<unsigned int>::iterator norm_it;
 	for (norm_it = list_pr.begin(); norm_it != list_pr.end(); norm_it++) {
@@ -249,6 +254,11 @@ void HasState::update(int input) {
 
 	// get next state to transition to
 	HasState::State* next_state = this->current_state->transition(input);
+
+   if (next_state == nullptr) {
+      // the input we supplied has not resulted in any transition whatsoever
+      return;
+   }
 
 	// execute next state function
 	next_state->state_func();
