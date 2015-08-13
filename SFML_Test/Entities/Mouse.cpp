@@ -73,8 +73,7 @@ void Mouse::add_mouse_position(int x, int y) {
 }
 
 sf::Vector2i Mouse::get_mouse_position() {
-	sf::Vector2i pos = sf::Mouse::getPosition(this->window);
-	return sf::Vector2i(pos.x, pos.y);
+	return sf::Mouse::getPosition(this->window);
 }
 
 sf::Vector2i Mouse::get_last_mouse_position(unsigned int frames_to_go_back /* = 0 */) {
@@ -98,4 +97,8 @@ void Mouse::draw(sf::RenderWindow& window, sf::View& view) {
 	window.setView(view);
 	this->draw(window);
 	window.setView(old_view);
+}
+
+sf::RectangleShape& Mouse::get_cursor() {
+   return this->cursor;
 }

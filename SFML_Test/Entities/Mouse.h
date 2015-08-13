@@ -25,6 +25,8 @@ public:
 	void draw(sf::RenderWindow& window);
 	void draw(sf::RenderWindow& window, sf::View& view);
 
+   sf::RectangleShape& get_cursor();
+
 protected:
 	sf::RenderWindow& window;
 	sf::View& view;

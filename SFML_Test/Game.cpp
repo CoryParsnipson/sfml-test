@@ -99,6 +99,7 @@ void Game::start_menu() {
 
       this->sw.set_font_size(12);
       this->sw.write("main menu", static_cast<sf::Vector2i>(screen_middle + sf::Vector2f(0.0, 45.0)));
+      this->sw.write("(Press SPACE or ENTER)", static_cast<sf::Vector2i>(screen_middle + sf::Vector2f(0.0, 60.0)));
 
       this->window.display();
    }
@@ -208,8 +209,7 @@ void Game::builder() {
 		this->sw.write("r: reset pan position", sf::Vector2i(0, 15));
 		this->sw.write("right click: click and drag to pan", sf::Vector2i(0, 30));
 
-		//sf::Vector2i mouse_pos = m.get_mouse_position();
-		sf::Vector2i mouse_pos = sf::Mouse::getPosition(this->window);
+		sf::Vector2i mouse_pos = static_cast<sf::Vector2i>(m.get_cursor().getPosition());
 		std::stringstream mmsg;
 		mmsg << mouse_pos.x << ", " << mouse_pos.y;
 
