@@ -17,8 +17,6 @@ public:
 	Game();
 	~Game();
 
-	void loop(); // game activity happens here
-
 	// helper functions
 	void process_event();
 

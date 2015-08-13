@@ -8,7 +8,7 @@ Game::Game()
 	, window(sf::VideoMode(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT), "SFML Test")
 {
 	window.setFramerateLimit(Settings::Instance()->FRAMERATE_LIMIT);
-	window.setMouseCursorVisible(false);
+	//window.setMouseCursorVisible(false);
 
 	sw.load_font("retro", "retro.ttf");
 
@@ -17,79 +17,56 @@ Game::Game()
    this->add_state("map_menu", [this]() { this->map_menu(); });
    this->add_state("builder", [this]() { this->builder(); });
 
-   this->add_transition("start_menu", "map_menu", [this](int input) {
+   this->add_transition("start_menu", "builder", [this](int input) {
       std::cout << "Testing start menu transition..." << std::endl;
       return (input == Game::INPUT::SPACE || input == Game::INPUT::ENTER);
    });
 
-   this->add_transition("map_menu", "start_menu", [this](int input) {
+   this->add_transition("builder", "map_menu", [this](int input) {
       std::cout << "Testing map menu transition..." << std::endl;
       return (input == Game::INPUT::ESC);
    });
+   
+   // explicitly set init state
+   this->set_init_state("start_menu");
 }
 
 Game::~Game() {
 }
 
 void Game::reset() {
+   // game initialization
+   
+   // start game (will enter a game loop)
+   this->on();
 }
 
-void Game::loop() {
-	float screen_middle_x = Settings::Instance()->SCREEN_WIDTH / (float)2;
-	float screen_middle_y = Settings::Instance()->SCREEN_HEIGHT / (float)2;
+void Game::process_event() {
 
-	// set view
-	sf::View view_map(sf::Vector2f(screen_middle_x, screen_middle_y),
-		sf::Vector2f((float)Settings::Instance()->SCREEN_WIDTH, (float)Settings::Instance()->SCREEN_HEIGHT));
+}
 
-	sf::View view_fixed(sf::Vector2f(screen_middle_x, screen_middle_y),
-		sf::Vector2f((float)Settings::Instance()->SCREEN_WIDTH, (float)Settings::Instance()->SCREEN_HEIGHT));
-
-	// load tile textures
-	sf::Image tile1_nomask;
-	tile1_nomask.loadFromFile("tile1.gif");
-	tile1_nomask.createMaskFromColor(sf::Color::Magenta);
-
-	sf::Texture* tile1 = new sf::Texture();
-	tile1->loadFromImage(tile1_nomask);
-
-	sf::Image tile2_nomask;
-	tile2_nomask.loadFromFile("tile_grass.gif");
-	tile2_nomask.createMaskFromColor(sf::Color::Magenta);
-
-	sf::Texture* tile2 = new sf::Texture();
-	tile2->loadFromImage(tile2_nomask);
-
-	Map map;
-	map.register_texture(tile1);
-	map.register_texture(tile2);
-	map.load_mapfile("map_test.txt");
-
-	// set initial mouse position
-	sf::Mouse::setPosition(sf::Vector2i((int)screen_middle_x, (int)screen_middle_y), this->window);
-	sf::Vector2i mouse_position = sf::Mouse::getPosition(this->window);
-
-	Mouse m(this->window, view_map);
-
-	// get starting view position
-	sf::Vector2f original_view = view_map.getCenter();
-
-   // game loop variables
-   Game::INPUT key_pressed = Game::INPUT::NOP;
+void Game::start_menu() {
+   std::cout << "Entered start menu state." << std::endl;
    
-	// NOTE: window.mapPixelToCoords(const sf::Vector2i&, const sf::View&) -> use to make a sprite
-	// fixed against computer monitor (instead of using a second view)
+   sf::Vector2f screen_middle(Settings::Instance()->SCREEN_WIDTH / (float)2, Settings::Instance()->SCREEN_HEIGHT / (float)2);
+   sf::Vector2f screen_size((float)Settings::Instance()->SCREEN_WIDTH, (float)Settings::Instance()->SCREEN_HEIGHT);
 
-	// NOTE to the NOTE: This function does not preclude the usefulness of having
-	// multiple views. You might still want a separate view for user HUD just for
-	// semantics or convenience.
+   // game loop initialization 
+   Game::INPUT key_pressed;
+   
+   // views
+   sf::View view_main(screen_middle, screen_size);
+  
+   // entities
 
-	// main loop
-	while (this->window.isOpen())
-	{
+   // mess with screenwriter
+   this->sw.set_alignment(ScreenWriter::ALIGNMENT::CENTER);
+   
+   // state loop
+   while (this->window.isOpen()) {
+      sf::Event event;
       key_pressed = Game::INPUT::NOP;
 
-		sf::Event event;
 		while (this->window.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed)
@@ -97,51 +74,136 @@ void Game::loop() {
 				this->window.close();
 			}
 			else if (event.type == sf::Event::KeyPressed) {
-				if (event.key.code == sf::Keyboard::Key::R) {
-					sf::Vector2f delta = original_view - view_map.getCenter();
-					view_map.move(delta);
-				}
-            else if (event.key.code == sf::Keyboard::Key::Escape) {
-               key_pressed = Game::INPUT::ESC;
-            }
-            else if (event.key.code == sf::Keyboard::Key::Return) {
+            if (event.key.code == sf::Keyboard::Key::Return) {
                key_pressed = Game::INPUT::ENTER;
             }
             else if (event.key.code == sf::Keyboard::Key::Space) {
                key_pressed = Game::INPUT::SPACE;
             }
 			}
-			else if (event.type == sf::Event::Resized) {
-				// scale views to new window size
-				view_map.setSize((float)event.size.width, (float)event.size.height);
-				view_fixed.setSize((float)event.size.width, (float)event.size.height);
+     	}
 
-				// adjust position of views to new window size
-				view_map.setCenter(event.size.width / 2.f, event.size.height / 2.f);
-				view_fixed.setCenter(event.size.width / 2.f, event.size.height / 2.f);
-			}
-
-			m.process_event(event);
-		}
-   
       if (key_pressed != Game::INPUT::NOP) {
-         // update game state
-         this->update(key_pressed);
+         // need to break out of this loop before we transition to another state
+         // or we will have a memory leak...
+         // this is kind of awkward...
+         break;
       }
 
-		// attach your viewport to the window. This must be called every render cycle!
-		this->window.setView(view_map);
+      // update window
+      this->window.setView(view_main);
+      this->window.clear();
+      
+      this->sw.set_font_size(36);
+      this->sw.write("SFML TEST", static_cast<sf::Vector2i>(screen_middle));
 
-		this->window.clear();
+      this->sw.set_font_size(12);
+      this->sw.write("main menu", static_cast<sf::Vector2i>(screen_middle + sf::Vector2f(0.0, 45.0)));
 
-		// draw everything here
-		map.draw(this->window);
-		m.draw(this->window, view_fixed);
+      this->window.display();
+   }
+   
+   this->update(key_pressed);
+}
 
-		// attach to second view that is fixed wrt computer monitor
-		this->window.setView(view_fixed);
+void Game::map_menu() {
+   std::cout << "Entered map menu state." << std::endl;
+}
 
-		// draw basic hud instructions
+void Game::builder() {
+   std::cout << "Entered builder state." << std::endl;
+
+   sf::Vector2f screen_middle(Settings::Instance()->SCREEN_WIDTH / (float)2, Settings::Instance()->SCREEN_HEIGHT / (float)2);
+   sf::Vector2f screen_size((float)Settings::Instance()->SCREEN_WIDTH, (float)Settings::Instance()->SCREEN_HEIGHT);
+
+   // -- game loop initialization 
+   
+   // views
+   sf::View view_main(screen_middle, screen_size);
+   sf::View view_hud(screen_middle, screen_size); 
+
+   // load tile textures
+   sf::Image tile1_nomask;
+   tile1_nomask.loadFromFile("tile1.gif");
+   tile1_nomask.createMaskFromColor(sf::Color::Magenta);
+
+   sf::Texture* tile1 = new sf::Texture();
+   tile1->loadFromImage(tile1_nomask);
+
+	sf::Image tile2_nomask;
+	tile2_nomask.loadFromFile("tile_grass.gif");
+	tile2_nomask.createMaskFromColor(sf::Color::Magenta);
+
+   sf::Texture* tile2 = new sf::Texture();
+   tile2->loadFromImage(tile2_nomask);
+
+   // entities
+   Map map;
+   map.register_texture(tile1);
+   map.register_texture(tile2);
+   map.load_mapfile("map_test.txt");
+
+   Mouse m(this->window, view_main);
+
+   // initialize "local" variables
+   Game::INPUT key_pressed;
+   sf::Vector2f original_view = view_main.getCenter();
+
+   // fuck with shit
+   sf::Mouse::setPosition(static_cast<sf::Vector2i>(screen_middle));
+   this->sw.set_alignment(ScreenWriter::ALIGNMENT::LEFT);
+   
+   // state loop
+   while (this->window.isOpen()) {
+      sf::Event event;
+      key_pressed = Game::INPUT::NOP;
+
+		while (this->window.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+			{
+				this->window.close();
+			}
+			else if (event.type == sf::Event::KeyPressed) {
+            if (event.key.code == sf::Keyboard::Key::R) {
+               sf::Vector2f delta = original_view - view_main.getCenter();
+               view_main.move(delta);
+            }
+            else if (event.key.code == sf::Keyboard::Key::Escape) {
+               key_pressed = Game::INPUT::ESC;
+            }
+			}
+         else if (event.type == sf::Event::Resized) {
+           	// scale views to new window size
+				view_main.setSize((float)event.size.width, (float)event.size.height);
+				view_hud.setSize((float)event.size.width, (float)event.size.height);
+
+				// adjust position of views to new window size
+				view_main.setCenter(event.size.width / 2.f, event.size.height / 2.f);
+				view_hud.setCenter(event.size.width / 2.f, event.size.height / 2.f);
+         }
+
+         m.process_event(event);
+     	}
+
+      if (key_pressed != Game::INPUT::NOP) {
+         // need to break out of this loop before we transition to another state
+         // or we will have a memory leak...
+         // this is kind of awkward...
+         break;
+      }
+
+      // update window
+      this->window.setView(view_main);
+      this->window.clear();
+      
+      // draw map view items
+      map.draw(this->window);
+      m.draw(this->window, view_hud);
+
+      // draw fixed hud items
+      this->window.setView(view_hud);
+
 		this->sw.write("SFML_Test");
 		this->sw.write("r: reset pan position", sf::Vector2i(0, 15));
 		this->sw.write("right click: click and drag to pan", sf::Vector2i(0, 30));
@@ -153,25 +215,9 @@ void Game::loop() {
 
 		this->sw.write(mmsg.str(), mouse_pos + sf::Vector2i(0, 5));
 
-		// end the current frame
-		this->window.display();
-
-		mouse_position = sf::Mouse::getPosition(this->window);
-	}
-}
-
-void Game::process_event() {
-
-}
-
-void Game::start_menu() {
-   std::cout << "Entered start menu state." << std::endl;
-}
-
-void Game::map_menu() {
-   std::cout << "Entered map menu state." << std::endl;
-}
-
-void Game::builder() {
-   std::cout << "Entered builder state." << std::endl;
+      // draw to display
+      this->window.display();
+   }
+   
+   this->update(key_pressed);
 }

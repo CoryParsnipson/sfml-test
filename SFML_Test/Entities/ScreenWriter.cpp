@@ -4,6 +4,7 @@
 ScreenWriter::ScreenWriter(sf::RenderWindow& window)
 : window(window)
 , font_size(12)
+, alignment(ScreenWriter::ALIGNMENT::LEFT)
 , active_font("")
 {
 }
@@ -42,7 +43,27 @@ void ScreenWriter::write(std::string msg, sf::Vector2i pos) {
 	t.setCharacterSize(this->font_size);
 	t.setColor(sf::Color::White);
 
+   sf::Vector2f alignment_offset(0.0, 0.0);
+   if (this->alignment == ScreenWriter::ALIGNMENT::CENTER) {
+      sf::FloatRect tb = t.getLocalBounds();
+      alignment_offset.x = tb.left + tb.width / 2.0f;
+      alignment_offset.y = tb.top + tb.height / 2.0f;
+   }
+   else if (this->alignment == ScreenWriter::ALIGNMENT::RIGHT) {
+      sf::FloatRect tb = t.getLocalBounds();
+      alignment_offset.x = tb.width;
+      alignment_offset.y = tb.top + tb.height / 2.0f;
+   }
+   t.setOrigin(alignment_offset);
 	t.setPosition(static_cast<sf::Vector2f>(pos));
 
 	window.draw(t);
+}
+
+void ScreenWriter::set_font_size(unsigned int font_size) {
+   this->font_size = font_size;
+}
+
+void ScreenWriter::set_alignment(ScreenWriter::ALIGNMENT alignment) {
+   this->alignment = alignment;
 }

@@ -6,18 +6,7 @@
 int main()
 {
 	Game* g = new Game();
+   g->reset(); // start game, automatically enters game loop
 
-   g->on(); // initialize game state
-   g->loop();
-   
-	/*TestFSM* fsm = new TestFSM();
-
-	fsm->on();
-	fsm->update(0);
-	fsm->update(0);
-	fsm->update(0);
-	fsm->update(0);
-	fsm->update(0);
-   */
 	return 0;
 }
