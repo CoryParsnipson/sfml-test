@@ -17,6 +17,7 @@
 #include <functional>
 
 // SFML includes
+#include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Font.hpp>
 

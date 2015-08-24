@@ -3,6 +3,7 @@
 Mouse::Mouse(sf::RenderWindow& window, sf::View& view)
 : window(window)
 , view(view)
+, zoom_factor(1.0f)
 , is_panning(false)
 , cursor(sf::Vector2f(6, 6))
 {
@@ -54,11 +55,15 @@ void Mouse::process_event(sf::Event& event) {
 		}
 		pos = this->get_mouse_position();
 
-		panning_delta = static_cast<sf::Vector2f>(this->panning_anchor - pos);
+		panning_delta = static_cast<sf::Vector2f>(this->panning_anchor - pos) * this->zoom_factor;
 		this->view.move(this->MOUSE_PAN_COEFFICIENT * panning_delta);
 
 		this->panning_anchor = pos;
 		break;
+   case sf::Event::MouseWheelMoved:
+      this->set_zoom_factor(this->get_zoom_factor() + event.mouseWheel.delta / 10.0f);
+      this->view.setSize(sf::Vector2f(this->get_zoom_factor() * this->window.getSize().x, this->get_zoom_factor() * this->window.getSize().y));
+      break;
    default:
       break;
 	}
@@ -85,6 +90,23 @@ sf::Vector2i Mouse::get_last_mouse_position(unsigned int frames_to_go_back /* = 
 	for (unsigned int i = 0; it != this->last_positions.end(), i < frames_to_go_back; it++, i++) {}
 
 	return sf::Vector2i(it->x, it->y);
+}
+
+void Mouse::set_zoom_factor(float zf) {
+   float zoom_factor = zf;
+
+   if (zoom_factor < 0.125) {
+      zoom_factor = 0.125;
+   }
+   else if (zoom_factor > 3.0) {
+      zoom_factor = 3.0;
+   }
+
+   this->zoom_factor = zoom_factor;
+}
+
+float Mouse::get_zoom_factor() {
+   return this->zoom_factor;
 }
 
 void Mouse::draw(sf::RenderWindow& window) {

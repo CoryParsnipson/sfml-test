@@ -22,6 +22,9 @@ public:
 	sf::Vector2i get_mouse_position();
 	sf::Vector2i get_last_mouse_position(unsigned int frames_to_go_back = 0);
 
+   void set_zoom_factor(float zf);
+   float get_zoom_factor();
+
 	void draw(sf::RenderWindow& window);
 	void draw(sf::RenderWindow& window, sf::View& view);
 
@@ -31,6 +34,7 @@ protected:
 	sf::RenderWindow& window;
 	sf::View& view;
 
+   float zoom_factor;
 	bool is_panning;
 	sf::Vector2i panning_anchor;
 

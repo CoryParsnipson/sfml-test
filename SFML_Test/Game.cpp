@@ -8,7 +8,7 @@ Game::Game()
 	, window(sf::VideoMode(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT), "SFML Test")
 {
 	window.setFramerateLimit(Settings::Instance()->FRAMERATE_LIMIT);
-	//window.setMouseCursorVisible(false);
+	window.setMouseCursorVisible(false);
 
 	sw.load_font("retro", "retro.ttf");
 
@@ -69,8 +69,7 @@ void Game::start_menu() {
 
 		while (this->window.pollEvent(event))
 		{
-			if (event.type == sf::Event::Closed)
-			{
+			if (event.type == sf::Event::Closed) {
 				this->window.close();
 			}
 			else if (event.type == sf::Event::KeyPressed) {
@@ -109,6 +108,8 @@ void Game::start_menu() {
 
 void Game::map_menu() {
    std::cout << "Entered map menu state." << std::endl;
+
+   throw "Not implemented yet...";
 }
 
 void Game::builder() {
@@ -169,6 +170,10 @@ void Game::builder() {
             if (event.key.code == sf::Keyboard::Key::R) {
                sf::Vector2f delta = original_view - view_main.getCenter();
                view_main.move(delta);
+               
+               // reset zoom too
+               m.set_zoom_factor(1.0);
+               view_main.setSize(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT);
             }
             else if (event.key.code == sf::Keyboard::Key::Escape) {
                key_pressed = Game::INPUT::ESC;
