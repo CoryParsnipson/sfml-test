@@ -2,7 +2,6 @@
 #define MOUSE_H
 
 #include "../dependencies.h"
-#include "../Coordinate/ViewportCoordinate.h"
 
 // ----------------------------------------------------------------------------
 // class Mouse

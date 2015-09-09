@@ -1,9 +1,11 @@
 #include "Game.h"
 #include "Entities/Map.h"
 #include "Entities/Mouse.h"
+#include "Util/InputController.h"
 
 Game::Game()
    : HasState("Game")
+   , GameEntity()
 	, sw(window)
 	, window(sf::VideoMode(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT), "SFML Test")
 {
@@ -29,6 +31,10 @@ Game::Game()
    
    // explicitly set init state
    this->set_init_state("start_menu");
+
+   // set up input controller
+   InputController& ic = InputController::instance();
+   ic.registerInputListener(this);
 }
 
 Game::~Game() {
@@ -67,12 +73,15 @@ void Game::start_menu() {
       sf::Event event;
       key_pressed = Game::INPUT::NOP;
 
+      InputController& ic = InputController::instance();
+      ic.pollEvents(this->window);      
+
 		while (this->window.pollEvent(event))
 		{
-			if (event.type == sf::Event::Closed) {
-				this->window.close();
-			}
-			else if (event.type == sf::Event::KeyPressed) {
+			//if (event.type == sf::Event::Closed) {
+			//	this->window.close();
+			//}
+			if (event.type == sf::Event::KeyPressed) {
             if (event.key.code == sf::Keyboard::Key::Return) {
                key_pressed = Game::INPUT::ENTER;
             }
@@ -103,6 +112,7 @@ void Game::start_menu() {
       this->window.display();
    }
    
+   // this executes when the window is closed... Not good.
    this->update(key_pressed);
 }
 
@@ -162,11 +172,11 @@ void Game::builder() {
 
 		while (this->window.pollEvent(event))
 		{
-			if (event.type == sf::Event::Closed)
-			{
-				this->window.close();
-			}
-			else if (event.type == sf::Event::KeyPressed) {
+			//if (event.type == sf::Event::Closed)
+			//{
+			//	this->window.close();
+			//}
+			if (event.type == sf::Event::KeyPressed) {
             if (event.key.code == sf::Keyboard::Key::R) {
                sf::Vector2f delta = original_view - view_main.getCenter();
                view_main.move(delta);
@@ -225,4 +235,8 @@ void Game::builder() {
    }
    
    this->update(key_pressed);
+}
+
+void Game::process(CloseCommand& c) {
+   this->window.close();
 }

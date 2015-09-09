@@ -23,7 +23,10 @@ OUTPUT_DIR_RELEASE := $(PWD)/Release
 DL_INCLUDES = -lsfml-window -lsfml-graphics -lsfml-system
 
 # include paths
-INCLUDE_PATHS = SFML_Test SFML_Test/Entities
+INCLUDE_PATHS = 
+INCLUDE_PATHS += SFML_Test
+INCLUDE_PATHS += SFML_Test/Command
+INCLUDE_PATHS += SFML_Test/Entities
 
 CXX_FILES = 
 CXX_FILES += $(PROJECT_DIR)/*.cpp
