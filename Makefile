@@ -31,6 +31,7 @@ INCLUDE_PATHS += SFML_Test/Entities
 CXX_FILES = 
 CXX_FILES += $(PROJECT_DIR)/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Util/*.cpp
+CXX_FILES += $(PROJECT_DIR)/Command/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Entities/*.cpp
 CXX_FILES += $(PROJECT_DIR)/FileReader/*.cpp
 

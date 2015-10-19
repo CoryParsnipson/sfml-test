@@ -4,26 +4,31 @@
 #include "dependencies.h"
 #include "Util/FSM.h"
 #include "Command/CloseCommand.h"
-#include "Entities/GameEntity.h"
+#include "Command/KeyPressCommand.h"
+#include "Command/WindowResizeCommand.h"
 #include "Entities/ScreenWriter.h"
+#include "Util/InputListener.h"
 
 class Game
 : public HasState
-, public GameEntity
+, public InputListener 
 {
 public:
    enum INPUT {
-      NOP,
-      SPACE,
+      NOP = 0,
       ENTER,
+      SPACE,
       ESC
    };
-
+   
 	Game();
 	~Game();
 
 	// helper functions
 	void process_event();
+
+	ScreenWriter sw;
+	sf::RenderWindow window;
 
    // game states
    void start_menu();
@@ -32,11 +37,16 @@ public:
 
    void reset();
 
-	ScreenWriter sw;
-	sf::RenderWindow window;
-
    // command interface
    virtual void process(CloseCommand& c);
+   virtual void process(KeyPressCommand& c);
+   virtual void process(WindowResizeCommand& c);
+
+protected:
+   std::map<std::string, sf::View*> views;
+   
+   // state contexts (need to clean this up)
+   sf::Vector2f origin;
 };
 
 #endif

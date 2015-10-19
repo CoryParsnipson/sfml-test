@@ -5,7 +5,7 @@
 
 Game::Game()
    : HasState("Game")
-   , GameEntity()
+   , InputListener()
 	, sw(window)
 	, window(sf::VideoMode(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT), "SFML Test")
 {
@@ -14,7 +14,7 @@ Game::Game()
 
 	sw.load_font("retro", "retro.ttf");
 
-   // set up states
+   // initialize state machine information
    this->add_state("start_menu", [this]() { this->start_menu(); });
    this->add_state("map_menu", [this]() { this->map_menu(); });
    this->add_state("builder", [this]() { this->builder(); });
@@ -47,59 +47,25 @@ void Game::reset() {
    this->on();
 }
 
-void Game::process_event() {
-
-}
-
 void Game::start_menu() {
    std::cout << "Entered start menu state." << std::endl;
    
    sf::Vector2f screen_middle(Settings::Instance()->SCREEN_WIDTH / (float)2, Settings::Instance()->SCREEN_HEIGHT / (float)2);
    sf::Vector2f screen_size((float)Settings::Instance()->SCREEN_WIDTH, (float)Settings::Instance()->SCREEN_HEIGHT);
 
-   // game loop initialization 
-   Game::INPUT key_pressed;
-   
    // views
-   sf::View view_main(screen_middle, screen_size);
-  
-   // entities
+   this->views["view_main"] = new sf::View(screen_middle, screen_size);
 
    // mess with screenwriter
    this->sw.set_alignment(ScreenWriter::ALIGNMENT::CENTER);
    
    // state loop
    while (this->window.isOpen()) {
-      sf::Event event;
-      key_pressed = Game::INPUT::NOP;
-
       InputController& ic = InputController::instance();
       ic.pollEvents(this->window);      
 
-		while (this->window.pollEvent(event))
-		{
-			//if (event.type == sf::Event::Closed) {
-			//	this->window.close();
-			//}
-			if (event.type == sf::Event::KeyPressed) {
-            if (event.key.code == sf::Keyboard::Key::Return) {
-               key_pressed = Game::INPUT::ENTER;
-            }
-            else if (event.key.code == sf::Keyboard::Key::Space) {
-               key_pressed = Game::INPUT::SPACE;
-            }
-			}
-     	}
-
-      if (key_pressed != Game::INPUT::NOP) {
-         // need to break out of this loop before we transition to another state
-         // or we will have a memory leak...
-         // this is kind of awkward...
-         break;
-      }
-
       // update window
-      this->window.setView(view_main);
+      this->window.setView(*(this->views["view_main"]));
       this->window.clear();
       
       this->sw.set_font_size(36);
@@ -111,9 +77,6 @@ void Game::start_menu() {
 
       this->window.display();
    }
-   
-   // this executes when the window is closed... Not good.
-   this->update(key_pressed);
 }
 
 void Game::map_menu() {
@@ -131,8 +94,8 @@ void Game::builder() {
    // -- game loop initialization 
    
    // views
-   sf::View view_main(screen_middle, screen_size);
-   sf::View view_hud(screen_middle, screen_size); 
+   this->views["view_main"] = new sf::View(screen_middle, screen_size);
+   this->views["view_hud"] = new sf::View(screen_middle, screen_size);
 
    // load tile textures
    sf::Image tile1_nomask;
@@ -155,11 +118,11 @@ void Game::builder() {
    map.register_texture(tile2);
    map.load_mapfile("map_test.txt");
 
-   Mouse m(this->window, view_main);
+   Mouse m(this->window, *(this->views["view_main"]));
 
    // initialize "local" variables
    Game::INPUT key_pressed;
-   sf::Vector2f original_view = view_main.getCenter();
+   this->origin = this->views["view_main"]->getCenter();
 
    // fuck with shit
    sf::Mouse::setPosition(static_cast<sf::Vector2i>(screen_middle));
@@ -167,58 +130,57 @@ void Game::builder() {
    
    // state loop
    while (this->window.isOpen()) {
-      sf::Event event;
-      key_pressed = Game::INPUT::NOP;
+      InputController& ic = InputController::instance();
+      ic.pollEvents(this->window);
 
-		while (this->window.pollEvent(event))
-		{
-			//if (event.type == sf::Event::Closed)
-			//{
-			//	this->window.close();
-			//}
-			if (event.type == sf::Event::KeyPressed) {
-            if (event.key.code == sf::Keyboard::Key::R) {
-               sf::Vector2f delta = original_view - view_main.getCenter();
-               view_main.move(delta);
-               
-               // reset zoom too
-               m.set_zoom_factor(1.0);
-               view_main.setSize(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT);
-            }
-            else if (event.key.code == sf::Keyboard::Key::Escape) {
-               key_pressed = Game::INPUT::ESC;
-            }
-			}
-         else if (event.type == sf::Event::Resized) {
-           	// scale views to new window size
-				view_main.setSize((float)event.size.width, (float)event.size.height);
-				view_hud.setSize((float)event.size.width, (float)event.size.height);
+      //sf::Event event;
+      //key_pressed = Game::INPUT::NOP;
 
-				// adjust position of views to new window size
-				view_main.setCenter(event.size.width / 2.f, event.size.height / 2.f);
-				view_hud.setCenter(event.size.width / 2.f, event.size.height / 2.f);
-         }
+		//while (this->window.pollEvent(event))
+		//{
+		//	if (event.type == sf::Event::KeyPressed) {
+      //      if (event.key.code == sf::Keyboard::Key::R) {
+      //         sf::Vector2f delta = original_view - view_main.getCenter();
+      //         view_main.move(delta);
+      //         
+      //         // reset zoom too
+      //         m.set_zoom_factor(1.0);
+      //         view_main.setSize(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT);
+      //      }
+      //      else if (event.key.code == sf::Keyboard::Key::Escape) {
+      //         key_pressed = Game::INPUT::ESC;
+      //      }
+		//	}
+      //   else if (event.type == sf::Event::Resized) {
+      //     	// scale views to new window size
+		//		view_main.setSize((float)event.size.width, (float)event.size.height);
+		//		view_hud.setSize((float)event.size.width, (float)event.size.height);
 
-         m.process_event(event);
-     	}
+		//		// adjust position of views to new window size
+		//		view_main.setCenter(event.size.width / 2.f, event.size.height / 2.f);
+		//		view_hud.setCenter(event.size.width / 2.f, event.size.height / 2.f);
+      //   }
 
-      if (key_pressed != Game::INPUT::NOP) {
-         // need to break out of this loop before we transition to another state
-         // or we will have a memory leak...
-         // this is kind of awkward...
-         break;
-      }
+      //   m.process_event(event);
+     	//}
+
+      //if (key_pressed != Game::INPUT::NOP) {
+      //   // need to break out of this loop before we transition to another state
+      //   // or we will have a memory leak...
+      //   // this is kind of awkward...
+      //   break;
+      //}
 
       // update window
-      this->window.setView(view_main);
+      this->window.setView(*(this->views["view_main"]));
       this->window.clear();
       
       // draw map view items
       map.draw(this->window);
-      m.draw(this->window, view_hud);
+      m.draw(this->window, *(this->views["view_hud"]));
 
       // draw fixed hud items
-      this->window.setView(view_hud);
+      this->window.setView(*(this->views["view_hud"]));
 
 		this->sw.write("SFML_Test");
 		this->sw.write("r: reset pan position", sf::Vector2i(0, 15));
@@ -240,3 +202,34 @@ void Game::builder() {
 void Game::process(CloseCommand& c) {
    this->window.close();
 }
+
+void Game::process(KeyPressCommand& c) {
+   std::cout << "Game::process[KeyPressCommand&] -> received keycode '" << c.event.code << "'" << std::endl;
+   
+   switch (c.event.code) {
+   case sf::Keyboard::Key::Return:
+      this->update(Game::INPUT::ENTER);
+      break;  
+   case sf::Keyboard::Key::R:
+      // want to find some way of making this code less clunky
+      if (std::string("builder") == this->get_current_state()) {
+         // center view to new window size
+         sf::Vector2f delta = this->origin - this->views["view_main"]->getCenter();
+         this->views["view_main"]->move(delta);
+
+         // reset zoom too
+         this->views["view_main"]->setSize(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT);
+      }
+      break;
+   default:
+      return;
+   }
+}
+
+void Game::process(WindowResizeCommand& c) {
+   std::map<std::string, sf::View*>::iterator it;
+
+   for (it = this->views.begin(); it != this->views.end(); it++) {
+      it->second->setSize((float)c.width, (float)c.height);
+   };
+};

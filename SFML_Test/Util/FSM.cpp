@@ -25,8 +25,8 @@ unsigned int HasState::Transition::get_probability() {
 
 HasState::State::State(HasState* fsm, std::string state_id, std::function<void()> state_func)
 	: state_func(state_func)
-	, fsm(fsm)
 	, state_id(state_id)
+	, fsm(fsm)
 {
 }
 
@@ -260,9 +260,13 @@ void HasState::update(int input) {
       return;
    }
 
-	// execute next state function
-	next_state->state_func();
-
 	// update current state pointer
 	this->current_state = next_state;
+
+	// execute next state function
+	next_state->state_func();
 }
+
+std::string HasState::get_current_state() {
+   return this->current_state->state_id;
+};

@@ -18,6 +18,7 @@ public:
 	virtual void reset();
 
 	void update(int input);
+   std::string get_current_state();
 
 	const std::string name;
 
@@ -77,13 +78,13 @@ protected:
 		// given input, calculate the next state to transition to
 		HasState::State* transition(int input);
 
+      const std::string state_id;
+
 	protected:
 		bool has_transition(unsigned int id, std::list<HasState::Transition*>& l);
 		bool has_state(std::string state_id, std::list<HasState::State*>& l);
 
 		HasState* fsm; // pointer to parent FSM
-
-		std::string state_id;
 
 		std::list<HasState::State*> state_to;
 		std::list<HasState::State*> state_from;

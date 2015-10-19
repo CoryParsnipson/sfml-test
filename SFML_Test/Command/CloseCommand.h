@@ -5,8 +5,8 @@
 
 class CloseCommand : public Command {
 public:
-   virtual void execute(GameEntity& entity) {
-      entity.process(*this);
+   virtual void execute(InputListener& listener) {
+      listener.process(*this);
    }
 };
 

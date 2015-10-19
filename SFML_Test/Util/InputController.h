@@ -2,7 +2,7 @@
 #define INPUT_CONTROLLER_H
 
 #include "../dependencies.h"
-#include "Entities/GameEntity.h"
+#include "InputListener.h"
 
 // this class is an interface between SFML and the proprietary
 // input handler class and command hierarchy
@@ -10,7 +10,7 @@ class InputController {
 public:
    static InputController& instance(); // object access method
 
-   void registerInputListener(GameEntity* entity);
+   void registerInputListener(InputListener* listener);
    void pollEvents(sf::RenderWindow& window);
 
 private:
@@ -19,7 +19,7 @@ private:
    InputController(InputController const &) = delete;
    void operator=(InputController const &) = delete;
 
-   std::vector<GameEntity*> listeners;
+   std::vector<InputListener*> listeners;
 };
 
 #endif

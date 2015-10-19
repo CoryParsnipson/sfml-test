@@ -6,7 +6,7 @@
 int main()
 {
 	Game* g = new Game();
-   g->reset(); // start game, automatically enters game loop
+   g->reset(); // start the game loop 
 
 	return 0;
 }
