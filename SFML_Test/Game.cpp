@@ -231,5 +231,6 @@ void Game::process(WindowResizeCommand& c) {
 
    for (it = this->views.begin(); it != this->views.end(); it++) {
       it->second->setSize((float)c.width, (float)c.height);
+      it->second->setCenter(c.width / 2.f, c.height / 2.f);
    };
 };
