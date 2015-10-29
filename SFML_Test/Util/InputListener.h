@@ -10,6 +10,7 @@ class KeyPressCommand;
 class WindowResizeCommand;
 class MouseMoveCommand;
 class MouseButtonCommand;
+class MouseWheelCommand;
 
 class InputListener; // needed for vector of pointers to other input listeners
 
@@ -25,6 +26,7 @@ public:
    virtual void process(WindowResizeCommand& c) = 0;
    virtual void process(MouseMoveCommand& c) = 0;
    virtual void process(MouseButtonCommand& c) = 0;
+   virtual void process(MouseWheelCommand& c) = 0;
 
 protected:
    std::vector<InputListener*> listeners;

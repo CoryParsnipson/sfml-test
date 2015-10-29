@@ -8,6 +8,7 @@
 #include "Command/WindowResizeCommand.h"
 #include "Command/MouseMoveCommand.h"
 #include "Command/MouseButtonCommand.h"
+#include "Command/MouseWheelCommand.h"
 
 // ----------------------------------------------------------------------------
 // class Mouse
@@ -43,6 +44,7 @@ public:
    virtual void process(WindowResizeCommand& c);
    virtual void process(MouseMoveCommand& c);
    virtual void process(MouseButtonCommand& c);
+   virtual void process(MouseWheelCommand& c);
 
 protected:
 	sf::RenderWindow& window;

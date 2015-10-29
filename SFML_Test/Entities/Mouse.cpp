@@ -45,62 +45,9 @@ void Mouse::process(MouseButtonCommand& c) {
    }
 }
 
-void Mouse::process_event(sf::Event& event) {
-   sf::Vector2i pos;
-   sf::Vector2f panning_delta;
-
-	switch (event.type) {
-	case sf::Event::Resized:
-		break;
-	case sf::Event::MouseButtonPressed:
-		switch (event.mouseButton.button) {
-		case sf::Mouse::Left:
-			break;
-		case sf::Mouse::Right:
-			this->is_panning = true;
-			this->panning_anchor = this->get_mouse_position();
-			break;
-		case sf::Mouse::Middle:
-			break;
-      default:
-         break;
-		}
-		break;
-	case sf::Event::MouseButtonReleased:
-		switch (event.mouseButton.button) {
-		case sf::Mouse::Left:
-			break;
-		case sf::Mouse::Right:
-			this->is_panning = false;
-			this->panning_anchor = this->get_mouse_position();
-			break;
-		case sf::Mouse::Middle:
-			break;
-      default:
-         break;
-		}
-		break;
-	case sf::Event::MouseMoved:
-		// update the red dot on the screen to the current position
-		this->cursor.setPosition(static_cast<sf::Vector2f>(this->get_mouse_position()));
-
-		if (!this->is_panning) {
-			return;
-		}
-		pos = this->get_mouse_position();
-
-		panning_delta = static_cast<sf::Vector2f>(this->panning_anchor - pos) * this->zoom_factor;
-		this->view.move(this->MOUSE_PAN_COEFFICIENT * panning_delta);
-
-		this->panning_anchor = pos;
-		break;
-   case sf::Event::MouseWheelMoved:
-      this->set_zoom_factor(this->get_zoom_factor() + event.mouseWheel.delta / 10.0f);
-      this->view.setSize(sf::Vector2f(this->get_zoom_factor() * this->window.getSize().x, this->get_zoom_factor() * this->window.getSize().y));
-      break;
-   default:
-      break;
-	}
+void Mouse::process(MouseWheelCommand& c) {
+   this->set_zoom_factor(this->get_zoom_factor() + c.delta / 10.0f);
+   this->view.setSize(sf::Vector2f(this->get_zoom_factor() * this->window.getSize().x, this->get_zoom_factor() * this->window.getSize().y));
 }
 
 void Mouse::add_mouse_position(int x, int y) {

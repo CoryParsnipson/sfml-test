@@ -8,6 +8,7 @@
 #include "Command/WindowResizeCommand.h"
 #include "Command/MouseMoveCommand.h"
 #include "Command/MouseButtonCommand.h"
+#include "Command/MouseWheelCommand.h"
 #include "Entities/ScreenWriter.h"
 #include "Entities/Mouse.h"
 #include "Util/InputListener.h"
@@ -46,6 +47,7 @@ public:
    virtual void process(WindowResizeCommand& c);
    virtual void process(MouseMoveCommand& c);
    virtual void process(MouseButtonCommand& c);
+   virtual void process(MouseWheelCommand& c);
 
 protected:
    std::map<std::string, sf::View*> views;

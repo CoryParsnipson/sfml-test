@@ -4,6 +4,7 @@
 #include "../Command/WindowResizeCommand.h"
 #include "../Command/MouseMoveCommand.h"
 #include "../Command/MouseButtonCommand.h"
+#include "../Command/MouseWheelCommand.h"
 
 InputController& InputController::instance() {
    static InputController _inst;
@@ -46,6 +47,10 @@ void InputController::pollEvents(sf::RenderWindow& window) {
       case sf::Event::MouseButtonReleased:
          std::cout << "InputController::pollEvents -> mouse button event received (released)" << std::endl;
          c = new MouseButtonCommand(event.mouseButton, MouseButtonCommand::RELEASED);
+         break;
+      case sf::Event::MouseWheelMoved:
+         std::cout << "InputController::pollEvents -> mouse wheel moved event received" << std::endl;
+         c = new MouseWheelCommand(event.mouseWheel);
          break;
       default:
          // just drop event
