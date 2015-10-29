@@ -198,3 +198,4 @@ void Game::process(WindowResizeCommand& c) {
 };
 
 void Game::process(MouseMoveCommand& c) { } // ignore
+void Game::process(MouseButtonCommand& c) { } // ignore

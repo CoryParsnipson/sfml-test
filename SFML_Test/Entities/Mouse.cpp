@@ -33,6 +33,18 @@ void Mouse::process(MouseMoveCommand& c) {
 	this->panning_anchor = pos;
 }
 
+void Mouse::process(MouseButtonCommand& c) {
+   switch (c.button) {
+   case MouseButtonCommand::LEFT: break;
+   case MouseButtonCommand::RIGHT:
+      this->is_panning = (c.state == MouseButtonCommand::PRESSED);
+      this->panning_anchor = this->get_mouse_position();
+      break;
+   case MouseButtonCommand::MIDDLE: break;
+   default: break;
+   }
+}
+
 void Mouse::process_event(sf::Event& event) {
    sf::Vector2i pos;
    sf::Vector2f panning_delta;

@@ -7,6 +7,7 @@
 #include "Command/KeyPressCommand.h"
 #include "Command/WindowResizeCommand.h"
 #include "Command/MouseMoveCommand.h"
+#include "Command/MouseButtonCommand.h"
 #include "Entities/ScreenWriter.h"
 #include "Entities/Mouse.h"
 #include "Util/InputListener.h"
@@ -44,6 +45,7 @@ public:
    virtual void process(KeyPressCommand& c);
    virtual void process(WindowResizeCommand& c);
    virtual void process(MouseMoveCommand& c);
+   virtual void process(MouseButtonCommand& c);
 
 protected:
    std::map<std::string, sf::View*> views;
