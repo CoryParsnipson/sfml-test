@@ -2,13 +2,20 @@
 #define MOUSE_H
 
 #include "../dependencies.h"
+#include "Util/InputListener.h"
+#include "Command/CloseCommand.h"
+#include "Command/KeyPressCommand.h"
+#include "Command/WindowResizeCommand.h"
+#include "Command/MouseMoveCommand.h"
 
 // ----------------------------------------------------------------------------
 // class Mouse
 // Wrapper class for SFML Mouse. Contains state information for click and drag
 // etc.
 // ----------------------------------------------------------------------------
-class Mouse {
+class Mouse
+: public InputListener
+{
 public:
 	const unsigned int MOUSE_HISTORY_LENGTH = 10;
 	const float MOUSE_PAN_COEFFICIENT = 1.f;
@@ -28,6 +35,12 @@ public:
 	void draw(sf::RenderWindow& window, sf::View& view);
 
    sf::RectangleShape& get_cursor();
+  
+   // command interface
+   virtual void process(CloseCommand& c);
+   virtual void process(KeyPressCommand& c);
+   virtual void process(WindowResizeCommand& c);
+   virtual void process(MouseMoveCommand& c);
 
 protected:
 	sf::RenderWindow& window;

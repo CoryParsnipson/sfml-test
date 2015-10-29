@@ -2,6 +2,7 @@
 #include "../Command/CloseCommand.h"
 #include "../Command/KeyPressCommand.h"
 #include "../Command/WindowResizeCommand.h"
+#include "../Command/MouseMoveCommand.h"
 
 InputController& InputController::instance() {
    static InputController _inst;
@@ -32,6 +33,10 @@ void InputController::pollEvents(sf::RenderWindow& window) {
       case sf::Event::KeyPressed:
          std::cout << "InputController::pollEvents -> keypress event received" << std::endl;
          c = new KeyPressCommand(event.key);
+         break;
+      case sf::Event::MouseMoved:
+         std::cout << "InputController::pollEvents -> mouse move event received" << std::endl;
+         c = new MouseMoveCommand(event.mouseMove);
          break;
       default:
          // just drop event

@@ -6,7 +6,9 @@
 #include "Command/CloseCommand.h"
 #include "Command/KeyPressCommand.h"
 #include "Command/WindowResizeCommand.h"
+#include "Command/MouseMoveCommand.h"
 #include "Entities/ScreenWriter.h"
+#include "Entities/Mouse.h"
 #include "Util/InputListener.h"
 
 class Game
@@ -41,12 +43,15 @@ public:
    virtual void process(CloseCommand& c);
    virtual void process(KeyPressCommand& c);
    virtual void process(WindowResizeCommand& c);
+   virtual void process(MouseMoveCommand& c);
 
 protected:
    std::map<std::string, sf::View*> views;
    
    // state contexts (need to clean this up)
    sf::Vector2f origin;
+   
+   Mouse* m;
 };
 
 #endif

@@ -1,12 +1,11 @@
 #include "Game.h"
 #include "Entities/Map.h"
-#include "Entities/Mouse.h"
 #include "Util/InputController.h"
 
 Game::Game()
    : HasState("Game")
    , InputListener()
-	, sw(window)
+	, sw(this->window)
 	, window(sf::VideoMode(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT), "SFML Test")
 {
 	window.setFramerateLimit(Settings::Instance()->FRAMERATE_LIMIT);
@@ -118,10 +117,13 @@ void Game::builder() {
    map.register_texture(tile2);
    map.load_mapfile("map_test.txt");
 
-   Mouse m(this->window, *(this->views["view_main"]));
+   this->m = new Mouse(this->window, *(this->views["view_main"]));
+   
+   // register mouse listener with input controller
+   InputController& ic = InputController::instance();
+   ic.registerInputListener(this->m);
 
    // initialize "local" variables
-   Game::INPUT key_pressed;
    this->origin = this->views["view_main"]->getCenter();
 
    // fuck with shit
@@ -133,51 +135,13 @@ void Game::builder() {
       InputController& ic = InputController::instance();
       ic.pollEvents(this->window);
 
-      //sf::Event event;
-      //key_pressed = Game::INPUT::NOP;
-
-		//while (this->window.pollEvent(event))
-		//{
-		//	if (event.type == sf::Event::KeyPressed) {
-      //      if (event.key.code == sf::Keyboard::Key::R) {
-      //         sf::Vector2f delta = original_view - view_main.getCenter();
-      //         view_main.move(delta);
-      //         
-      //         // reset zoom too
-      //         m.set_zoom_factor(1.0);
-      //         view_main.setSize(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT);
-      //      }
-      //      else if (event.key.code == sf::Keyboard::Key::Escape) {
-      //         key_pressed = Game::INPUT::ESC;
-      //      }
-		//	}
-      //   else if (event.type == sf::Event::Resized) {
-      //     	// scale views to new window size
-		//		view_main.setSize((float)event.size.width, (float)event.size.height);
-		//		view_hud.setSize((float)event.size.width, (float)event.size.height);
-
-		//		// adjust position of views to new window size
-		//		view_main.setCenter(event.size.width / 2.f, event.size.height / 2.f);
-		//		view_hud.setCenter(event.size.width / 2.f, event.size.height / 2.f);
-      //   }
-
-      //   m.process_event(event);
-     	//}
-
-      //if (key_pressed != Game::INPUT::NOP) {
-      //   // need to break out of this loop before we transition to another state
-      //   // or we will have a memory leak...
-      //   // this is kind of awkward...
-      //   break;
-      //}
-
       // update window
       this->window.setView(*(this->views["view_main"]));
       this->window.clear();
       
       // draw map view items
       map.draw(this->window);
-      m.draw(this->window, *(this->views["view_hud"]));
+      this->m->draw(this->window, *(this->views["view_hud"]));
 
       // draw fixed hud items
       this->window.setView(*(this->views["view_hud"]));
@@ -186,7 +150,7 @@ void Game::builder() {
 		this->sw.write("r: reset pan position", sf::Vector2i(0, 15));
 		this->sw.write("right click: click and drag to pan", sf::Vector2i(0, 30));
 
-		sf::Vector2i mouse_pos = static_cast<sf::Vector2i>(m.get_cursor().getPosition());
+		sf::Vector2i mouse_pos = static_cast<sf::Vector2i>(this->m->get_cursor().getPosition());
 		std::stringstream mmsg;
 		mmsg << mouse_pos.x << ", " << mouse_pos.y;
 
@@ -195,8 +159,6 @@ void Game::builder() {
       // draw to display
       this->window.display();
    }
-   
-   this->update(key_pressed);
 }
 
 void Game::process(CloseCommand& c) {
@@ -234,3 +196,5 @@ void Game::process(WindowResizeCommand& c) {
       it->second->setCenter(c.width / 2.f, c.height / 2.f);
    };
 };
+
+void Game::process(MouseMoveCommand& c) { } // ignore

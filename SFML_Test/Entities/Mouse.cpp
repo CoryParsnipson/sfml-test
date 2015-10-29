@@ -11,6 +11,28 @@ Mouse::Mouse(sf::RenderWindow& window, sf::View& view)
 	cursor.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(this->window)));
 }
 
+void Mouse::process(CloseCommand& c) { }
+void Mouse::process(KeyPressCommand& c) { }
+void Mouse::process(WindowResizeCommand& c) { }
+
+void Mouse::process(MouseMoveCommand& c) {
+   sf::Vector2i pos;
+   sf::Vector2f panning_delta;
+
+	// update the red dot on the screen to the current position
+	this->cursor.setPosition(static_cast<sf::Vector2f>(this->get_mouse_position()));
+
+	if (!this->is_panning) {
+		return;
+	}
+	pos = this->get_mouse_position();
+
+	panning_delta = static_cast<sf::Vector2f>(this->panning_anchor - pos) * this->zoom_factor;
+	this->view.move(this->MOUSE_PAN_COEFFICIENT * panning_delta);
+
+	this->panning_anchor = pos;
+}
+
 void Mouse::process_event(sf::Event& event) {
    sf::Vector2i pos;
    sf::Vector2f panning_delta;
