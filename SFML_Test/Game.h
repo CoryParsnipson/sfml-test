@@ -13,9 +13,10 @@
 #include "Entities/Mouse.h"
 #include "Util/InputListener.h"
 
+#include "GameState.h"
+
 class Game
-: public HasState
-, public InputListener 
+   : public InputListener
 {
 public:
    enum INPUT {
@@ -29,17 +30,13 @@ public:
 	~Game();
 
 	// helper functions
-	void process_event();
+	void main_loop();
+   void reset();
+   void exit();
 
-	ScreenWriter sw;
-	sf::RenderWindow window;
-
-   // game states
    void start_menu();
    void map_menu();
-   void builder(); 
-
-   void reset();
+   void builder();
 
    // command interface
    virtual void process(CloseCommand& c);
@@ -49,13 +46,20 @@ public:
    virtual void process(MouseButtonCommand& c);
    virtual void process(MouseWheelCommand& c);
 
+	ScreenWriter sw;
+	sf::RenderWindow window;
+
 protected:
+   bool is_running;
    std::map<std::string, sf::View*> views;
    
    // state contexts (need to clean this up)
    sf::Vector2f origin;
    
    Mouse* m;
+
+   // state pattern test
+   GameState* state_;
 };
 
 #endif
