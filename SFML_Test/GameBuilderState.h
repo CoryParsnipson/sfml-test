@@ -1,14 +1,16 @@
-#ifndef GAME_STARTMENU_STATE_H
-#define GAME_STARTMENU_STATE_H
+#ifndef GAME_BUILDER_STATE_H
+#define GAME_BUILDER_STATE_H
 
 #include "dependencies.h"
+
+#include "Entities/Map.h"
 
 #include "GameState.h"
 
 // forward declarations
 class Game;
 
-class GameStartMenuState : public GameState {
+class GameBuilderState : public GameState {
 public:
    virtual void enter(Game& game);
    virtual void exit(Game& game);
@@ -26,6 +28,18 @@ public:
 protected:
    sf::Vector2f screen_middle;
    sf::Vector2f screen_size;
+   
+   sf::Vector2f origin;
+
+   Map* map;
+
+   sf::Image* tile1_nomask;
+   sf::Image* tile2_nomask;
+
+   sf::Texture* tile1;
+   sf::Texture* tile2;
+
+   Mouse* m;
 };
 
 #endif

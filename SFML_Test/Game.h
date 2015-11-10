@@ -16,7 +16,7 @@
 #include "GameState.h"
 
 class Game
-   : public InputListener
+: public InputListener
 {
 public:
    enum INPUT {
@@ -34,10 +34,6 @@ public:
    void reset();
    void exit();
 
-   void start_menu();
-   void map_menu();
-   void builder();
-
    // command interface
    virtual void process(CloseCommand& c);
    virtual void process(KeyPressCommand& c);
@@ -49,8 +45,9 @@ public:
 	ScreenWriter sw;
 	sf::RenderWindow window;
 
+   friend GameStartMenuState;
+
 protected:
-   bool is_running;
    std::map<std::string, sf::View*> views;
    
    // state contexts (need to clean this up)
