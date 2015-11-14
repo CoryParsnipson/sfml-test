@@ -86,17 +86,30 @@ void GameBuilderState::process(Game& game, CloseCommand& c) {
 }
 
 void GameBuilderState::process(Game& game, KeyPressCommand& c) {
-   if (c.event.code == sf::Keyboard::Key::R) {
-      sf::Vector2f delta = this->origin - this->views["view_main"]->getCenter();
+   sf::Vector2f delta;
+
+   switch (c.event.code) {
+   case sf::Keyboard::Key::R:
+      delta = this->origin - this->views["view_main"]->getCenter();
       this->views["view_main"]->move(delta);
 
       // reset zoom too
-      this->views["view_main"]->setSize(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT);
+      this->views["view_main"]->setSize(this->screen_size.x, this->screen_size.y);
+   break;
+   default:
+      // do nothing
+   break;
    }
 }
 
 void GameBuilderState::process(Game& game, WindowResizeCommand& c) {
    std::map<std::string, sf::View*>::iterator it;
+   
+   this->screen_size.x = c.width;
+   this->screen_size.y = c.height;
+
+   this->screen_middle.x = c.width / 2.f;
+   this->screen_middle.y = c.width / 2.f;
 
    for (it = this->views.begin(); it != this->views.end(); it++) {
       it->second->setSize((float)c.width, (float)c.height);
@@ -104,11 +117,6 @@ void GameBuilderState::process(Game& game, WindowResizeCommand& c) {
    };
 }
 
-void GameBuilderState::process(Game& game, MouseMoveCommand& c) {
-}
-
-void GameBuilderState::process(Game& game, MouseButtonCommand& c) {
-}
-
-void GameBuilderState::process(Game& game, MouseWheelCommand& c) {
-}
+void GameBuilderState::process(Game& game, MouseMoveCommand& c) {}
+void GameBuilderState::process(Game& game, MouseButtonCommand& c) {}
+void GameBuilderState::process(Game& game, MouseWheelCommand& c) {}

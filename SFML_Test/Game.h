@@ -11,6 +11,7 @@
 #include "Command/MouseWheelCommand.h"
 #include "Entities/ScreenWriter.h"
 #include "Entities/Mouse.h"
+#include "Entities/Viewport.h"
 #include "Util/InputListener.h"
 
 #include "GameState.h"
@@ -45,8 +46,6 @@ public:
 	ScreenWriter sw;
 	sf::RenderWindow window;
 
-   friend GameStartMenuState;
-
 protected:
    std::map<std::string, sf::View*> views;
    
@@ -57,6 +56,9 @@ protected:
 
    // state pattern test
    GameState* state_;
+
+   // viewports
+   std::map<std::string, Viewport*> viewports;
 };
 
 #endif

@@ -16,6 +16,8 @@
 
 #include <functional>
 
+#include <algorithm>
+
 // SFML includes
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
