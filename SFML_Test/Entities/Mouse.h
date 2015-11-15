@@ -24,7 +24,7 @@ class Mouse
 public:
 	const unsigned int MOUSE_HISTORY_LENGTH = 10;
 	const float MOUSE_PAN_COEFFICIENT = 1.f;
-	const float WINDOW_RESIZE_COEFFICIENT = 1.f;
+	const float WINDOW_RESIZE_COEFFICIENT = 10.f;
 
 	Mouse(sf::RenderWindow& window);
 
@@ -32,9 +32,6 @@ public:
 	void add_mouse_position(int x, int y);
 	sf::Vector2i get_mouse_position();
 	sf::Vector2i get_last_mouse_position(unsigned int frames_to_go_back = 0);
-
-   void set_zoom_factor(float zf);
-   float get_zoom_factor();
 
 	void draw(sf::RenderWindow& window);
 	void draw(sf::RenderWindow& window, sf::View& view);
@@ -55,7 +52,6 @@ protected:
 	sf::RenderWindow& window;
    Viewport* view;
 
-   float zoom_factor;
 	bool is_panning;
 	sf::Vector2i panning_anchor;
 

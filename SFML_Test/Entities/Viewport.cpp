@@ -6,6 +6,7 @@ const float Viewport::ZOOM_FACTOR_MAX = 3.0;
 
 Viewport::Viewport(Game& game, sf::Vector2f size)
 : game(game)
+, zoom_factor(1.0)
 {
    this->default_size = size;
 
@@ -60,4 +61,9 @@ void Viewport::set_zoom_factor(float new_zoom_factor) {
    new_zoom_factor = std::min(new_zoom_factor, Viewport::ZOOM_FACTOR_MAX);
 
    this->zoom_factor = new_zoom_factor;
+
+   std::cout << "ZOOM FACTOR: " << this->zoom_factor << std::endl;
+
+   // update viewport size
+   this->set_size(this->zoom_factor * this->get_default_size());
 }
