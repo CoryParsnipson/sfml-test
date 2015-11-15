@@ -24,10 +24,14 @@ public:
 
    void set_size(sf::Vector2f size);
    sf::Vector2f get_size();
+   
+   void set_default_size(sf::Vector2f size);
    sf::Vector2f get_default_size();
 
    void set_center(sf::Vector2f center);
    sf::Vector2f get_center();
+
+   void set_default_center(sf::Vector2f size);
    sf::Vector2f get_default_center();
    
    float get_zoom_factor();

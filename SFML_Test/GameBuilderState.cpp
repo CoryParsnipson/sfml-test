@@ -79,8 +79,7 @@ void GameBuilderState::process(Game& game, KeyPressCommand& c) {
 
    switch (c.event.code) {
    case sf::Keyboard::Key::R:
-      delta = this->viewports["main"]->get_center() - this->viewports["main"]->get_default_center();
-      this->viewports["main"]->move(delta);
+      this->viewports["main"]->set_center(this->viewports["main"]->get_default_center());
 
       // reset zoom too
       this->viewports["main"]->set_size(this->viewports["main"]->get_default_size());
@@ -102,6 +101,7 @@ void GameBuilderState::process(Game& game, WindowResizeCommand& c) {
    this->viewports["hud"]->set_center(screen_center);
 
    this->viewports["main"]->set_size(screen_size);
+   this->viewports["main"]->set_default_size(screen_size);
 }
 
 void GameBuilderState::process(Game& game, MouseMoveCommand& c) {}
