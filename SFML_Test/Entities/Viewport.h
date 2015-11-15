@@ -15,21 +15,26 @@ public:
    static const float ZOOM_FACTOR_MIN;
    static const float ZOOM_FACTOR_MAX;
 
-   Viewport(Game& game, sf::RenderWindow& window);
+   Viewport(Game& game, sf::Vector2f size);
    ~Viewport();
 
    sf::View& get_view();
 
    void move(sf::Vector2f delta);
+
+   void set_size(sf::Vector2f size);
+   sf::Vector2f get_size();
+   sf::Vector2f get_default_size();
+
+   void set_center(sf::Vector2f center);
+   sf::Vector2f get_center();
+   sf::Vector2f get_default_center();
    
    float get_zoom_factor();
    void set_zoom_factor(float new_zoom_factor);
 
-   void draw(sf::Sprite& sprite);
-
 protected:
    Game& game;
-   sf::RenderWindow& window;
 
    float zoom_factor;
 

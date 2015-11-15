@@ -15,10 +15,10 @@ void GameBuilderState::enter(Game& game) {
    this->screen_size.x = (float)Settings::Instance()->SCREEN_WIDTH; 
    this->screen_size.y = (float)Settings::Instance()->SCREEN_HEIGHT;
 
-   this->views["view_main"] = new sf::View(screen_middle, screen_size);
-   this->views["view_hud"] = new sf::View(screen_middle, screen_size);
+   this->viewports["main"] = new Viewport(game, static_cast<sf::Vector2f>(game.window.getSize()));
+   this->viewports["hud"] = new Viewport(game, static_cast<sf::Vector2f>(game.window.getSize()));
 
-   this->origin = this->views["view_main"]->getCenter();
+   this->origin = this->viewports["main"]->get_default_center();
 
    // load tile textures
    this->tile1_nomask = new sf::Image();
@@ -41,7 +41,7 @@ void GameBuilderState::enter(Game& game) {
    this->map->register_texture(this->tile2);
    this->map->load_mapfile("map_test.txt");
 
-   this->m = new Mouse(game.window, *(this->views["view_main"]));
+   this->m = new Mouse(game.window, *(this->viewports["main"]));
 
    InputController& ic = InputController::instance();
    ic.registerInputListener(this->m);
@@ -54,15 +54,15 @@ void GameBuilderState::exit(Game& game) {
 }
 
 GameState* GameBuilderState::update(Game& game) {
-   game.window.setView(*(this->views["view_main"]));
+   game.window.setView(this->viewports["main"]->get_view());
    game.window.clear();
    
    // draw map view items
    this->map->draw(game.window);
-   this->m->draw(game.window, *(this->views["view_hud"]));
+   this->m->draw(game.window, this->viewports["main"]->get_view());
 
    // draw fixed hud items
-   game.window.setView(*(this->views["view_hud"]));
+   game.window.setView(this->viewports["hud"]->get_view());
 
 	game.sw.write("SFML_Test");
 	game.sw.write("r: reset pan position", sf::Vector2i(0, 15));
@@ -90,11 +90,11 @@ void GameBuilderState::process(Game& game, KeyPressCommand& c) {
 
    switch (c.event.code) {
    case sf::Keyboard::Key::R:
-      delta = this->origin - this->views["view_main"]->getCenter();
-      this->views["view_main"]->move(delta);
+      delta = this->origin - this->viewports["main"]->get_default_center();
+      this->viewports["main"]->move(delta);
 
       // reset zoom too
-      this->views["view_main"]->setSize(this->screen_size.x, this->screen_size.y);
+      this->viewports["main"]->set_size(this->screen_size);
    break;
    default:
       // do nothing
@@ -103,7 +103,7 @@ void GameBuilderState::process(Game& game, KeyPressCommand& c) {
 }
 
 void GameBuilderState::process(Game& game, WindowResizeCommand& c) {
-   std::map<std::string, sf::View*>::iterator it;
+   std::map<std::string, Viewport*>::iterator it;
    
    this->screen_size.x = c.width;
    this->screen_size.y = c.height;
@@ -111,9 +111,9 @@ void GameBuilderState::process(Game& game, WindowResizeCommand& c) {
    this->screen_middle.x = c.width / 2.f;
    this->screen_middle.y = c.width / 2.f;
 
-   for (it = this->views.begin(); it != this->views.end(); it++) {
-      it->second->setSize((float)c.width, (float)c.height);
-      it->second->setCenter(c.width / 2.f, c.height / 2.f);
+   for (it = this->viewports.begin(); it != this->viewports.end(); it++) {
+      it->second->set_size(this->screen_size);
+      it->second->set_center(this->screen_middle);
    };
 }
 

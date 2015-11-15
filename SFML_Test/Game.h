@@ -20,13 +20,6 @@ class Game
 : public InputListener
 {
 public:
-   enum INPUT {
-      NOP = 0,
-      ENTER,
-      SPACE,
-      ESC
-   };
-   
 	Game();
 	~Game();
 
@@ -43,22 +36,14 @@ public:
    virtual void process(MouseButtonCommand& c);
    virtual void process(MouseWheelCommand& c);
 
-	ScreenWriter sw;
+   // game functional units 
 	sf::RenderWindow window;
 
-protected:
-   std::map<std::string, sf::View*> views;
-   
-   // state contexts (need to clean this up)
-   sf::Vector2f origin;
-   
+	ScreenWriter sw;
    Mouse* m;
 
-   // state pattern test
+protected:
    GameState* state_;
-
-   // viewports
-   std::map<std::string, Viewport*> viewports;
 };
 
 #endif

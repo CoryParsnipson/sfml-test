@@ -1,6 +1,6 @@
 #include "Mouse.h"
 
-Mouse::Mouse(sf::RenderWindow& window, sf::View& view)
+Mouse::Mouse(sf::RenderWindow& window, Viewport& view)
 : window(window)
 , view(view)
 , zoom_factor(1.0f)
@@ -47,7 +47,7 @@ void Mouse::process(MouseButtonCommand& c) {
 
 void Mouse::process(MouseWheelCommand& c) {
    this->set_zoom_factor(this->get_zoom_factor() + c.delta / 10.0f);
-   this->view.setSize(sf::Vector2f(this->get_zoom_factor() * this->window.getSize().x, this->get_zoom_factor() * this->window.getSize().y));
+   this->view.set_size(sf::Vector2f(this->get_zoom_factor() * this->window.getSize().x, this->get_zoom_factor() * this->window.getSize().y));
 }
 
 void Mouse::add_mouse_position(int x, int y) {

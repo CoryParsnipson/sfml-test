@@ -35,8 +35,6 @@ public:
 protected:
    bool is_running;
    GameState* next_state_;
-
-   std::map<std::string, sf::View*> views;
 };
 
 #endif

@@ -6,8 +6,8 @@
 
 Game::Game()
 : InputListener()
-, sw(this->window)
 , window(sf::VideoMode(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT), "SFML Test")
+, sw(this->window)
 {
 	window.setFramerateLimit(Settings::Instance()->FRAMERATE_LIMIT);
 	window.setMouseCursorVisible(false);

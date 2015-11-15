@@ -4,6 +4,7 @@
 #include "dependencies.h"
 
 #include "Entities/Map.h"
+#include "Entities/Viewport.h"
 
 #include "GameState.h"
 
@@ -26,6 +27,8 @@ public:
    virtual void process(Game& game, MouseWheelCommand& c);
 
 protected:
+   std::map<std::string, Viewport*> viewports;
+
    sf::Vector2f screen_middle;
    sf::Vector2f screen_size;
    

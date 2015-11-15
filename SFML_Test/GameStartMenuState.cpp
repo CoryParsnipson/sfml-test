@@ -9,14 +9,10 @@ GameStartMenuState GameState::start_menu_state;
 void GameStartMenuState::enter(Game& game) {
    std::cout << "Entering game start menu state." << std::endl;
 
-   this->screen_middle.x = Settings::Instance()->SCREEN_WIDTH / (float)2;
-   this->screen_middle.y = Settings::Instance()->SCREEN_HEIGHT / (float)2; 
+   sf::Vector2f screen_size((float)Settings::Instance()->SCREEN_WIDTH, (float)Settings::Instance()->SCREEN_HEIGHT);
    
-   this->screen_size.x = (float)Settings::Instance()->SCREEN_WIDTH;
-   this->screen_size.y = (float)Settings::Instance()->SCREEN_HEIGHT;
-
    // views
-   this->views["view_main"] = new sf::View(this->screen_middle, this->screen_size);
+   this->viewports["main"] = new Viewport(game, screen_size);
 
    // mess with screenwriter
    game.sw.set_alignment(ScreenWriter::ALIGNMENT::CENTER);
@@ -27,15 +23,15 @@ void GameStartMenuState::exit(Game& game) {
 
 GameState* GameStartMenuState::update(Game& game) {
    // update window
-   game.window.setView(*(this->views["view_main"]));
+   game.window.setView(this->viewports["main"]->get_view());
    game.window.clear();
 
    game.sw.set_font_size(36);
-   game.sw.write("SFML TEST", static_cast<sf::Vector2i>(this->screen_middle));
+   game.sw.write("SFML TEST", static_cast<sf::Vector2i>(this->viewports["main"]->get_center()));
 
    game.sw.set_font_size(12);
-   game.sw.write("main menu", static_cast<sf::Vector2i>(this->screen_middle + sf::Vector2f(0.0, 45.0)));
-   game.sw.write("(Press SPACE or ENTER)", static_cast<sf::Vector2i>(this->screen_middle + sf::Vector2f(0.0, 60.0)));
+   game.sw.write("main menu", static_cast<sf::Vector2i>(this->viewports["main"]->get_center() + sf::Vector2f(0.0, 45.0)));
+   game.sw.write("(Press SPACE or ENTER)", static_cast<sf::Vector2i>(this->viewports["main"]->get_center() + sf::Vector2f(0.0, 60.0)));
 
    game.window.display();
 
@@ -58,15 +54,12 @@ void GameStartMenuState::process(Game& game, KeyPressCommand& c) {
 
 void GameStartMenuState::process(Game& game, WindowResizeCommand& c) {
    std::cout << "[GameStartMenuState] WindowResize Command" << std::endl;
-   
-   this->screen_size.x = (float)c.width;
-   this->screen_size.y = (float)c.height;
 
-   this->screen_middle.x = c.width / 2.f;
-   this->screen_middle.y = c.height / 2.f;
-   
-   this->views["view_main"]->setSize(screen_size);
-   this->views["view_main"]->setCenter(screen_middle);
+   sf::Vector2f screen_size((float)c.width, (float)c.height);
+   sf::Vector2f screen_center(c.width / 2.f, c.height / 2.f);
+
+   this->viewports["main"]->set_size(screen_size);
+   this->viewports["main"]->set_center(screen_center);
 }
 
 void GameStartMenuState::process(Game& game, MouseMoveCommand& c) {

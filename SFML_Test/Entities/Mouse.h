@@ -3,12 +3,15 @@
 
 #include "../dependencies.h"
 #include "Util/InputListener.h"
+
 #include "Command/CloseCommand.h"
 #include "Command/KeyPressCommand.h"
 #include "Command/WindowResizeCommand.h"
 #include "Command/MouseMoveCommand.h"
 #include "Command/MouseButtonCommand.h"
 #include "Command/MouseWheelCommand.h"
+
+#include "Entities/Viewport.h"
 
 // ----------------------------------------------------------------------------
 // class Mouse
@@ -23,7 +26,7 @@ public:
 	const float MOUSE_PAN_COEFFICIENT = 1.f;
 	const float WINDOW_RESIZE_COEFFICIENT = 1.f;
 
-	Mouse(sf::RenderWindow& window, sf::View& view);
+	Mouse(sf::RenderWindow& window, Viewport& view);
 
 	void process_event(sf::Event& event);
 	void add_mouse_position(int x, int y);
@@ -48,7 +51,7 @@ public:
 
 protected:
 	sf::RenderWindow& window;
-	sf::View& view;
+	Viewport& view;
 
    float zoom_factor;
 	bool is_panning;

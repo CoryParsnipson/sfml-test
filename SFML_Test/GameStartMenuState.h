@@ -24,8 +24,7 @@ public:
    virtual void process(Game& game, MouseWheelCommand& c);
 
 protected:
-   sf::Vector2f screen_middle;
-   sf::Vector2f screen_size;
+   std::map<std::string, Viewport*> viewports;
 };
 
 #endif
