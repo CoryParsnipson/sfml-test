@@ -26,7 +26,7 @@ public:
 	const float MOUSE_PAN_COEFFICIENT = 1.f;
 	const float WINDOW_RESIZE_COEFFICIENT = 1.f;
 
-	Mouse(sf::RenderWindow& window, Viewport& view);
+	Mouse(sf::RenderWindow& window);
 
 	void process_event(sf::Event& event);
 	void add_mouse_position(int x, int y);
@@ -40,6 +40,8 @@ public:
 	void draw(sf::RenderWindow& window, sf::View& view);
 
    sf::RectangleShape& get_cursor();
+   
+   void set_view(Viewport* v);
   
    // command interface
    virtual void process(CloseCommand& c);
@@ -51,7 +53,7 @@ public:
 
 protected:
 	sf::RenderWindow& window;
-	Viewport& view;
+   Viewport* view;
 
    float zoom_factor;
 	bool is_panning;

@@ -9,16 +9,8 @@ GameBuilderState GameState::builder_state;
 void GameBuilderState::enter(Game& game) {
    std::cout << "Entering builder start menu state." << std::endl;
 
-   this->screen_middle.x = Settings::Instance()->SCREEN_WIDTH / (float)2;
-   this->screen_middle.y = Settings::Instance()->SCREEN_HEIGHT / (float)2;
-
-   this->screen_size.x = (float)Settings::Instance()->SCREEN_WIDTH; 
-   this->screen_size.y = (float)Settings::Instance()->SCREEN_HEIGHT;
-
    this->viewports["main"] = new Viewport(game, static_cast<sf::Vector2f>(game.window.getSize()));
    this->viewports["hud"] = new Viewport(game, static_cast<sf::Vector2f>(game.window.getSize()));
-
-   this->origin = this->viewports["main"]->get_default_center();
 
    // load tile textures
    this->tile1_nomask = new sf::Image();
@@ -41,16 +33,13 @@ void GameBuilderState::enter(Game& game) {
    this->map->register_texture(this->tile2);
    this->map->load_mapfile("map_test.txt");
 
-   this->m = new Mouse(game.window, *(this->viewports["main"]));
-
-   InputController& ic = InputController::instance();
-   ic.registerInputListener(this->m);
-
-   sf::Mouse::setPosition(static_cast<sf::Vector2i>(screen_middle));
+   game.m->set_view(this->viewports["main"]);
+   sf::Mouse::setPosition(static_cast<sf::Vector2i>(this->viewports["main"]->get_center()));
    game.sw.set_alignment(ScreenWriter::ALIGNMENT::LEFT);
 }
 
 void GameBuilderState::exit(Game& game) {
+   game.m->set_view(nullptr);
 }
 
 GameState* GameBuilderState::update(Game& game) {
@@ -59,7 +48,7 @@ GameState* GameBuilderState::update(Game& game) {
    
    // draw map view items
    this->map->draw(game.window);
-   this->m->draw(game.window, this->viewports["main"]->get_view());
+   game.m->draw(game.window, this->viewports["hud"]->get_view());
 
    // draw fixed hud items
    game.window.setView(this->viewports["hud"]->get_view());
@@ -68,7 +57,7 @@ GameState* GameBuilderState::update(Game& game) {
 	game.sw.write("r: reset pan position", sf::Vector2i(0, 15));
 	game.sw.write("right click: click and drag to pan", sf::Vector2i(0, 30));
 
-	sf::Vector2i mouse_pos = static_cast<sf::Vector2i>(this->m->get_cursor().getPosition());
+	sf::Vector2i mouse_pos = static_cast<sf::Vector2i>(game.m->get_cursor().getPosition());
 	std::stringstream mmsg;
 	mmsg << mouse_pos.x << ", " << mouse_pos.y;
 
@@ -90,11 +79,11 @@ void GameBuilderState::process(Game& game, KeyPressCommand& c) {
 
    switch (c.event.code) {
    case sf::Keyboard::Key::R:
-      delta = this->origin - this->viewports["main"]->get_default_center();
+      delta = this->viewports["main"]->get_center() - this->viewports["main"]->get_default_center();
       this->viewports["main"]->move(delta);
 
       // reset zoom too
-      this->viewports["main"]->set_size(this->screen_size);
+      this->viewports["main"]->set_size(this->viewports["main"]->get_default_size());
    break;
    default:
       // do nothing
@@ -105,16 +94,14 @@ void GameBuilderState::process(Game& game, KeyPressCommand& c) {
 void GameBuilderState::process(Game& game, WindowResizeCommand& c) {
    std::map<std::string, Viewport*>::iterator it;
    
-   this->screen_size.x = c.width;
-   this->screen_size.y = c.height;
+   sf::Vector2f screen_size((float)c.width, (float)c.height);
+   sf::Vector2f screen_center(c.width / 2.f, c.height / 2.f);
+   
+   // keep hud viewport fixed over render window
+   this->viewports["hud"]->set_size(screen_size);
+   this->viewports["hud"]->set_center(screen_center);
 
-   this->screen_middle.x = c.width / 2.f;
-   this->screen_middle.y = c.width / 2.f;
-
-   for (it = this->viewports.begin(); it != this->viewports.end(); it++) {
-      it->second->set_size(this->screen_size);
-      it->second->set_center(this->screen_middle);
-   };
+   this->viewports["main"]->set_size(screen_size);
 }
 
 void GameBuilderState::process(Game& game, MouseMoveCommand& c) {}

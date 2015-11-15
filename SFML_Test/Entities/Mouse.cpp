@@ -1,8 +1,7 @@
 #include "Mouse.h"
 
-Mouse::Mouse(sf::RenderWindow& window, Viewport& view)
+Mouse::Mouse(sf::RenderWindow& window)
 : window(window)
-, view(view)
 , zoom_factor(1.0f)
 , is_panning(false)
 , cursor(sf::Vector2f(6, 6))
@@ -28,7 +27,9 @@ void Mouse::process(MouseMoveCommand& c) {
 	pos = this->get_mouse_position();
 
 	panning_delta = static_cast<sf::Vector2f>(this->panning_anchor - pos) * this->zoom_factor;
-	this->view.move(this->MOUSE_PAN_COEFFICIENT * panning_delta);
+   if (this->view) {
+	   this->view->move(this->MOUSE_PAN_COEFFICIENT * panning_delta);
+   } 
 
 	this->panning_anchor = pos;
 }
@@ -47,7 +48,10 @@ void Mouse::process(MouseButtonCommand& c) {
 
 void Mouse::process(MouseWheelCommand& c) {
    this->set_zoom_factor(this->get_zoom_factor() + c.delta / 10.0f);
-   this->view.set_size(sf::Vector2f(this->get_zoom_factor() * this->window.getSize().x, this->get_zoom_factor() * this->window.getSize().y));
+
+   if (this->view) {
+      this->view->set_size(sf::Vector2f(this->get_zoom_factor() * this->window.getSize().x, this->get_zoom_factor() * this->window.getSize().y));
+   }
 }
 
 void Mouse::add_mouse_position(int x, int y) {
@@ -104,4 +108,8 @@ void Mouse::draw(sf::RenderWindow& window, sf::View& view) {
 
 sf::RectangleShape& Mouse::get_cursor() {
    return this->cursor;
+}
+
+void Mouse::set_view(Viewport* v) {
+   this->view = v;
 }

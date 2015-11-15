@@ -9,14 +9,18 @@ Game::Game()
 , window(sf::VideoMode(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT), "SFML Test")
 , sw(this->window)
 {
-	window.setFramerateLimit(Settings::Instance()->FRAMERATE_LIMIT);
-	window.setMouseCursorVisible(false);
+	this->window.setFramerateLimit(Settings::Instance()->FRAMERATE_LIMIT);
+	this->window.setMouseCursorVisible(false);
 
-	sw.load_font("retro", "retro.ttf");
+	this->sw.load_font("retro", "retro.ttf");
+
+   // initialize mouse interface wrapper
+   this->m = new Mouse(window);
 
    // set up input controller
    InputController& ic = InputController::instance();
    ic.registerInputListener(this);
+   ic.registerInputListener(this->m);
 }
 
 Game::~Game() {

@@ -29,11 +29,6 @@ public:
 protected:
    std::map<std::string, Viewport*> viewports;
 
-   sf::Vector2f screen_middle;
-   sf::Vector2f screen_size;
-   
-   sf::Vector2f origin;
-
    Map* map;
 
    sf::Image* tile1_nomask;
@@ -41,8 +36,6 @@ protected:
 
    sf::Texture* tile1;
    sf::Texture* tile2;
-
-   Mouse* m;
 };
 
 #endif
