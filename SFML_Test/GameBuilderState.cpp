@@ -12,26 +12,13 @@ void GameBuilderState::enter(Game& game) {
    this->viewports["main"] = new Viewport(game, static_cast<sf::Vector2f>(game.window.getSize()));
    this->viewports["hud"] = new Viewport(game, static_cast<sf::Vector2f>(game.window.getSize()));
 
-   // load tile textures
-   this->tile1_nomask = new sf::Image();
-   this->tile1_nomask->loadFromFile("tile1.gif");
-   this->tile1_nomask->createMaskFromColor(sf::Color::Magenta);
-
-   this->tile1 = new sf::Texture();
-   this->tile1->loadFromImage(*this->tile1_nomask);
-
-   this->tile2_nomask = new sf::Image();
-	this->tile2_nomask->loadFromFile("tile_grass.gif");
-	this->tile2_nomask->createMaskFromColor(sf::Color::Magenta);
-
-   this->tile2 = new sf::Texture();
-   this->tile2->loadFromImage(*this->tile2_nomask);
-
    // entities
    this->map = new Map();
-   this->map->register_texture(this->tile1);
-   this->map->register_texture(this->tile2);
+   this->map->register_texture(game.texture_manager.create_texture("tile1", "tile1.gif"));
+   this->map->register_texture(game.texture_manager.create_texture("tile2", "tile_grass.gif"));
    this->map->load_mapfile("map_test.txt");
+
+   std::cout << game.texture_manager.to_string() << std::endl;
 
    game.m->set_view(this->viewports["main"]);
    sf::Mouse::setPosition(static_cast<sf::Vector2i>(this->viewports["main"]->get_center()));

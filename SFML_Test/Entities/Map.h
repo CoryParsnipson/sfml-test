@@ -3,6 +3,7 @@
 
 #include "../dependencies.h"
 
+#include "Texture.h"
 #include "Tile.h"
 
 // needed for comparison function in std::map with Vector2i as key
@@ -17,7 +18,7 @@ public:
 	Map();
 	~Map();
 
-	int register_texture(sf::Texture* texture);
+	int register_texture(Texture* texture);
 	void load_mapfile(std::string map_filename);
 
 	void draw(sf::RenderWindow& window);
@@ -26,7 +27,7 @@ public:
 protected:
 	std::string map_filename;
 
-	std::vector<sf::Texture*> textures_tiles;
+	std::vector<Texture*> textures_tiles;
 	std::map<sf::Vector2i, Tile*, vector2i_cmp> tiles;
 };
 

@@ -35,7 +35,7 @@ void Map::load_mapfile(std::string map_filename) {
 
 // returns an integer that corresponds to the index of the newly registered texture (to refer to it later)
 // will return -1 on failure
-int Map::register_texture(sf::Texture* texture) {
+int Map::register_texture(Texture* texture) {
 	this->textures_tiles.push_back(texture);
 	return this->textures_tiles.size() - 1;
 }

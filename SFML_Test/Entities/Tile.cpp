@@ -1,10 +1,11 @@
+#include "Texture.h"
 #include "Tile.h"
 
-Tile::Tile(sf::Vector2i& pos, sf::Texture& t)
+Tile::Tile(sf::Vector2i& pos, Texture& t)
 : map_coordinate(pos)
 {
 	this->sprite = new sf::Sprite;
-	this->sprite->setTexture(t);
+	this->sprite->setTexture(t.get_texture());
 
 	// this should go somewhere else I think
 	float s_x = pos.x * Settings::Instance()->TILE_WIDTH + (pos.y & 1) * (Settings::Instance()->TILE_WIDTH / 2);

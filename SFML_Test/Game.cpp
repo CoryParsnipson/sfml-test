@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "Entities/Map.h"
 #include "Util/InputController.h"
+#include "Manager/TextureManager.h"
 
 #include "GameStartMenuState.h"
 

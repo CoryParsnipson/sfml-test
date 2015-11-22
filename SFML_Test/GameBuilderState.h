@@ -4,6 +4,7 @@
 #include "dependencies.h"
 
 #include "Entities/Map.h"
+#include "Entities/Texture.h"
 #include "Entities/Viewport.h"
 
 #include "GameState.h"
@@ -29,13 +30,10 @@ public:
 protected:
    std::map<std::string, Viewport*> viewports;
 
+   Texture* t1;
+   Texture* t2;
+
    Map* map;
-
-   sf::Image* tile1_nomask;
-   sf::Image* tile2_nomask;
-
-   sf::Texture* tile1;
-   sf::Texture* tile2;
 };
 
 #endif

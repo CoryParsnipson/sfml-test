@@ -11,11 +11,11 @@
 //
 class Tile {
 public:
-	Tile(sf::Vector2i& pos, sf::Texture& t);
+	Tile(sf::Vector2i& pos, Texture& t);
 	~Tile();
 
 	void draw(sf::RenderWindow& window);
-
+   
 protected:
 	sf::Vector2i& map_coordinate; // should be identical to map key
 

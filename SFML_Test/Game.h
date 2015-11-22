@@ -14,6 +14,8 @@
 #include "Entities/Viewport.h"
 #include "Util/InputListener.h"
 
+#include "Manager/TextureManager.h"
+
 #include "GameState.h"
 
 class Game
@@ -41,6 +43,8 @@ public:
 
 	ScreenWriter sw;
    Mouse* m;
+
+   TextureManager texture_manager;
 
 protected:
    GameState* state_;
