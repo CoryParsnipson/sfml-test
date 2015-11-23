@@ -26,7 +26,7 @@ public:
 
 	void load_mapfile(Game& game, std::string map_filename);
 
-	void draw(Graphics& graphics);
+	void draw(Graphics& graphics, Viewport& viewport);
 	std::string to_string();
 
 protected:

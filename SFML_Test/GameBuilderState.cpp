@@ -38,7 +38,7 @@ GameState* GameBuilderState::update(Game& game) {
    game.graphics.clear();
 
    // draw map view items
-   this->map->draw(game.graphics);
+   this->map->draw(game.graphics, *this->viewports["main"]);
    game.m->draw(game.graphics, this->viewports["hud"]);
 
    // draw fixed hud items

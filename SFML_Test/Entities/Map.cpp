@@ -41,7 +41,9 @@ void Map::load_mapfile(Game& game, std::string map_filename) {
 	delete tokens;
 }
 
-void Map::draw(Graphics& graphics) {
+void Map::draw(Graphics& graphics, Viewport& viewport) {
+   graphics.get_window().setView(viewport.get_view()); // hack
+
 	map_type_t::const_iterator iterator;
 	for (iterator = this->tiles.begin(); iterator != this->tiles.end(); iterator++) {
       iterator->second->update(graphics);
