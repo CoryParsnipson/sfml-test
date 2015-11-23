@@ -15,6 +15,9 @@
 
 #include "Graphics.h"
 
+// forward declarations
+class Game;
+
 // ----------------------------------------------------------------------------
 // class Mouse
 // Wrapper class for SFML Mouse. Contains state information for click and drag
@@ -28,7 +31,7 @@ public:
 	const float MOUSE_PAN_COEFFICIENT = 1.f;
 	const float WINDOW_RESIZE_COEFFICIENT = 10.f;
 
-	Mouse();
+	Mouse(Game& game);
 
 	void process_event(sf::Event& event);
 	void add_mouse_position(int x, int y);
@@ -50,6 +53,7 @@ public:
    virtual void process(MouseWheelCommand& c);
 
 protected:
+   Game& game;
    Viewport* view;
 
 	bool is_panning;

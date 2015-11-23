@@ -1,10 +1,14 @@
 #include "Mouse.h"
 
-Mouse::Mouse()
-: is_panning(false)
+#include "Game.h"
+
+Mouse::Mouse(Game& game)
+: game(game)
+, is_panning(false)
 , cursor(sf::Vector2f(6, 6))
 {
 	cursor.setFillColor(sf::Color::Red);
+   cursor.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(game.graphics.get_window())));
 }
 
 void Mouse::process(CloseCommand& c) { }
@@ -16,12 +20,12 @@ void Mouse::process(MouseMoveCommand& c) {
    sf::Vector2f panning_delta;
 
 	// update the red dot on the screen to the current position
-	this->cursor.setPosition(static_cast<sf::Vector2f>(this->get_mouse_position()));
+	this->cursor.setPosition(static_cast<sf::Vector2f>(this->get_mouse_position(&this->game.graphics)));
 
 	if (!this->is_panning) {
 		return;
 	}
-	pos = this->get_mouse_position();
+	pos = this->get_mouse_position(&this->game.graphics);
 
 	panning_delta = static_cast<sf::Vector2f>(this->panning_anchor - pos) * this->view->get_zoom_factor();
    if (this->view) {
@@ -36,7 +40,7 @@ void Mouse::process(MouseButtonCommand& c) {
    case MouseButtonCommand::LEFT: break;
    case MouseButtonCommand::RIGHT:
       this->is_panning = (c.state == MouseButtonCommand::PRESSED);
-      this->panning_anchor = this->get_mouse_position();
+      this->panning_anchor = this->get_mouse_position(&this->game.graphics);
       break;
    case MouseButtonCommand::MIDDLE: break;
    default: break;

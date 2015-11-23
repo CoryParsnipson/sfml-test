@@ -10,7 +10,7 @@ Game::Game()
 	this->sw.load_font("retro", "retro.ttf");
 
    // initialize mouse interface wrapper
-   this->m = new Mouse();
+   this->m = new Mouse(*this);
 
    // set up input controller
    InputController& ic = InputController::instance();
