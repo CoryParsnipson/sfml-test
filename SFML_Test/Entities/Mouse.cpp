@@ -1,12 +1,10 @@
 #include "Mouse.h"
 
-Mouse::Mouse(sf::RenderWindow& window)
-: window(window)
-, is_panning(false)
+Mouse::Mouse()
+: is_panning(false)
 , cursor(sf::Vector2f(6, 6))
 {
 	cursor.setFillColor(sf::Color::Red);
-	cursor.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(this->window)));
 }
 
 void Mouse::process(CloseCommand& c) { }
@@ -59,8 +57,12 @@ void Mouse::add_mouse_position(int x, int y) {
 	}
 }
 
-sf::Vector2i Mouse::get_mouse_position() {
-	return sf::Mouse::getPosition(this->window);
+sf::Vector2i Mouse::get_mouse_position(Graphics* graphics /* = nullptr */) {
+   if (graphics) {
+      return sf::Mouse::getPosition(graphics->get_window());
+   }
+
+	return sf::Mouse::getPosition();
 }
 
 sf::Vector2i Mouse::get_last_mouse_position(unsigned int frames_to_go_back /* = 0 */) {
@@ -74,16 +76,8 @@ sf::Vector2i Mouse::get_last_mouse_position(unsigned int frames_to_go_back /* = 
 	return sf::Vector2i(it->x, it->y);
 }
 
-void Mouse::draw(sf::RenderWindow& window) {
-	window.draw(this->cursor);
-}
-
-void Mouse::draw(sf::RenderWindow& window, sf::View& view) {
-	sf::View old_view = window.getView();
-
-	window.setView(view);
-	this->draw(window);
-	window.setView(old_view);
+void Mouse::draw(Graphics& graphics, Viewport* viewport /* = nullptr */) {
+	graphics.draw(this->cursor, viewport);
 }
 
 sf::RectangleShape& Mouse::get_cursor() {

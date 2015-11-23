@@ -6,6 +6,8 @@
 #include "../Command/MouseButtonCommand.h"
 #include "../Command/MouseWheelCommand.h"
 
+#include "Game.h"
+
 InputController& InputController::instance() {
    static InputController _inst;
    return _inst;
@@ -18,11 +20,11 @@ void InputController::registerInputListener(InputListener* listener) {
    this->listeners.push_back(listener);
 }
 
-void InputController::pollEvents(sf::RenderWindow& window) {
+void InputController::pollEvents(Game& game) {
    sf::Event event;
    Command* c = 0;
 
-   while (window.pollEvent(event)) {
+   while (game.graphics.get_window().pollEvent(event)) {
       switch (event.type) {
       case sf::Event::Closed:
          std::cout << "InputController::pollEvents -> close event received" << std::endl;

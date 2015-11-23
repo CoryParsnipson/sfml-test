@@ -22,18 +22,16 @@ void GameStartMenuState::exit(Game& game) {
 }
 
 GameState* GameStartMenuState::update(Game& game) {
-   // update window
-   game.window.setView(this->viewports["main"]->get_view());
-   game.window.clear();
+   game.graphics.clear();
 
    game.sw.set_font_size(36);
-   game.sw.write("SFML TEST", static_cast<sf::Vector2i>(this->viewports["main"]->get_center()));
+   game.sw.write(game.graphics, *this->viewports["main"], "SFML TEST", static_cast<sf::Vector2i>(this->viewports["main"]->get_center()));
 
    game.sw.set_font_size(12);
-   game.sw.write("main menu", static_cast<sf::Vector2i>(this->viewports["main"]->get_center() + sf::Vector2f(0.0, 45.0)));
-   game.sw.write("(Press SPACE or ENTER)", static_cast<sf::Vector2i>(this->viewports["main"]->get_center() + sf::Vector2f(0.0, 60.0)));
+   game.sw.write(game.graphics, *this->viewports["main"], "main menu", static_cast<sf::Vector2i>(this->viewports["main"]->get_center() + sf::Vector2f(0.0, 45.0)));
+   game.sw.write(game.graphics, *this->viewports["main"], "(Press SPACE or ENTER)", static_cast<sf::Vector2i>(this->viewports["main"]->get_center() + sf::Vector2f(0.0, 60.0)));
 
-   game.window.display();
+   game.graphics.update();
 
    return this->next_state_;
 }

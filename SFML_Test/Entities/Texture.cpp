@@ -1,8 +1,7 @@
 #include "Texture.h"
 
-Texture::Texture(std::string name, std::string filename)
-: name(name)
-, filename(filename)
+Texture::Texture(std::string filename)
+: filename(filename)
 {
    this->texture_mask.loadFromFile(filename);
    this->texture_mask.createMaskFromColor(sf::Color::Magenta);
@@ -15,5 +14,5 @@ sf::Texture& Texture::get_texture() {
 }
 
 std::string Texture::to_string() {
-   return "[Texture] name = " + this->name + ", filename = " + this->filename;
+   return "[Texture] filename = " + this->filename;
 }

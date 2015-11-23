@@ -1,7 +1,7 @@
 #include "TextureManager.h"
 
-Texture* TextureManager::get_texture(std::string name) {
-   texture_map_t::iterator item = this->textures.find(name);
+Texture* TextureManager::get_texture(int id) {
+   texture_map_t::iterator item = this->textures.find(id);
 
    if (item != this->textures.end()) {
       return item->second;
@@ -10,10 +10,10 @@ Texture* TextureManager::get_texture(std::string name) {
    return nullptr;
 }
 
-Texture* TextureManager::create_texture(std::string name, std::string filename) {
-   this->textures.erase(name); // delete texture if one already exists at key name
-   this->textures[name] = new Texture(name, filename);
-   return this->textures[name];
+Texture* TextureManager::create_texture(int id, std::string filename) {
+   this->textures.erase(id); // delete texture if one already exists at key name
+   this->textures[id] = new Texture(filename);
+   return this->textures[id];
 }
 
 std::string TextureManager::to_string() {
@@ -23,7 +23,7 @@ std::string TextureManager::to_string() {
    tm = "[TextureManager] contents:\n";
    
    for(t = this->textures.begin(); t != this->textures.end(); t++) {
-      tm += "  " + t->first + ": " + t->second->to_string() + "\n";
+      tm += "  " + std::to_string(t->first) + ": " + t->second->to_string() + "\n";
    }
 
    tm += "[TextureManager] end contents.\n";

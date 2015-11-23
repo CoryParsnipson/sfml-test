@@ -2,6 +2,7 @@
 #define SCREENWRITER_H
 
 #include "../dependencies.h"
+#include "Graphics.h"
 
 class ScreenWriter {
 public:
@@ -11,12 +12,12 @@ public:
       CENTER
    };
 
-	ScreenWriter(sf::RenderWindow& window);
+	ScreenWriter();
 	~ScreenWriter();
 
 	void load_font(std::string font_name, std::string filename);
-	void write(std::string msg);
-	void write(std::string msg, sf::Vector2i pos);
+	void write(Graphics& graphics, Viewport& viewport, std::string msg);
+	void write(Graphics& graphics, Viewport& viewport, std::string msg, sf::Vector2i pos);
 
 	//void set_font();
 	void set_font_size(unsigned int font_size);
@@ -25,8 +26,6 @@ public:
    void set_alignment(ScreenWriter::ALIGNMENT alignment);
 
 protected:
-	sf::RenderWindow& window;
-
 	unsigned int font_size;
    ScreenWriter::ALIGNMENT alignment;
 	std::string active_font;

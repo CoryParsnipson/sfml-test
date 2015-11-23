@@ -1,25 +1,20 @@
 #ifndef TILE_H
 #define TILE_H
 
-#include "../dependencies.h"
+#include "Entity.h"
 
-//
-// Tile class for unit section of map
-//
-// this is meant to contain sprites (and by association, screen position)
-// and information about solid-ness, variant, orientation, etc
-//
-class Tile {
+class Tile : public Entity {
 public:
-	Tile(sf::Vector2i& pos, Texture& t);
-	~Tile();
+   Tile(GraphicsComponent* graphics);
+   virtual ~Tile();
 
-	void draw(sf::RenderWindow& window);
-   
+   void set_position(sf::Vector2i pos);
+   sf::Vector2i get_position();
+
+   virtual void update(Graphics& graphics);
+
 protected:
-	sf::Vector2i& map_coordinate; // should be identical to map key
-
-	sf::Sprite* sprite;
+   sf::Vector2i map_coordinate;
 };
 
 #endif

@@ -6,17 +6,11 @@
 #include "GameStartMenuState.h"
 
 Game::Game()
-: InputListener()
-, window(sf::VideoMode(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT), "SFML Test")
-, sw(this->window)
 {
-	this->window.setFramerateLimit(Settings::Instance()->FRAMERATE_LIMIT);
-	this->window.setMouseCursorVisible(false);
-
 	this->sw.load_font("retro", "retro.ttf");
 
    // initialize mouse interface wrapper
-   this->m = new Mouse(window);
+   this->m = new Mouse();
 
    // set up input controller
    InputController& ic = InputController::instance();
@@ -37,10 +31,10 @@ void Game::reset() {
 }
 
 void Game::main_loop() {
-   while (this->window.isOpen()) {
+   while (this->graphics.is_open()) {
       // poll input
       InputController& ic = InputController::instance();
-      ic.pollEvents(this->window);
+      ic.pollEvents(*this);
 
       GameState* state = this->state_->update(*this);
       if (state != NULL) {
@@ -52,7 +46,7 @@ void Game::main_loop() {
 }
 
 void Game::exit() {
-   this->window.close();
+   this->graphics.close();
 }
 
 void Game::process(CloseCommand& c) {

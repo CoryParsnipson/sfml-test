@@ -1,19 +1,22 @@
 #include "Map.h"
 
+#include "../Game.h"
 #include "../FileReader/MapFileReader.h"
+
+#include "TileGraphicsComponent.h"
 
 Map::Map() {
 }
 
 Map::~Map() {
-	// delete all sprite pointers in the tilemap
-	std::map<sf::Vector2i, Tile*>::const_iterator iterator;
+   // need to clean up all Tile entities
+	map_type_t::const_iterator iterator;
 	for (iterator = this->tiles.begin(); iterator != this->tiles.end(); iterator++) {
 		delete iterator->second;
 	}
 }
 
-void Map::load_mapfile(std::string map_filename) {
+void Map::load_mapfile(Game& game, std::string map_filename) {
 	std::string mapfile_line;
 	MapFileReader mfr(map_filename);
 
@@ -27,33 +30,31 @@ void Map::load_mapfile(std::string map_filename) {
 
 		// generate map coordinates from mapfile line
 		sf::Vector2i map_coord((*tokens)[0], (*tokens)[1]);
-		this->tiles[map_coord] = new Tile(map_coord, *(this->textures_tiles[(*tokens)[2]]));
+
+      // create Tile entity
+      GraphicsComponent* tile_gc = new TileGraphicsComponent(*(game.texture_manager.get_texture((*tokens)[2])));
+      this->tiles[map_coord] = new Tile(tile_gc);
+      this->tiles[map_coord]->set_position(map_coord);
+      
 		tokens->clear();
 	}
 	delete tokens;
 }
 
-// returns an integer that corresponds to the index of the newly registered texture (to refer to it later)
-// will return -1 on failure
-int Map::register_texture(Texture* texture) {
-	this->textures_tiles.push_back(texture);
-	return this->textures_tiles.size() - 1;
-}
-
-void Map::draw(sf::RenderWindow& window) {
-	std::map<sf::Vector2i, Tile*>::const_iterator iterator;
+void Map::draw(Graphics& graphics) {
+	map_type_t::const_iterator iterator;
 	for (iterator = this->tiles.begin(); iterator != this->tiles.end(); iterator++) {
-		iterator->second->draw(window);
+      iterator->second->update(graphics);
 	}
 }
 
 std::string Map::to_string() {
 	std::string output;
 
-	std::map<sf::Vector2i, Tile*>::const_iterator iterator;
-	for (iterator = this->tiles.begin(); iterator != this->tiles.end(); iterator++) {
-		output += "Map (" + std::to_string(iterator->first.x) + ", " + std::to_string(iterator->first.y) + ")\n";
-	}
+	map_type_t::const_iterator iterator;
+	//for (iterator = this->tiles.begin(); iterator != this->tiles.end(); iterator++) {
+	//	output += "Map (" + std::to_string(iterator->first.x) + ", " + std::to_string(iterator->first.y) + ")\n";
+	//}
 
 	return output;
 }

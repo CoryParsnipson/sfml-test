@@ -1,9 +1,10 @@
 #include "../dependencies.h"
 #include "ScreenWriter.h"
 
-ScreenWriter::ScreenWriter(sf::RenderWindow& window)
-: window(window)
-, font_size(12)
+#include "../Util/Graphics.h"
+
+ScreenWriter::ScreenWriter()
+: font_size(12)
 , alignment(ScreenWriter::ALIGNMENT::LEFT)
 , active_font("")
 {
@@ -32,11 +33,11 @@ void ScreenWriter::load_font(std::string font_name, std::string filename) {
 	}
 }
 
-void ScreenWriter::write(std::string msg) {
-	this->write(msg, sf::Vector2i(0, 0));
+void ScreenWriter::write(Graphics& graphics, Viewport& viewport, std::string msg) {
+	this->write(graphics, viewport, msg, sf::Vector2i(0, 0));
 }
 
-void ScreenWriter::write(std::string msg, sf::Vector2i pos) {
+void ScreenWriter::write(Graphics& graphics, Viewport& viewport, std::string msg, sf::Vector2i pos) {
 	sf::Text t;
 	t.setString(msg);
 	t.setFont(*(this->fonts[this->active_font]));
@@ -57,7 +58,7 @@ void ScreenWriter::write(std::string msg, sf::Vector2i pos) {
    t.setOrigin(alignment_offset);
 	t.setPosition(static_cast<sf::Vector2f>(pos));
 
-	window.draw(t);
+   graphics.draw(t, &viewport);
 }
 
 void ScreenWriter::set_font_size(unsigned int font_size) {

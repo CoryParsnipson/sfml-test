@@ -4,6 +4,9 @@
 #include "../dependencies.h"
 #include "InputListener.h"
 
+// forward declarations
+class Game;
+
 // this class is an interface between SFML and the proprietary
 // input handler class and command hierarchy
 class InputController {
@@ -11,7 +14,7 @@ public:
    static InputController& instance(); // object access method
 
    void registerInputListener(InputListener* listener);
-   void pollEvents(sf::RenderWindow& window);
+   void pollEvents(Game& game);
 
 private:
    // seal off constructors

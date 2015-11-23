@@ -13,6 +13,7 @@
 #include "Entities/Mouse.h"
 #include "Entities/Viewport.h"
 #include "Util/InputListener.h"
+#include "Util/Graphics.h"
 
 #include "Manager/TextureManager.h"
 
@@ -39,7 +40,7 @@ public:
    virtual void process(MouseWheelCommand& c);
 
    // game functional units 
-	sf::RenderWindow window;
+   Graphics graphics;
 
 	ScreenWriter sw;
    Mouse* m;

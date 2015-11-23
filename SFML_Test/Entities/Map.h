@@ -6,6 +6,10 @@
 #include "Texture.h"
 #include "Tile.h"
 
+// forward declarations
+class Game;
+class Graphics;
+
 // needed for comparison function in std::map with Vector2i as key
 struct vector2i_cmp {
 	bool operator()(const sf::Vector2i& l, const sf::Vector2i& r) const {
@@ -15,20 +19,20 @@ struct vector2i_cmp {
 
 class Map {
 public:
+   typedef std::map<sf::Vector2i, Tile*, vector2i_cmp> map_type_t;
+
 	Map();
 	~Map();
 
-	int register_texture(Texture* texture);
-	void load_mapfile(std::string map_filename);
+	void load_mapfile(Game& game, std::string map_filename);
 
-	void draw(sf::RenderWindow& window);
+	void draw(Graphics& graphics);
 	std::string to_string();
 
 protected:
 	std::string map_filename;
 
-	std::vector<Texture*> textures_tiles;
-	std::map<sf::Vector2i, Tile*, vector2i_cmp> tiles;
+	map_type_t tiles;
 };
 
 #endif
