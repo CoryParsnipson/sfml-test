@@ -11,7 +11,7 @@ public:
    void set_position(sf::Vector2i pos);
    sf::Vector2i get_position();
 
-   virtual void update(Graphics& graphics);
+   virtual void update(Viewport& viewport);
 
 protected:
    sf::Vector2i map_coordinate;

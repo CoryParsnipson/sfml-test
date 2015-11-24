@@ -3,12 +3,12 @@
 
 #include "../dependencies.h"
 
+#include "Viewport.h"
 #include "Texture.h"
 #include "Tile.h"
 
 // forward declarations
 class Game;
-class Graphics;
 
 // needed for comparison function in std::map with Vector2i as key
 struct vector2i_cmp {
@@ -26,7 +26,7 @@ public:
 
 	void load_mapfile(Game& game, std::string map_filename);
 
-	void draw(Graphics& graphics, Viewport& viewport);
+	void draw(Viewport& viewport);
 	std::string to_string();
 
 protected:

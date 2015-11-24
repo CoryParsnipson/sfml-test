@@ -12,7 +12,7 @@ void GameStartMenuState::enter(Game& game) {
    sf::Vector2f screen_size((float)Settings::Instance()->SCREEN_WIDTH, (float)Settings::Instance()->SCREEN_HEIGHT);
    
    // views
-   this->viewports["main"] = new Viewport(game, screen_size);
+   this->viewports["main"] = new Viewport(game.graphics, screen_size);
 
    // mess with screenwriter
    game.sw.set_alignment(ScreenWriter::ALIGNMENT::CENTER);
@@ -25,11 +25,11 @@ GameState* GameStartMenuState::update(Game& game) {
    game.graphics.clear();
 
    game.sw.set_font_size(36);
-   game.sw.write(game.graphics, *this->viewports["main"], "SFML TEST", static_cast<sf::Vector2i>(this->viewports["main"]->get_center()));
+   game.sw.write(*this->viewports["main"], "SFML TEST", static_cast<sf::Vector2i>(this->viewports["main"]->get_center()));
 
    game.sw.set_font_size(12);
-   game.sw.write(game.graphics, *this->viewports["main"], "main menu", static_cast<sf::Vector2i>(this->viewports["main"]->get_center() + sf::Vector2f(0.0, 45.0)));
-   game.sw.write(game.graphics, *this->viewports["main"], "(Press SPACE or ENTER)", static_cast<sf::Vector2i>(this->viewports["main"]->get_center() + sf::Vector2f(0.0, 60.0)));
+   game.sw.write(*this->viewports["main"], "main menu", static_cast<sf::Vector2i>(this->viewports["main"]->get_center() + sf::Vector2f(0.0, 45.0)));
+   game.sw.write(*this->viewports["main"], "(Press SPACE or ENTER)", static_cast<sf::Vector2i>(this->viewports["main"]->get_center() + sf::Vector2f(0.0, 60.0)));
 
    game.graphics.update();
 

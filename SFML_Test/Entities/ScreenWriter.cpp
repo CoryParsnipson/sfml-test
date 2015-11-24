@@ -33,11 +33,11 @@ void ScreenWriter::load_font(std::string font_name, std::string filename) {
 	}
 }
 
-void ScreenWriter::write(Graphics& graphics, Viewport& viewport, std::string msg) {
-	this->write(graphics, viewport, msg, sf::Vector2i(0, 0));
+void ScreenWriter::write(Viewport& viewport, std::string msg) {
+	this->write(viewport, msg, sf::Vector2i(0, 0));
 }
 
-void ScreenWriter::write(Graphics& graphics, Viewport& viewport, std::string msg, sf::Vector2i pos) {
+void ScreenWriter::write(Viewport& viewport, std::string msg, sf::Vector2i pos) {
 	sf::Text t;
 	t.setString(msg);
 	t.setFont(*(this->fonts[this->active_font]));
@@ -58,7 +58,7 @@ void ScreenWriter::write(Graphics& graphics, Viewport& viewport, std::string msg
    t.setOrigin(alignment_offset);
 	t.setPosition(static_cast<sf::Vector2f>(pos));
 
-   graphics.draw(t, &viewport);
+   viewport.draw(t);
 }
 
 void ScreenWriter::set_font_size(unsigned int font_size) {

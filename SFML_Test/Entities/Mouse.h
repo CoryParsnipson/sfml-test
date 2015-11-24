@@ -38,7 +38,7 @@ public:
 	sf::Vector2i get_mouse_position(Graphics* graphics = nullptr);
 	sf::Vector2i get_last_mouse_position(unsigned int frames_to_go_back = 0);
 
-	void draw(Graphics& graphics, Viewport* viewport = nullptr);
+	void draw(Viewport& viewport);
 
    sf::RectangleShape& get_cursor();
    

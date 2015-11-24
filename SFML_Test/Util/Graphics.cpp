@@ -27,14 +27,14 @@ void Graphics::update() {
    this->window->display();
 }
 
-void Graphics::draw(sf::Drawable& d, Viewport* viewport) {
-   if (!viewport) {
+void Graphics::draw(sf::Drawable& d, sf::View* view) {
+   if (!view) {
       this->window->draw(d); 
       return;
    }
 
    sf::View original_view = this->window->getView();
-   this->window->setView(viewport->get_view());
+   this->window->setView(*view);
    this->window->draw(d);
    this->window->setView(original_view);
 }

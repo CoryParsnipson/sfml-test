@@ -12,8 +12,8 @@ GameBuilderState GameState::builder_state;
 void GameBuilderState::enter(Game& game) {
    std::cout << "Entering builder start menu state." << std::endl;
 
-   this->viewports["main"] = new Viewport(game, static_cast<sf::Vector2f>(game.graphics.get_window().getSize()));
-   this->viewports["hud"] = new Viewport(game, static_cast<sf::Vector2f>(game.graphics.get_window().getSize()));
+   this->viewports["main"] = new Viewport(game.graphics, static_cast<sf::Vector2f>(game.graphics.get_window().getSize()));
+   this->viewports["hud"] = new Viewport(game.graphics, static_cast<sf::Vector2f>(game.graphics.get_window().getSize()));
 
    // load textures
    game.texture_manager.create_texture(0, "tile1.gif");
@@ -38,19 +38,19 @@ GameState* GameBuilderState::update(Game& game) {
    game.graphics.clear();
 
    // draw map view items
-   this->map->draw(game.graphics, *this->viewports["main"]);
-   game.m->draw(game.graphics, this->viewports["hud"]);
+   this->map->draw(*this->viewports["main"]);
+   game.m->draw(*this->viewports["hud"]);
 
    // draw fixed hud items
-	game.sw.write(game.graphics, *this->viewports["hud"], "SFML_Test");
-	game.sw.write(game.graphics, *this->viewports["hud"], "r: reset pan position", sf::Vector2i(0, 15));
-	game.sw.write(game.graphics, *this->viewports["hud"], "right click: click and drag to pan", sf::Vector2i(0, 30));
+	game.sw.write(*this->viewports["hud"], "SFML_Test");
+	game.sw.write(*this->viewports["hud"], "r: reset pan position", sf::Vector2i(0, 15));
+	game.sw.write(*this->viewports["hud"], "right click: click and drag to pan", sf::Vector2i(0, 30));
 
 	sf::Vector2i mouse_pos = static_cast<sf::Vector2i>(game.m->get_cursor().getPosition());
 	std::stringstream mmsg;
 	mmsg << mouse_pos.x << ", " << mouse_pos.y;
 
-	game.sw.write(game.graphics, *this->viewports["hud"], mmsg.str(), mouse_pos + sf::Vector2i(0, 5));
+	game.sw.write(*this->viewports["hud"], mmsg.str(), mouse_pos + sf::Vector2i(0, 5));
 
    // draw to display
    game.graphics.update();

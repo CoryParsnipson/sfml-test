@@ -16,6 +16,6 @@ sf::Vector2i Tile::get_position() {
    return this->map_coordinate;
 }
 
-void Tile::update(Graphics& graphics) {
-   this->graphics_->update(this, graphics);
+void Tile::update(Viewport& viewport) {
+   this->graphics_->update(this, viewport);
 }

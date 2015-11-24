@@ -13,7 +13,7 @@ public:
    void set_position(sf::Vector2i pos);
    void set_texture(Texture& t);
 
-   virtual void update(Entity* entity, Graphics& graphics);
+   virtual void update(Entity* entity, Viewport& viewport);
 
 protected:
    void init();

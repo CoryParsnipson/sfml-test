@@ -5,6 +5,7 @@
 
 #include "../Entities/Viewport.h"
 
+// SFML graphics interface
 class Graphics {
 public:
    Graphics();
@@ -14,7 +15,7 @@ public:
    void close();
    
    void update();
-   void draw(sf::Drawable& d, Viewport* viewport = nullptr);
+   void draw(sf::Drawable& d, sf::View* view);
    void clear();
 
    sf::RenderWindow& get_window();

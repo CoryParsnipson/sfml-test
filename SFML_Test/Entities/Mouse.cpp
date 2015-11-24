@@ -80,8 +80,8 @@ sf::Vector2i Mouse::get_last_mouse_position(unsigned int frames_to_go_back /* = 
 	return sf::Vector2i(it->x, it->y);
 }
 
-void Mouse::draw(Graphics& graphics, Viewport* viewport /* = nullptr */) {
-	graphics.draw(this->cursor, viewport);
+void Mouse::draw(Viewport& viewport) {
+   viewport.draw(this->cursor);
 }
 
 sf::RectangleShape& Mouse::get_cursor() {

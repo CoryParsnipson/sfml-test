@@ -1,11 +1,12 @@
 #include "Viewport.h"
+#include "Graphics.h"
 
 // initialize static member variables
 const float Viewport::ZOOM_FACTOR_MIN = 0.125;
 const float Viewport::ZOOM_FACTOR_MAX = 3.0;
 
-Viewport::Viewport(Game& game, sf::Vector2f size)
-: game(game)
+Viewport::Viewport(Graphics& graphics, sf::Vector2f size)
+: graphics(graphics)
 , zoom_factor(1.0)
 {
    this->default_size = size;
@@ -24,6 +25,10 @@ Viewport::~Viewport() {
 
 sf::View& Viewport::get_view() {
    return *(this->view);
+}
+
+void Viewport::draw(sf::Drawable& d) {
+   this->graphics.draw(d, this->view);
 }
 
 void Viewport::move(sf::Vector2f delta) {

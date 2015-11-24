@@ -2,7 +2,7 @@
 #define SCREENWRITER_H
 
 #include "../dependencies.h"
-#include "Graphics.h"
+#include "Viewport.h"
 
 class ScreenWriter {
 public:
@@ -16,8 +16,8 @@ public:
 	~ScreenWriter();
 
 	void load_font(std::string font_name, std::string filename);
-	void write(Graphics& graphics, Viewport& viewport, std::string msg);
-	void write(Graphics& graphics, Viewport& viewport, std::string msg, sf::Vector2i pos);
+	void write(Viewport& viewport, std::string msg);
+	void write(Viewport& viewport, std::string msg, sf::Vector2i pos);
 
 	//void set_font();
 	void set_font_size(unsigned int font_size);

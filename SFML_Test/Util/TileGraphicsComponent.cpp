@@ -8,12 +8,11 @@ TileGraphicsComponent::TileGraphicsComponent(Texture& t)
    this->set_texture(t);
 }
 
-void TileGraphicsComponent::update(Entity* entity, Graphics& graphics) {
+void TileGraphicsComponent::update(Entity* entity, Viewport& viewport) {
    Tile* tile = dynamic_cast<Tile*>(entity);
 
    this->set_position(tile->get_position());
-
-   graphics.draw(this->sprite);
+   viewport.draw(this->sprite);
 }
 
 void TileGraphicsComponent::init() {

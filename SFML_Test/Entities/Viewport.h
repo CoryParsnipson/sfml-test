@@ -4,7 +4,7 @@
 #include "../dependencies.h"
 
 // forward declarations
-class Game;
+class Graphics;
 
 // ----------------------------------------------------------------------------
 // This class nicely encapsulates an sf::View object and contains all of the
@@ -15,11 +15,10 @@ public:
    static const float ZOOM_FACTOR_MIN;
    static const float ZOOM_FACTOR_MAX;
 
-   Viewport(Game& game, sf::Vector2f size);
+   Viewport(Graphics& graphics, sf::Vector2f size);
    ~Viewport();
 
-   sf::View& get_view();
-
+   void draw(sf::Drawable& d);
    void move(sf::Vector2f delta);
 
    void set_size(sf::Vector2f size);
@@ -37,8 +36,10 @@ public:
    float get_zoom_factor();
    void set_zoom_factor(float new_zoom_factor);
 
+   sf::View& get_view();
+
 protected:
-   Game& game;
+   Graphics& graphics;
 
    float zoom_factor;
 
