@@ -32,7 +32,7 @@ void Viewport::draw(sf::Drawable& d) {
 }
 
 void Viewport::write(std::string msg, sf::Vector2f pos, const FontConfig* config) {
-   this->graphics.write(msg, pos, config);
+   this->graphics.write(msg, pos, config, &this->get_view());
 }
 
 void Viewport::move(sf::Vector2f delta) {

@@ -3,6 +3,7 @@
 
 #include "dependencies.h"
 
+#include "FontConfig.h"
 #include "../Entities/Texture.h"
 #include "GraphicsComponent.h"
 
@@ -17,6 +18,8 @@ public:
 
 protected:
    void init();
+   
+   FontConfig font_info; 
 
    sf::Sprite sprite;
 };

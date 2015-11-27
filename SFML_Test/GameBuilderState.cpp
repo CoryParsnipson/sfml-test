@@ -2,7 +2,7 @@
 #include "Util/InputController.h"
 
 #include "Util/Graphics.h"
-#include "Util/TileGraphicsComponent.h"
+#include "TileGraphicsComponent.h"
 
 #include "GameBuilderState.h"
 

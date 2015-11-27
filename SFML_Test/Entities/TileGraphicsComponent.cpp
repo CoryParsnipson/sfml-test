@@ -1,18 +1,38 @@
 #include "TileGraphicsComponent.h"
 
-#include "../Entities/Tile.h"
+#include "Tile.h"
 
 TileGraphicsComponent::TileGraphicsComponent(Texture& t)
+: font_info("retro", 12, FontConfig::ALIGN::CENTER)
 {
    this->init();
    this->set_texture(t);
 }
 
 void TileGraphicsComponent::update(Entity* entity, Viewport& viewport) {
+   sf::Vector2i tile_pos;
    Tile* tile = dynamic_cast<Tile*>(entity);
 
-   this->set_position(tile->get_position());
+   tile_pos = tile->get_position();
+   this->set_position(tile_pos);
    viewport.draw(this->sprite);
+
+   // draw coordinate information
+   std::stringstream coordinate_info;
+   coordinate_info << "(" << tile_pos.x << ", " << tile_pos.y << ")";
+
+   sf::Vector2f sprite_pos = this->sprite.getPosition();
+   sf::FloatRect sprite_rect = this->sprite.getLocalBounds();
+   sf::Vector2f msg_pos;
+   msg_pos.x = sprite_pos.x + (float)Settings::Instance()->SCALE_X * sprite_rect.width / 2.0f;
+   msg_pos.y = sprite_pos.y + (float)Settings::Instance()->SCALE_Y * sprite_rect.height * 2.5f / 4.0f;
+
+   viewport.write(coordinate_info.str(), msg_pos, &this->font_info);
+
+   coordinate_info.str("");
+   coordinate_info << "(" << msg_pos.x << ", " << msg_pos.y << ")";
+
+   viewport.write(coordinate_info.str(), msg_pos + sf::Vector2f(0, 15), &this->font_info);
 }
 
 void TileGraphicsComponent::init() {

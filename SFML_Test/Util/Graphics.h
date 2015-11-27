@@ -23,7 +23,7 @@ public:
    sf::RenderWindow& get_window();
 
    // graphics writer functions
-   void write(std::string msg, sf::Vector2f pos = sf::Vector2f(0, 0), const FontConfig* config = nullptr);
+   void write(std::string msg, sf::Vector2f pos = sf::Vector2f(0, 0), const FontConfig* config = nullptr, sf::View* view = nullptr);
    void load_font(std::string font_name, std::string filename);
    
 protected:
