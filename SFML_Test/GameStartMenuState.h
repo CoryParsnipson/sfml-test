@@ -4,12 +4,16 @@
 #include "dependencies.h"
 
 #include "GameState.h"
+#include "FontConfig.h"
 
 // forward declarations
 class Game;
 
 class GameStartMenuState : public GameState {
 public:
+   GameStartMenuState();
+   ~GameStartMenuState();
+
    virtual void enter(Game& game);
    virtual void exit(Game& game);
 
@@ -25,6 +29,9 @@ public:
 
 protected:
    std::map<std::string, Viewport*> viewports;
+
+   FontConfig font_header;
+   FontConfig font_subtitle;
 };
 
 #endif

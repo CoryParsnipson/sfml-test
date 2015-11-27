@@ -27,7 +27,6 @@ void GameBuilderState::enter(Game& game) {
 
    game.m->set_view(this->viewports["main"]);
    sf::Mouse::setPosition(static_cast<sf::Vector2i>(this->viewports["main"]->get_center()));
-   game.sw.set_alignment(ScreenWriter::ALIGNMENT::LEFT);
 }
 
 void GameBuilderState::exit(Game& game) {
@@ -35,25 +34,20 @@ void GameBuilderState::exit(Game& game) {
 }
 
 GameState* GameBuilderState::update(Game& game) {
-   game.graphics.clear();
-
    // draw map view items
    this->map->draw(*this->viewports["main"]);
    game.m->draw(*this->viewports["hud"]);
 
    // draw fixed hud items
-	game.sw.write(*this->viewports["hud"], "SFML_Test");
-	game.sw.write(*this->viewports["hud"], "r: reset pan position", sf::Vector2i(0, 15));
-	game.sw.write(*this->viewports["hud"], "right click: click and drag to pan", sf::Vector2i(0, 30));
+   this->viewports["hud"]->write("SFML_Test");
+   this->viewports["hud"]->write("r: reset pan position", sf::Vector2f(0, 15));
+   this->viewports["hud"]->write("right click: click and drag to pan", sf::Vector2f(0, 30));
 
-	sf::Vector2i mouse_pos = static_cast<sf::Vector2i>(game.m->get_cursor().getPosition());
+	sf::Vector2f mouse_pos = game.m->get_cursor().getPosition();
 	std::stringstream mmsg;
 	mmsg << mouse_pos.x << ", " << mouse_pos.y;
 
-	game.sw.write(*this->viewports["hud"], mmsg.str(), mouse_pos + sf::Vector2i(0, 5));
-
-   // draw to display
-   game.graphics.update();
+   this->viewports["hud"]->write(mmsg.str(), mouse_pos + sf::Vector2f(0, 5));
 
    return NULL;
 }

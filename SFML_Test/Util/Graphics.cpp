@@ -39,6 +39,14 @@ void Graphics::draw(sf::Drawable& d, sf::View* view) {
    this->window->setView(original_view);
 }
 
+void Graphics::write(std::string msg, sf::Vector2f pos, const FontConfig* config) {
+   this->writer.write(*this, msg, pos, config);
+}
+
+void Graphics::load_font(std::string font_name, std::string filename) {
+   this->writer.load_font(font_name, filename);
+}
+
 void Graphics::clear() {
    this->window->clear();
 }

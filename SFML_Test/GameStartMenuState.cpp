@@ -6,6 +6,19 @@
 // initialize static instance
 GameStartMenuState GameState::start_menu_state;
 
+GameStartMenuState::GameStartMenuState()
+: font_header("retro", 36, FontConfig::ALIGN::CENTER)
+, font_subtitle("retro", 12, FontConfig::ALIGN::CENTER)
+{
+}
+
+GameStartMenuState::~GameStartMenuState() {
+   std::map<std::string, Viewport*>::const_iterator it;
+   for (it = this->viewports.begin(); it != this->viewports.end(); it++) {
+      delete it->second;
+   }
+}
+
 void GameStartMenuState::enter(Game& game) {
    std::cout << "Entering game start menu state." << std::endl;
 
@@ -13,25 +26,29 @@ void GameStartMenuState::enter(Game& game) {
    
    // views
    this->viewports["main"] = new Viewport(game.graphics, screen_size);
-
-   // mess with screenwriter
-   game.sw.set_alignment(ScreenWriter::ALIGNMENT::CENTER);
 }
 
 void GameStartMenuState::exit(Game& game) {
 }
 
 GameState* GameStartMenuState::update(Game& game) {
-   game.graphics.clear();
+   this->viewports["main"]->write(
+      "SFML TEST",
+      this->viewports["main"]->get_center(),
+      &this->font_header
+   );
 
-   game.sw.set_font_size(36);
-   game.sw.write(*this->viewports["main"], "SFML TEST", static_cast<sf::Vector2i>(this->viewports["main"]->get_center()));
+   this->viewports["main"]->write(
+      "main menu",
+      this->viewports["main"]->get_center() + sf::Vector2f(0.0, 45.0),
+      &this->font_subtitle
+   );
 
-   game.sw.set_font_size(12);
-   game.sw.write(*this->viewports["main"], "main menu", static_cast<sf::Vector2i>(this->viewports["main"]->get_center() + sf::Vector2f(0.0, 45.0)));
-   game.sw.write(*this->viewports["main"], "(Press SPACE or ENTER)", static_cast<sf::Vector2i>(this->viewports["main"]->get_center() + sf::Vector2f(0.0, 60.0)));
-
-   game.graphics.update();
+   this->viewports["main"]->write(
+      "(Press SPACE or ENTER)",
+      this->viewports["main"]->get_center() + sf::Vector2f(0.0, 60.0),
+      &this->font_subtitle
+   );
 
    return this->next_state_;
 }

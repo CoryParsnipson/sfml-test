@@ -7,7 +7,8 @@
 
 Game::Game()
 {
-	this->sw.load_font("retro", "retro.ttf");
+   // load fonts
+   this->graphics.load_font("retro", "retro.ttf");
 
    // initialize mouse interface wrapper
    this->m = new Mouse(*this);
@@ -36,12 +37,18 @@ void Game::main_loop() {
       InputController& ic = InputController::instance();
       ic.pollEvents(*this);
 
+      // clear graphics
+      this->graphics.clear();
+
       GameState* state = this->state_->update(*this);
       if (state != NULL) {
          this->state_->exit(*this);
          this->state_ = state;
          this->state_->enter(*this);
       }
+
+      // update graphics
+      this->graphics.update();
    }
 }
 

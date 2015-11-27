@@ -9,7 +9,6 @@
 #include "Command/MouseMoveCommand.h"
 #include "Command/MouseButtonCommand.h"
 #include "Command/MouseWheelCommand.h"
-#include "Entities/ScreenWriter.h"
 #include "Entities/Mouse.h"
 #include "Entities/Viewport.h"
 #include "Util/InputListener.h"
@@ -42,7 +41,6 @@ public:
    // game functional units 
    Graphics graphics;
 
-	ScreenWriter sw;
    Mouse* m;
 
    TextureManager texture_manager;

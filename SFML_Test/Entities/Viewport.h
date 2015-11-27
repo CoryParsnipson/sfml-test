@@ -2,6 +2,7 @@
 #define VIEWPORT_H
 
 #include "../dependencies.h"
+#include "Util/FontConfig.h"
 
 // forward declarations
 class Graphics;
@@ -19,6 +20,7 @@ public:
    ~Viewport();
 
    void draw(sf::Drawable& d);
+   void write(std::string msg, sf::Vector2f pos = sf::Vector2f(0, 0), const FontConfig* config = nullptr);
    void move(sf::Vector2f delta);
 
    void set_size(sf::Vector2f size);
