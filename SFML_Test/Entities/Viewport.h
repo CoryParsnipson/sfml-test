@@ -39,6 +39,7 @@ public:
    void set_zoom_factor(float new_zoom_factor);
 
    sf::View& get_view();
+   Graphics& get_graphics();
 
 protected:
    Graphics& graphics;

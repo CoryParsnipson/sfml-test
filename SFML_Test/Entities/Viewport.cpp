@@ -27,6 +27,10 @@ sf::View& Viewport::get_view() {
    return *(this->view);
 }
 
+Graphics& Viewport::get_graphics() {
+   return this->graphics;
+}
+
 void Viewport::draw(sf::Drawable& d) {
    this->graphics.draw(d, this->view);
 }

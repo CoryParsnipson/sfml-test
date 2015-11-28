@@ -36,18 +36,14 @@ void GameBuilderState::exit(Game& game) {
 GameState* GameBuilderState::update(Game& game) {
    // draw map view items
    this->map->draw(*this->viewports["main"]);
-   game.m->draw(*this->viewports["hud"]);
+
+   // update entities
+   game.m->update(*this->viewports["hud"]);
 
    // draw fixed hud items
    this->viewports["hud"]->write("SFML_Test");
    this->viewports["hud"]->write("r: reset pan position", sf::Vector2f(0, 15));
    this->viewports["hud"]->write("right click: click and drag to pan", sf::Vector2f(0, 30));
-
-	sf::Vector2f mouse_pos = game.m->get_cursor().getPosition();
-	std::stringstream mmsg;
-	mmsg << mouse_pos.x << ", " << mouse_pos.y;
-
-   this->viewports["hud"]->write(mmsg.str(), mouse_pos + sf::Vector2f(0, 5));
 
    return NULL;
 }
@@ -63,9 +59,8 @@ void GameBuilderState::process(Game& game, KeyPressCommand& c) {
    switch (c.event.code) {
    case sf::Keyboard::Key::R:
       this->viewports["main"]->set_center(this->viewports["main"]->get_default_center());
-
-      // reset zoom too
       this->viewports["main"]->set_size(this->viewports["main"]->get_default_size());
+      this->viewports["main"]->set_zoom_factor(1.0);
    break;
    default:
       // do nothing

@@ -11,9 +11,8 @@
 #include "Command/MouseButtonCommand.h"
 #include "Command/MouseWheelCommand.h"
 
-#include "Entities/Viewport.h"
-
-#include "Graphics.h"
+#include "Viewport.h"
+#include "Entity.h"
 
 // forward declarations
 class Game;
@@ -25,25 +24,21 @@ class Game;
 // ----------------------------------------------------------------------------
 class Mouse
 : public InputListener
+, public Entity
 {
 public:
 	const unsigned int MOUSE_HISTORY_LENGTH = 10;
 	const float MOUSE_PAN_COEFFICIENT = 1.f;
 	const float WINDOW_RESIZE_COEFFICIENT = 10.f;
 
-	Mouse(Game& game);
+	Mouse(GraphicsComponent* graphics);
 
-	void process_event(sf::Event& event);
-	void add_mouse_position(int x, int y);
-	sf::Vector2i get_mouse_position(Graphics* graphics = nullptr);
-	sf::Vector2i get_last_mouse_position(unsigned int frames_to_go_back = 0);
-
-	void draw(Viewport& viewport);
-
-   sf::RectangleShape& get_cursor();
-   
+	sf::Vector2i get_mouse_position();
    void set_view(Viewport* v);
   
+   // entity interface
+   virtual void update(Viewport& viewport);
+
    // command interface
    virtual void process(CloseCommand& c);
    virtual void process(KeyPressCommand& c);
@@ -53,13 +48,11 @@ public:
    virtual void process(MouseWheelCommand& c);
 
 protected:
-   Game& game;
-   Viewport* view;
+   Viewport* viewport;
 
 	bool is_panning;
 	sf::Vector2i panning_anchor;
 
-	sf::RectangleShape cursor;
 	std::list<sf::Vector2i> last_positions;	
 };
 

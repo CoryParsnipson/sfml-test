@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "Entities/Map.h"
+#include "Entities/MouseGraphicsComponent.h"
 #include "Util/InputController.h"
 #include "Manager/TextureManager.h"
 
@@ -11,7 +12,7 @@ Game::Game()
    this->graphics.load_font("retro", "retro.ttf");
 
    // initialize mouse interface wrapper
-   this->m = new Mouse(*this);
+   this->m = new Mouse(new MouseGraphicsComponent());
 
    // set up input controller
    InputController& ic = InputController::instance();
