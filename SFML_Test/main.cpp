@@ -3,8 +3,8 @@
 
 int main()
 {
-	Game* g = new Game();
-   g->reset(); // start the game loop 
+	Game g;
+   g.reset(); // start the game loop 
 
 	return 0;
 }

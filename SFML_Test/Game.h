@@ -13,6 +13,9 @@
 #include "Entities/Viewport.h"
 #include "Util/InputListener.h"
 #include "Util/Graphics.h"
+#include "Service.h"
+
+#include "TextLogger.h"
 
 #include "Manager/TextureManager.h"
 
@@ -23,7 +26,7 @@ class Game
 {
 public:
 	Game();
-	~Game();
+	virtual ~Game();
 
 	// helper functions
 	void main_loop();
@@ -47,6 +50,9 @@ public:
 
 protected:
    GameState* state_;
+
+   // loggers
+   TextLogger text_logger_;
 };
 
 #endif
