@@ -10,6 +10,10 @@ public:
    virtual ~ConsoleLogger();
 
    virtual void msg(VERBOSITY v, CATEGORY c, std::string msg);
+
+protected:
+   int multiplicity;
+   std::string last_line_;
 };
 
 #endif
