@@ -11,11 +11,13 @@ TextLogger::TextLogger(std::string filename)
       return;
    } 
 
-   this->msg(NONE, INFO, "Opening log file.");
+   std::cout << "File logging enabled ============================================";
+   this->msg(NONE, INFO, "Opening log file ================================================");
 }
 
 TextLogger::~TextLogger() {
-   this->msg(NONE, INFO, "Closing log file.");
+   std::cout << "File logging disabled ===========================================";
+   this->msg(NONE, INFO, "Closing log file ================================================");
 
    this->log.flush();
    this->log.close();
@@ -23,9 +25,13 @@ TextLogger::~TextLogger() {
 
 void TextLogger::msg(VERBOSITY v, CATEGORY c, std::string msg) {
    if (!this->log.is_open()) {
-      std::cout << "msg failed! (" << msg << ")" << std::endl;
+      std::cout << "TextLogger (ERROR): msg failed, log file not opened! (" << msg << ")" << std::endl;
       return;
    }
 
-   this->log << msg << '\n';
+   if (!this->check_verbosity(v)) {
+      return;
+   }
+
+   this->log << "[" << this->get_time() << "] (" << this->get_category_string(c) << ") " << msg << '\n';
 }

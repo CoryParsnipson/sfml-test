@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "Util/InputController.h"
 
+#include "Logger.h"
 #include "Util/Graphics.h"
 #include "TileGraphicsComponent.h"
 
@@ -10,7 +11,7 @@
 GameBuilderState GameState::builder_state;
 
 void GameBuilderState::enter(Game& game) {
-   std::cout << "Entering builder start menu state." << std::endl;
+   Service::get_logger().msg(Logger::HIGH, Logger::INFO, "Entering builder start menu state.");
 
    this->viewports["main"] = new Viewport(game.graphics, static_cast<sf::Vector2f>(game.graphics.get_window().getSize()));
    this->viewports["hud"] = new Viewport(game.graphics, static_cast<sf::Vector2f>(game.graphics.get_window().getSize()));

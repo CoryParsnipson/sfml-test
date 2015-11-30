@@ -7,12 +7,11 @@
 #include "GameStartMenuState.h"
 
 Game::Game()
-: text_logger_("log.txt")
 {
    Service::init(); // initialize service locator
 
    // initialize logging and register service (this should be done first)
-   Service::provide_logger(&this->text_logger_);
+   Service::provide_logger(&this->console_logger_);
    
    // load fonts
    this->graphics.load_font("retro", "retro.ttf");
