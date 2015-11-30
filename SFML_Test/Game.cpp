@@ -11,7 +11,10 @@ Game::Game()
    Service::init(); // initialize service locator
 
    // initialize logging and register service (this should be done first)
-   Service::provide_logger(&this->console_logger_);
+   this->full_logger_.console_start();
+   //this->full_logger_.file_start("log.txt");
+
+   Service::provide_logger(&this->full_logger_);
    
    // load fonts
    this->graphics.load_font("retro", "retro.ttf");

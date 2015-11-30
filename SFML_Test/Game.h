@@ -15,7 +15,7 @@
 #include "Util/Graphics.h"
 #include "Service.h"
 
-#include "ConsoleLogger.h"
+#include "FullLogger.h"
 
 #include "Manager/TextureManager.h"
 
@@ -51,8 +51,7 @@ public:
 protected:
    GameState* state_;
 
-   // loggers
-   ConsoleLogger console_logger_;
+   FullLogger full_logger_;
 };
 
 #endif

@@ -1,14 +1,14 @@
-#ifndef TEXT_LOGGER_H
-#define TEXT_LOGGER_H
+#ifndef FILE_LOGGER_H
+#define FILE_LOGGER_H
 
 #include "dependencies.h"
 #include "Logger.h"
 #include <fstream>
 
-class TextLogger : public Logger {
+class FileLogger : public Logger {
 public:
-   TextLogger(std::string filename);
-   virtual ~TextLogger();
+   FileLogger(std::string filename);
+   virtual ~FileLogger();
 
    virtual void msg(VERBOSITY v, CATEGORY c, std::string msg);
 

@@ -1,31 +1,31 @@
-#include "TextLogger.h"
+#include "FileLogger.h"
 
-TextLogger::TextLogger(std::string filename)
+FileLogger::FileLogger(std::string filename)
 : filename(filename)
 {
    this->log.open(filename, std::ofstream::out | std::ofstream::app);
    if (!this->log.is_open()) {
-      std::cout << "TextLogger (ERROR): cannot open file " << filename << "..." << std::endl;
+      std::cout << "FileLogger (ERROR): cannot open file " << filename << "..." << std::endl;
    
       // TODO: error handling?
       return;
    } 
 
-   std::cout << "File logging enabled ============================================";
+   std::cout << "[" << this->get_time() << "] (INFO) File logging enabled ============================================" << std::endl;
    this->msg(NONE, INFO, "Opening log file ================================================");
 }
 
-TextLogger::~TextLogger() {
-   std::cout << "File logging disabled ===========================================";
+FileLogger::~FileLogger() {
+   std::cout << "[" << this->get_time() << "] (INFO) File logging disable ============================================" << std::endl;
    this->msg(NONE, INFO, "Closing log file ================================================");
 
    this->log.flush();
    this->log.close();
 }
 
-void TextLogger::msg(VERBOSITY v, CATEGORY c, std::string msg) {
+void FileLogger::msg(VERBOSITY v, CATEGORY c, std::string msg) {
    if (!this->log.is_open()) {
-      std::cout << "TextLogger (ERROR): msg failed, log file not opened! (" << msg << ")" << std::endl;
+      std::cout << "FileLogger (ERROR): msg failed, log file not opened! (" << msg << ")" << std::endl;
       return;
    }
 

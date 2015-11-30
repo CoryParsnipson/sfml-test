@@ -6,7 +6,7 @@ ConsoleLogger::ConsoleLogger()
 }
 
 ConsoleLogger::~ConsoleLogger() {
-   this->msg(NONE, INFO, "Console logging disabled =========================================");
+   this->msg(NONE, INFO, "Console logging disabled ========================================");
 }
 
 void ConsoleLogger::msg(VERBOSITY v, CATEGORY c, std::string msg) {
