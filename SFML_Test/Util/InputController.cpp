@@ -27,31 +27,31 @@ void InputController::pollEvents(Game& game) {
    while (game.graphics.get_window().pollEvent(event)) {
       switch (event.type) {
       case sf::Event::Closed:
-         std::cout << "InputController::pollEvents -> close event received" << std::endl;
+         Service::get_logger().msg(Logger::HIGH, Logger::INFO, "InputController::pollEvents: close event received");
          c = new CloseCommand();
          break;
       case sf::Event::Resized:
-         std::cout << "InputController::pollEvents -> size event received" << std::endl;
+         Service::get_logger().msg(Logger::HIGH, Logger::INFO, "InputController::pollEvents: resize event received");
          c = new WindowResizeCommand(event.size);
          break;
       case sf::Event::KeyPressed:
-         std::cout << "InputController::pollEvents -> keypress event received" << std::endl;
+         Service::get_logger().msg(Logger::HIGH, Logger::INFO, "InputController::pollEvents: keypress event received");
          c = new KeyPressCommand(event.key);
          break;
       case sf::Event::MouseMoved:
-         std::cout << "InputController::pollEvents -> mouse move event received" << std::endl;
+         Service::get_logger().msg(Logger::HIGH, Logger::INFO, "InputController::pollEvents: mouse move event received");
          c = new MouseMoveCommand(event.mouseMove);
          break;
       case sf::Event::MouseButtonPressed:
-         std::cout << "InputController::pollEvents -> mouse button event received (pressed)" << std::endl;
+         Service::get_logger().msg(Logger::HIGH, Logger::INFO, "InputController::pollEvents: mouse button (pressed) event received");
          c = new MouseButtonCommand(event.mouseButton, MouseButtonCommand::PRESSED);
          break;
       case sf::Event::MouseButtonReleased:
-         std::cout << "InputController::pollEvents -> mouse button event received (released)" << std::endl;
+         Service::get_logger().msg(Logger::HIGH, Logger::INFO, "InputController::pollEvents: mouse button (released) event received");
          c = new MouseButtonCommand(event.mouseButton, MouseButtonCommand::RELEASED);
          break;
       case sf::Event::MouseWheelMoved:
-         std::cout << "InputController::pollEvents -> mouse wheel moved event received" << std::endl;
+         Service::get_logger().msg(Logger::HIGH, Logger::INFO, "InputController::pollEvents: mouse wheel event received");
          c = new MouseWheelCommand(event.mouseWheel);
          break;
       default:
@@ -60,7 +60,7 @@ void InputController::pollEvents(Game& game) {
       }
    
       if (!c) {
-         std::cout << "InputController::pollEvents -> command object not instantiated" << std::endl;
+         Service::get_logger().msg(Logger::MEDIUM, Logger::WARNING, "InputController::pollEvents: command object not instantiated.");
          return;
       }
       

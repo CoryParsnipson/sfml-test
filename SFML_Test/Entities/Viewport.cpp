@@ -14,7 +14,11 @@ Viewport::Viewport(Graphics& graphics, sf::Vector2f size)
    this->default_center.x = this->default_size.x / 2.f;
    this->default_center.y = this->default_size.y / 2.f;
 
-   std::cout << "DEFAULT CENTER: " << this->default_center.x << ", " << this->default_center.y << std::endl;
+   Service::get_logger().msg(
+      Logger::HIGH,
+      Logger::INFO,
+      "Viewport: default center (" + std::to_string(this->default_center.x) + ", " + std::to_string(this->default_center.y) + ")"
+   );
 
    this->view = new sf::View(this->default_center, this->default_size);
 }
@@ -42,7 +46,11 @@ void Viewport::write(std::string msg, sf::Vector2f pos, const FontConfig* config
 void Viewport::move(sf::Vector2f delta) {
    this->view->move(delta);
 
-   std::cout << "NEW CENTER: " << this->view->getCenter().x << ", " << this->view->getCenter().y << std::endl;
+   Service::get_logger().msg(
+      Logger::HIGH,
+      Logger::INFO,
+      "Viewport::move: new center (" + std::to_string(this->view->getCenter().x) + ", " + std::to_string(this->view->getCenter().y) + ")"
+   );
 }
 
 void Viewport::set_size(sf::Vector2f size) {

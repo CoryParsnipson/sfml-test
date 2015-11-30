@@ -20,7 +20,7 @@ GameStartMenuState::~GameStartMenuState() {
 }
 
 void GameStartMenuState::enter(Game& game) {
-   std::cout << "Entering game start menu state." << std::endl;
+   Service::get_logger().msg(Logger::LOW, Logger::INFO, "Entering game start menu state.");
 
    sf::Vector2f screen_size((float)Settings::Instance()->SCREEN_WIDTH, (float)Settings::Instance()->SCREEN_HEIGHT);
    
@@ -54,22 +54,16 @@ GameState* GameStartMenuState::update(Game& game) {
 }
 
 void GameStartMenuState::process(Game& game, CloseCommand& c) {
-   std::cout << "[GameStartMenuState] Close Command" << std::endl;
-   
    game.exit();
 }
 
 void GameStartMenuState::process(Game& game, KeyPressCommand& c) {
-   std::cout << "[GameStartMenuState] KeyPress Command" << std::endl;
-
    if (c.event.code == sf::Keyboard::Key::Space || c.event.code == sf::Keyboard::Key::Return) {
       this->next_state_ = &GameState::builder_state;
    }
 }
 
 void GameStartMenuState::process(Game& game, WindowResizeCommand& c) {
-   std::cout << "[GameStartMenuState] WindowResize Command" << std::endl;
-
    sf::Vector2f screen_size((float)c.width, (float)c.height);
    sf::Vector2f screen_center(c.width / 2.f, c.height / 2.f);
 
@@ -77,14 +71,6 @@ void GameStartMenuState::process(Game& game, WindowResizeCommand& c) {
    this->viewports["main"]->set_center(screen_center);
 }
 
-void GameStartMenuState::process(Game& game, MouseMoveCommand& c) {
-   std::cout << "[GameStartMenuState] MouseMove Command" << std::endl;
-}
-
-void GameStartMenuState::process(Game& game, MouseButtonCommand& c) {
-   std::cout << "[GameStartMenuState] MouseButton Command" << std::endl;
-}
-
-void GameStartMenuState::process(Game& game, MouseWheelCommand& c) {
-   std::cout << "[GameStartMenuState] MouseWheel Command" << std::endl;
-}
+void GameStartMenuState::process(Game& game, MouseMoveCommand& c) {}
+void GameStartMenuState::process(Game& game, MouseButtonCommand& c) {}
+void GameStartMenuState::process(Game& game, MouseWheelCommand& c) {}

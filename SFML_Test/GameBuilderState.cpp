@@ -20,11 +20,11 @@ void GameBuilderState::enter(Game& game) {
    game.texture_manager.create_texture(0, "tile1.gif");
    game.texture_manager.create_texture(1, "tile_grass.gif");
 
+   Service::get_logger().msg(Logger::LOW, Logger::INFO, game.texture_manager.to_string());
+
    // entities
    this->map = new Map();
    this->map->load_mapfile(game, "map_test.txt");
-
-   std::cout << game.texture_manager.to_string() << std::endl;
 
    game.m->set_view(this->viewports["main"]);
    sf::Mouse::setPosition(static_cast<sf::Vector2i>(this->viewports["main"]->get_center()));
@@ -50,7 +50,7 @@ GameState* GameBuilderState::update(Game& game) {
 }
 
 void GameBuilderState::process(Game& game, CloseCommand& c) {
-   std::cout << "[GameBuilderState] Close Command" << std::endl;
+   Service::get_logger().msg(Logger::LOW, Logger::INFO, "GameBuilderState: close command received.");
    game.exit();
 }
 
