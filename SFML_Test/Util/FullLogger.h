@@ -24,7 +24,7 @@ public:
 
    // TODO: void start_graphic_logging();
 
-   virtual void msg(VERBOSITY v, CATEGORY c, std::string msg);
+   virtual void msg(std::string tag, CATEGORY c, std::string msg);
 
 protected:
    logger_map_t loggers_;

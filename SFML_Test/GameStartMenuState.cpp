@@ -20,7 +20,7 @@ GameStartMenuState::~GameStartMenuState() {
 }
 
 void GameStartMenuState::enter(Game& game) {
-   Service::get_logger().msg(Logger::LOW, Logger::INFO, "Entering game start menu state.");
+   Service::get_logger().msg("GameStartMenuState", Logger::INFO, "Entering game start menu state.");
 
    sf::Vector2f screen_size((float)Settings::Instance()->SCREEN_WIDTH, (float)Settings::Instance()->SCREEN_HEIGHT);
    

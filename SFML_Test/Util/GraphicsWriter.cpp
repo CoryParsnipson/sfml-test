@@ -16,7 +16,7 @@ void GraphicsWriter::load_font(std::string font_name, std::string filename) {
 
 	if (!font->loadFromFile(filename)) {
       // TODO: exception handling
-      Service::get_logger().msg(Logger::NONE, Logger::ERROR, "GraphicsWriter::load_font: cannot load font '" + filename + "'.");
+      Service::get_logger().msg("GraphicsWriter", Logger::ERROR, "load_font: cannot load font '" + filename + "'.");
 		return;
 	}
 
@@ -28,7 +28,7 @@ void GraphicsWriter::unload_font(std::string font_name) {
 
    if (it == this->fonts.end()) {
       // TODO: exception handling?
-      Service::get_logger().msg(Logger::LOW, Logger::WARNING, "GraphicsWriter::unload_font: font '" + font_name + "' not found.");
+      Service::get_logger().msg("GraphicsWriter", Logger::WARNING, "::unload_font: font '" + font_name + "' not found.");
       return;
    }
 
@@ -79,7 +79,7 @@ void GraphicsWriter::write(Graphics& graphics, std::string msg, sf::Vector2f pos
    font_name = this->get_font(final_config->font);
    if (!font_name) {
       // TODO: exception handling
-      Service::get_logger().msg(Logger::NONE, Logger::ERROR, "GraphicsWriter::write: invalid name '" + final_config->font + "' specified.");
+      Service::get_logger().msg("GraphicsWriter", Logger::ERROR, "write: invalid name '" + final_config->font + "' specified.");
       return;
    }
 

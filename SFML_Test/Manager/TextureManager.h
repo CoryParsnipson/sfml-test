@@ -16,7 +16,7 @@ public:
    Texture* create_texture(int id, std::string filename);
 
    // for debug
-   std::string to_string();
+   void print();
 
 protected:
 

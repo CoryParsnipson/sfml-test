@@ -10,7 +10,7 @@ public:
    FileLogger(std::string filename);
    virtual ~FileLogger();
 
-   virtual void msg(VERBOSITY v, CATEGORY c, std::string msg);
+   virtual void msg(std::string tag, CATEGORY c, std::string msg);
 
 private:
    std::string filename;

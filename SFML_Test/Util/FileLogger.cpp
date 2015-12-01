@@ -11,27 +11,27 @@ FileLogger::FileLogger(std::string filename)
       return;
    } 
 
-   std::cout << "[" << this->get_time() << "] (INFO) File logging enabled ============================================" << std::endl;
-   this->msg(NONE, INFO, "Opening log file ================================================");
+   std::cout << "[" << this->get_time() << "] (INFO) [Logger] File logging enabled ==========" << std::endl;
+   this->msg("Logger", INFO, "Opening log file =========="); 
 }
 
 FileLogger::~FileLogger() {
-   std::cout << "[" << this->get_time() << "] (INFO) File logging disable ============================================" << std::endl;
-   this->msg(NONE, INFO, "Closing log file ================================================");
+   std::cout << "[" << this->get_time() << "] (INFO) [Logger] File logging disable ==========" << std::endl;
+   this->msg("Logger", INFO, "Closing log file =========="); 
 
    this->log.flush();
    this->log.close();
 }
 
-void FileLogger::msg(VERBOSITY v, CATEGORY c, std::string msg) {
+void FileLogger::msg(std::string tag, CATEGORY c, std::string msg) {
    if (!this->log.is_open()) {
       std::cout << "FileLogger (ERROR): msg failed, log file not opened! (" << msg << ")" << std::endl;
       return;
    }
 
-   if (!this->check_verbosity(v)) {
+   if (!this->msg_enabled(tag)) {
       return;
    }
 
-   this->log << "[" << this->get_time() << "] (" << this->get_category_string(c) << ") " << msg << '\n';
+   this->log << "[" << this->get_time() << "] (" << this->get_category_string(c) << ") [" << tag << "] " << msg << '\n';
 }

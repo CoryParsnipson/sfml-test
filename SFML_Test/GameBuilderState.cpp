@@ -1,7 +1,6 @@
 #include "Game.h"
 #include "Util/InputController.h"
 
-#include "Logger.h"
 #include "Util/Graphics.h"
 #include "TileGraphicsComponent.h"
 
@@ -11,7 +10,7 @@
 GameBuilderState GameState::builder_state;
 
 void GameBuilderState::enter(Game& game) {
-   Service::get_logger().msg(Logger::HIGH, Logger::INFO, "Entering builder start menu state.");
+   Service::get_logger().msg("GameBuilderState", Logger::INFO, "Entering builder start menu state.");
 
    this->viewports["main"] = new Viewport(game.graphics, static_cast<sf::Vector2f>(game.graphics.get_window().getSize()));
    this->viewports["hud"] = new Viewport(game.graphics, static_cast<sf::Vector2f>(game.graphics.get_window().getSize()));
@@ -19,8 +18,7 @@ void GameBuilderState::enter(Game& game) {
    // load textures
    game.texture_manager.create_texture(0, "tile1.gif");
    game.texture_manager.create_texture(1, "tile_grass.gif");
-
-   Service::get_logger().msg(Logger::LOW, Logger::INFO, game.texture_manager.to_string());
+   game.texture_manager.print();
 
    // entities
    this->map = new Map();
@@ -50,7 +48,7 @@ GameState* GameBuilderState::update(Game& game) {
 }
 
 void GameBuilderState::process(Game& game, CloseCommand& c) {
-   Service::get_logger().msg(Logger::LOW, Logger::INFO, "GameBuilderState: close command received.");
+   Service::get_logger().msg("GameBuilderState", Logger::INFO, "close command received.");
    game.exit();
 }
 

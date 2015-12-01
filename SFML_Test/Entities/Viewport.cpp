@@ -15,9 +15,9 @@ Viewport::Viewport(Graphics& graphics, sf::Vector2f size)
    this->default_center.y = this->default_size.y / 2.f;
 
    Service::get_logger().msg(
-      Logger::HIGH,
+      "Viewport",
       Logger::INFO,
-      "Viewport: default center (" + std::to_string(this->default_center.x) + ", " + std::to_string(this->default_center.y) + ")"
+      "default center (" + std::to_string(this->default_center.x) + ", " + std::to_string(this->default_center.y) + ")"
    );
 
    this->view = new sf::View(this->default_center, this->default_size);
@@ -47,9 +47,9 @@ void Viewport::move(sf::Vector2f delta) {
    this->view->move(delta);
 
    Service::get_logger().msg(
-      Logger::HIGH,
+      "Viewport",
       Logger::INFO,
-      "Viewport::move: new center (" + std::to_string(this->view->getCenter().x) + ", " + std::to_string(this->view->getCenter().y) + ")"
+      "new center (" + std::to_string(this->view->getCenter().x) + ", " + std::to_string(this->view->getCenter().y) + ")"
    );
 }
 

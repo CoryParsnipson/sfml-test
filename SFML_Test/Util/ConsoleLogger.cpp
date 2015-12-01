@@ -3,15 +3,15 @@
 ConsoleLogger::ConsoleLogger()
 : multiplicity(1)
 {
-   this->msg(NONE, INFO, "Console logging enabled =========================================");
+   this->msg("Logger", INFO, "Console logging enabled ==========\n");
 }
 
 ConsoleLogger::~ConsoleLogger() {
-   this->msg(NONE, INFO, "Console logging disabled ========================================\n");
+   this->msg("Logger", INFO, "Console logging disabled ==========\n");
 }
 
-void ConsoleLogger::msg(VERBOSITY v, CATEGORY c, std::string msg) {
-   if (!this->check_verbosity(v)) {
+void ConsoleLogger::msg(std::string tag, CATEGORY c, std::string msg) {
+   if (!this->msg_enabled(tag)) {
       return;
    }
 
@@ -26,7 +26,7 @@ void ConsoleLogger::msg(VERBOSITY v, CATEGORY c, std::string msg) {
       std::cout << "\n";
    }
    
-   std::cout << "[" << this->get_time() << "] (" << this->get_category_string(c) << ") " << msg;
+   std::cout << "[" << this->get_time() << "] (" << this->get_category_string(c) << ") [" << tag << "] " << msg;
 
    if (this->multiplicity > 1) {
       std::cout << " (x" << std::to_string(this->multiplicity) << ")";

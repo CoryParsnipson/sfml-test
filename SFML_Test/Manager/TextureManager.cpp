@@ -16,16 +16,14 @@ Texture* TextureManager::create_texture(int id, std::string filename) {
    return this->textures[id];
 }
 
-std::string TextureManager::to_string() {
-   std::string tm;
+void TextureManager::print() {
    texture_map_t::iterator t;
 
-   tm = "[TextureManager] contents:\n";
-   
+   Service::get_logger().msg("TextureManager", Logger::INFO, "contents:");
+
    for(t = this->textures.begin(); t != this->textures.end(); t++) {
-      tm += "  " + std::to_string(t->first) + ": " + t->second->to_string() + "\n";
+      Service::get_logger().msg("TextureManager", Logger::INFO, "  " + std::to_string(t->first) + ": " + t->second->to_string());
    }
 
-   tm += "[TextureManager] end contents.\n";
-   return tm;
+   Service::get_logger().msg("TextureManager", Logger::INFO, "end contents.");
 }

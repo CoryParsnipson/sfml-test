@@ -9,7 +9,7 @@ public:
    ConsoleLogger();
    virtual ~ConsoleLogger();
 
-   virtual void msg(VERBOSITY v, CATEGORY c, std::string msg);
+   virtual void msg(std::string tag, CATEGORY c, std::string msg);
 
 protected:
    int multiplicity;

@@ -12,7 +12,7 @@ Game::Game()
 
    // initialize logging and register service (this should be done first)
    this->full_logger_.console_start();
-   //this->full_logger_.file_start("log.txt");
+   this->full_logger_.file_start("log.txt");
 
    Service::provide_logger(&this->full_logger_);
    

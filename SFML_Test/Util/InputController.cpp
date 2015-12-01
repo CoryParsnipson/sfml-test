@@ -27,31 +27,31 @@ void InputController::pollEvents(Game& game) {
    while (game.graphics.get_window().pollEvent(event)) {
       switch (event.type) {
       case sf::Event::Closed:
-         Service::get_logger().msg(Logger::HIGH, Logger::INFO, "InputController::pollEvents: close event received");
+         Service::get_logger().msg("InputController", Logger::INFO, "pollEvents: close event received");
          c = new CloseCommand();
          break;
       case sf::Event::Resized:
-         Service::get_logger().msg(Logger::HIGH, Logger::INFO, "InputController::pollEvents: resize event received");
+         Service::get_logger().msg("InputController", Logger::INFO, "pollEvents: resize event received");
          c = new WindowResizeCommand(event.size);
          break;
       case sf::Event::KeyPressed:
-         Service::get_logger().msg(Logger::HIGH, Logger::INFO, "InputController::pollEvents: keypress event received");
+         Service::get_logger().msg("InputController", Logger::INFO, "pollEvents: keypress event received");
          c = new KeyPressCommand(event.key);
          break;
       case sf::Event::MouseMoved:
-         Service::get_logger().msg(Logger::HIGH, Logger::INFO, "InputController::pollEvents: mouse move event received");
+         Service::get_logger().msg("InputController", Logger::INFO, "pollEvents: mouse move event received");
          c = new MouseMoveCommand(event.mouseMove);
          break;
       case sf::Event::MouseButtonPressed:
-         Service::get_logger().msg(Logger::HIGH, Logger::INFO, "InputController::pollEvents: mouse button (pressed) event received");
+         Service::get_logger().msg("InputController", Logger::INFO, "pollEvents: mouse button (pressed) event received");
          c = new MouseButtonCommand(event.mouseButton, MouseButtonCommand::PRESSED);
          break;
       case sf::Event::MouseButtonReleased:
-         Service::get_logger().msg(Logger::HIGH, Logger::INFO, "InputController::pollEvents: mouse button (released) event received");
+         Service::get_logger().msg("InputController", Logger::INFO, "pollEvents: mouse button (released) event received");
          c = new MouseButtonCommand(event.mouseButton, MouseButtonCommand::RELEASED);
          break;
       case sf::Event::MouseWheelMoved:
-         Service::get_logger().msg(Logger::HIGH, Logger::INFO, "InputController::pollEvents: mouse wheel event received");
+         Service::get_logger().msg("InputController", Logger::INFO, "pollEvents: mouse wheel event received");
          c = new MouseWheelCommand(event.mouseWheel);
          break;
       default:
@@ -60,7 +60,7 @@ void InputController::pollEvents(Game& game) {
       }
    
       if (!c) {
-         Service::get_logger().msg(Logger::MEDIUM, Logger::WARNING, "InputController::pollEvents: command object not instantiated.");
+         Service::get_logger().msg("InputController", Logger::WARNING, "pollEvents: command object not instantiated.");
          return;
       }
       

@@ -74,7 +74,7 @@ void FullLogger::file_disable() {
   std::cout << "FullLogger::file_disable (ERROR): file logger not initialized!" << std::endl;
 }
 
-void FullLogger::msg(VERBOSITY v, CATEGORY c, std::string msg) {
+void FullLogger::msg(std::string tag, CATEGORY c, std::string msg) {
    logger_map_t::const_iterator it;
    
    for (it = this->loggers_.begin(); it != this->loggers_.end(); it++) {
@@ -82,6 +82,6 @@ void FullLogger::msg(VERBOSITY v, CATEGORY c, std::string msg) {
          continue;
       }
 
-      std::get<1>(it->second)->msg(v, c, msg);
+      std::get<1>(it->second)->msg(tag, c, msg);
    }
 }
