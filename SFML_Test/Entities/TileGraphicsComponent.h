@@ -14,6 +14,8 @@ public:
    void set_position(sf::Vector2i pos);
    void set_texture(Texture& t);
 
+   bool contains(sf::Vector2i coord);
+
    virtual void update(Entity* entity, Viewport& viewport);
 
 protected:

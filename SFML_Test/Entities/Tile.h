@@ -11,6 +11,10 @@ public:
    void set_position(sf::Vector2i pos);
    sf::Vector2i get_position();
 
+   bool contains(sf::Vector2i coord);
+
+   std::string to_string();
+
    virtual void update(Viewport& viewport);
 
 protected:

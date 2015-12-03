@@ -81,6 +81,20 @@ void GameBuilderState::process(Game& game, WindowResizeCommand& c) {
    this->viewports["main"]->set_default_size(screen_size);
 }
 
+void GameBuilderState::process(Game& game, MouseButtonCommand& c) {
+   if (c.button != MouseButtonCommand::MOUSE_BUTTON::LEFT) {
+      return;
+   }
+
+   sf::Vector2i mouse_pos(c.x, c.y);
+   Tile* t = this->map->get_tile_from_screen_coord(mouse_pos);
+   
+   if (!t) {
+      return;
+   }
+
+   Service::get_logger().msg("GameBuilderState", Logger::INFO, "Mouse-selected tile: " + t->to_string());
+}
+
 void GameBuilderState::process(Game& game, MouseMoveCommand& c) {}
-void GameBuilderState::process(Game& game, MouseButtonCommand& c) {}
 void GameBuilderState::process(Game& game, MouseWheelCommand& c) {}

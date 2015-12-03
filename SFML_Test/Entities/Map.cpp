@@ -58,3 +58,17 @@ std::string Map::to_string() {
 
 	return output;
 }
+
+Tile* Map::get_tile_from_screen_coord(sf::Vector2i coord) {
+   Tile* t = nullptr;
+   map_type_t::const_iterator iterator;
+
+   for (iterator = this->tiles.begin(); iterator != this->tiles.end(); iterator++) {
+      if (iterator->second->contains(coord)) {
+         t = iterator->second;
+         break;
+      }
+   }
+
+   return t; 
+}

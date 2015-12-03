@@ -28,6 +28,8 @@ public:
 
 	void draw(Viewport& viewport);
 	std::string to_string();
+   
+   Tile* get_tile_from_screen_coord(sf::Vector2i coord);
 
 protected:
 	std::string map_filename;

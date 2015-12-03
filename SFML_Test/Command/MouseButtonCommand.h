@@ -31,6 +31,8 @@ public:
    // positions are relative to top and left of owner window
    int x;
    int y;
+
+   std::string to_string();
 };
 
 #endif

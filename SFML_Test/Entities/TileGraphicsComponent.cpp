@@ -3,7 +3,7 @@
 #include "Tile.h"
 
 TileGraphicsComponent::TileGraphicsComponent(Texture& t)
-: font_info("retro", 12, FontConfig::ALIGN::CENTER)
+: font_info("retro", 7, FontConfig::ALIGN::CENTER)
 {
    this->init();
    this->set_texture(t);
@@ -25,14 +25,14 @@ void TileGraphicsComponent::update(Entity* entity, Viewport& viewport) {
    sf::FloatRect sprite_rect = this->sprite.getLocalBounds();
    sf::Vector2f msg_pos;
    msg_pos.x = sprite_pos.x + (float)Settings::Instance()->SCALE_X * sprite_rect.width / 2.0f;
-   msg_pos.y = sprite_pos.y + (float)Settings::Instance()->SCALE_Y * sprite_rect.height * 2.5f / 4.0f;
+   msg_pos.y = sprite_pos.y + (float)Settings::Instance()->SCALE_Y * sprite_rect.height * 2.8f / 4.0f;
 
    viewport.write(coordinate_info.str(), msg_pos, &this->font_info);
 
    coordinate_info.str("");
    coordinate_info << "(" << msg_pos.x << ", " << msg_pos.y << ")";
 
-   viewport.write(coordinate_info.str(), msg_pos + sf::Vector2f(0, 15), &this->font_info);
+   viewport.write(coordinate_info.str(), msg_pos + sf::Vector2f(0, 9), &this->font_info);
 }
 
 void TileGraphicsComponent::init() {
@@ -49,4 +49,8 @@ void TileGraphicsComponent::set_position(sf::Vector2i pos) {
 
 void TileGraphicsComponent::set_texture(Texture& t) {
    this->sprite.setTexture(t.get_texture());
+}
+
+bool TileGraphicsComponent::contains(sf::Vector2i coord) {
+   return this->sprite.getGlobalBounds().contains(static_cast<sf::Vector2f>(coord));
 }

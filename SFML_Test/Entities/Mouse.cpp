@@ -34,7 +34,11 @@ void Mouse::process(MouseMoveCommand& c) {
 
 void Mouse::process(MouseButtonCommand& c) {
    switch (c.button) {
-   case MouseButtonCommand::LEFT: break;
+   case MouseButtonCommand::LEFT:
+      if (c.state == MouseButtonCommand::PRESSED) {
+         Service::get_logger().msg("Mouse", Logger::INFO, c.to_string());
+      }
+      break;
    case MouseButtonCommand::RIGHT:
       this->is_panning = (c.state == MouseButtonCommand::PRESSED);
       this->panning_anchor = this->get_mouse_position();

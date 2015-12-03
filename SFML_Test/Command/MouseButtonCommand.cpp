@@ -15,3 +15,20 @@ MouseButtonCommand::MouseButtonCommand(sf::Event::MouseButtonEvent& e, MouseButt
    default: throw "MouseButtonCommand::MouseButtonCommand - Unrecognized mouse button id."; break;
    }
 }
+
+std::string MouseButtonCommand::to_string() {
+   std::string button_str;
+
+   switch (this->button) {
+   case LEFT: button_str = "LEFT"; break;
+   case RIGHT: button_str = "RIGHT"; break;
+   case MIDDLE: button_str = "MIDDLE"; break;
+   case XBUTTON1: button_str = "XBUTTON1"; break;
+   case XBUTTON2: button_str = "XBUTTON2"; break;
+   }
+
+   return "[MouseButtonCommand: " +
+          button_str + ", " +
+          (state == PRESSED ? "PRESSED " : "RELEASED ") + 
+          "(" + std::to_string(this->x) + ", " + std::to_string(this->y) + ")]";
+}
