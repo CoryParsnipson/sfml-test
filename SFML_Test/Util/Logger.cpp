@@ -4,7 +4,9 @@
 Logger::tag_map_t Logger::tag_map = Logger::tag_map_t();
 Logger::category_map_t Logger::category_string = Logger::category_map_t();
 
-Logger::Logger() {
+Logger::Logger()
+: enabled_(true)
+{
    this->category_string[INFO] = "INFO";
    this->category_string[WARNING] = "WARNING";
    this->category_string[ERROR] = "***ERROR***";
@@ -13,12 +15,28 @@ Logger::Logger() {
 Logger::~Logger() {
 }
 
+void Logger::enable() {
+   this->enabled_ = true;
+}
+
+void Logger::disable() {
+   this->enabled_ = false;
+}
+
 std::string Logger::get_category_string(CATEGORY c) {
    return Logger::category_string[c];
 }
 
 void Logger::set_tag(std::string tag, bool tag_enable /* = true */) {
    Logger::tag_map[tag] = tag_enable;
+}
+
+void Logger::disable_all_tags() {
+   Logger::set_all_tags(false);
+}
+
+void Logger::enable_all_tags() {
+   Logger::set_all_tags(true);
 }
 
 std::string Logger::get_time() {
@@ -35,8 +53,15 @@ bool Logger::msg_enabled(std::string tag) {
    if (it == Logger::tag_map.end()) {
       // add unknown tags to tag map and automatically enable them
       Logger::set_tag(tag, true);
-      return true;
+      return true && this->enabled_;
    }
 
-   return it->second;
+   return it->second && this->enabled_;
+}
+
+void Logger::set_all_tags(bool enabled) {
+   tag_map_t::iterator it;
+   for (it = Logger::tag_map.begin(); it != Logger::tag_map.end(); it++) {
+      it->second = enabled;
+   }
 }
