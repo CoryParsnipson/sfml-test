@@ -22,28 +22,27 @@ public:
    // public interface
    virtual void msg(std::string tag, CATEGORY c, std::string msg) = 0;
 
-   virtual void enable();
-   virtual void disable();
-
-   // static helper methods
-   static std::string get_category_string(CATEGORY c);
-   static void set_tag(std::string tag, bool tag_enable = true);
-   
-   static void disable_all_tags();
-   static void enable_all_tags();
-   
-   // helper methods
    virtual std::string get_time();
    virtual bool msg_enabled(std::string tag);
 
+   void disable_all_tags();
+   void enable_all_tags();
+
+   void set_tag(std::string tag, bool tag_enable = true);
+
+   virtual void enable();
+   virtual void disable();
+   
+   static std::string get_category_string(CATEGORY c);
+   
 protected:
-   static tag_map_t tag_map;
    static category_map_t category_string;
 
+   tag_map_t tag_map;
    bool enabled_;
 
-   // helper methods
-   static void set_all_tags(bool enabled);
+   // protected helper methods
+   void set_all_tags(bool enabled);
 };
 
 #endif

@@ -11,11 +11,13 @@ Game::Game()
    Service::init(); // initialize service locator
 
    // initialize logging and register service (this should be done first)
-   Logger::set_tag("Viewport", false);
-   Logger::set_tag("InputController", false);
-
    this->full_logger_.console_start();
-   this->full_logger_.file_start("log.txt");
+   this->full_logger_.get_logger("console")->set_tag("Viewport", false);
+   this->full_logger_.get_logger("console")->set_tag("InputController", false);
+
+   //this->full_logger_.file_start("log.txt");
+   //this->full_logger_.get_logger("file")->set_tag("Viewport", false);
+   //this->full_logger_.get_logger("file")->set_tag("InputController", false);
 
    Service::provide_logger(&this->full_logger_);
    
