@@ -21,23 +21,28 @@ void GameBuilderState::enter(Game& game) {
    game.texture_manager.print();
 
    // entities
-   this->map = new Map();
-   this->map->load_mapfile(game, "map_test.txt");
+   //this->map = new Map();
+   //this->map->load_mapfile(game, "map_test.txt");
 
-   game.m->set_view(this->viewports["main"]);
-   sf::Mouse::setPosition(static_cast<sf::Vector2i>(this->viewports["main"]->get_center()));
+   //game.m->set_view(this->viewports["main"]);
+   //sf::Mouse::setPosition(static_cast<sf::Vector2i>(this->viewports["main"]->get_center()));
+   
+   this->e = new Entity2();
+   this->g = new GraphicsPart(game.texture_manager.get_texture(0));
 }
 
 void GameBuilderState::exit(Game& game) {
-   game.m->set_view(nullptr);
+   //game.m->set_view(nullptr);
 }
 
 GameState* GameBuilderState::update(Game& game) {
    // draw map view items
-   this->map->draw(*this->viewports["main"]);
+   //this->map->draw(*this->viewports["main"]);
 
    // update entities
-   game.m->update(*this->viewports["hud"]);
+   //game.m->update(*this->viewports["hud"]);
+
+   this->g->update(*this->e, *this->viewports["main"]);
 
    // draw fixed hud items
    this->viewports["hud"]->write("SFML_Test");
@@ -87,13 +92,13 @@ void GameBuilderState::process(Game& game, MouseButtonCommand& c) {
    }
 
    sf::Vector2i mouse_pos(c.x, c.y);
-   Tile* t = this->map->get_tile_from_screen_coord(mouse_pos);
-   
-   if (!t) {
-      return;
-   }
+   //Tile* t = this->map->get_tile_from_screen_coord(mouse_pos);
+   //
+   //if (!t) {
+   //   return;
+   //}
 
-   Service::get_logger().msg("GameBuilderState", Logger::INFO, "Mouse-selected tile: " + t->to_string());
+   //Service::get_logger().msg("GameBuilderState", Logger::INFO, "Mouse-selected tile: " + t->to_string());
 }
 
 void GameBuilderState::process(Game& game, MouseMoveCommand& c) {}

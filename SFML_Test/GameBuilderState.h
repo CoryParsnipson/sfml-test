@@ -3,11 +3,14 @@
 
 #include "dependencies.h"
 
-#include "Entities/Map.h"
-#include "Entities/Texture.h"
-#include "Entities/Viewport.h"
-
 #include "GameState.h"
+
+#include "Entities/Map.h"
+#include "Texture.h"
+#include "Viewport.h"
+
+#include "Entity2.h"
+#include "GraphicsPart.h"
 
 // forward declarations
 class Game;
@@ -34,6 +37,9 @@ protected:
    Texture* t2;
 
    Map* map;
+
+   Entity2* e;
+   GraphicsPart* g;
 };
 
 #endif

@@ -12,8 +12,11 @@ Game::Game()
 
    // initialize logging and register service (this should be done first)
    this->full_logger_.console_start();
+   this->full_logger_.get_logger("console")->disable_all_tags();
    this->full_logger_.get_logger("console")->set_tag("Viewport", false);
    this->full_logger_.get_logger("console")->set_tag("InputController", false);
+   this->full_logger_.get_logger("console")->set_tag("GraphicsPart", true);
+   this->full_logger_.get_logger("console")->enable();
 
    //this->full_logger_.file_start("log.txt");
    //this->full_logger_.get_logger("file")->set_tag("Viewport", false);
@@ -25,12 +28,12 @@ Game::Game()
    this->graphics.load_font("retro", "retro.ttf");
 
    // initialize mouse interface wrapper
-   this->m = new Mouse(new MouseGraphicsComponent());
+   //this->m = new Mouse(new MouseGraphicsComponent());
 
    // set up input controller
    InputController& ic = InputController::instance();
    ic.registerInputListener(this);
-   ic.registerInputListener(this->m);
+   //ic.registerInputListener(this->m);
 }
 
 Game::~Game() {

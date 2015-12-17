@@ -4,7 +4,7 @@
 #include "dependencies.h"
 
 #include "GraphicsWriter.h"
-#include "../Entities/Viewport.h"
+#include "Viewport.h"
 
 // SFML graphics interface
 class Graphics {

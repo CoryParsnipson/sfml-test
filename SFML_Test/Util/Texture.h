@@ -1,7 +1,7 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include "../dependencies.h"
+#include "dependencies.h"
 
 class Texture {
 public:

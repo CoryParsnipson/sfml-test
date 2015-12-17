@@ -1,7 +1,7 @@
 #ifndef MOUSE_H
 #define MOUSE_H
 
-#include "../dependencies.h"
+#include "dependencies.h"
 #include "Util/InputListener.h"
 
 #include "Command/CloseCommand.h"
@@ -11,6 +11,7 @@
 #include "Command/MouseButtonCommand.h"
 #include "Command/MouseWheelCommand.h"
 
+#include "GraphicsComponent.h"
 #include "Viewport.h"
 #include "Entity.h"
 

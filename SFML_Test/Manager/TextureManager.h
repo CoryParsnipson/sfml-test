@@ -1,9 +1,9 @@
 #ifndef TEXTURE_MANAGER_H
 #define TEXTURE_MANAGER_H
 
-#include "../dependencies.h"
+#include "dependencies.h"
 
-#include "../Entities/Texture.h"
+#include "Texture.h"
 
 class TextureManager 
 {

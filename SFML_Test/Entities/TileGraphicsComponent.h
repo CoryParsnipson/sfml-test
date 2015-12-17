@@ -4,7 +4,7 @@
 #include "dependencies.h"
 
 #include "FontConfig.h"
-#include "../Entities/Texture.h"
+#include "Texture.h"
 #include "GraphicsComponent.h"
 
 class TileGraphicsComponent : public GraphicsComponent {

@@ -1,6 +1,7 @@
 #ifndef TILE_H
 #define TILE_H
 
+#include "GraphicsComponent.h"
 #include "Entity.h"
 
 class Tile : public Entity {
