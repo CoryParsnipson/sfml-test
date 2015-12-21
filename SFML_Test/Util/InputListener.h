@@ -1,7 +1,7 @@
 #ifndef INPUT_LISTENER_H
 #define INPUT_LISTENER_H
 
-#include "../dependencies.h"
+#include <vector>
 
 // forward declarations
 class Command;

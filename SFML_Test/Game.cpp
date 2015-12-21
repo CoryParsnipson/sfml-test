@@ -1,7 +1,7 @@
 #include "Game.h"
 #include "Entities/Map.h"
 #include "Entities/MouseGraphicsComponent.h"
-#include "Util/InputController.h"
+#include "InputController.h"
 #include "Manager/TextureManager.h"
 
 #include "GameStartMenuState.h"
@@ -10,7 +10,7 @@ Game::Game()
 {
    Service::init(); // initialize service locator
 
-   // initialize logging and register service (this should be done first)
+   // initialize logging and register service (this should be done asap)
    this->full_logger_.console_start();
    this->full_logger_.get_logger("console")->disable_all_tags();
    this->full_logger_.get_logger("console")->set_tag("Viewport", false);
@@ -24,16 +24,15 @@ Game::Game()
 
    Service::provide_logger(&this->full_logger_);
    
+   // set up input
+   this->input_.registerInputListener(this);
+   Service::provide_input(&this->input_);
+   
    // load fonts
    this->graphics.load_font("retro", "retro.ttf");
 
    // initialize mouse interface wrapper
    //this->m = new Mouse(new MouseGraphicsComponent());
-
-   // set up input controller
-   InputController& ic = InputController::instance();
-   ic.registerInputListener(this);
-   //ic.registerInputListener(this->m);
 }
 
 Game::~Game() {
@@ -51,8 +50,7 @@ void Game::reset() {
 void Game::main_loop() {
    while (this->graphics.is_open()) {
       // poll input
-      InputController& ic = InputController::instance();
-      ic.pollEvents(*this);
+      Service::get_input().pollEvents(*this);
 
       // clear graphics
       this->graphics.clear();

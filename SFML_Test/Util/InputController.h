@@ -1,7 +1,8 @@
 #ifndef INPUT_CONTROLLER_H
 #define INPUT_CONTROLLER_H
 
-#include "../dependencies.h"
+#include <vector>
+
 #include "InputListener.h"
 
 // forward declarations
@@ -11,17 +12,12 @@ class Game;
 // input handler class and command hierarchy
 class InputController {
 public:
-   static InputController& instance(); // object access method
+   InputController();
 
-   void registerInputListener(InputListener* listener);
-   void pollEvents(Game& game);
+   virtual void registerInputListener(InputListener* listener);
+   virtual void pollEvents(Game& game);
 
 private:
-   // seal off constructors
-   InputController();
-   InputController(InputController const &) = delete;
-   void operator=(InputController const &) = delete;
-
    std::vector<InputListener*> listeners;
 };
 

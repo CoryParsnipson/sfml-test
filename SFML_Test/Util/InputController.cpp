@@ -8,11 +8,6 @@
 
 #include "Game.h"
 
-InputController& InputController::instance() {
-   static InputController _inst;
-   return _inst;
-}
-
 InputController::InputController() {
 }
 

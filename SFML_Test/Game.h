@@ -52,6 +52,7 @@ protected:
    GameState* state_;
 
    FullLogger full_logger_;
+   InputController input_;
 };
 
 #endif
