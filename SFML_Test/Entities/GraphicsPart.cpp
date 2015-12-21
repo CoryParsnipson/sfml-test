@@ -1,8 +1,9 @@
 #include "GraphicsPart.h"
 #include "FontConfig.h"
 
-GraphicsPart::GraphicsPart()
-: font_debug_("retro", 10, FontConfig::ALIGN::LEFT)
+GraphicsPart::GraphicsPart(std::string id)
+: Part(id)
+, font_debug_("retro", 10, FontConfig::ALIGN::LEFT)
 {
    Service::get_logger().msg("GraphicsPart", Logger::INFO, "Creating GraphicsPart");
 }

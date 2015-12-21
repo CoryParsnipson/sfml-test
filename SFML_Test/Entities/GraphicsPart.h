@@ -10,7 +10,7 @@ public:
    typedef std::vector<sf::Sprite*> sprite_list_t;
    typedef std::vector<sf::Shape*> shape_list_t;
 
-   GraphicsPart();
+   GraphicsPart(std::string id = "graphics");
    virtual ~GraphicsPart();
 
    virtual void add(sf::Sprite* sprite);

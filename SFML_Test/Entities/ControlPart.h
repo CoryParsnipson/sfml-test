@@ -9,7 +9,7 @@ class ControlPart
 , public InputListener
 {
 public:
-   ControlPart() {};
+   ControlPart(std::string id = "control") : Part(id) {};
    virtual ~ControlPart() {};
 
    virtual void process(CloseCommand& c) = 0;

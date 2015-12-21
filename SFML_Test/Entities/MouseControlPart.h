@@ -5,7 +5,7 @@
 
 class MouseControlPart : public ControlPart {
 public:
-   MouseControlPart();
+   MouseControlPart(std::string id = "control");
    virtual ~MouseControlPart();
 
    virtual void process(CloseCommand& c);

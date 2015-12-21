@@ -9,19 +9,15 @@ class Part;
 
 class Entity2 {
 public:
-   typedef std::vector<Part*> part_list_t;
+   typedef std::map<std::string, Part*> part_list_t;
 
    Entity2();
    virtual ~Entity2();
    
-   // add part
    virtual void add(Part* part);
-
+   virtual Part* get(std::string part_name);
    // remove part
    // get part
-  
-   // iterator
-   //Iterator* get_iterator();
 
    virtual void update(Viewport& viewport);
 

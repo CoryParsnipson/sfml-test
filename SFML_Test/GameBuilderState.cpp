@@ -1,10 +1,9 @@
 #include "GameBuilderState.h"
 
 #include "UtilFactory.h"
+#include "Part.h"
 #include "Game.h"
 #include "Graphics.h"
-#include "InputController.h"
-#include "TileGraphicsComponent.h"
 
 // initialize static instance
 GameBuilderState GameState::builder_state;
@@ -28,6 +27,7 @@ void GameBuilderState::enter(Game& game) {
    //sf::Mouse::setPosition(static_cast<sf::Vector2i>(this->viewports["main"]->get_center()));
    
    this->e = UtilFactory::inst()->create_mouse();
+   Service::get_input().registerInputListener(dynamic_cast<InputListener*>(this->e->get("control")));
 }
 
 void GameBuilderState::exit(Game& game) {
