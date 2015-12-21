@@ -1,10 +1,10 @@
-#include "Game.h"
-#include "Util/InputController.h"
-
-#include "Util/Graphics.h"
-#include "TileGraphicsComponent.h"
-
 #include "GameBuilderState.h"
+
+#include "UtilFactory.h"
+#include "Game.h"
+#include "Graphics.h"
+#include "InputController.h"
+#include "TileGraphicsComponent.h"
 
 // initialize static instance
 GameBuilderState GameState::builder_state;
@@ -27,8 +27,7 @@ void GameBuilderState::enter(Game& game) {
    //game.m->set_view(this->viewports["main"]);
    //sf::Mouse::setPosition(static_cast<sf::Vector2i>(this->viewports["main"]->get_center()));
    
-   this->e = new Entity2();
-   this->g = new GraphicsPart(game.texture_manager.get_texture(0));
+   this->e = UtilFactory::inst()->create_mouse();
 }
 
 void GameBuilderState::exit(Game& game) {
@@ -42,7 +41,7 @@ GameState* GameBuilderState::update(Game& game) {
    // update entities
    //game.m->update(*this->viewports["hud"]);
 
-   this->g->update(*this->e, *this->viewports["main"]);
+   this->e->update(*this->viewports["hud"]);
 
    // draw fixed hud items
    this->viewports["hud"]->write("SFML_Test");

@@ -1,23 +1,29 @@
 #ifndef GRAPHICS_PART_H
-#define GRAHPICS_PART_H
+#define GRAPHICS_PART_H
 
 #include "Part.h"
 #include "Texture.h"
 #include "Viewport.h"
 
-class GraphicsPart {
+class GraphicsPart : public Part {
 public:
-   //GraphicsPart(Texture& t, FontConfig* fc = nullptr);
-   GraphicsPart(Texture* t);
+   typedef std::vector<sf::Sprite*> sprite_list_t;
+   typedef std::vector<sf::Shape*> shape_list_t;
 
-   // this calls parent update method?
-   virtual void update(Entity2& entity, Viewport& viewport);
+   GraphicsPart();
+   virtual ~GraphicsPart();
+
+   virtual void add(sf::Sprite* sprite);
+   virtual void add(sf::Shape* shape);
+   // virtual remove();
+
+   virtual void update(Entity2& entity, Viewport& viewport); // TODO: figure out how to unify update method signatures
 
 protected:
    FontConfig font_debug_;
 
-   Texture* texture_;
-   sf::Sprite sprite_;
+   sprite_list_t sprites_;
+   shape_list_t shapes_;
 };
 
 #endif

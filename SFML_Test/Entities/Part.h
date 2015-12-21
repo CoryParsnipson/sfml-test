@@ -2,6 +2,7 @@
 #define PART_H
 
 #include "dependencies.h"
+#include "Viewport.h"
 
 // forward declarations
 class Entity2;
@@ -11,7 +12,7 @@ public:
    // send message
    // receive message
 
-   virtual void update(Entity2& entity) = 0;
+   virtual void update(Entity2& entity, Viewport& viewport) = 0;
 
 protected:
 };

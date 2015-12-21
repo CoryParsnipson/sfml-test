@@ -27,16 +27,18 @@ INCLUDE_PATHS =
 INCLUDE_PATHS += SFML_Test
 INCLUDE_PATHS += SFML_Test/Util
 INCLUDE_PATHS += SFML_Test/Command
-INCLUDE_PATHS += SFML_Test/Manager
 INCLUDE_PATHS += SFML_Test/Entities
+INCLUDE_PATHS += SFML_Test/Manager
+INCLUDE_PATHS += SFML_Test/Factory
 
 CXX_FILES = 
 CXX_FILES += $(PROJECT_DIR)/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Util/*.cpp
+CXX_FILES += $(PROJECT_DIR)/FileReader/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Command/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Entities/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Manager/*.cpp
-CXX_FILES += $(PROJECT_DIR)/FileReader/*.cpp
+CXX_FILES += $(PROJECT_DIR)/Factory/*.cpp
 
 .PHONY: for_debug for_release
 .DEFAULT_GOAL := for_debug

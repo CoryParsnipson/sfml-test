@@ -10,7 +10,6 @@
 #include "Viewport.h"
 
 #include "Entity2.h"
-#include "GraphicsPart.h"
 
 // forward declarations
 class Game;
@@ -39,7 +38,6 @@ protected:
    Map* map;
 
    Entity2* e;
-   GraphicsPart* g;
 };
 
 #endif
