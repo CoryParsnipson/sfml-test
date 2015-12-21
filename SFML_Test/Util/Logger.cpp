@@ -7,7 +7,8 @@ Logger::Logger()
 : enabled_(true)
 {
    this->category_string[INFO] = "INFO";
-   this->category_string[WARNING] = "WARNING";
+   this->category_string[ALWAYS] = "ALWAYS";
+   this->category_string[WARNING] = "WARNING (!!)";
    this->category_string[ERROR] = "***ERROR***";
 }
 

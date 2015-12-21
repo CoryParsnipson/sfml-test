@@ -8,6 +8,7 @@
 class Logger {
 public:
    enum CATEGORY {
+      ALWAYS,
       INFO,
       WARNING,
       ERROR 

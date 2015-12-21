@@ -3,15 +3,15 @@
 ConsoleLogger::ConsoleLogger()
 : multiplicity(1)
 {
-   this->msg("Logger", INFO, "Console logging enabled ==========\n");
+   this->msg("Logger", ALWAYS, "Console logging enabled ==========\n");
 }
 
 ConsoleLogger::~ConsoleLogger() {
-   this->msg("Logger", INFO, "Console logging disabled ==========\n");
+   this->msg("Logger", ALWAYS, "Console logging disabled ==========\n");
 }
 
 void ConsoleLogger::msg(std::string tag, CATEGORY c, std::string msg) {
-   if (!this->msg_enabled(tag)) {
+   if (!this->msg_enabled(tag) && c != ALWAYS) {
       return;
    }
 
@@ -30,5 +30,6 @@ void ConsoleLogger::msg(std::string tag, CATEGORY c, std::string msg) {
 
    if (this->multiplicity > 1) {
       std::cout << " (x" << std::to_string(this->multiplicity) << ")";
+      std::cout << std::flush;
    }
 }
