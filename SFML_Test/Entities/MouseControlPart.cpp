@@ -14,14 +14,9 @@ MouseControlPart::MouseControlPart(std::string id)
 MouseControlPart::~MouseControlPart() {
 }
 
-void MouseControlPart::process(CloseCommand& c) {
-}
-
-void MouseControlPart::process(KeyPressCommand& c) {
-}
-
-void MouseControlPart::process(WindowResizeCommand& c) {
-}
+void MouseControlPart::process(CloseCommand& c) {}
+void MouseControlPart::process(KeyPressCommand& c) {}
+void MouseControlPart::process(WindowResizeCommand& c) {}
 
 void MouseControlPart::process(MouseMoveCommand& c) {
    this->last_mouse_pos.x = c.x;
