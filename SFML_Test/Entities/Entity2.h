@@ -22,8 +22,6 @@ public:
    virtual void update(Viewport& viewport);
 
 protected:
-   sf::Vector2f pos; // world location // move to physics component?
-
    part_list_t parts_;
 };
 

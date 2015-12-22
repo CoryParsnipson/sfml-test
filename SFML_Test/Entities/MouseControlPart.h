@@ -18,6 +18,7 @@ public:
    virtual void update(Entity2& entity, Viewport& viewport);
 
 protected:
+   sf::Vector2f last_mouse_pos;
 };
 
 #endif
