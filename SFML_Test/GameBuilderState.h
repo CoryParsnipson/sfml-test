@@ -38,6 +38,7 @@ protected:
    Map* map;
 
    Entity2* e;
+   Entity2* temp;
 };
 
 #endif

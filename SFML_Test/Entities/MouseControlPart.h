@@ -5,6 +5,8 @@
 
 class MouseControlPart : public ControlPart {
 public:
+   const float MOUSE_PAN_COEFFICIENT = 1.f;
+
    MouseControlPart(std::string id = "control");
    virtual ~MouseControlPart();
 
@@ -18,6 +20,8 @@ public:
    virtual void update(Entity2& entity, Viewport& viewport);
 
 protected:
+   bool is_panning;
+   sf::Vector2f panning_anchor;
    sf::Vector2f last_mouse_pos;
 };
 

@@ -1,7 +1,10 @@
 #include "GameBuilderState.h"
 
 #include "UtilFactory.h"
+
 #include "Part.h"
+#include "GraphicsPart.h"
+
 #include "Game.h"
 #include "Graphics.h"
 
@@ -28,6 +31,13 @@ void GameBuilderState::enter(Game& game) {
    
    this->e = UtilFactory::inst()->create_mouse();
    Service::get_input().registerInputListener(dynamic_cast<InputListener*>(this->e->get("control")));
+
+   // make a temporary entity to see if panning function works
+   GraphicsPart* g = new GraphicsPart();
+   g->add(new sf::Sprite(game.texture_manager.get_texture(0)->get_texture()));
+
+   this->temp = new Entity2();
+   this->temp->add(g);
 }
 
 void GameBuilderState::exit(Game& game) {
@@ -41,7 +51,8 @@ GameState* GameBuilderState::update(Game& game) {
    // update entities
    //game.m->update(*this->viewports["hud"]);
 
-   this->e->update(*this->viewports["hud"]);
+   this->e->update(*this->viewports["main"]);
+   this->temp->update(*this->viewports["main"]);
 
    // draw fixed hud items
    this->viewports["hud"]->write("SFML_Test");
