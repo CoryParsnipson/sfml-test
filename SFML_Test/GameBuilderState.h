@@ -38,7 +38,7 @@ protected:
    Map* map;
 
    Entity2* e;
-   Entity2* temp;
+   std::vector<Entity2*> tiles;
 };
 
 #endif

@@ -1,7 +1,7 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include "../dependencies.h"
+#include "dependencies.h"
 
 #include "Viewport.h"
 #include "Texture.h"

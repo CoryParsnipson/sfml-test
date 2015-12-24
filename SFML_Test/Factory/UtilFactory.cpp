@@ -1,6 +1,5 @@
 #include "UtilFactory.h"
 
-#include "Entity2.h"
 #include "GraphicsPart.h"
 #include "PhysicsPart.h"
 #include "MouseControlPart.h"

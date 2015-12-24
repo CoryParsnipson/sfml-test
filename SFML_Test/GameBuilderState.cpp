@@ -1,6 +1,7 @@
 #include "GameBuilderState.h"
 
 #include "UtilFactory.h"
+#include "TileFactory.h"
 
 #include "Part.h"
 #include "GraphicsPart.h"
@@ -30,15 +31,10 @@ void GameBuilderState::enter(Game& game) {
    this->e = UtilFactory::inst()->create_mouse(this->viewports["hud"]);
    Service::get_input().registerInputListener(dynamic_cast<InputListener*>(this->e->get("control")));
 
-   // make a temporary entity to see if panning function works
-   GraphicsPart* g = new GraphicsPart();
-   g->add(new sf::Sprite(game.texture_manager.get_texture(0)->get_texture()));
-
-   PhysicsPart* pp = new PhysicsPart();
-
-   this->temp = new Entity2();
-   this->temp->add(g);
-   this->temp->add(pp);
+   // make some tiles, bitch
+   this->tiles.push_back(TileFactory::inst()->create_tile(*game.texture_manager.get_texture(0), sf::Vector2f(240, 166))); 
+   this->tiles.push_back(TileFactory::inst()->create_tile(*game.texture_manager.get_texture(0), sf::Vector2f(160, 566))); 
+   this->tiles.push_back(TileFactory::inst()->create_tile(*game.texture_manager.get_texture(0), sf::Vector2f(555, 333))); 
 }
 
 void GameBuilderState::exit(Game& game) {
@@ -50,7 +46,11 @@ GameState* GameBuilderState::update(Game& game) {
 
    // update entities
    this->e->update(*this->viewports["main"]);
-   this->temp->update(*this->viewports["main"]);
+
+   std::vector<Entity2*>::const_iterator it;
+   for (it = this->tiles.begin(); it != this->tiles.end(); it++) {
+      (*it)->update(*this->viewports["main"]);
+   }
 
    // draw fixed hud items
    this->viewports["hud"]->write("SFML_Test");
@@ -100,13 +100,6 @@ void GameBuilderState::process(Game& game, MouseButtonCommand& c) {
    }
 
    sf::Vector2i mouse_pos(c.x, c.y);
-   //Tile* t = this->map->get_tile_from_screen_coord(mouse_pos);
-   //
-   //if (!t) {
-   //   return;
-   //}
-
-   //Service::get_logger().msg("GameBuilderState", Logger::INFO, "Mouse-selected tile: " + t->to_string());
 }
 
 void GameBuilderState::process(Game& game, MouseMoveCommand& c) {}

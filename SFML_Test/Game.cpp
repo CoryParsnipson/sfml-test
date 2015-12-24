@@ -1,9 +1,10 @@
 #include "Game.h"
-#include "Map.h"
+#include "GameStartMenuState.h"
+
 #include "InputController.h"
 #include "TextureManager.h"
 
-#include "GameStartMenuState.h"
+#include "Map.h"
 
 Game::Game()
 {
@@ -29,9 +30,6 @@ Game::Game()
    
    // load fonts
    this->graphics.load_font("retro", "retro.ttf");
-
-   // initialize mouse interface wrapper
-   //this->m = new Mouse(new MouseGraphicsComponent());
 }
 
 Game::~Game() {
