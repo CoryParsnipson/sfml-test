@@ -4,11 +4,13 @@
 #include "PhysicsPart.h"
 
 #include "MouseMoveCommand.h"
+#include "MouseWheelCommand.h"
 #include "MouseButtonCommand.h"
 
 MouseControlPart::MouseControlPart(std::string id)
 : ControlPart(id)
 , is_panning(false)
+, zoom_delta(0)
 {
    Service::get_logger().msg("ControlPart", Logger::INFO, "Creating MouseControlPart '" + id + "'");
 }
@@ -41,6 +43,7 @@ void MouseControlPart::process(MouseButtonCommand& c) {
 }
 
 void MouseControlPart::process(MouseWheelCommand& c) {
+   this->zoom_delta = c.delta;
 }
 
 void MouseControlPart::update(Entity2& entity, Viewport& viewport) {
@@ -55,5 +58,11 @@ void MouseControlPart::update(Entity2& entity, Viewport& viewport) {
       viewport.move(this->MOUSE_PAN_COEFFICIENT * panning_delta);
       
       this->panning_anchor = this->last_mouse_pos;
+   }
+
+   // respond to mouse wheel events
+   if (this->zoom_delta) {
+      viewport.set_zoom_factor(viewport.get_zoom_factor() - this->zoom_delta / MouseControlPart::WINDOW_RESIZE_COEFFICIENT);
+      this->zoom_delta = 0;
    }
 }

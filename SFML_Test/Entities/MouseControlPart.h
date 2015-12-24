@@ -6,6 +6,7 @@
 class MouseControlPart : public ControlPart {
 public:
    const float MOUSE_PAN_COEFFICIENT = 1.f;
+   const float WINDOW_RESIZE_COEFFICIENT = 10.f;
 
    MouseControlPart(std::string id = "control");
    virtual ~MouseControlPart();
@@ -21,6 +22,7 @@ public:
 
 protected:
    bool is_panning;
+   int zoom_delta;
    sf::Vector2f panning_anchor;
    sf::Vector2f last_mouse_pos;
 };

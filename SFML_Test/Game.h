@@ -9,15 +9,14 @@
 #include "Command/MouseMoveCommand.h"
 #include "Command/MouseButtonCommand.h"
 #include "Command/MouseWheelCommand.h"
-#include "Entities/Mouse.h"
 #include "Viewport.h"
-#include "Util/InputListener.h"
-#include "Util/Graphics.h"
+#include "InputListener.h"
+#include "Graphics.h"
 #include "Service.h"
 
 #include "FullLogger.h"
 
-#include "Manager/TextureManager.h"
+#include "TextureManager.h"
 
 #include "GameState.h"
 
@@ -43,8 +42,6 @@ public:
 
    // game functional units 
    Graphics graphics;
-
-   //Mouse* m;
 
    TextureManager texture_manager;
 

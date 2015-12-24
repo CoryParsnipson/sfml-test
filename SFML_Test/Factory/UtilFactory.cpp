@@ -18,7 +18,7 @@ UtilFactory::UtilFactory() {
 UtilFactory::~UtilFactory() {
 }
 
-Entity2* UtilFactory::create_mouse() {
+Entity2* UtilFactory::create_mouse(Viewport* graphics_viewport) {
    Entity2* mouse = new Entity2();
    GraphicsPart* graphics_part = new GraphicsPart();
    PhysicsPart* physics_part = new PhysicsPart();
@@ -28,6 +28,7 @@ Entity2* UtilFactory::create_mouse() {
    cursor->setFillColor(sf::Color::Red);
 
    graphics_part->add(cursor);
+   graphics_part->set_viewport(graphics_viewport);
 
    mouse->add(graphics_part);
    mouse->add(physics_part);

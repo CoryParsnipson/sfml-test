@@ -4,6 +4,7 @@
 
 #include "Part.h"
 #include "GraphicsPart.h"
+#include "PhysicsPart.h"
 
 #include "Game.h"
 #include "Graphics.h"
@@ -26,22 +27,21 @@ void GameBuilderState::enter(Game& game) {
    //this->map = new Map();
    //this->map->load_mapfile(game, "map_test.txt");
 
-   //game.m->set_view(this->viewports["main"]);
-   //sf::Mouse::setPosition(static_cast<sf::Vector2i>(this->viewports["main"]->get_center()));
-   
-   this->e = UtilFactory::inst()->create_mouse();
+   this->e = UtilFactory::inst()->create_mouse(this->viewports["hud"]);
    Service::get_input().registerInputListener(dynamic_cast<InputListener*>(this->e->get("control")));
 
    // make a temporary entity to see if panning function works
    GraphicsPart* g = new GraphicsPart();
    g->add(new sf::Sprite(game.texture_manager.get_texture(0)->get_texture()));
 
+   PhysicsPart* pp = new PhysicsPart();
+
    this->temp = new Entity2();
    this->temp->add(g);
+   this->temp->add(pp);
 }
 
 void GameBuilderState::exit(Game& game) {
-   //game.m->set_view(nullptr);
 }
 
 GameState* GameBuilderState::update(Game& game) {
@@ -49,8 +49,6 @@ GameState* GameBuilderState::update(Game& game) {
    //this->map->draw(*this->viewports["main"]);
 
    // update entities
-   //game.m->update(*this->viewports["hud"]);
-
    this->e->update(*this->viewports["main"]);
    this->temp->update(*this->viewports["main"]);
 

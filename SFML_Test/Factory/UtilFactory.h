@@ -3,12 +3,15 @@
 
 #include "Entity2.h"
 
+// forward declarations
+class Viewport;
+
 class UtilFactory {
 public:
    static UtilFactory* inst();
    virtual ~UtilFactory();
 
-   virtual Entity2* create_mouse();
+   virtual Entity2* create_mouse(Viewport* graphics_viewport = nullptr);
 
 protected:
    // seal off constructors

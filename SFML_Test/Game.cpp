@@ -1,8 +1,7 @@
 #include "Game.h"
-#include "Entities/Map.h"
-#include "Entities/MouseGraphicsComponent.h"
+#include "Map.h"
 #include "InputController.h"
-#include "Manager/TextureManager.h"
+#include "TextureManager.h"
 
 #include "GameStartMenuState.h"
 

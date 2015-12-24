@@ -4,9 +4,10 @@
 #include "Entity2.h"
 #include "PhysicsPart.h"
 
-GraphicsPart::GraphicsPart(std::string id)
+GraphicsPart::GraphicsPart(std::string id, Viewport* hud_viewport)
 : Part(id)
 , font_debug_("retro", 11, FontConfig::ALIGN::LEFT)
+, hud_viewport(hud_viewport)
 {
    Service::get_logger().msg("GraphicsPart", Logger::INFO, "Creating GraphicsPart");
 }
@@ -24,7 +25,12 @@ void GraphicsPart::add(sf::Shape* shape) {
    this->shapes_.push_back(shape);
 }
 
+void GraphicsPart::set_viewport(Viewport* v) {
+   this->hud_viewport = v;
+}
+
 void GraphicsPart::update(Entity2& entity, Viewport& viewport) {
+   Viewport* final_viewport = this->hud_viewport ? this->hud_viewport : &viewport;
    PhysicsPart* physics = dynamic_cast<PhysicsPart*>(entity.get("physics"));
 
    sprite_list_t::iterator sprite_it;
@@ -43,8 +49,8 @@ void GraphicsPart::update(Entity2& entity, Viewport& viewport) {
          (*sprite_it)->setPosition(physics->get_position());
       }
       
-      viewport.draw(*(*sprite_it));
-      viewport.draw(s);
+      final_viewport->draw(*(*sprite_it));
+      final_viewport->draw(s);
    }
 
    shape_list_t::iterator shape_it;
@@ -52,12 +58,13 @@ void GraphicsPart::update(Entity2& entity, Viewport& viewport) {
       if (physics) {
          (*shape_it)->setPosition(physics->get_position());
       }
-      viewport.draw(*(*shape_it));
+
+      final_viewport->draw(*(*shape_it));
    }
 
    // draw diagnostic info
    if (physics) {
       sf::Vector2f pos = physics->get_position();
-      viewport.write(std::to_string((int)pos.x) + ", " + std::to_string((int)pos.y), pos - sf::Vector2f(0, 11), &this->font_debug_);
+      final_viewport->write(std::to_string((int)pos.x) + ", " + std::to_string((int)pos.y), pos - sf::Vector2f(0, 11), &this->font_debug_);
    }
 }
