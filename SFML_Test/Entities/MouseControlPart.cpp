@@ -33,8 +33,6 @@ void MouseControlPart::process(MouseButtonCommand& c) {
 
    switch (c.button) {
    case MouseButtonCommand::RIGHT:
-      Service::get_logger().msg("ControlPart", Logger::INFO, "is panning = " + std::to_string(c.state == MouseButtonCommand::PRESSED));      
-
       this->is_panning = (c.state == MouseButtonCommand::PRESSED);
       this->panning_anchor = sf::Vector2f(c.x, c.y);
       break;
