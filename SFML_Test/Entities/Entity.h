@@ -3,17 +3,26 @@
 
 #include "dependencies.h"
 #include "Viewport.h"
-#include "GraphicsComponent.h"
+
+// forward declarations
+class Part;
 
 class Entity {
 public:
-   Entity(GraphicsComponent* graphics) : graphics_(graphics) {};
-   virtual ~Entity() {};
-  
-   virtual void update(Viewport& viewport) = 0;
+   typedef std::map<std::string, Part*> part_list_t;
+
+   Entity();
+   virtual ~Entity();
+   
+   virtual void add(Part* part);
+   virtual Part* get(std::string part_name);
+   // remove part
+   // get part
+
+   virtual void update(Viewport& viewport);
 
 protected:
-   GraphicsComponent* graphics_;
+   part_list_t parts_;
 };
 
 #endif

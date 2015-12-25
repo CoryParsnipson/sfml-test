@@ -5,11 +5,10 @@
 
 #include "GameState.h"
 
-#include "Entities/Map.h"
 #include "Texture.h"
 #include "Viewport.h"
 
-#include "Entity2.h"
+#include "Entity.h"
 
 // forward declarations
 class Game;
@@ -35,10 +34,8 @@ protected:
    Texture* t1;
    Texture* t2;
 
-   Map* map;
-
-   Entity2* e;
-   std::vector<Entity2*> tiles;
+   Entity* e;
+   std::vector<Entity*> tiles;
 };
 
 #endif

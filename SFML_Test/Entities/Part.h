@@ -5,7 +5,7 @@
 #include "Viewport.h"
 
 // forward declarations
-class Entity2;
+class Entity;
 
 class Part {
 public:
@@ -17,7 +17,7 @@ public:
    // send message
    // receive message
 
-   virtual void update(Entity2& entity, Viewport& viewport) = 0;
+   virtual void update(Entity& entity, Viewport& viewport) = 0;
 
 protected:
    std::string id;

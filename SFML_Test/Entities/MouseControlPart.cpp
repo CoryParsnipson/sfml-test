@@ -1,6 +1,6 @@
 #include "MouseControlPart.h"
 
-#include "Entity2.h"
+#include "Entity.h"
 #include "PhysicsPart.h"
 
 #include "MouseMoveCommand.h"
@@ -44,7 +44,7 @@ void MouseControlPart::process(MouseWheelCommand& c) {
    this->zoom_delta = c.delta;
 }
 
-void MouseControlPart::update(Entity2& entity, Viewport& viewport) {
+void MouseControlPart::update(Entity& entity, Viewport& viewport) {
    PhysicsPart* physics = dynamic_cast<PhysicsPart*>(entity.get("physics")); // is there a better way?
    if (physics) {
       physics->set_position(this->last_mouse_pos);

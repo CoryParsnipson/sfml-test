@@ -4,8 +4,6 @@
 #include "InputController.h"
 #include "TextureManager.h"
 
-#include "Map.h"
-
 Game::Game()
 {
    Service::init(); // initialize service locator

@@ -12,7 +12,7 @@ public:
    void set_position(float x, float y);
    sf::Vector2f get_position();
 
-   virtual void update(Entity2& entity, Viewport& viewport);
+   virtual void update(Entity& entity, Viewport& viewport);
 
 protected:
    sf::Vector2f pos; // world coordinates

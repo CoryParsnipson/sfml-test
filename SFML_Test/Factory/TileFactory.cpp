@@ -16,12 +16,12 @@ TileFactory::TileFactory() {
 TileFactory::~TileFactory() {
 }
 
-Entity2* TileFactory::create_tile(Texture& t) {
+Entity* TileFactory::create_tile(Texture& t) {
    return this->create_tile(t, sf::Vector2f(0, 0));
 }
 
-Entity2* TileFactory::create_tile(Texture& t, sf::Vector2f pos) {
-   Entity2* tile = new Entity2();
+Entity* TileFactory::create_tile(Texture& t, sf::Vector2f pos) {
+   Entity* tile = new Entity();
    GraphicsPart* graphics_part = new GraphicsPart();
    PhysicsPart* physics_part = new PhysicsPart();
 

@@ -17,8 +17,8 @@ UtilFactory::UtilFactory() {
 UtilFactory::~UtilFactory() {
 }
 
-Entity2* UtilFactory::create_mouse(Viewport* graphics_viewport) {
-   Entity2* mouse = new Entity2();
+Entity* UtilFactory::create_mouse(Viewport* graphics_viewport) {
+   Entity* mouse = new Entity();
    GraphicsPart* graphics_part = new GraphicsPart();
    PhysicsPart* physics_part = new PhysicsPart();
    MouseControlPart* control_part = new MouseControlPart();

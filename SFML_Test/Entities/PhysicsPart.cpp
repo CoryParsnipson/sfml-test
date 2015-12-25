@@ -23,5 +23,5 @@ sf::Vector2f PhysicsPart::get_position() {
    return this->pos;
 }
 
-void PhysicsPart::update(Entity2& entity, Viewport& viewport) {
+void PhysicsPart::update(Entity& entity, Viewport& viewport) {
 }

@@ -19,7 +19,7 @@ public:
 
    void set_viewport(Viewport* v);
 
-   virtual void update(Entity2& entity, Viewport& viewport); // TODO: figure out how to unify update method signatures
+   virtual void update(Entity& entity, Viewport& viewport); // TODO: figure out how to unify update method signatures
 
 protected:
    FontConfig font_debug_;

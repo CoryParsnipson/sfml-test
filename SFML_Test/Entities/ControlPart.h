@@ -19,7 +19,7 @@ public:
    virtual void process(MouseButtonCommand& c) = 0;
    virtual void process(MouseWheelCommand& c) = 0;
 
-   virtual void update(Entity2& entity, Viewport& viewport) = 0;
+   virtual void update(Entity& entity, Viewport& viewport) = 0;
 
 protected:
 };

@@ -1,7 +1,5 @@
 #include "Graphics.h"
 
-#include "GraphicsComponent.h"
-
 Graphics::Graphics()
 {
    this->window = new sf::RenderWindow(sf::VideoMode(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT), "SFML Test");

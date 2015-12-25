@@ -18,7 +18,7 @@ public:
    virtual void process(MouseButtonCommand& c);
    virtual void process(MouseWheelCommand& c);
 
-   virtual void update(Entity2& entity, Viewport& viewport);
+   virtual void update(Entity& entity, Viewport& viewport);
 
 protected:
    bool is_panning;

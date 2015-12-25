@@ -1,7 +1,7 @@
 #ifndef UTIL_FACTORY_H
 #define UTIL_FACTORY_H
 
-#include "Entity2.h"
+#include "Entity.h"
 
 // forward declarations
 class Viewport;
@@ -11,7 +11,7 @@ public:
    static UtilFactory* inst();
    virtual ~UtilFactory();
 
-   virtual Entity2* create_mouse(Viewport* graphics_viewport = nullptr);
+   virtual Entity* create_mouse(Viewport* graphics_viewport = nullptr);
 
 protected:
    // seal off constructors

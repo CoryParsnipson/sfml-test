@@ -47,7 +47,7 @@ GameState* GameBuilderState::update(Game& game) {
    // update entities
    this->e->update(*this->viewports["main"]);
 
-   std::vector<Entity2*>::const_iterator it;
+   std::vector<Entity*>::const_iterator it;
    for (it = this->tiles.begin(); it != this->tiles.end(); it++) {
       (*it)->update(*this->viewports["main"]);
    }

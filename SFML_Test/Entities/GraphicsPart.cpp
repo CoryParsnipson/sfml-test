@@ -1,7 +1,7 @@
 #include "GraphicsPart.h"
 #include "FontConfig.h"
 
-#include "Entity2.h"
+#include "Entity.h"
 #include "PhysicsPart.h"
 
 GraphicsPart::GraphicsPart(std::string id, Viewport* hud_viewport)
@@ -29,7 +29,7 @@ void GraphicsPart::set_viewport(Viewport* v) {
    this->hud_viewport = v;
 }
 
-void GraphicsPart::update(Entity2& entity, Viewport& viewport) {
+void GraphicsPart::update(Entity& entity, Viewport& viewport) {
    Viewport* final_viewport = this->hud_viewport ? this->hud_viewport : &viewport;
    PhysicsPart* physics = dynamic_cast<PhysicsPart*>(entity.get("physics"));
 
