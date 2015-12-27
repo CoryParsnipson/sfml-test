@@ -10,8 +10,8 @@ public:
 	const int SCREEN_WIDTH = 800;
 	const int SCREEN_HEIGHT = 500;
 
-	const float SCALE_X = 3; // factor
-	const float SCALE_Y = 3; // factor
+	const float SCALE_X = 1; // factor
+	const float SCALE_Y = 1; // factor
 
 	const float TILE_WIDTH = SCALE_X * 40; // px
 	const float TILE_HEIGHT = SCALE_Y * 40; // px

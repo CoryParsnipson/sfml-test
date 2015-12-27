@@ -28,6 +28,8 @@ INCLUDE_PATHS += SFML_Test
 INCLUDE_PATHS += SFML_Test/Util
 INCLUDE_PATHS += SFML_Test/Command
 INCLUDE_PATHS += SFML_Test/Entities
+INCLUDE_PATHS += SFML_Test/Builder
+INCLUDE_PATHS += SFML_Test/Map
 INCLUDE_PATHS += SFML_Test/Manager
 INCLUDE_PATHS += SFML_Test/Factory
 
@@ -37,6 +39,8 @@ CXX_FILES += $(PROJECT_DIR)/Util/*.cpp
 CXX_FILES += $(PROJECT_DIR)/FileReader/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Command/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Entities/*.cpp
+CXX_FILES += $(PROJECT_DIR)/Builder/*.cpp
+CXX_FILES += $(PROJECT_DIR)/Map/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Manager/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Factory/*.cpp
 

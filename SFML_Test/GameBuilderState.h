@@ -11,6 +11,7 @@
 #include "Entity.h"
 
 // forward declarations
+class Map;
 class Game;
 
 class GameBuilderState : public GameState {
@@ -31,11 +32,16 @@ public:
 protected:
    std::map<std::string, Viewport*> viewports;
 
-   Texture* t1;
-   Texture* t2;
-
+   sf::Clock clock;
+   
+   Map* map;
+   
    Entity* e;
    std::vector<Entity*> tiles;
+
+   sf::RectangleShape* origin_dot;
+   sf::RectangleShape* center_dot;
+   std::vector<sf::RectangleShape*> grid;
 };
 
 #endif

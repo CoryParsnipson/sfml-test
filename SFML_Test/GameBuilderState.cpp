@@ -1,5 +1,7 @@
 #include "GameBuilderState.h"
 
+#include "IsoMapBuilder.h"
+
 #include "UtilFactory.h"
 #include "TileFactory.h"
 
@@ -25,8 +27,11 @@ void GameBuilderState::enter(Game& game) {
    game.texture_manager.print();
 
    // entities
-   //this->map = new Map();
-   //this->map->load_mapfile(game, "map_test.txt");
+   MapBuilder* iso_map_builder = new IsoMapBuilder(game.texture_manager);
+   iso_map_builder->create_map();
+   iso_map_builder->load_tile();
+
+   this->map = iso_map_builder->get_map();
 
    this->e = UtilFactory::inst()->create_mouse(this->viewports["hud"]);
    Service::get_input().registerInputListener(dynamic_cast<InputListener*>(this->e->get("control")));
@@ -35,27 +40,65 @@ void GameBuilderState::enter(Game& game) {
    this->tiles.push_back(TileFactory::inst()->create_tile(*game.texture_manager.get_texture(0), sf::Vector2f(240, 166))); 
    this->tiles.push_back(TileFactory::inst()->create_tile(*game.texture_manager.get_texture(0), sf::Vector2f(160, 566))); 
    this->tiles.push_back(TileFactory::inst()->create_tile(*game.texture_manager.get_texture(0), sf::Vector2f(555, 333))); 
+
+   this->origin_dot = new sf::RectangleShape(sf::Vector2f(3, 3));
+   this->origin_dot->setFillColor(sf::Color::Yellow);
+
+   this->center_dot = new sf::RectangleShape(sf::Vector2f(3, 3));
+   this->center_dot->setFillColor(sf::Color(255, 104, 2));
+   this->center_dot->setPosition(Settings::Instance()->SCREEN_WIDTH / 2, Settings::Instance()->SCREEN_HEIGHT / 2);
+
+   for (int r = 0; r < 40; r++) {
+      for (int c = 0; c < 40; c++) {
+         sf::RectangleShape* g = new sf::RectangleShape(sf::Vector2f(3, 3));
+         g->setFillColor(sf::Color::Blue);
+         g->setPosition(r * Settings::Instance()->TILE_WIDTH, c * Settings::Instance()->TILE_HEIGHT);
+
+         this->grid.push_back(g);
+      }
+   }
 }
 
 void GameBuilderState::exit(Game& game) {
+   delete this->e;
+   delete this->origin_dot;
+   delete this->center_dot;
+
+   this->viewports.clear();
+   this->tiles.clear();
+   this->grid.clear();
 }
 
 GameState* GameBuilderState::update(Game& game) {
-   // draw map view items
-   //this->map->draw(*this->viewports["main"]);
-
+   // map related work
+   this->map->update(game, *this->viewports["main"]);
+   
    // update entities
-   this->e->update(*this->viewports["main"]);
-
    std::vector<Entity*>::const_iterator it;
    for (it = this->tiles.begin(); it != this->tiles.end(); it++) {
       (*it)->update(*this->viewports["main"]);
    }
 
+   this->e->update(*this->viewports["main"]);
+
+   std::vector<sf::RectangleShape*>::const_iterator grid_it;
+   for (grid_it = this->grid.begin(); grid_it != this->grid.end(); grid_it++) {
+      this->viewports["main"]->draw(**grid_it);
+   }
+
+   this->viewports["hud"]->draw(*this->center_dot);
+   this->viewports["main"]->draw(*this->origin_dot);
+
    // draw fixed hud items
    this->viewports["hud"]->write("SFML_Test");
    this->viewports["hud"]->write("r: reset pan position", sf::Vector2f(0, 15));
    this->viewports["hud"]->write("right click: click and drag to pan", sf::Vector2f(0, 30));
+
+   // show FPS
+   FontConfig fc("retro", 12, FontConfig::ALIGN::RIGHT);
+   int fps = (int)(1.f / this->clock.getElapsedTime().asSeconds());
+   this->clock.restart();
+   this->viewports["hud"]->write("FPS: " + std::to_string(fps), sf::Vector2f(Settings::Instance()->SCREEN_WIDTH - 4, 10), &fc);
 
    return NULL;
 }
