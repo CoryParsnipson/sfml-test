@@ -37,7 +37,6 @@ protected:
    Map* map;
    
    Entity* e;
-   std::vector<Entity*> tiles;
 
    sf::RectangleShape* origin_dot;
    sf::RectangleShape* center_dot;

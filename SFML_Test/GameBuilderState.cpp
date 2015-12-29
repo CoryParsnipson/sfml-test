@@ -26,20 +26,18 @@ void GameBuilderState::enter(Game& game) {
    game.texture_manager.create_texture(1, "tile_grass.gif");
    game.texture_manager.print();
 
-   // entities
+   // build the map
    MapBuilder* iso_map_builder = new IsoMapBuilder(game.texture_manager);
-   iso_map_builder->create_map();
-   iso_map_builder->load_tile();
+   iso_map_builder->create_serializer("map_test.txt");
+   iso_map_builder->build();
 
    this->map = iso_map_builder->get_map();
 
+   delete iso_map_builder;
+
+   // entities
    this->e = UtilFactory::inst()->create_mouse(this->viewports["hud"]);
    Service::get_input().registerInputListener(dynamic_cast<InputListener*>(this->e->get("control")));
-
-   // make some tiles, bitch
-   this->tiles.push_back(TileFactory::inst()->create_tile(*game.texture_manager.get_texture(0), sf::Vector2f(240, 166))); 
-   this->tiles.push_back(TileFactory::inst()->create_tile(*game.texture_manager.get_texture(0), sf::Vector2f(160, 566))); 
-   this->tiles.push_back(TileFactory::inst()->create_tile(*game.texture_manager.get_texture(0), sf::Vector2f(555, 333))); 
 
    this->origin_dot = new sf::RectangleShape(sf::Vector2f(3, 3));
    this->origin_dot->setFillColor(sf::Color::Yellow);
@@ -65,7 +63,6 @@ void GameBuilderState::exit(Game& game) {
    delete this->center_dot;
 
    this->viewports.clear();
-   this->tiles.clear();
    this->grid.clear();
 }
 
@@ -74,11 +71,6 @@ GameState* GameBuilderState::update(Game& game) {
    this->map->update(game, *this->viewports["main"]);
    
    // update entities
-   std::vector<Entity*>::const_iterator it;
-   for (it = this->tiles.begin(); it != this->tiles.end(); it++) {
-      (*it)->update(*this->viewports["main"]);
-   }
-
    this->e->update(*this->viewports["main"]);
 
    std::vector<sf::RectangleShape*>::const_iterator grid_it;
