@@ -1,23 +1,23 @@
-#include "IsoMapBuilder.h"
+#include "FlatMapBuilder.h"
 
-#include "Serializer.h"
+#include "TextSerializer.h"
 
 #include "TileFactory.h"
 #include "TextureManager.h"
 
-IsoMapBuilder::IsoMapBuilder(TextureManager& tm)
+FlatMapBuilder::FlatMapBuilder(TextureManager& tm)
 : MapBuilder(tm)
 {
 }
 
-IsoMapBuilder::~IsoMapBuilder() {
+FlatMapBuilder::~FlatMapBuilder() {
 }
 
-void IsoMapBuilder::build() {
+void FlatMapBuilder::build() {
    this->build_map();
 
    if (!this->serializer_) {
-      Service::get_logger().msg("IsoMapBuilder", Logger::ERROR, "Serializer has not been initialized!");
+      Service::get_logger().msg("FlatMapBuilder", Logger::ERROR, "Serializer has not been initialized!");
       return;
    }
    
@@ -29,11 +29,11 @@ void IsoMapBuilder::build() {
    }
 }
 
-void IsoMapBuilder::build_map() {
-   this->map_ = new IsoMap();
+void FlatMapBuilder::build_map() {
+   this->map_ = new FlatMap();
 }
 
-void IsoMapBuilder::build_tile(int x, int y, int texture) {
+void FlatMapBuilder::build_tile(int x, int y, int texture) {
    if (!this->map_) {
       this->build_map();
    }

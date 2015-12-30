@@ -1,15 +1,15 @@
-#include "IsoMap.h"
+#include "FlatMap.h"
 
 #include "Entity.h"
 #include "PhysicsPart.h"
 
-IsoMap::IsoMap() {
+FlatMap::FlatMap() {
 }
 
-IsoMap::~IsoMap() {
+FlatMap::~FlatMap() {
 }
 
-void IsoMap::update(Game& game, Viewport& viewport) {
+void FlatMap::update(Game& game, Viewport& viewport) {
    map_type_t::const_iterator it;
 
    for (it = this->grid_.begin(); it != this->grid_.end(); it++) {
@@ -17,7 +17,7 @@ void IsoMap::update(Game& game, Viewport& viewport) {
    }
 }
 
-Entity* IsoMap::set_tile(sf::Vector2i pos, Entity* tile) {
+Entity* FlatMap::set_tile(sf::Vector2i pos, Entity* tile) {
    Entity* previous_tile = nullptr;
 
    map_type_t::iterator it = this->grid_.find(pos);
@@ -30,22 +30,22 @@ Entity* IsoMap::set_tile(sf::Vector2i pos, Entity* tile) {
    if (tile_physics) {
       tile_physics->set_position(this->get_map_to_screen_pos(pos));
    } else {
-      Service::get_logger().msg("IsoMap", Logger::WARNING, "Tile has no physics component.");
+      Service::get_logger().msg("FlatMap", Logger::WARNING, "Tile has no physics component.");
    }
 
    this->grid_[pos] = tile;
    return previous_tile;
 }
 
-sf::Vector2f IsoMap::get_map_to_screen_pos(sf::Vector2i pos) {
+sf::Vector2f FlatMap::get_map_to_screen_pos(sf::Vector2i pos) {
    sf::Vector2f screen_coord;
-
-   screen_coord.x = pos.x * Settings::Instance()->TILE_WIDTH + (pos.y & 1) * (Settings::Instance()->TILE_WIDTH / 2);
-   screen_coord.y = pos.y * (Settings::Instance()->TILE_HEIGHT_RHOMBUS / 2) - Settings::Instance()->TILE_HEIGHT_OVERLAP;
+   
+   screen_coord.x = pos.x * Settings::Instance()->TILE_WIDTH;
+   screen_coord.y = pos.y * Settings::Instance()->TILE_HEIGHT;
 
    return screen_coord;
 }
 
-std::string IsoMap::to_string() {
-   return "[IsoMap]";
+std::string FlatMap::to_string() {
+   return "[FlatMap]";
 }

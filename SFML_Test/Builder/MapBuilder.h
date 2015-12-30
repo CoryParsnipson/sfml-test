@@ -14,9 +14,9 @@ public:
    MapBuilder(TextureManager& tm) : serializer_(nullptr), texture_manager_(tm) {};
    virtual ~MapBuilder() {};
 
-   virtual void create_serializer(std::string filename) = 0;
    virtual void build() = 0; // call this to build the entire thing
 
+   virtual void set_serializer(Serializer* serializer) { this->serializer_ = serializer; };
    virtual Map* get_map() { return this->map_; }
 
 protected:

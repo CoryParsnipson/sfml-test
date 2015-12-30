@@ -1,6 +1,9 @@
 #include "GameBuilderState.h"
 
+#include "TextSerializer.h"
+
 #include "IsoMapBuilder.h"
+#include "FlatMapBuilder.h"
 
 #include "UtilFactory.h"
 #include "TileFactory.h"
@@ -26,14 +29,24 @@ void GameBuilderState::enter(Game& game) {
    game.texture_manager.create_texture(1, "tile_grass.gif");
    game.texture_manager.print();
 
+   TextSerializer* serializer = new TextSerializer();
+   serializer->open("map_test.txt");
+
    // build the map
-   MapBuilder* iso_map_builder = new IsoMapBuilder(game.texture_manager);
-   iso_map_builder->create_serializer("map_test.txt");
-   iso_map_builder->build();
+   //MapBuilder* map_builder = new IsoMapBuilder(game.texture_manager);
+   //map_builder->set_serializer(serializer);
+   //map_builder->build();
 
-   this->map = iso_map_builder->get_map();
+   //this->map = map_builder->get_map();
 
-   delete iso_map_builder;
+   MapBuilder* map_builder = new FlatMapBuilder(game.texture_manager);
+   map_builder->set_serializer(serializer);
+   map_builder->build();
+
+   this->map = map_builder->get_map();
+
+   delete map_builder;
+   delete serializer;
 
    // entities
    this->e = UtilFactory::inst()->create_mouse(this->viewports["hud"]);
