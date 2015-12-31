@@ -41,6 +41,17 @@ bool TextSerializer::prev() {
    return false;
 }
 
+void TextSerializer::set(Entity* entity) {
+   if (!this->is_open()) {
+      Service::get_logger().msg("TextSerializer", Logger::ERROR, "Cannot write to data file. File is not open.");
+      return;
+   }
+
+   // TODO: implement me
+   // 1. convert entity to data_t
+   // 2. write to file
+}
+
 std::string TextSerializer::remove_comments(std::string line) {
    std::string::size_type end_pos = line.find_first_of("#");
    

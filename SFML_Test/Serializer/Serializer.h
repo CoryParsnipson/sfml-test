@@ -29,6 +29,8 @@ public:
    virtual bool next() = 0;
    virtual bool prev() = 0;
 
+   virtual void set(Entity* entity) = 0;
+
 protected:
    std::fstream file_;
 };
