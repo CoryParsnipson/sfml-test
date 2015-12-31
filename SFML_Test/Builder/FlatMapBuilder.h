@@ -13,7 +13,7 @@ public:
 
 protected:
    virtual void build_map();
-   virtual void build_tile(int x, int y, int texture);
+   virtual void build_tile(int x, int y, std::string texture);
 };
 
 #endif

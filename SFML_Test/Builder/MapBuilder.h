@@ -21,7 +21,7 @@ public:
 
 protected:
    virtual void build_map() = 0;
-   virtual void build_tile(int x, int y, int texture) = 0;
+   virtual void build_tile(int x, int y, std::string texture) = 0;
 
    std::string id;
 

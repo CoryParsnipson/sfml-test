@@ -25,12 +25,12 @@ void GameBuilderState::enter(Game& game) {
    this->viewports["hud"] = new Viewport(game.graphics, static_cast<sf::Vector2f>(game.graphics.get_window().getSize()));
 
    // load textures
-   game.texture_manager.create_texture(0, "tile1.gif");
-   game.texture_manager.create_texture(1, "tile_grass.gif");
+   game.texture_manager.create_texture("tile_solid", "flatmap_test_texture.png", sf::IntRect(0, 0, 40, 40));
+   game.texture_manager.create_texture("tile_clear", "flatmap_test_texture.png", sf::IntRect(40, 0, 40, 40));
    game.texture_manager.print();
 
    TextSerializer* serializer = new TextSerializer();
-   serializer->open("map_test.txt");
+   serializer->open("flat_map_test.txt");
 
    // build the map
    //MapBuilder* map_builder = new IsoMapBuilder(game.texture_manager);

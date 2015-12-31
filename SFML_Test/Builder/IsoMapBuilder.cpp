@@ -25,7 +25,7 @@ void IsoMapBuilder::build() {
       Serializer::data_t d = this->serializer_->get();
 
       // need entity type identifier?
-      this->build_tile(std::stoi(d["pos_x"]), std::stoi(d["pos_y"]), std::stoi(d["texture"]));
+      this->build_tile(std::stoi(d["pos_x"]), std::stoi(d["pos_y"]), d["texture"]);
    }
 }
 
@@ -33,10 +33,10 @@ void IsoMapBuilder::build_map() {
    this->map_ = new IsoMap();
 }
 
-void IsoMapBuilder::build_tile(int x, int y, int texture) {
+void IsoMapBuilder::build_tile(int x, int y, std::string texture) {
    if (!this->map_) {
       this->build_map();
    }
 
-   this->map_->set_tile(x, y, TileFactory::inst()->create_tile(*this->texture_manager_.get_texture(texture)));
+   this->map_->set_tile(x, y, TileFactory::inst()->create_tile(this->texture_manager_.get_texture(texture)));
 }
