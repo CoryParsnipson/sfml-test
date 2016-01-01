@@ -25,6 +25,7 @@ protected:
    int zoom_delta;
    sf::Vector2f panning_anchor;
    sf::Vector2f last_mouse_pos;
+   sf::Vector2f* last_click_pos;
 };
 
 #endif

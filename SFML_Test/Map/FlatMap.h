@@ -13,7 +13,9 @@ public:
    virtual void update(Game& game, Viewport& viewport);
 
    virtual Entity* set_tile(sf::Vector2i pos, Entity* tile);
-   virtual sf::Vector2f get_map_to_screen_pos(sf::Vector2i pos);
+
+   virtual sf::Vector2f get_map_to_screen_pos(sf::Vector2i tile_pos);
+   virtual sf::Vector2i get_screen_to_map_pos(sf::Vector2f viewport_pos);
 
    virtual std::string to_string();
 

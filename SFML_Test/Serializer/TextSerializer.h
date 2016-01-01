@@ -16,6 +16,7 @@ public:
    virtual bool prev();
 
    virtual void set(Entity* entity);
+
 protected:
    std::string line_;
    data_t data_;

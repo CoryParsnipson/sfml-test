@@ -97,3 +97,11 @@ void Viewport::set_zoom_factor(float new_zoom_factor) {
    // update viewport size
    this->set_size(this->zoom_factor * this->get_default_size());
 }
+
+sf::Vector2f Viewport::mapPixelToCoords(const sf::Vector2i& point) {
+   return this->graphics.get_window().mapPixelToCoords(point, *this->view);
+}
+
+sf::Vector2i Viewport::mapCoordsToPixel(const sf::Vector2f& point) {
+   return this->graphics.get_window().mapCoordsToPixel(point, *this->view);
+}

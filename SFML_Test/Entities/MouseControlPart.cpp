@@ -11,6 +11,7 @@ MouseControlPart::MouseControlPart(std::string id)
 : ControlPart(id)
 , is_panning(false)
 , zoom_delta(0)
+, last_click_pos(nullptr)
 {
    Service::get_logger().msg("ControlPart", Logger::INFO, "Creating MouseControlPart '" + id + "'");
 }
@@ -32,6 +33,9 @@ void MouseControlPart::process(MouseButtonCommand& c) {
    Service::get_logger().msg("ControlPart", Logger::INFO, c.to_string());
 
    switch (c.button) {
+   case MouseButtonCommand::LEFT:
+      this->last_click_pos = new sf::Vector2f(c.x, c.y);
+      break;
    case MouseButtonCommand::RIGHT:
       this->is_panning = (c.state == MouseButtonCommand::PRESSED);
       this->panning_anchor = sf::Vector2f(c.x, c.y);
@@ -63,4 +67,14 @@ void MouseControlPart::update(Entity& entity, Viewport& viewport) {
       viewport.set_zoom_factor(viewport.get_zoom_factor() - this->zoom_delta / MouseControlPart::WINDOW_RESIZE_COEFFICIENT);
       this->zoom_delta = 0;
    }
+
+   // handle mouse click positions
+   if (this->last_click_pos) {
+      Service::get_logger().msg("MouseControlPart", Logger::INFO, "LAST CLICK    : (" + std::to_string(this->last_click_pos->x) + ", " + std::to_string(this->last_click_pos->y) + ")");
+      *this->last_click_pos = viewport.mapPixelToCoords(static_cast<sf::Vector2i>(*this->last_click_pos));
+      Service::get_logger().msg("MouseControlPart", Logger::INFO, "LAST CLICK NOF: (" + std::to_string(this->last_click_pos->x) + ", " + std::to_string(this->last_click_pos->y) + ")");
+
+      delete this->last_click_pos;
+      this->last_click_pos = nullptr;
+   } 
 }

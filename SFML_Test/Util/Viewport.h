@@ -38,6 +38,10 @@ public:
    float get_zoom_factor();
    void set_zoom_factor(float new_zoom_factor);
 
+   // TODO: you should think renaming this to be less confusing or something
+   sf::Vector2f mapPixelToCoords(const sf::Vector2i& point);
+   sf::Vector2i mapCoordsToPixel(const sf::Vector2f& point);
+
    sf::View& get_view();
    Graphics& get_graphics();
 

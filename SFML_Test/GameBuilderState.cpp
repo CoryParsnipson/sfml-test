@@ -86,13 +86,13 @@ GameState* GameBuilderState::update(Game& game) {
    // update entities
    this->e->update(*this->viewports["main"]);
 
-   std::vector<sf::RectangleShape*>::const_iterator grid_it;
-   for (grid_it = this->grid.begin(); grid_it != this->grid.end(); grid_it++) {
-      this->viewports["main"]->draw(**grid_it);
-   }
+   //std::vector<sf::RectangleShape*>::const_iterator grid_it;
+   //for (grid_it = this->grid.begin(); grid_it != this->grid.end(); grid_it++) {
+   //   this->viewports["main"]->draw(**grid_it);
+   //}
 
    this->viewports["hud"]->draw(*this->center_dot);
-   this->viewports["main"]->draw(*this->origin_dot);
+   //this->viewports["main"]->draw(*this->origin_dot);
 
    // draw fixed hud items
    this->viewports["hud"]->write("SFML_Test");
