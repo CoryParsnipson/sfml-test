@@ -2,7 +2,6 @@
 #define ISO_MAP_BUILDER_H
 
 #include "MapBuilder.h"
-#include "IsoMap.h"
 
 class IsoMapBuilder : public MapBuilder {
 public:

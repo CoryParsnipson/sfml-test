@@ -5,6 +5,8 @@
 #include "TileFactory.h"
 #include "TextureManager.h"
 
+#include "PhysicsPart.h"
+
 IsoMapBuilder::IsoMapBuilder(TextureManager& tm)
 : MapBuilder(tm)
 {
@@ -30,7 +32,7 @@ void IsoMapBuilder::build() {
 }
 
 void IsoMapBuilder::build_map() {
-   this->map_ = new IsoMap();
+   this->map_ = new Map();
 }
 
 void IsoMapBuilder::build_tile(int x, int y, std::string texture) {
@@ -38,5 +40,17 @@ void IsoMapBuilder::build_tile(int x, int y, std::string texture) {
       this->build_map();
    }
 
-   this->map_->set_tile(x, y, TileFactory::inst()->create_tile(this->texture_manager_.get_texture(texture)));
+   Entity* tile = TileFactory::inst()->create_tile(this->texture_manager_.get_texture(texture));
+
+   PhysicsPart* tile_physics = dynamic_cast<PhysicsPart*>(tile->get("physics"));
+   if (tile_physics) {
+      int pos_x = x * Settings::Instance()->TILE_WIDTH + (y & 1) * (Settings::Instance()->TILE_WIDTH / 2);
+      int pos_y = y * (Settings::Instance()->TILE_HEIGHT_RHOMBUS / 2) - Settings::Instance()->TILE_HEIGHT_OVERLAP;
+
+      tile_physics->set_position(pos_x, pos_y);
+   } else {
+      Service::get_logger().msg("IsoMap", Logger::WARNING, "Tile has no physics component.");
+   }
+
+   this->map_->add(tile);
 }

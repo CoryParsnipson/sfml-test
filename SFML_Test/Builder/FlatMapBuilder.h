@@ -2,7 +2,6 @@
 #define FLAT_MAP_BUILDER_H
 
 #include "MapBuilder.h"
-#include "FlatMap.h"
 
 class FlatMapBuilder : public MapBuilder {
 public:

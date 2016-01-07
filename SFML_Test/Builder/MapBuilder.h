@@ -3,11 +3,12 @@
 
 #include "dependencies.h"
 
+#include "Map.h"
+
 // forward declarations
 class Entity;
 class Serializer;
 class TextureManager;
-class Map;
 
 class MapBuilder {
 public:

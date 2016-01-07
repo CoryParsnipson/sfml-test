@@ -5,6 +5,8 @@
 #include "TileFactory.h"
 #include "TextureManager.h"
 
+#include "PhysicsPart.h"
+
 FlatMapBuilder::FlatMapBuilder(TextureManager& tm)
 : MapBuilder(tm)
 {
@@ -30,13 +32,22 @@ void FlatMapBuilder::build() {
 }
 
 void FlatMapBuilder::build_map() {
-   this->map_ = new FlatMap();
+   this->map_ = new Map();
 }
 
 void FlatMapBuilder::build_tile(int x, int y, std::string texture) {
    if (!this->map_) {
       this->build_map();
    }
+   
+   Entity* tile = TileFactory::inst()->create_tile(this->texture_manager_.get_texture(texture));
 
-   this->map_->set_tile(x, y, TileFactory::inst()->create_tile(this->texture_manager_.get_texture(texture)));
+   PhysicsPart* tile_physics = dynamic_cast<PhysicsPart*>(tile->get("physics"));
+   if (tile_physics) {
+      tile_physics->set_position(x * Settings::Instance()->TILE_WIDTH, y * Settings::Instance()->TILE_HEIGHT);
+   } else {
+      Service::get_logger().msg("FlatMap", Logger::WARNING, "Tile has no physics component.");
+   }
+
+   this->map_->add(tile);
 }
