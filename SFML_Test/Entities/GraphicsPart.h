@@ -22,6 +22,8 @@ public:
    virtual void update(Entity& entity, Viewport& viewport); // TODO: figure out how to unify update method signatures
 
 protected:
+   bool show_outline_;
+   bool show_debug_text_;
    FontConfig font_debug_;
    
    Viewport* hud_viewport;

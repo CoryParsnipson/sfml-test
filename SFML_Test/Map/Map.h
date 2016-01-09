@@ -18,12 +18,11 @@ public:
    // public interface
    virtual void update(Game& game, Viewport& viewport);
 
-   virtual void add(Entity* tile); // map assumes ownership of supplied entity
+   virtual void add(Entity* tile); // map assumes ownership of supplied entity (change this in the future when using smart pointers)
 
-   //virtual sf::Vector2f get_map_to_screen_pos(int x, int y) {
-   //   return this->get_map_to_screen_pos(sf::Vector2i(x, y));
-   //};
-   //virtual sf::Vector2f get_map_to_screen_pos(sf::Vector2i pos) = 0;
+   virtual tiles_t intersect(sf::Vector2i point);
+   virtual tiles_t intersect(sf::Vector2f point);
+   virtual tiles_t intersect(sf::FloatRect rect);
 
    virtual std::string to_string();
  

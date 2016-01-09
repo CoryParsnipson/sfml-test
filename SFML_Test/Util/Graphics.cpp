@@ -37,6 +37,18 @@ void Graphics::draw(sf::Drawable& d, sf::View* view) {
    this->window->setView(original_view);
 }
 
+sf::Vector2f Graphics::get_world_coord(const sf::Vector2i& point, sf::View* view) {
+   return (view ? this->window->mapPixelToCoords(point, *view) : this->window->mapPixelToCoords(point));
+}
+
+sf::Vector2i Graphics::get_screen_coord(const sf::Vector2f& point, sf::View* view) {
+   return (view ? this->window->mapCoordsToPixel(point, *view) : this->window->mapCoordsToPixel(point));
+}
+
+sf::RenderWindow& Graphics::get_window() {
+   return *(this->window);
+}
+
 void Graphics::write(std::string msg, sf::Vector2f pos, const FontConfig* config, sf::View* view) {
    sf::View original_view = this->window->getView();
 
@@ -57,8 +69,4 @@ void Graphics::load_font(std::string font_name, std::string filename) {
 
 void Graphics::clear() {
    this->window->clear();
-}
-
-sf::RenderWindow& Graphics::get_window() {
-   return *(this->window);
 }

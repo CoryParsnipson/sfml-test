@@ -20,6 +20,12 @@ public:
 
    void draw(sf::Drawable& d, sf::View* view = nullptr);
 
+   // given a point on the screen, get the absolute world coordinate (apply global transforms)
+   sf::Vector2f get_world_coord(const sf::Vector2i& point, sf::View* view = nullptr);
+
+   // given an absolute world coordinate, get its screen coordinate
+   sf::Vector2i get_screen_coord(const sf::Vector2f& point, sf::View* view = nullptr);
+
    sf::RenderWindow& get_window();
 
    // graphics writer functions

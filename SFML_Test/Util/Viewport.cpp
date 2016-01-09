@@ -98,10 +98,10 @@ void Viewport::set_zoom_factor(float new_zoom_factor) {
    this->set_size(this->zoom_factor * this->get_default_size());
 }
 
-sf::Vector2f Viewport::mapPixelToCoords(const sf::Vector2i& point) {
-   return this->graphics.get_window().mapPixelToCoords(point, *this->view);
+sf::Vector2f Viewport::get_world_coord(const sf::Vector2i& point) {
+   return this->graphics.get_world_coord(point, this->view);
 }
 
-sf::Vector2i Viewport::mapCoordsToPixel(const sf::Vector2f& point) {
-   return this->graphics.get_window().mapCoordsToPixel(point, *this->view);
+sf::Vector2i Viewport::get_screen_coord(const sf::Vector2f& point) {
+   return this->graphics.get_screen_coord(point, this->view);
 }

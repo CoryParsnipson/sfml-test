@@ -71,8 +71,8 @@ void MouseControlPart::update(Entity& entity, Viewport& viewport) {
    // handle mouse click positions
    if (this->last_click_pos) {
       Service::get_logger().msg("MouseControlPart", Logger::INFO, "LAST CLICK    : (" + std::to_string(this->last_click_pos->x) + ", " + std::to_string(this->last_click_pos->y) + ")");
-      *this->last_click_pos = viewport.mapPixelToCoords(static_cast<sf::Vector2i>(*this->last_click_pos));
-      Service::get_logger().msg("MouseControlPart", Logger::INFO, "LAST CLICK NOF: (" + std::to_string(this->last_click_pos->x) + ", " + std::to_string(this->last_click_pos->y) + ")");
+      sf::Vector2f world_coord = viewport.get_world_coord(static_cast<sf::Vector2i>(*this->last_click_pos));
+      Service::get_logger().msg("MouseControlPart", Logger::INFO, "LAST CLICK NOF: (" + std::to_string(world_coord.x) + ", " + std::to_string(world_coord.y) + ")");
 
       delete this->last_click_pos;
       this->last_click_pos = nullptr;
