@@ -27,6 +27,14 @@ void GraphicsPart::add(sf::Shape* shape) {
    this->shapes_.push_back(shape);
 }
 
+void GraphicsPart::set_show_outline(bool show) {
+   this->show_outline_ = show;
+}
+
+void GraphicsPart::set_show_debug_text(bool show) {
+   this->show_debug_text_ = show;
+}
+
 void GraphicsPart::set_viewport(Viewport* v) {
    this->hud_viewport = v;
 }

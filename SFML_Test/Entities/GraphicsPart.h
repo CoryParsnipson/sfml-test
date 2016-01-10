@@ -17,6 +17,9 @@ public:
    virtual void add(sf::Shape* shape);
    // virtual remove();
 
+   void set_show_outline(bool show);
+   void set_show_debug_text(bool show);
+
    void set_viewport(Viewport* v);
 
    virtual void update(Entity& entity, Viewport& viewport); // TODO: figure out how to unify update method signatures

@@ -5,17 +5,25 @@
 
 class PhysicsPart : public Part {
 public:
-   PhysicsPart(std::string id = "physics");
+   PhysicsPart(std::string id = "physics", sf::FloatRect bounding_box = sf::FloatRect(0, 0, 0, 0));
    virtual ~PhysicsPart();
 
    void set_position(sf::Vector2f pos);
    void set_position(float x, float y);
    sf::Vector2f get_position();
 
+   void set_solid(bool solid);
+   bool is_solid();
+
+   bool intersects(sf::Vector2i other_point);
+   bool intersects(sf::Vector2f other_point);
+   bool intersects(sf::FloatRect other_bounding_box);
+
    virtual void update(Entity& entity, Viewport& viewport);
 
 protected:
-   sf::Vector2f pos; // world coordinates
+   bool solid_; // let's try this...
+   sf::FloatRect bounding_box_; // position of this box is world coordinates
 };
 
 #endif

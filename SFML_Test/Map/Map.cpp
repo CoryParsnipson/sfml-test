@@ -2,7 +2,9 @@
 
 #include "Game.h"
 #include "Viewport.h"
+
 #include "Entity.h"
+#include "PhysicsPart.h"
 
 Map::Map() {
 }
@@ -25,16 +27,24 @@ void Map::add(Entity* tile) {
    this->tiles_.push_back(tile);
 }
 
-Map::tiles_t Map::intersect(sf::Vector2i point) {
-   return this->intersect(sf::FloatRect(point.x, point.y, 0, 0));
+Map::tiles_t Map::intersects(sf::Vector2i point) {
+   return this->intersects(sf::FloatRect(point.x, point.y, 0, 0));
 }
 
-Map::tiles_t Map::intersect(sf::Vector2f point) {
-   return this->intersect(static_cast<sf::Vector2i>(point));
+Map::tiles_t Map::intersects(sf::Vector2f point) {
+   return this->intersects(static_cast<sf::Vector2i>(point));
 }
 
-Map::tiles_t Map::intersect(sf::FloatRect rect) {
+Map::tiles_t Map::intersects(sf::FloatRect rect) {
    Map::tiles_t tiles;
+   Map::tiles_t::const_iterator it;
+
+   for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
+      PhysicsPart* tile_physics = dynamic_cast<PhysicsPart*>((*it)->get("physics"));
+      if (tile_physics && tile_physics->intersects(rect)) {
+         tiles.push_back(*it);
+      }
+   }
 
    return tiles;
 }

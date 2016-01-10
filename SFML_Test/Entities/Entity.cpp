@@ -1,7 +1,11 @@
 #include "Entity.h"
-#include "Part.h"
 
-Entity::Entity() {
+#include "Part.h"
+#include "PhysicsPart.h"
+
+Entity::Entity(std::string name)
+: name_(name)
+{
 }
 
 Entity::~Entity() {
@@ -30,4 +34,18 @@ void Entity::update(Viewport& viewport) {
    for (it = this->parts_.begin(); it != this->parts_.end(); it++) {
       it->second->update(*this, viewport);
    }
+}
+
+std::string Entity::to_string() {
+   std::string description = "[Entity \"" + this->name_ + "\"";
+   
+   PhysicsPart* physics = dynamic_cast<PhysicsPart*>(this->get("physics"));
+   if (physics) {
+      sf::Vector2f pos = physics->get_position();
+      description += "@ (" + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ")";
+   }
+   
+   description += "]";
+
+   return description;
 }

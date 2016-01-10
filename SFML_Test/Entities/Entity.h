@@ -11,7 +11,7 @@ class Entity {
 public:
    typedef std::map<std::string, Part*> part_list_t;
 
-   Entity();
+   Entity(std::string name = "entity");
    virtual ~Entity();
    
    virtual void add(Part* part);
@@ -21,7 +21,10 @@ public:
 
    virtual void update(Viewport& viewport);
 
+   std::string to_string();
+
 protected:
+   std::string name_;
    part_list_t parts_;
 };
 

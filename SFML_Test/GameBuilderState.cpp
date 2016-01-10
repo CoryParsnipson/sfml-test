@@ -33,12 +33,6 @@ void GameBuilderState::enter(Game& game) {
    serializer->open("flat_map_test.txt");
 
    // build the map
-   //MapBuilder* map_builder = new IsoMapBuilder(game.texture_manager);
-   //map_builder->set_serializer(serializer);
-   //map_builder->build();
-
-   //this->map = map_builder->get_map();
-
    MapBuilder* map_builder = new FlatMapBuilder(game.texture_manager);
    map_builder->set_serializer(serializer);
    map_builder->build();
@@ -51,6 +45,9 @@ void GameBuilderState::enter(Game& game) {
    // entities
    this->e = UtilFactory::inst()->create_mouse(this->viewports["hud"]);
    Service::get_input().registerInputListener(dynamic_cast<InputListener*>(this->e->get("control")));
+   
+   GraphicsPart* mouse_graphics = dynamic_cast<GraphicsPart*>(this->e->get("graphics"));
+   mouse_graphics->set_show_debug_text(true);
 
    this->origin_dot = new sf::RectangleShape(sf::Vector2f(3, 3));
    this->origin_dot->setFillColor(sf::Color::Yellow);
