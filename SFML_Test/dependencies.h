@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <tuple>
+#include <stack>
 #include <list>
 #include <map>
 
@@ -17,6 +18,8 @@
 #include <functional>
 
 #include <algorithm>
+
+#include "assert.h"
 
 // SFML includes
 #include <SFML/Window.hpp>

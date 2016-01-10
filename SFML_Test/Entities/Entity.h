@@ -2,9 +2,9 @@
 #define ENTITY_H
 
 #include "dependencies.h"
-#include "Viewport.h"
 
 // forward declarations
+class Game;
 class Part;
 
 class Entity {
@@ -19,7 +19,7 @@ public:
    // remove part
    // get part
 
-   virtual void update(Viewport& viewport);
+   virtual void update(Game& game);
 
    std::string to_string();
 

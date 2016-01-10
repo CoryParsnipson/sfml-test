@@ -17,11 +17,11 @@ UtilFactory::UtilFactory() {
 UtilFactory::~UtilFactory() {
 }
 
-Entity* UtilFactory::create_mouse(Viewport* graphics_viewport) {
+Entity* UtilFactory::create_mouse(Viewport* graphics_viewport, Viewport* modified_viewport) {
    Entity* mouse = new Entity();
    GraphicsPart* graphics_part = new GraphicsPart();
    PhysicsPart* physics_part = new PhysicsPart();
-   MouseControlPart* control_part = new MouseControlPart();
+   MouseControlPart* control_part = new MouseControlPart("control", modified_viewport);
    
    sf::RectangleShape* cursor = new sf::RectangleShape(sf::Vector2f(6, 6));
    cursor->setFillColor(sf::Color::Red);

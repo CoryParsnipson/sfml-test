@@ -19,7 +19,7 @@ Map::~Map() {
 void Map::update(Game& game, Viewport& viewport) {
    Map::tiles_t::const_iterator it;
    for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
-      (*it)->update(viewport);
+      (*it)->update(game);
    }
 }
 

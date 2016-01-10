@@ -4,12 +4,12 @@
 #include "Entity.h"
 #include "PhysicsPart.h"
 
-GraphicsPart::GraphicsPart(std::string id, Viewport* hud_viewport)
+GraphicsPart::GraphicsPart(std::string id, Viewport* viewport)
 : Part(id)
 , show_outline_(false)
 , show_debug_text_(false)
 , font_debug_("retro", 11, FontConfig::ALIGN::LEFT)
-, hud_viewport(hud_viewport)
+, viewport_(viewport)
 {
    Service::get_logger().msg("GraphicsPart", Logger::INFO, "Creating GraphicsPart");
 }
@@ -36,11 +36,14 @@ void GraphicsPart::set_show_debug_text(bool show) {
 }
 
 void GraphicsPart::set_viewport(Viewport* v) {
-   this->hud_viewport = v;
+   this->viewport_ = v;
 }
 
-void GraphicsPart::update(Entity& entity, Viewport& viewport) {
-   Viewport* final_viewport = this->hud_viewport ? this->hud_viewport : &viewport;
+void GraphicsPart::update(Entity& entity, Game& game) {
+   if (!this->viewport_) {
+      return;
+   }
+
    PhysicsPart* physics = dynamic_cast<PhysicsPart*>(entity.get("physics"));
 
    sprite_list_t::iterator sprite_it;
@@ -50,7 +53,7 @@ void GraphicsPart::update(Entity& entity, Viewport& viewport) {
          (*sprite_it)->setPosition(physics->get_position());
       }
 
-      final_viewport->draw(*(*sprite_it));
+      this->viewport_->draw(*(*sprite_it));
 
       // draw outline for this sprite
       if (this->show_outline_) {
@@ -63,7 +66,7 @@ void GraphicsPart::update(Entity& entity, Viewport& viewport) {
          s.setOutlineColor(sf::Color::Red);
          s.setFillColor(sf::Color::Transparent);
 
-         final_viewport->draw(s);
+         this->viewport_->draw(s);
       }
    }
 
@@ -73,12 +76,12 @@ void GraphicsPart::update(Entity& entity, Viewport& viewport) {
          (*shape_it)->setPosition(physics->get_position());
       }
 
-      final_viewport->draw(*(*shape_it));
+      this->viewport_->draw(*(*shape_it));
    }
 
    // draw diagnostic info
    if (physics && this->show_debug_text_) {
       sf::Vector2f pos = physics->get_position();
-      final_viewport->write(std::to_string((int)pos.x) + ", " + std::to_string((int)pos.y), pos - sf::Vector2f(0, 11), &this->font_debug_);
+      this->viewport_->write(std::to_string((int)pos.x) + ", " + std::to_string((int)pos.y), pos - sf::Vector2f(0, 11), &this->font_debug_);
    }
 }

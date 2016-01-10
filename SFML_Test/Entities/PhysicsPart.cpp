@@ -45,5 +45,5 @@ bool PhysicsPart::intersects(sf::FloatRect other_bounding_box) {
    return this->bounding_box_.intersects(other_bounding_box);
 }
 
-void PhysicsPart::update(Entity& entity, Viewport& viewport) {
+void PhysicsPart::update(Entity& entity, Game& game) {
 }

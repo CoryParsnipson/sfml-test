@@ -2,9 +2,9 @@
 #define PART_H
 
 #include "dependencies.h"
-#include "Viewport.h"
 
 // forward declarations
+class Game;
 class Entity;
 
 class Part {
@@ -17,7 +17,7 @@ public:
    // send message
    // receive message
 
-   virtual void update(Entity& entity, Viewport& viewport) = 0;
+   virtual void update(Entity& entity, Game& game) = 0;
 
 protected:
    std::string id;

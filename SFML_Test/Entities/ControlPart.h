@@ -4,6 +4,9 @@
 #include "Part.h"
 #include "InputListener.h"
 
+// forward declarations
+class Game;
+
 class ControlPart
 : public Part
 , public InputListener
@@ -19,7 +22,7 @@ public:
    virtual void process(MouseButtonCommand& c) = 0;
    virtual void process(MouseWheelCommand& c) = 0;
 
-   virtual void update(Entity& entity, Viewport& viewport) = 0;
+   virtual void update(Entity& entity, Game& game) = 0;
 
 protected:
 };

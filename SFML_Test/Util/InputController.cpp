@@ -61,7 +61,7 @@ void InputController::pollEvents(Game& game) {
       
       // dispatch event to game entities
       std::vector<InputListener*>::iterator it = this->listeners.begin();
-      for (it = this->listeners.begin(); it != this->listeners.end(); it++) {
+      for (it = this->listeners.begin(); it != this->listeners.end(); ++it) {
          c->execute(*(*it));
       }
    }
