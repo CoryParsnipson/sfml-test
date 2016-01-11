@@ -4,8 +4,9 @@
 #include "dependencies.h"
 
 // forward declarations
-class Game;
 class Entity;
+class Scene;
+class Viewport;
 
 class Part {
 public:
@@ -17,7 +18,7 @@ public:
    // send message
    // receive message
 
-   virtual void update(Entity& entity, Game& game) = 0;
+   virtual void update(Entity& entity, Scene& scene, Viewport& viewport) = 0;
 
 protected:
    std::string id;

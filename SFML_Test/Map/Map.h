@@ -4,7 +4,7 @@
 #include "dependencies.h"
 
 // forward declarations
-class Game;
+class Scene;
 class Entity;
 class Viewport;
 
@@ -16,7 +16,7 @@ public:
    virtual ~Map();
 
    // public interface
-   virtual void update(Game& game, Viewport& viewport);
+   virtual void update(Scene& scene, Viewport& viewport);
 
    virtual void add(Entity* tile); // map assumes ownership of supplied entity (change this in the future when using smart pointers)
 

@@ -1,5 +1,7 @@
 #include "PhysicsPart.h"
 
+#include "Viewport.h"
+
 PhysicsPart::PhysicsPart(std::string id, sf::FloatRect bounding_box)
 : Part(id)
 , solid_(false)
@@ -45,5 +47,5 @@ bool PhysicsPart::intersects(sf::FloatRect other_bounding_box) {
    return this->bounding_box_.intersects(other_bounding_box);
 }
 
-void PhysicsPart::update(Entity& entity, Game& game) {
+void PhysicsPart::update(Entity& entity, Scene& scene, Viewport& viewport) {
 }

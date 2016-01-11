@@ -2,16 +2,14 @@
 #define MOUSE_CONTROL_PART_H
 
 #include "ControlPart.h"
-
-class Game;
-class Viewport;
+#include "MouseUtil.h"
 
 class MouseControlPart : public ControlPart {
 public:
    const float MOUSE_PAN_COEFFICIENT = 1.f;
    const float WINDOW_RESIZE_COEFFICIENT = 10.f;
 
-   MouseControlPart(std::string id = "control", Viewport* viewport = nullptr);
+   MouseControlPart(std::string id = "control");
    virtual ~MouseControlPart();
 
    virtual void process(CloseCommand& c);
@@ -20,14 +18,16 @@ public:
    virtual void process(MouseMoveCommand& c);
    virtual void process(MouseButtonCommand& c);
    virtual void process(MouseWheelCommand& c);
+   
+   void set_controllable(MouseControllable* c = nullptr);
 
-   virtual void update(Entity& entity, Game& game);
+   virtual void update(Entity& entity, Scene& scene, Viewport& viewport);
 
 protected:
    bool is_panning;
    int zoom_delta;
-
-   Viewport* viewport_;
+   
+   MouseControllable* controllable_;
 
    sf::Vector2f panning_anchor;
    sf::Vector2f last_mouse_pos;

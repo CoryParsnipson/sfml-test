@@ -26,10 +26,10 @@ void ConsoleLogger::msg(std::string tag, CATEGORY c, std::string msg) {
       std::cout << "\n";
    }
    
-   std::cout << "[" << this->get_time() << "] (" << this->get_category_string(c) << ") [" << tag << "] " << msg << std::flush;
+   std::cout << "[" << this->get_time() << "] (" << this->get_category_string(c) << ") [" << tag << "] " << msg;
 
    if (this->multiplicity > 1) {
       std::cout << " (x" << std::to_string(this->multiplicity) << ")";
-      std::cout << std::flush;
    }
+   std::cout << std::flush;
 }

@@ -11,7 +11,7 @@ public:
    static UtilFactory* inst();
    virtual ~UtilFactory();
 
-   virtual Entity* create_mouse(Viewport* graphics_viewport = nullptr, Viewport* modified_viewport = nullptr);
+   virtual Entity* create_mouse();
 
 protected:
    // seal off constructors

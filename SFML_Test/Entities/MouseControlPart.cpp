@@ -10,11 +10,11 @@
 #include "MouseWheelCommand.h"
 #include "MouseButtonCommand.h"
 
-MouseControlPart::MouseControlPart(std::string id, Viewport* viewport)
+MouseControlPart::MouseControlPart(std::string id)
 : ControlPart(id)
 , is_panning(false)
 , zoom_delta(0)
-, viewport_(viewport)
+, controllable_(nullptr)
 , last_click_pos(nullptr)
 {
    Service::get_logger().msg("ControlPart", Logger::INFO, "Creating MouseControlPart '" + id + "'");
@@ -52,34 +52,39 @@ void MouseControlPart::process(MouseWheelCommand& c) {
    this->zoom_delta = c.delta;
 }
 
-void MouseControlPart::update(Entity& entity, Game& game) {
-   if (!this->viewport_) {
-      return;
-   }
+void MouseControlPart::set_controllable(MouseControllable* c) {
+   this->controllable_ = c;
+}
 
+void MouseControlPart::update(Entity& entity, Scene& scene, Viewport& viewport) {
    PhysicsPart* physics = dynamic_cast<PhysicsPart*>(entity.get("physics")); // is there a better way?
    if (physics) {
       physics->set_position(this->last_mouse_pos);
    }
 
+   if (!this->controllable_) {
+      Service::get_logger().msg("MouseControlPart", Logger::WARNING, "Controllable target not registered!");
+      return;
+   }
+
    // if we are in panning state, move the viewport
    if (this->is_panning) {
-      sf::Vector2f panning_delta = (this->panning_anchor - this->last_mouse_pos) * this->viewport_->get_zoom_factor();
-      this->viewport_->move(this->MOUSE_PAN_COEFFICIENT * panning_delta);
+      sf::Vector2f panning_delta = (this->panning_anchor - this->last_mouse_pos) * this->controllable_->get_scale();
+      this->controllable_->drag(this->MOUSE_PAN_COEFFICIENT * panning_delta);
       
       this->panning_anchor = this->last_mouse_pos;
    }
 
    // respond to mouse wheel events
    if (this->zoom_delta) {
-      this->viewport_->set_zoom_factor(this->viewport_->get_zoom_factor() - this->zoom_delta / MouseControlPart::WINDOW_RESIZE_COEFFICIENT);
+      this->controllable_->set_scale(this->controllable_->get_scale() - this->zoom_delta / MouseControlPart::WINDOW_RESIZE_COEFFICIENT);
       this->zoom_delta = 0;
    }
 
    // handle mouse click positions
    if (this->last_click_pos) {
       Service::get_logger().msg("MouseControlPart", Logger::INFO, "LAST CLICK    : (" + std::to_string(this->last_click_pos->x) + ", " + std::to_string(this->last_click_pos->y) + ")");
-      sf::Vector2f world_coord = this->viewport_->get_world_coord(static_cast<sf::Vector2i>(*this->last_click_pos));
+      sf::Vector2f world_coord = viewport.get_world_coord(static_cast<sf::Vector2i>(*this->last_click_pos));
       Service::get_logger().msg("MouseControlPart", Logger::INFO, "LAST CLICK NOF: (" + std::to_string(world_coord.x) + ", " + std::to_string(world_coord.y) + ")");
 
       delete this->last_click_pos;

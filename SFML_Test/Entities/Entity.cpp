@@ -1,6 +1,7 @@
 #include "Entity.h"
 
-#include "Game.h"
+#include "Scene.h"
+#include "Viewport.h"
 
 #include "Part.h"
 #include "PhysicsPart.h"
@@ -31,10 +32,10 @@ Part* Entity::get(std::string part_name) {
    return it->second;
 }
 
-void Entity::update(Game& game) {
+void Entity::update(Scene& scene, Viewport& viewport) {
    part_list_t::const_iterator it;
    for (it = this->parts_.begin(); it != this->parts_.end(); it++) {
-      it->second->update(*this, game);
+      it->second->update(*this, scene, viewport);
    }
 }
 

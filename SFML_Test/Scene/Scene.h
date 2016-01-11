@@ -10,14 +10,19 @@
 #include "MouseButtonCommand.h"
 #include "MouseWheelCommand.h"
 
+#include "Viewport.h"
+
 // forward declarations
 class Game;
-class Viewport;
 
 class Scene {
 public:
    Scene() {}
    virtual ~Scene() {
+      std::map<std::string, Viewport*>::const_iterator it;
+      for (it = this->viewports_.begin(); it != this->viewports_.end(); ++it) {
+         delete it->second;
+      }
       this->viewports_.clear();
    }
 
@@ -35,7 +40,7 @@ public:
    virtual void process(Game& game, MouseWheelCommand& c) = 0;
 
 protected:
-   bool is_running_; // false to exit scene?
+   bool is_running_; // false to exit scene
    std::map<std::string, Viewport*> viewports_; // TODO: may need to replace this with some newer class
 };
 

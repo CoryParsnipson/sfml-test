@@ -4,8 +4,9 @@
 #include "dependencies.h"
 
 // forward declarations
-class Game;
 class Part;
+class Scene;
+class Viewport;
 
 class Entity {
 public:
@@ -19,7 +20,7 @@ public:
    // remove part
    // get part
 
-   virtual void update(Game& game);
+   virtual void update(Scene& scene, Viewport& viewport);
 
    std::string to_string();
 

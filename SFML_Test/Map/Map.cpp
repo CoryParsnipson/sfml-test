@@ -1,6 +1,6 @@
 #include "Map.h"
 
-#include "Game.h"
+#include "Scene.h"
 #include "Viewport.h"
 
 #include "Entity.h"
@@ -16,10 +16,10 @@ Map::~Map() {
    }
 }
 
-void Map::update(Game& game, Viewport& viewport) {
+void Map::update(Scene& scene, Viewport& viewport) {
    Map::tiles_t::const_iterator it;
    for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
-      (*it)->update(game);
+      (*it)->update(scene, viewport);
    }
 }
 

@@ -4,7 +4,7 @@
 #include "Viewport.h"
 
 #include "Entity.h"
-#include "GraphicsPart.h"
+#include "MouseControlPart.h"
 
 #include "UtilFactory.h"
 #include "TextSerializer.h"
@@ -35,12 +35,12 @@ void BuilderScene::enter(Game& game) {
    delete serializer;
 
    // entities
-   this->e = UtilFactory::inst()->create_mouse(this->viewports_["hud"], this->viewports_["main"]);
+   this->e = UtilFactory::inst()->create_mouse();
    Service::get_input().registerInputListener(dynamic_cast<InputListener*>(this->e->get("control")));
-   
-   GraphicsPart* mouse_graphics = dynamic_cast<GraphicsPart*>(this->e->get("graphics"));
-   mouse_graphics->set_show_debug_text(true);
 
+   // let our mouse controller manipulate the main viewport
+   dynamic_cast<MouseControlPart*>(this->e->get("control"))->set_controllable(this->viewports_["main"]);
+   
    this->origin_dot = new sf::RectangleShape(sf::Vector2f(3, 3));
    this->origin_dot->setFillColor(sf::Color::Yellow);
 
@@ -70,10 +70,10 @@ void BuilderScene::exit(Game& game) {
 
 void BuilderScene::update(Game& game) {
    // map related work
-   this->map->update(game, *this->viewports_["main"]);
+   this->map->update(*this, *this->viewports_["main"]);
    
    // update entities
-   this->e->update(game);
+   this->e->update(*this, *this->viewports_["hud"]);
 
    //std::vector<sf::RectangleShape*>::const_iterator grid_it;
    //for (grid_it = this->grid.begin(); grid_it != this->grid.end(); grid_it++) {
@@ -106,7 +106,7 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
    case sf::Keyboard::Key::R:
       this->viewports_["main"]->set_center(this->viewports_["main"]->get_default_center());
       this->viewports_["main"]->set_size(this->viewports_["main"]->get_default_size());
-      this->viewports_["main"]->set_zoom_factor(1.0);
+      this->viewports_["main"]->set_scale(1.0);
    break;
    default:
       // do nothing

@@ -43,10 +43,6 @@ void Viewport::write(std::string msg, sf::Vector2f pos, const FontConfig* config
    this->graphics.write(msg, pos, config, &this->get_view());
 }
 
-void Viewport::move(sf::Vector2f delta) {
-   this->view->move(delta);
-}
-
 void Viewport::set_size(sf::Vector2f size) {
    this->view->setSize(size);
 }
@@ -59,7 +55,7 @@ void Viewport::set_default_size(sf::Vector2f size) {
    this->default_size = size;
    
    // don't forget to update viewport size
-   this->set_zoom_factor(this->zoom_factor);
+   this->set_scale(this->zoom_factor);
 }
 
 sf::Vector2f Viewport::get_default_size() {
@@ -82,22 +78,6 @@ sf::Vector2f Viewport::get_default_center() {
    return this->default_center;
 }
 
-float Viewport::get_zoom_factor() {
-   return this->zoom_factor;
-}
-
-void Viewport::set_zoom_factor(float new_zoom_factor) {
-   new_zoom_factor = std::max(new_zoom_factor, Viewport::ZOOM_FACTOR_MIN);
-   new_zoom_factor = std::min(new_zoom_factor, Viewport::ZOOM_FACTOR_MAX);
-
-   this->zoom_factor = new_zoom_factor;
-
-   Service::get_logger().msg("Viewport", Logger::INFO, "Zoom factor: " + std::to_string(this->zoom_factor));
-
-   // update viewport size
-   this->set_size(this->zoom_factor * this->get_default_size());
-}
-
 sf::Vector2f Viewport::get_world_coord(const sf::Vector2i& point) {
    return this->graphics.get_world_coord(point, this->view);
 }
@@ -105,3 +85,24 @@ sf::Vector2f Viewport::get_world_coord(const sf::Vector2i& point) {
 sf::Vector2i Viewport::get_screen_coord(const sf::Vector2f& point) {
    return this->graphics.get_screen_coord(point, this->view);
 }
+
+void Viewport::drag(sf::Vector2f delta) {
+   this->view->move(delta);
+}
+
+float Viewport::get_scale() {
+   return this->zoom_factor;
+}
+
+void Viewport::set_scale(float factor) {
+   factor = std::max(factor, Viewport::ZOOM_FACTOR_MIN);
+   factor = std::min(factor, Viewport::ZOOM_FACTOR_MAX);
+
+   this->zoom_factor = factor;
+
+   Service::get_logger().msg("Viewport", Logger::INFO, "Zoom factor: " + std::to_string(this->zoom_factor));
+
+   // update viewport size
+   this->set_size(this->zoom_factor * this->get_default_size());
+}
+

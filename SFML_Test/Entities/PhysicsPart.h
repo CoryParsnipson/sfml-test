@@ -3,9 +3,6 @@
 
 #include "Part.h"
 
-// forward declarations
-class Game;
-
 class PhysicsPart : public Part {
 public:
    PhysicsPart(std::string id = "physics", sf::FloatRect bounding_box = sf::FloatRect(0, 0, 0, 0));
@@ -22,7 +19,7 @@ public:
    bool intersects(sf::Vector2f other_point);
    bool intersects(sf::FloatRect other_bounding_box);
 
-   virtual void update(Entity& entity, Game& game);
+   virtual void update(Entity& entity, Scene& scene, Viewport& viewport);
 
 protected:
    bool solid_; // let's try this...
