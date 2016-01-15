@@ -6,7 +6,9 @@
 #include "Entity.h"
 #include "PhysicsPart.h"
 
-Map::Map() {
+Map::Map()
+: Entity("map")
+{
 }
 
 Map::~Map() {

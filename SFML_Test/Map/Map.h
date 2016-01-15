@@ -3,12 +3,15 @@
 
 #include "dependencies.h"
 
+#include "Entity.h"
+
 // forward declarations
 class Scene;
-class Entity;
 class Viewport;
 
-class Map {
+class Map
+: public Entity
+{
 public:
    typedef std::vector<Entity*> tiles_t;
 
