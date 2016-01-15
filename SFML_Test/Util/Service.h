@@ -3,6 +3,7 @@
 
 #include "NullLogger.h"
 #include "NullInputController.h"
+#include "NullEventQueue.h"
 
 // forward declarations
 class Logger;
@@ -18,6 +19,7 @@ public:
 
    static Logger& get_logger() { return *logger_; }
    static InputController& get_input() { return *input_; }
+   static EventQueue& get_event_queue() { return *event_queue_; }
 
    static void provide_logger(Logger* logger) {
       // revert to null service
@@ -34,6 +36,14 @@ public:
       }
       input_ = input;
    }
+
+   static void provide_event(EventQueue* event_queue) {
+      // revert to null service
+      if (event_queue == nullptr) {
+         event_queue = &null_event_queue_;
+      }
+      event_queue_ = event_queue;
+   }
    
 private:
    static Logger* logger_;
@@ -41,6 +51,9 @@ private:
 
    static InputController* input_;
    static NullInputController null_input_;
+
+   static EventQueue* event_queue_;
+   static NullEventQueue null_event_queue_;
 };
 
 #endif
