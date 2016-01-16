@@ -10,8 +10,12 @@ public:
 
    void set_position(sf::Vector2f pos);
    void set_position(float x, float y);
+
    sf::Vector2f get_position();
 
+   void set_size(sf::Vector2f size);
+   void set_size(float width, float height);
+   
    void set_solid(bool solid);
    bool is_solid();
 

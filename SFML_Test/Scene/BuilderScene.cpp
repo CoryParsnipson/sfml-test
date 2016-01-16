@@ -38,8 +38,8 @@ void BuilderScene::enter(Game& game) {
    this->e = UtilFactory::inst()->create_mouse();
    Service::get_input().registerInputListener(dynamic_cast<InputListener*>(this->e->get("control")));
 
-   // let our mouse controller manipulate the main viewport
-   dynamic_cast<MouseControlPart*>(this->e->get("control"))->set_controllable(this->viewports_["main"]);
+   // let our mouse controller manipulate this scene
+   dynamic_cast<MouseControlPart*>(this->e->get("control"))->set_controllable(this);
    
    this->origin_dot = new sf::RectangleShape(sf::Vector2f(3, 3));
    this->origin_dot->setFillColor(sf::Color::Yellow);
@@ -138,3 +138,59 @@ void BuilderScene::process(Game& game, MouseButtonCommand& c) {
 
 void BuilderScene::process(Game& game, MouseMoveCommand& c) {}
 void BuilderScene::process(Game& game, MouseWheelCommand& c) {}
+
+void BuilderScene::drag(sf::Vector2f delta) {
+   try {
+      this->viewports_.at("main")->drag(delta);
+   }
+   catch (const std::out_of_range& e) {
+      Service::get_logger().msg("BuilderScene", Logger::WARNING, "Main viewport cannot be found...");
+      return; // not sure if this is necessary...
+   }
+}
+
+float BuilderScene::get_scale() {
+   try {
+      return this->viewports_.at("main")->get_scale();
+   }
+   catch (const std::out_of_range& e) {
+      Service::get_logger().msg("BuilderScene", Logger::WARNING, "Main viewport cannot be found...");
+      return 1.0; // not sure if this is necessary...
+   }
+}
+
+void BuilderScene::set_scale(float factor) {
+   try {
+      this->viewports_.at("main")->set_scale(factor);
+   }
+   catch (const std::out_of_range& e) {
+      Service::get_logger().msg("BuilderScene", Logger::WARNING, "Main viewport cannot be found...");
+      return; // not sure if this is necessary...
+   }
+}
+
+void BuilderScene::click(MouseButtonCommand& c) {
+   sf::Vector2f world_coord;
+
+   try {
+      world_coord = this->viewports_.at("main")->get_world_coord(sf::Vector2i(c.x, c.y));
+   }
+   catch (const std::out_of_range& e) {
+      Service::get_logger().msg("BuilderScene", Logger::WARNING, "Main viewport cannot be found...");
+      return; // not sure if this is necessary...
+   }
+
+   // on left click, select a map tile
+   if (c.button == MouseButtonCommand::MOUSE_BUTTON::LEFT && c.state == MouseButtonCommand::STATE::PRESSED) {
+      Map::tiles_t tiles;
+
+      Service::get_logger().msg("BuilderScene", Logger::INFO, "world_coord: (" + std::to_string(world_coord.x) + ", " + std::to_string(world_coord.y) + ")");
+
+      tiles = this->map->intersects(world_coord);
+      if (tiles.size() == 0) {
+         return;
+      }
+
+      Service::get_logger().msg("BuilderScene", Logger::INFO, "Selected tile: " + tiles[0]->to_string());
+   }
+}

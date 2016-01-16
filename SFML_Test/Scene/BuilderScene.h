@@ -3,11 +3,16 @@
 
 #include "Scene.h"
 
+#include "MouseUtil.h"
+
 // forward declarations
 class Map;
 class Entity;
 
-class BuilderScene : public Scene {
+class BuilderScene
+: public Scene
+, public MouseControllable
+{
 public:
    virtual void enter(Game& game);
    virtual void exit(Game& game);
@@ -21,6 +26,14 @@ public:
    virtual void process(Game& game, MouseMoveCommand& c);
    virtual void process(Game& game, MouseButtonCommand& c);
    virtual void process(Game& game, MouseWheelCommand& c);
+
+   // mouse control interface
+   virtual void drag(sf::Vector2f delta);
+
+   virtual float get_scale();
+   virtual void set_scale(float factor);
+
+   virtual void click(MouseButtonCommand& c);
 
 protected:
    sf::Clock clock;

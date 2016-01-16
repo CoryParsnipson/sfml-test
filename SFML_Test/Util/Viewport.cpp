@@ -106,7 +106,4 @@ void Viewport::set_scale(float factor) {
    this->set_size(this->zoom_factor * this->get_default_size());
 }
 
-sf::Vector2f Viewport::get_relative_pos(sf::Vector2f pos) {
-   return this->get_world_coord(static_cast<sf::Vector2i>(pos));
-}
-
+void Viewport::click(MouseButtonCommand& c) {}

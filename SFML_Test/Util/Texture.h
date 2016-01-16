@@ -8,6 +8,7 @@ public:
    Texture(std::string filename, sf::IntRect texture_area = sf::IntRect());
    ~Texture();
 
+   sf::Vector2f get_size();
    sf::Texture& get_texture();
 
    std::string to_string();

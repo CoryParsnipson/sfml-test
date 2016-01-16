@@ -1,7 +1,8 @@
 #ifndef MOUSE_BUTTON_COMMAND_H
 #define MOUSE_BUTTON_COMMAND_H
 
-#include "../dependencies.h"
+#include "dependencies.h"
+
 #include "Command.h"
 
 class MouseButtonCommand : public Command {

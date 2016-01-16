@@ -30,7 +30,17 @@ void Map::add(Entity* tile) {
 }
 
 Map::tiles_t Map::intersects(sf::Vector2i point) {
-   return this->intersects(sf::FloatRect(point.x, point.y, 0, 0));
+   Map::tiles_t tiles;
+   Map::tiles_t::const_iterator it;
+
+   for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
+      PhysicsPart* tile_physics = dynamic_cast<PhysicsPart*>((*it)->get("physics"));
+      if (tile_physics && tile_physics->intersects(point)) {
+         tiles.push_back(*it);
+      }
+   }
+
+   return tiles;
 }
 
 Map::tiles_t Map::intersects(sf::Vector2f point) {

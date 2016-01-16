@@ -47,7 +47,7 @@ public:
    virtual float get_scale();
    virtual void set_scale(float factor);
 
-   virtual sf::Vector2f get_relative_pos(sf::Vector2f pos);
+   virtual void click(MouseButtonCommand& c);
 
    sf::View& get_view();
    Graphics& get_graphics();

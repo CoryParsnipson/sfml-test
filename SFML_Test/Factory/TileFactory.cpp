@@ -28,6 +28,7 @@ Entity* TileFactory::create_tile(Texture& t, sf::Vector2f pos) {
    graphics_part->add(new sf::Sprite(t.get_texture()));
    
    physics_part->set_position(pos);
+   physics_part->set_size(t.get_size());
   
    tile->add(graphics_part);
    tile->add(physics_part); 

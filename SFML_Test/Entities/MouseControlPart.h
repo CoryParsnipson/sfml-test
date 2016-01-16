@@ -19,7 +19,7 @@ public:
    virtual void process(MouseButtonCommand& c);
    virtual void process(MouseWheelCommand& c);
    
-   void set_controllable(MouseControllable* c = nullptr);
+   virtual void set_controllable(MouseControllable* c = nullptr);
 
    virtual void update(Entity& entity, Scene& scene, Viewport& viewport);
 
@@ -31,7 +31,7 @@ protected:
 
    sf::Vector2f panning_anchor;
    sf::Vector2f last_mouse_pos;
-   sf::Vector2f* last_click_pos;
+   MouseButtonCommand* last_click_;
 };
 
 #endif
