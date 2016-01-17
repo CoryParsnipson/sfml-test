@@ -126,6 +126,9 @@ void BuilderScene::process(Game& game, WindowResizeCommand& c) {
 
    this->viewports_["main"]->set_size(screen_size);
    this->viewports_["main"]->set_default_size(screen_size);
+
+   // reposition center dot
+   this->center_dot->setPosition(screen_center.x, screen_center.y);
 }
 
 void BuilderScene::process(Game& game, MouseButtonCommand& c) {
