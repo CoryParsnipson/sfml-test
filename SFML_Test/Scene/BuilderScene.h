@@ -14,6 +14,8 @@ class BuilderScene
 , public MouseControllable
 {
 public:
+   BuilderScene();
+
    virtual void enter(Game& game);
    virtual void exit(Game& game);
 
@@ -36,8 +38,6 @@ public:
    virtual void click(MouseButtonCommand& c);
 
 protected:
-   sf::Clock clock;
-
    Map* map;
 
    // entities
@@ -46,6 +46,12 @@ protected:
    sf::RectangleShape* origin_dot;
    sf::RectangleShape* center_dot;
    std::vector<sf::RectangleShape*> grid;
+
+   sf::Clock clock;
+   FontConfig fps_font;
+   int last_frame_time;
+   int frame_measurement_interval;
+   int frame_count;
 };
 
 #endif

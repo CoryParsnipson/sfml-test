@@ -6,6 +6,7 @@ public:
 	static Settings* Instance();
 
 	const int FRAMERATE_LIMIT = 60;
+   const float FRAMERATE_SMOOTHING = 0.98;
 
 	const int SCREEN_WIDTH = 800;
 	const int SCREEN_HEIGHT = 500;

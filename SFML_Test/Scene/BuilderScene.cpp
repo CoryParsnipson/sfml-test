@@ -10,6 +10,14 @@
 #include "TextSerializer.h"
 #include "FlatMapBuilder.h"
 
+BuilderScene::BuilderScene()
+: fps_font("retro", 12, FontConfig::ALIGN::LEFT)
+, last_frame_time(0)
+, frame_measurement_interval(6)
+, frame_count(0)
+{
+}
+
 void BuilderScene::enter(Game& game) {
    Service::get_logger().msg("BuilderScene", Logger::INFO, "Entering builder start menu state.");
 
@@ -50,7 +58,7 @@ void BuilderScene::enter(Game& game) {
 
    for (int r = 0; r < 40; r++) {
       for (int c = 0; c < 40; c++) {
-         sf::RectangleShape* g = new sf::RectangleShape(sf::Vector2f(3, 3));
+         sf::RectangleShape* g = new sf::RectangleShape(sf::Vector2f(2, 2));
          g->setFillColor(sf::Color::Blue);
          g->setPosition(r * Settings::Instance()->TILE_WIDTH, c * Settings::Instance()->TILE_HEIGHT);
 
@@ -75,24 +83,28 @@ void BuilderScene::update(Game& game) {
    // update entities
    this->e->update(*this, *this->viewports_["hud"]);
 
-   //std::vector<sf::RectangleShape*>::const_iterator grid_it;
-   //for (grid_it = this->grid.begin(); grid_it != this->grid.end(); grid_it++) {
-   //   this->viewports_["main"]->draw(**grid_it);
-   //}
+   std::vector<sf::RectangleShape*>::const_iterator grid_it;
+   for (grid_it = this->grid.begin(); grid_it != this->grid.end(); grid_it++) {
+      this->viewports_["main"]->draw(**grid_it);
+   }
 
    this->viewports_["hud"]->draw(*this->center_dot);
-   //this->viewports_["main"]->draw(*this->origin_dot);
+   this->viewports_["main"]->draw(*this->origin_dot);
 
    // draw fixed hud items
    this->viewports_["hud"]->write("SFML_Test");
    this->viewports_["hud"]->write("r: reset pan position", sf::Vector2f(0, 15));
    this->viewports_["hud"]->write("right click: click and drag to pan", sf::Vector2f(0, 30));
 
-   // show FPS
-   FontConfig fc("retro", 12, FontConfig::ALIGN::RIGHT);
-   int fps = (int)(1.f / this->clock.getElapsedTime().asSeconds());
-   this->clock.restart();
-   this->viewports_["hud"]->write("FPS: " + std::to_string(fps), sf::Vector2f(Settings::Instance()->SCREEN_WIDTH - 4, 10), &fc);
+   // calculate and show FPS
+   if (!this->frame_count) {
+      this->last_frame_time = (((float)this->frame_measurement_interval / this->clock.getElapsedTime().asSeconds()) * Settings::Instance()->FRAMERATE_SMOOTHING) + (this->last_frame_time * (1.0 - Settings::Instance()->FRAMERATE_SMOOTHING));
+      this->clock.restart();
+   }
+
+   sf::Vector2f fps_pos(this->viewports_["hud"]->get_size().x - 60, 8);
+   this->viewports_["hud"]->write("FPS: " + std::to_string(this->last_frame_time), fps_pos, &this->fps_font);
+   this->frame_count = (this->frame_count + 1) % this->frame_measurement_interval;
 }
 
 void BuilderScene::process(Game& game, CloseCommand& c) {
