@@ -12,6 +12,8 @@ public:
    virtual Entity* create_tile(Texture& t);
    virtual Entity* create_tile(Texture& t, sf::Vector2f pos);
 
+   virtual Entity* create_tile_cursor(sf::Vector2f pos, std::vector<Entity*> references);
+
 protected:
    // seal off constructors
    TileFactory();

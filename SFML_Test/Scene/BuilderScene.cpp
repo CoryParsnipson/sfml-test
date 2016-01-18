@@ -4,9 +4,11 @@
 #include "Viewport.h"
 
 #include "Entity.h"
+#include "PhysicsPart.h"
 #include "MouseControlPart.h"
 
 #include "UtilFactory.h"
+#include "TileFactory.h"
 #include "TextSerializer.h"
 #include "FlatMapBuilder.h"
 
@@ -81,15 +83,20 @@ void BuilderScene::update(Game& game) {
    this->map->update(*this, *this->viewports_["main"]);
    
    // update entities
-   this->e->update(*this, *this->viewports_["hud"]);
+   std::vector<Entity*>::const_iterator entity_it;
+   for (entity_it = this->entities_.begin(); entity_it != this->entities_.end(); ++entity_it) {
+      (*entity_it)->update(*this, *this->viewports_["main"]);
+   }
 
    std::vector<sf::RectangleShape*>::const_iterator grid_it;
    for (grid_it = this->grid.begin(); grid_it != this->grid.end(); grid_it++) {
       this->viewports_["main"]->draw(**grid_it);
    }
 
-   this->viewports_["hud"]->draw(*this->center_dot);
    this->viewports_["main"]->draw(*this->origin_dot);
+   this->viewports_["hud"]->draw(*this->center_dot);
+
+   this->e->update(*this, *this->viewports_["hud"]);
 
    // draw fixed hud items
    this->viewports_["hud"]->write("SFML_Test");
@@ -98,7 +105,8 @@ void BuilderScene::update(Game& game) {
 
    // calculate and show FPS
    if (!this->frame_count) {
-      this->last_frame_time = (((float)this->frame_measurement_interval / this->clock.getElapsedTime().asSeconds()) * Settings::Instance()->FRAMERATE_SMOOTHING) + (this->last_frame_time * (1.0 - Settings::Instance()->FRAMERATE_SMOOTHING));
+      this->last_frame_time = (((float)this->frame_measurement_interval / this->clock.getElapsedTime().asSeconds()) * Settings::Instance()->FRAMERATE_SMOOTHING)
+                              + (this->last_frame_time * (1.0 - Settings::Instance()->FRAMERATE_SMOOTHING));
       this->clock.restart();
    }
 
@@ -207,5 +215,14 @@ void BuilderScene::click(MouseButtonCommand& c) {
       }
 
       Service::get_logger().msg("BuilderScene", Logger::INFO, "Selected tile: " + tiles[0]->to_string());
+
+      PhysicsPart* tile_physics = dynamic_cast<PhysicsPart*>(tiles[0]->get("physics"));
+      if (!tile_physics) {
+         Service::get_logger().msg("BuilderScene", Logger::WARNING, "Selected tile does not have physics component!");
+         return;
+      }
+
+      // hmm, messy typedef conversion here
+      this->entities_.push_back(TileFactory::inst()->create_tile_cursor(tile_physics->get_position(), tiles));
    }
 }

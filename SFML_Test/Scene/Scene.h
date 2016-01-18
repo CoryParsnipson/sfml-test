@@ -14,6 +14,7 @@
 
 // forward declarations
 class Game;
+class Entity;
 
 class Scene {
 public:
@@ -41,7 +42,10 @@ public:
 
 protected:
    bool is_running_; // false to exit scene
-   std::map<std::string, Viewport*> viewports_; // TODO: may need to replace this with some newer class
+   
+   // make these private with protected accessor methods?
+   std::map<std::string, Viewport*> viewports_;
+   std::vector<Entity*> entities_;
 };
 
 #endif

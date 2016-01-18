@@ -16,6 +16,7 @@ GraphicsPart::GraphicsPart(std::string id)
 }
 
 GraphicsPart::~GraphicsPart() {
+   // TODO: probably need to delete everything in these arrays
    this->sprites_.clear();
    this->shapes_.clear();
 }

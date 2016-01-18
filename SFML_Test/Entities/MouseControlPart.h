@@ -31,7 +31,6 @@ protected:
 
    sf::Vector2f panning_anchor;
    sf::Vector2f last_mouse_pos;
-   MouseButtonCommand* last_click_;
 };
 
 #endif

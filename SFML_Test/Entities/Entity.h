@@ -16,9 +16,9 @@ public:
    virtual ~Entity();
    
    virtual void add(Part* part);
-   virtual Part* get(std::string part_name);
    // remove part
-   // get part
+   
+   virtual Part* get(std::string part_name);
 
    virtual void update(Scene& scene, Viewport& viewport);
 

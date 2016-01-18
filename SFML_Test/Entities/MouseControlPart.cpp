@@ -15,7 +15,6 @@ MouseControlPart::MouseControlPart(std::string id)
 , is_panning(false)
 , zoom_delta(0)
 , controllable_(nullptr)
-, last_click_(nullptr)
 {
    Service::get_logger().msg("ControlPart", Logger::INFO, "Creating MouseControlPart '" + id + "'");
 }
@@ -36,10 +35,9 @@ void MouseControlPart::process(MouseMoveCommand& c) {
 void MouseControlPart::process(MouseButtonCommand& c) {
    Service::get_logger().msg("ControlPart", Logger::INFO, c.to_string());
 
-   this->last_click_ = new MouseButtonCommand(c);
-
    switch (c.button) {
    case MouseButtonCommand::LEFT:
+      this->controllable_->click(c);
       break;
    case MouseButtonCommand::RIGHT:
       this->is_panning = (c.state == MouseButtonCommand::PRESSED);
@@ -81,12 +79,4 @@ void MouseControlPart::update(Entity& entity, Scene& scene, Viewport& viewport) 
       this->controllable_->set_scale(this->controllable_->get_scale() - this->zoom_delta / MouseControlPart::WINDOW_RESIZE_COEFFICIENT);
       this->zoom_delta = 0;
    }
-
-   // handle mouse click positions
-   if (this->last_click_) {
-      this->controllable_->click(*this->last_click_);
-
-      delete this->last_click_;
-      this->last_click_ = nullptr;
-   } 
 }
