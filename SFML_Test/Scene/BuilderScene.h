@@ -42,6 +42,7 @@ protected:
 
    // entities
    Entity* e;  // temporary mouse placeholder
+   Entity* selected_tile;
 
    sf::RectangleShape* origin_dot;
    sf::RectangleShape* center_dot;

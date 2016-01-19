@@ -15,12 +15,11 @@ public:
    Entity(std::string name = "entity");
    virtual ~Entity();
    
+   virtual void update(Scene& scene, Viewport& viewport);
+
    virtual void add(Part* part);
    // remove part
-   
    virtual Part* get(std::string part_name);
-
-   virtual void update(Scene& scene, Viewport& viewport);
 
    std::string to_string();
 

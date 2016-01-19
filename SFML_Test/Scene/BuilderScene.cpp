@@ -13,7 +13,8 @@
 #include "FlatMapBuilder.h"
 
 BuilderScene::BuilderScene()
-: fps_font("retro", 12, FontConfig::ALIGN::LEFT)
+: selected_tile(nullptr)
+, fps_font("retro", 12, FontConfig::ALIGN::LEFT)
 , last_frame_time(0)
 , frame_measurement_interval(6)
 , frame_count(0)
@@ -83,6 +84,10 @@ void BuilderScene::update(Game& game) {
    this->map->update(*this, *this->viewports_["main"]);
    
    // update entities
+   if (this->selected_tile) {
+      this->selected_tile->update(*this, *this->viewports_["main"]);
+   }
+
    std::vector<Entity*>::const_iterator entity_it;
    for (entity_it = this->entities_.begin(); entity_it != this->entities_.end(); ++entity_it) {
       (*entity_it)->update(*this, *this->viewports_["main"]);
@@ -204,7 +209,7 @@ void BuilderScene::click(MouseButtonCommand& c) {
    }
 
    // on left click, select a map tile
-   if (c.button == MouseButtonCommand::MOUSE_BUTTON::LEFT && c.state == MouseButtonCommand::STATE::PRESSED) {
+   if (c.button == MouseButtonCommand::MOUSE_BUTTON::LEFT && c.state == MouseButtonCommand::STATE::RELEASED) {
       Map::tiles_t tiles;
 
       Service::get_logger().msg("BuilderScene", Logger::INFO, "world_coord: (" + std::to_string(world_coord.x) + ", " + std::to_string(world_coord.y) + ")");
@@ -222,7 +227,22 @@ void BuilderScene::click(MouseButtonCommand& c) {
          return;
       }
 
-      // hmm, messy typedef conversion here
-      this->entities_.push_back(TileFactory::inst()->create_tile_cursor(tile_physics->get_position(), tiles));
+      if (!this->selected_tile) {
+         this->selected_tile = TileFactory::inst()->create_tile_cursor(tile_physics->get_position(), tiles);
+         return;
+      }
+
+      PhysicsPart* cursor_physics = dynamic_cast<PhysicsPart*>(this->selected_tile->get("physics"));
+      if (cursor_physics) {
+         // if you click the tile that is already selected, deselect tile         
+         if (cursor_physics->get_position() == tile_physics->get_position()) {
+            delete this->selected_tile;
+            this->selected_tile = nullptr;
+            return;
+         }
+
+         // move cursor to new tile
+         cursor_physics->set_position(tile_physics->get_position());
+      }
    }
 }
