@@ -36,6 +36,10 @@ void PhysicsPart::set_size(float width, float height) {
    this->bounding_box_.height = std::max(0.f, height);
 }
 
+sf::Vector2f PhysicsPart::get_size() {
+   return sf::Vector2f(this->bounding_box_.width, this->bounding_box_.height);
+}
+
 void PhysicsPart::set_solid(bool solid) {
    this->solid_ = solid;
 }

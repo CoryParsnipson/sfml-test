@@ -21,6 +21,23 @@ BuilderScene::BuilderScene()
 {
 }
 
+BuilderScene::~BuilderScene() {
+   delete this->map;
+   delete this->map_builder;
+
+   delete this->e;
+   delete this->selected_tile;
+
+   delete this->origin_dot;
+   delete this->center_dot;
+
+   std::vector<sf::RectangleShape*>::const_iterator it;
+   for (it = this->grid.begin(); it != this->grid.end(); ++it) {
+      delete *it;
+   }
+   this->grid.clear();
+}
+
 void BuilderScene::enter(Game& game) {
    Service::get_logger().msg("BuilderScene", Logger::INFO, "Entering builder start menu state.");
 
@@ -36,11 +53,11 @@ void BuilderScene::enter(Game& game) {
    serializer->open("flat_map_test.txt");
 
    // build the map
-   MapBuilder* map_builder = new FlatMapBuilder(game.texture_manager);
-   map_builder->set_serializer(serializer);
-   map_builder->build();
+   this->map_builder = new FlatMapBuilder(game.texture_manager);
+   this->map_builder->set_serializer(serializer);
+   this->map_builder->build();
 
-   this->map = map_builder->get_map();
+   this->map = this->map_builder->get_map();
 
    delete map_builder;
    delete serializer;
@@ -213,6 +230,14 @@ void BuilderScene::click(MouseButtonCommand& c) {
       Map::tiles_t tiles;
 
       Service::get_logger().msg("BuilderScene", Logger::INFO, "world_coord: (" + std::to_string(world_coord.x) + ", " + std::to_string(world_coord.y) + ")");
+
+      // TODO: revised tile cursor select
+      // * on mouse button press, save click position
+      // * on mouse button release, save click position
+      // * create rectangle from both click positions
+      // * intersect rectangle with map to get selected tiles
+      // * figure out how to create new tiles for areas under selection rectangle not already in map
+      // * create cursor
 
       tiles = this->map->intersects(world_coord);
       if (tiles.size() == 0) {

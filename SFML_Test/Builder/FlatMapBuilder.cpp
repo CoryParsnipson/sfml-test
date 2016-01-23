@@ -49,5 +49,5 @@ void FlatMapBuilder::build_tile(int x, int y, std::string texture) {
       Service::get_logger().msg("FlatMap", Logger::WARNING, "Tile has no physics component.");
    }
 
-   this->map_->add(tile);
+   this->map_->add(x, y, tile);
 }

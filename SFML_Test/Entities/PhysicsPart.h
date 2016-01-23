@@ -16,6 +16,8 @@ public:
    void set_size(sf::Vector2f size);
    void set_size(float width, float height);
    
+   sf::Vector2f get_size();
+   
    void set_solid(bool solid);
    bool is_solid();
 

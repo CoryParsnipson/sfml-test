@@ -8,6 +8,7 @@
 // forward declarations
 class Map;
 class Entity;
+class MapBuilder;
 
 class BuilderScene
 : public Scene
@@ -15,6 +16,7 @@ class BuilderScene
 {
 public:
    BuilderScene();
+   virtual ~BuilderScene();
 
    virtual void enter(Game& game);
    virtual void exit(Game& game);
@@ -39,6 +41,7 @@ public:
 
 protected:
    Map* map;
+   MapBuilder* map_builder;
 
    // entities
    Entity* e;  // temporary mouse placeholder
