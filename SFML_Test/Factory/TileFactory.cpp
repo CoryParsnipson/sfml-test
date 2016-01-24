@@ -54,7 +54,7 @@ Entity* TileFactory::create_tile_cursor(sf::Vector2f pos, sf::Vector2f size, std
    graphics_part->add(cursor_graphic);
 
    physics_part->set_position(pos);
-   physics_part->set_size(40, 40);
+   physics_part->set_size(size);
 
    std::vector<Entity*>::const_iterator it;
    for (it = references.begin(); it != references.end(); ++it) {

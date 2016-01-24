@@ -250,10 +250,16 @@ void BuilderScene::click(MouseButtonCommand& c) {
    // on left click, select a map tile
    if (c.button == MouseButtonCommand::MOUSE_BUTTON::LEFT && c.state == MouseButtonCommand::STATE::RELEASED) {
       Map::tiles_t tiles;
+      bool is_one_tile_selected = false;
 
       Service::get_logger().msg("BuilderScene", Logger::INFO, "world_coord: (" + std::to_string(world_coord.x) + ", " + std::to_string(world_coord.y) + ")");
 
       this->click_release_pos = new sf::Vector2f(world_coord);
+
+      is_one_tile_selected = (std::abs(this->click_press_pos->x - this->click_release_pos->x) < 10) &&
+         (std::abs(this->click_press_pos->y - this->click_release_pos->y) < 10);
+
+      Service::get_logger().msg("BuilderScene", Logger::INFO, "is_one_tile_selected? " + std::to_string(is_one_tile_selected));
 
       // TODO: revised tile cursor select
       // * figure out how to create new tiles for areas under selection rectangle not already in map
@@ -284,8 +290,24 @@ void BuilderScene::click(MouseButtonCommand& c) {
       this->click_release_pos = nullptr;
 
       if (this->selected_tile) {
+         bool selected_is_one_tile = false;
          PhysicsPart* selected_physics = dynamic_cast<PhysicsPart*>(this->selected_tile->get("physics"));
-         if (selected_physics && !selected_physics->intersects(world_coord)) {
+         
+         if (!selected_physics) {
+            delete this->selected_tile;
+            this->selected_tile = nullptr;
+
+            Service::get_logger().msg("BuilderScene", Logger::WARNING, "Tile cursor does not have physics component.");
+            return;
+         }
+
+         selected_is_one_tile = ((int)selected_physics->get_size().x == (int)Settings::Instance()->TILE_WIDTH);
+         Service::get_logger().msg("BuilderScene", Logger::INFO, "selected_is_one_tile? " + std::to_string(selected_is_one_tile));
+
+         // TODO: wow this is terrible... "selected_is_one_tile" is about the existing cursor and "is_one_tile_selected" is about the mouse drag selection
+         if (!selected_physics->intersects(world_coord) && ((!selected_is_one_tile && !is_one_tile_selected) ||
+                                                            (selected_is_one_tile && !is_one_tile_selected) ||
+                                                            (selected_is_one_tile && is_one_tile_selected))) {
             delete this->selected_tile;
             this->selected_tile = TileFactory::inst()->create_tile_cursor(sf::Vector2f(selected.left, selected.top), sf::Vector2f(selected.width, selected.height), tiles);
          } else {
