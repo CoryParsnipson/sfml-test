@@ -4,6 +4,8 @@
 #include <iostream>
 #include <fstream>
 
+#include <cmath>
+
 #include <vector>
 #include <tuple>
 #include <stack>

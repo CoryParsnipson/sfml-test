@@ -13,7 +13,9 @@
 #include "FlatMapBuilder.h"
 
 BuilderScene::BuilderScene()
-: selected_tile(nullptr)
+: click_press_pos(nullptr)
+, click_release_pos(nullptr)
+, selected_tile(nullptr)
 , fps_font("retro", 12, FontConfig::ALIGN::LEFT)
 , last_frame_time(0)
 , frame_measurement_interval(6)
@@ -24,6 +26,9 @@ BuilderScene::BuilderScene()
 BuilderScene::~BuilderScene() {
    delete this->map;
    delete this->map_builder;
+
+   delete this->click_press_pos;
+   delete this->click_release_pos;
 
    delete this->e;
    delete this->selected_tile;
@@ -186,7 +191,19 @@ void BuilderScene::process(Game& game, MouseWheelCommand& c) {}
 
 void BuilderScene::drag(sf::Vector2f delta) {
    try {
-      this->viewports_.at("main")->drag(delta);
+      if (this->click_press_pos && !this->click_release_pos) {
+         // TODO: probably need update() on Viewport class to get this working properly...
+         sf::RectangleShape select_rect;
+         select_rect.setPosition(*this->click_press_pos);
+         select_rect.setSize(*this->click_press_pos + delta);
+         select_rect.setFillColor(sf::Color(246, 168, 104));
+         select_rect.setOutlineColor(sf::Color(191, 127, 63));
+         select_rect.setOutlineThickness(1.0);
+
+         this->viewports_.at("main")->draw(select_rect);
+      } else {
+         this->viewports_.at("main")->drag(delta);
+      }
    }
    catch (const std::out_of_range& e) {
       Service::get_logger().msg("BuilderScene", Logger::WARNING, "Main viewport cannot be found...");
@@ -225,49 +242,58 @@ void BuilderScene::click(MouseButtonCommand& c) {
       return; // not sure if this is necessary...
    }
 
+   // on right click, begin select behavior
+   if (c.button == MouseButtonCommand::MOUSE_BUTTON::LEFT && c.state == MouseButtonCommand::STATE::PRESSED) {
+      this->click_press_pos = new sf::Vector2f(world_coord);
+   }
+
    // on left click, select a map tile
    if (c.button == MouseButtonCommand::MOUSE_BUTTON::LEFT && c.state == MouseButtonCommand::STATE::RELEASED) {
       Map::tiles_t tiles;
 
       Service::get_logger().msg("BuilderScene", Logger::INFO, "world_coord: (" + std::to_string(world_coord.x) + ", " + std::to_string(world_coord.y) + ")");
 
+      this->click_release_pos = new sf::Vector2f(world_coord);
+
       // TODO: revised tile cursor select
-      // * on mouse button press, save click position
-      // * on mouse button release, save click position
-      // * create rectangle from both click positions
-      // * intersect rectangle with map to get selected tiles
       // * figure out how to create new tiles for areas under selection rectangle not already in map
-      // * create cursor
+      
+      // round press and release click positions to tiles
+      this->click_press_pos->x = Settings::Instance()->TILE_WIDTH * (int)(this->click_press_pos->x / Settings::Instance()->TILE_WIDTH);
+      this->click_press_pos->y = Settings::Instance()->TILE_HEIGHT * (int)(this->click_press_pos->y / Settings::Instance()->TILE_HEIGHT);
 
-      tiles = this->map->intersects(world_coord);
-      if (tiles.size() == 0) {
-         return;
+      this->click_release_pos->x = Settings::Instance()->TILE_WIDTH * ((int)(this->click_release_pos->x / Settings::Instance()->TILE_WIDTH) + ((int)this->click_release_pos->x % (int)Settings::Instance()->TILE_WIDTH ? 1 : 0));
+      this->click_release_pos->y = Settings::Instance()->TILE_HEIGHT * ((int)(this->click_release_pos->y / Settings::Instance()->TILE_HEIGHT) + ((int)this->click_release_pos->y % (int)Settings::Instance()->TILE_HEIGHT ? 1 : 0));
+
+      sf::Vector2f* click_origin_pos = this->click_press_pos;
+      if (this->click_release_pos->x < this->click_press_pos->x || (this->click_release_pos->x == this->click_press_pos->x && this->click_release_pos->y < this->click_press_pos->y)) {
+         click_origin_pos = this->click_release_pos;
       }
 
-      Service::get_logger().msg("BuilderScene", Logger::INFO, "Selected tile: " + tiles[0]->to_string());
+      sf::Vector2f selected_size(*this->click_release_pos - *this->click_press_pos);
+      selected_size.x = std::max(selected_size.x, Settings::Instance()->TILE_WIDTH);
+      selected_size.y = std::max(selected_size.y, Settings::Instance()->TILE_HEIGHT);
 
-      PhysicsPart* tile_physics = dynamic_cast<PhysicsPart*>(tiles[0]->get("physics"));
-      if (!tile_physics) {
-         Service::get_logger().msg("BuilderScene", Logger::WARNING, "Selected tile does not have physics component!");
-         return;
-      }
+      sf::FloatRect selected(*click_origin_pos, selected_size);
+      tiles = this->map->intersects(selected);
 
-      if (!this->selected_tile) {
-         this->selected_tile = TileFactory::inst()->create_tile_cursor(tile_physics->get_position(), tiles);
-         return;
-      }
+      delete this->click_press_pos;
+      delete this->click_release_pos;
 
-      PhysicsPart* cursor_physics = dynamic_cast<PhysicsPart*>(this->selected_tile->get("physics"));
-      if (cursor_physics) {
-         // if you click the tile that is already selected, deselect tile         
-         if (cursor_physics->get_position() == tile_physics->get_position()) {
+      this->click_press_pos = nullptr;
+      this->click_release_pos = nullptr;
+
+      if (this->selected_tile) {
+         PhysicsPart* selected_physics = dynamic_cast<PhysicsPart*>(this->selected_tile->get("physics"));
+         if (selected_physics && !selected_physics->intersects(world_coord)) {
+            delete this->selected_tile;
+            this->selected_tile = TileFactory::inst()->create_tile_cursor(sf::Vector2f(selected.left, selected.top), sf::Vector2f(selected.width, selected.height), tiles);
+         } else {
             delete this->selected_tile;
             this->selected_tile = nullptr;
-            return;
          }
-
-         // move cursor to new tile
-         cursor_physics->set_position(tile_physics->get_position());
+      } else {
+         this->selected_tile = TileFactory::inst()->create_tile_cursor(sf::Vector2f(selected.left, selected.top), sf::Vector2f(selected.width, selected.height), tiles);
       }
    }
 }

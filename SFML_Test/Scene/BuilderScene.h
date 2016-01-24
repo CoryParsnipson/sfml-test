@@ -43,6 +43,10 @@ protected:
    Map* map;
    MapBuilder* map_builder;
 
+   // mouse controllable state
+   sf::Vector2f* click_press_pos;
+   sf::Vector2f* click_release_pos;
+
    // entities
    Entity* e;  // temporary mouse placeholder
    Entity* selected_tile;

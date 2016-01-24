@@ -37,7 +37,7 @@ Entity* TileFactory::create_tile(Texture& t, sf::Vector2f pos) {
    return tile;
 }
 
-Entity* TileFactory::create_tile_cursor(sf::Vector2f pos, std::vector<Entity*> references) {
+Entity* TileFactory::create_tile_cursor(sf::Vector2f pos, sf::Vector2f size, std::vector<Entity*> references) {
    Entity* cursor = new Entity();
    GraphicsPart* graphics_part = new GraphicsPart();
    PhysicsPart* physics_part = new PhysicsPart();
@@ -45,7 +45,7 @@ Entity* TileFactory::create_tile_cursor(sf::Vector2f pos, std::vector<Entity*> r
 
    // TODO: come back to this and do it better
    sf::RectangleShape* cursor_graphic = new sf::RectangleShape();
-   cursor_graphic->setSize(sf::Vector2f(40, 40));
+   cursor_graphic->setSize(size);
    cursor_graphic->setFillColor(sf::Color(225, 225, 225, 200));
    cursor_graphic->setOutlineColor(sf::Color(227, 218, 5, 192));
    cursor_graphic->setOutlineThickness(1.0);
