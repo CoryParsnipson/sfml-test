@@ -264,19 +264,22 @@ void BuilderScene::click(MouseButtonCommand& c) {
       // TODO: revised tile cursor select
       // * figure out how to create new tiles for areas under selection rectangle not already in map
       
-      // round press and release click positions to tiles
-      this->click_press_pos->x = Settings::Instance()->TILE_WIDTH * (int)(this->click_press_pos->x / Settings::Instance()->TILE_WIDTH);
-      this->click_press_pos->y = Settings::Instance()->TILE_HEIGHT * (int)(this->click_press_pos->y / Settings::Instance()->TILE_HEIGHT);
-
-      this->click_release_pos->x = Settings::Instance()->TILE_WIDTH * ((int)(this->click_release_pos->x / Settings::Instance()->TILE_WIDTH) + ((int)this->click_release_pos->x % (int)Settings::Instance()->TILE_WIDTH ? 1 : 0));
-      this->click_release_pos->y = Settings::Instance()->TILE_HEIGHT * ((int)(this->click_release_pos->y / Settings::Instance()->TILE_HEIGHT) + ((int)this->click_release_pos->y % (int)Settings::Instance()->TILE_HEIGHT ? 1 : 0));
-
+      // map click and release positions to origin and end
       sf::Vector2f* click_origin_pos = this->click_press_pos;
+      sf::Vector2f* click_end_pos = this->click_release_pos;
       if (this->click_release_pos->x < this->click_press_pos->x || (this->click_release_pos->x == this->click_press_pos->x && this->click_release_pos->y < this->click_press_pos->y)) {
          click_origin_pos = this->click_release_pos;
+         click_end_pos = this->click_press_pos;
       }
 
-      sf::Vector2f selected_size(*this->click_release_pos - *this->click_press_pos);
+      // round press and release click positions to tiles
+      click_origin_pos->x = Settings::Instance()->TILE_WIDTH * (int)(click_origin_pos->x / Settings::Instance()->TILE_WIDTH);
+      click_origin_pos->y = Settings::Instance()->TILE_HEIGHT * (int)(click_origin_pos->y / Settings::Instance()->TILE_HEIGHT);
+
+      click_end_pos->x = Settings::Instance()->TILE_WIDTH * ((int)(click_end_pos->x / Settings::Instance()->TILE_WIDTH) + ((int)click_end_pos->x % (int)Settings::Instance()->TILE_WIDTH ? 1 : 0));
+      click_end_pos->y = Settings::Instance()->TILE_HEIGHT * ((int)(click_end_pos->y / Settings::Instance()->TILE_HEIGHT) + ((int)click_end_pos->y % (int)Settings::Instance()->TILE_HEIGHT ? 1 : 0));
+
+      sf::Vector2f selected_size(*click_end_pos - *click_origin_pos);
       selected_size.x = std::max(selected_size.x, Settings::Instance()->TILE_WIDTH);
       selected_size.y = std::max(selected_size.y, Settings::Instance()->TILE_HEIGHT);
 
@@ -305,9 +308,15 @@ void BuilderScene::click(MouseButtonCommand& c) {
          Service::get_logger().msg("BuilderScene", Logger::INFO, "selected_is_one_tile? " + std::to_string(selected_is_one_tile));
 
          // TODO: wow this is terrible... "selected_is_one_tile" is about the existing cursor and "is_one_tile_selected" is about the mouse drag selection
-         if (!selected_physics->intersects(world_coord) && ((!selected_is_one_tile && !is_one_tile_selected) ||
-                                                            (selected_is_one_tile && !is_one_tile_selected) ||
-                                                            (selected_is_one_tile && is_one_tile_selected))) {
+         if ((!is_one_tile_selected &&
+         ((selected.left != selected_physics->get_position().x) ||
+         (selected.top != selected_physics->get_position().y) ||
+         (selected.width != selected_physics->get_size().x) ||
+         (selected.height != selected_physics->get_size().y))) ||
+         (!selected_physics->intersects(world_coord) &&
+          (selected_is_one_tile && is_one_tile_selected) ||
+          (selected_is_one_tile && !is_one_tile_selected) ||
+          (!selected_is_one_tile && !is_one_tile_selected))) {
             delete this->selected_tile;
             this->selected_tile = TileFactory::inst()->create_tile_cursor(sf::Vector2f(selected.left, selected.top), sf::Vector2f(selected.width, selected.height), tiles);
          } else {
