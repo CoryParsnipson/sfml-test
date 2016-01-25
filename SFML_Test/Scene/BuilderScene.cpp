@@ -343,11 +343,11 @@ void BuilderScene::click(MouseButtonCommand& c) {
       click_end_pos->y = std::max(this->click_press_pos->y, this->click_release_pos->y);
 
       // round press and release click positions to tiles
-      click_origin_pos->x = Settings::Instance()->TILE_WIDTH * (int)(click_origin_pos->x / Settings::Instance()->TILE_WIDTH);
-      click_origin_pos->y = Settings::Instance()->TILE_HEIGHT * (int)(click_origin_pos->y / Settings::Instance()->TILE_HEIGHT);
+      click_origin_pos->x = Settings::Instance()->TILE_WIDTH * ((int)(click_origin_pos->x / Settings::Instance()->TILE_WIDTH) - (click_origin_pos->x < 0 ? 1 : 0));
+      click_origin_pos->y = Settings::Instance()->TILE_HEIGHT * ((int)(click_origin_pos->y / Settings::Instance()->TILE_HEIGHT) - (click_origin_pos->y < 0 ? 1 : 0));
 
-      click_end_pos->x = Settings::Instance()->TILE_WIDTH * ((int)(click_end_pos->x / Settings::Instance()->TILE_WIDTH) + ((int)click_end_pos->x % (int)Settings::Instance()->TILE_WIDTH ? 1 : 0));
-      click_end_pos->y = Settings::Instance()->TILE_HEIGHT * ((int)(click_end_pos->y / Settings::Instance()->TILE_HEIGHT) + ((int)click_end_pos->y % (int)Settings::Instance()->TILE_HEIGHT ? 1 : 0));
+      click_end_pos->x = Settings::Instance()->TILE_WIDTH * ((int)(click_end_pos->x / Settings::Instance()->TILE_WIDTH) + ((int)click_end_pos->x % (int)Settings::Instance()->TILE_WIDTH ? 1 : 0) - (click_end_pos->x < 0 ? 1 : 0));
+      click_end_pos->y = Settings::Instance()->TILE_HEIGHT * ((int)(click_end_pos->y / Settings::Instance()->TILE_HEIGHT) + ((int)click_end_pos->y % (int)Settings::Instance()->TILE_HEIGHT ? 1 : 0) - (click_end_pos->y < 0 ? 1 : 0));
 
       sf::Vector2f selected_size(*click_end_pos - *click_origin_pos);
       selected_size.x = std::max(selected_size.x, Settings::Instance()->TILE_WIDTH);
