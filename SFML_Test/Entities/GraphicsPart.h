@@ -19,6 +19,7 @@ public:
 
    void set_show_outline(bool show);
    void set_show_debug_text(bool show);
+   bool get_show_debug_text();
 
    virtual void update(Entity& entity, Scene& scene, Viewport& viewport);
 

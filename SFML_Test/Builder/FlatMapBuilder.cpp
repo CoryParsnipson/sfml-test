@@ -40,14 +40,10 @@ void FlatMapBuilder::build_tile(int x, int y, std::string texture) {
       this->build_map();
    }
    
-   Entity* tile = TileFactory::inst()->create_tile(this->texture_manager_.get_texture(texture));
+   sf::Vector2f tile_pos;
+   tile_pos.x = x * Settings::Instance()->TILE_WIDTH;
+   tile_pos.y = y * Settings::Instance()->TILE_HEIGHT;
 
-   PhysicsPart* tile_physics = dynamic_cast<PhysicsPart*>(tile->get("physics"));
-   if (tile_physics) {
-      tile_physics->set_position(x * Settings::Instance()->TILE_WIDTH, y * Settings::Instance()->TILE_HEIGHT);
-   } else {
-      Service::get_logger().msg("FlatMap", Logger::WARNING, "Tile has no physics component.");
-   }
-
+   Entity* tile = TileFactory::inst()->create_tile(this->texture_manager_.get_texture(texture), tile_pos);
    this->map_->add(x, y, tile);
 }

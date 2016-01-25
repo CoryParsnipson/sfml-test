@@ -35,9 +35,11 @@ void Map::add(sf::Vector2f pos, Entity* tile) {
 
 void Map::add(sf::Vector2i pos, Entity* tile) {
    if (this->tiles_[pos]) {
+      Service::get_logger().msg("Map", Logger::INFO, "Deleting old tile at (" + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ")");
       delete this->tiles_[pos];
    }
 
+   Service::get_logger().msg("Map", Logger::INFO, "Adding tile at (" + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ")");
    this->tiles_[pos] = tile;
 }
 
@@ -71,6 +73,10 @@ Map::tiles_t Map::intersects(sf::FloatRect rect) {
    }
 
    return tiles;
+}
+
+Map::tile_grid_t Map::get_tiles() {
+   return this->tiles_;
 }
 
 std::string Map::to_string() {

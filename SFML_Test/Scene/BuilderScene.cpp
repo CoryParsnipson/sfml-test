@@ -4,7 +4,9 @@
 #include "Viewport.h"
 
 #include "Entity.h"
+#include "GraphicsPart.h"
 #include "PhysicsPart.h"
+#include "ReferencePart.h"
 #include "MouseControlPart.h"
 
 #include "UtilFactory.h"
@@ -148,12 +150,81 @@ void BuilderScene::process(Game& game, CloseCommand& c) {
 
 void BuilderScene::process(Game& game, KeyPressCommand& c) {
    sf::Vector2f delta;
+   Map::tile_grid_t::const_iterator it;
 
    switch (c.event.code) {
    case sf::Keyboard::Key::R:
       this->viewports_["main"]->set_center(this->viewports_["main"]->get_default_center());
       this->viewports_["main"]->set_size(this->viewports_["main"]->get_default_size());
       this->viewports_["main"]->set_scale(1.0);
+   break;
+   case sf::Keyboard::Key::F:
+      if (this->selected_tile) {
+         // TODO: refactor when infrastructure for this is up
+         Service::get_logger().msg("BuilderScene", Logger::INFO, "Adding new tiles.");
+
+         PhysicsPart* selected_physics = dynamic_cast<PhysicsPart*>(this->selected_tile->get("physics"));
+         if (!selected_physics) {
+            Service::get_logger().msg("BuilderScene", Logger::WARNING, "In process KeyPressCommand (F) -> selected tile cursor has no physics component.");
+            return;
+         }
+
+         // split selected tile area into tile-sized chunks
+         sf::FloatRect proto_tile_bounds(selected_physics->get_position(), sf::Vector2f(Settings::Instance()->TILE_WIDTH, Settings::Instance()->TILE_HEIGHT));
+         float next_x = selected_physics->get_position().x;
+         float next_y = selected_physics->get_position().y;
+
+         int idx_x = (int)(next_x / Settings::Instance()->TILE_WIDTH);
+         int idx_y = (int)(next_y / Settings::Instance()->TILE_HEIGHT);
+
+         float max_x = next_x + selected_physics->get_size().x;
+         float max_y = next_y + selected_physics->get_size().y;
+         
+         while (next_y < max_y) {
+            while (next_x < max_x) {
+               // figure out which tile chunks already exist in map
+               Service::get_logger().msg("BuilderScene", Logger::INFO, "checking tile " + std::to_string(next_x) + ", " + std::to_string(next_y));
+
+               if (this->map->intersects(proto_tile_bounds).size() == 0) {
+                  Entity* tile = TileFactory::inst()->create_tile(game.texture_manager.get_texture("tile_solid"), sf::Vector2f(next_x, next_y));
+                  ReferencePart* ref_part = dynamic_cast<ReferencePart*>(this->selected_tile->get("reference"));
+
+                  // create new tiles
+                  this->map->add(idx_x, idx_y, tile);
+
+                  // add them to the cursor
+                  if (ref_part) {
+                     ref_part->add(tile);
+                  }
+               } else {
+                  // TODO: modify existing tiles
+                  Service::get_logger().msg("BuilderScene", Logger::INFO, "poop");
+               }
+
+               idx_x += 1;
+               next_x += Settings::Instance()->TILE_WIDTH;
+   
+               proto_tile_bounds.left = next_x;
+               proto_tile_bounds.top = next_y;
+            }
+
+            idx_y += 1;
+            next_y += Settings::Instance()->TILE_HEIGHT;
+            
+            next_x = selected_physics->get_position().x;
+            idx_x = (int)(next_x / Settings::Instance()->TILE_WIDTH);
+         }
+      }
+   break;
+   case sf::Keyboard::Key::D:
+      // toggle debug text on all tiles
+      for (it = this->map->get_tiles().begin(); it != this->map->get_tiles().end(); ++it) {
+         GraphicsPart* tile_graphics = dynamic_cast<GraphicsPart*>(it->second->get("graphics"));
+
+         if (tile_graphics) {
+            tile_graphics->set_show_debug_text(!tile_graphics->get_show_debug_text());
+         }
+      }
    break;
    default:
       // do nothing
@@ -261,16 +332,15 @@ void BuilderScene::click(MouseButtonCommand& c) {
 
       Service::get_logger().msg("BuilderScene", Logger::INFO, "is_one_tile_selected? " + std::to_string(is_one_tile_selected));
 
-      // TODO: revised tile cursor select
-      // * figure out how to create new tiles for areas under selection rectangle not already in map
-      
       // map click and release positions to origin and end
-      sf::Vector2f* click_origin_pos = this->click_press_pos;
-      sf::Vector2f* click_end_pos = this->click_release_pos;
-      if (this->click_release_pos->x < this->click_press_pos->x || (this->click_release_pos->x == this->click_press_pos->x && this->click_release_pos->y < this->click_press_pos->y)) {
-         click_origin_pos = this->click_release_pos;
-         click_end_pos = this->click_press_pos;
-      }
+      sf::Vector2f* click_origin_pos = new sf::Vector2f(0, 0);
+      sf::Vector2f* click_end_pos = new sf::Vector2f(0, 0);
+   
+      click_origin_pos->x = std::min(this->click_press_pos->x, this->click_release_pos->x);
+      click_origin_pos->y = std::min(this->click_press_pos->y, this->click_release_pos->y);
+
+      click_end_pos->x = std::max(this->click_press_pos->x, this->click_release_pos->x);
+      click_end_pos->y = std::max(this->click_press_pos->y, this->click_release_pos->y);
 
       // round press and release click positions to tiles
       click_origin_pos->x = Settings::Instance()->TILE_WIDTH * (int)(click_origin_pos->x / Settings::Instance()->TILE_WIDTH);
@@ -288,6 +358,9 @@ void BuilderScene::click(MouseButtonCommand& c) {
 
       delete this->click_press_pos;
       delete this->click_release_pos;
+
+      delete click_origin_pos;
+      delete click_end_pos;
 
       this->click_press_pos = nullptr;
       this->click_release_pos = nullptr;
@@ -314,9 +387,9 @@ void BuilderScene::click(MouseButtonCommand& c) {
          (selected.width != selected_physics->get_size().x) ||
          (selected.height != selected_physics->get_size().y))) ||
          (!selected_physics->intersects(world_coord) &&
-          (selected_is_one_tile && is_one_tile_selected) ||
+         ((selected_is_one_tile && is_one_tile_selected) ||
           (selected_is_one_tile && !is_one_tile_selected) ||
-          (!selected_is_one_tile && !is_one_tile_selected))) {
+          (!selected_is_one_tile && !is_one_tile_selected)))) {
             delete this->selected_tile;
             this->selected_tile = TileFactory::inst()->create_tile_cursor(sf::Vector2f(selected.left, selected.top), sf::Vector2f(selected.width, selected.height), tiles);
          } else {

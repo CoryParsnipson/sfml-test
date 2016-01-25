@@ -37,6 +37,7 @@ public:
    virtual tiles_t intersects(sf::Vector2f point);
    virtual tiles_t intersects(sf::FloatRect rect);
 
+   virtual tile_grid_t get_tiles();
    virtual std::string to_string();
  
 protected:

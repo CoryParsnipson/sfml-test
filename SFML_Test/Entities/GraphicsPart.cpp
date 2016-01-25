@@ -37,6 +37,10 @@ void GraphicsPart::set_show_debug_text(bool show) {
    this->show_debug_text_ = show;
 }
 
+bool GraphicsPart::get_show_debug_text() {
+   return this->show_debug_text_;
+}
+
 void GraphicsPart::update(Entity& entity, Scene& scene, Viewport& viewport) {
    PhysicsPart* physics = dynamic_cast<PhysicsPart*>(entity.get("physics"));
 
@@ -57,7 +61,7 @@ void GraphicsPart::update(Entity& entity, Scene& scene, Viewport& viewport) {
             s.setPosition(physics->get_position());
          }
          s.setOutlineThickness(1);
-         s.setOutlineColor(sf::Color::Red);
+         s.setOutlineColor(sf::Color::Blue);
          s.setFillColor(sf::Color::Transparent);
 
          viewport.draw(s);
@@ -76,6 +80,24 @@ void GraphicsPart::update(Entity& entity, Scene& scene, Viewport& viewport) {
    // draw diagnostic info
    if (physics && this->show_debug_text_) {
       sf::Vector2f pos = physics->get_position();
-      viewport.write(std::to_string((int)pos.x) + ", " + std::to_string((int)pos.y), pos - sf::Vector2f(0, 11), &this->font_debug_);
+      sf::Vector2i map_idx;
+      sf::RectangleShape bounding_box_graphic;
+      
+      // convert to map index (TODO: encapsulate this logic somewhere else...)
+      map_idx = static_cast<sf::Vector2i>(viewport.get_world_coord(static_cast<sf::Vector2i>(pos)));
+
+      map_idx.x = (int)(map_idx.x / (viewport.get_scale() * Settings::Instance()->TILE_WIDTH));
+      map_idx.y = (int)(map_idx.y / (viewport.get_scale() * Settings::Instance()->TILE_HEIGHT));
+   
+      viewport.write(std::to_string(map_idx.x) + ", " + std::to_string(map_idx.y), pos - sf::Vector2f(0, 11), &this->font_debug_);
+
+      // draw physics bounding box
+      bounding_box_graphic.setSize(physics->get_size());
+      bounding_box_graphic.setPosition(physics->get_position());
+      bounding_box_graphic.setFillColor(sf::Color::Transparent);
+      bounding_box_graphic.setOutlineColor(sf::Color::Red); // change color depending on solidity
+      bounding_box_graphic.setOutlineThickness(1.0);
+
+      viewport.draw(bounding_box_graphic);
    }
 }

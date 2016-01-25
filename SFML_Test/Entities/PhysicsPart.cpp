@@ -40,6 +40,10 @@ sf::Vector2f PhysicsPart::get_size() {
    return sf::Vector2f(this->bounding_box_.width, this->bounding_box_.height);
 }
 
+sf::FloatRect PhysicsPart::get_bounding_box() {
+   return this->bounding_box_;
+}
+
 void PhysicsPart::set_solid(bool solid) {
    this->solid_ = solid;
 }
