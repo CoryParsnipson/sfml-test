@@ -267,14 +267,16 @@ void BuilderScene::drag(MouseButtonCommand& c, sf::Vector2f delta) {
 
    try {
       if (this->click_press_pos && !this->click_release_pos && c.button == MouseButtonCommand::LEFT) {
+         sf::Vector2f world_mouse_pos = this->viewports_.at("main")->get_world_coord(sf::Vector2i(c.x, c.y));
+
          sf::Vector2f origin_pos;
          sf::Vector2f end_pos;
 
-         origin_pos.x = std::min(this->click_press_pos->x, (float)c.x);
-         origin_pos.y = std::min(this->click_press_pos->y, (float)c.y);
+         origin_pos.x = std::min(this->click_press_pos->x, world_mouse_pos.x);
+         origin_pos.y = std::min(this->click_press_pos->y, world_mouse_pos.y);
 
-         end_pos.x = std::max(this->click_press_pos->x, (float)c.x);
-         end_pos.y = std::max(this->click_press_pos->y, (float)c.y);
+         end_pos.x = std::max(this->click_press_pos->x, world_mouse_pos.x);
+         end_pos.y = std::max(this->click_press_pos->y, world_mouse_pos.y);
 
          sf::RectangleShape select_rect;
          select_rect.setPosition(origin_pos);
