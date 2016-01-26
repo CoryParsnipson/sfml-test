@@ -260,20 +260,34 @@ void BuilderScene::process(Game& game, MouseButtonCommand& c) {
 void BuilderScene::process(Game& game, MouseMoveCommand& c) {}
 void BuilderScene::process(Game& game, MouseWheelCommand& c) {}
 
-void BuilderScene::drag(sf::Vector2f delta) {
+void BuilderScene::drag(MouseButtonCommand& c, sf::Vector2f delta) {
+   if (c.state == MouseButtonCommand::RELEASED) {
+      return;
+   }
+
    try {
-      if (this->click_press_pos && !this->click_release_pos) {
-         // TODO: probably need update() on Viewport class to get this working properly...
+      if (this->click_press_pos && !this->click_release_pos && c.button == MouseButtonCommand::LEFT) {
+         sf::Vector2f origin_pos;
+         sf::Vector2f end_pos;
+
+         origin_pos.x = std::min(this->click_press_pos->x, (float)c.x);
+         origin_pos.y = std::min(this->click_press_pos->y, (float)c.y);
+
+         end_pos.x = std::max(this->click_press_pos->x, (float)c.x);
+         end_pos.y = std::max(this->click_press_pos->y, (float)c.y);
+
          sf::RectangleShape select_rect;
-         select_rect.setPosition(*this->click_press_pos);
-         select_rect.setSize(*this->click_press_pos + delta);
-         select_rect.setFillColor(sf::Color(246, 168, 104));
-         select_rect.setOutlineColor(sf::Color(191, 127, 63));
+         select_rect.setPosition(origin_pos);
+         select_rect.setSize(end_pos - origin_pos);
+         select_rect.setFillColor(sf::Color(66, 108, 167));
+         select_rect.setOutlineColor(sf::Color(124, 160, 210));
          select_rect.setOutlineThickness(1.0);
+         
+         Service::get_logger().msg("BuilderScene", Logger::INFO, "dragging with left mouse button clicked");
 
          this->viewports_.at("main")->draw(select_rect);
-      } else {
-         this->viewports_.at("main")->drag(delta);
+      } else if (c.button == MouseButtonCommand::RIGHT) {
+         this->viewports_.at("main")->drag(c, delta);
       }
    }
    catch (const std::out_of_range& e) {

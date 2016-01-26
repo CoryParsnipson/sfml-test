@@ -3,6 +3,7 @@
 
 #include "ControlPart.h"
 #include "MouseUtil.h"
+#include "MouseButtonCommand.h"
 
 class MouseControlPart : public ControlPart {
 public:
@@ -29,6 +30,7 @@ protected:
    
    MouseControllable* controllable_;
 
+   MouseButtonCommand* mouse_buttons_;
    sf::Vector2f panning_anchor;
    sf::Vector2f last_mouse_pos;
 };

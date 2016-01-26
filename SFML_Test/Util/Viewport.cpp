@@ -86,7 +86,7 @@ sf::Vector2i Viewport::get_screen_coord(const sf::Vector2f& point) {
    return this->graphics.get_screen_coord(point, this->view);
 }
 
-void Viewport::drag(sf::Vector2f delta) {
+void Viewport::drag(MouseButtonCommand& c, sf::Vector2f delta) {
    this->view->move(delta);
 }
 

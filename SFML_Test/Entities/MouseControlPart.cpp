@@ -15,11 +15,16 @@ MouseControlPart::MouseControlPart(std::string id)
 , is_panning(false)
 , zoom_delta(0)
 , controllable_(nullptr)
+, mouse_buttons_(nullptr)
 {
    Service::get_logger().msg("ControlPart", Logger::INFO, "Creating MouseControlPart '" + id + "'");
 }
 
 MouseControlPart::~MouseControlPart() {
+   this->controllable_ = nullptr; // don't delete controllable, no ownership of this
+
+   delete this->mouse_buttons_;
+   this->mouse_buttons_ = nullptr;
 }
 
 void MouseControlPart::process(CloseCommand& c) {}
@@ -35,13 +40,15 @@ void MouseControlPart::process(MouseMoveCommand& c) {
 void MouseControlPart::process(MouseButtonCommand& c) {
    Service::get_logger().msg("ControlPart", Logger::INFO, c.to_string());
 
+   delete this->mouse_buttons_;
+   this->mouse_buttons_ = new MouseButtonCommand(c);
+
+   this->is_panning = (c.state == MouseButtonCommand::PRESSED);
+   this->panning_anchor = sf::Vector2f(c.x, c.y);
+
    switch (c.button) {
    case MouseButtonCommand::LEFT:
       this->controllable_->click(c);
-      break;
-   case MouseButtonCommand::RIGHT:
-      this->is_panning = (c.state == MouseButtonCommand::PRESSED);
-      this->panning_anchor = sf::Vector2f(c.x, c.y);
       break;
    default: break;
    }
@@ -69,7 +76,12 @@ void MouseControlPart::update(Entity& entity, Scene& scene, Viewport& viewport) 
    // if we are in panning state, move the viewport
    if (this->is_panning) {
       sf::Vector2f panning_delta = (this->panning_anchor - this->last_mouse_pos) * this->controllable_->get_scale();
-      this->controllable_->drag(this->MOUSE_PAN_COEFFICIENT * panning_delta);
+
+      // TODO: update mouse button command (note, you should refactor this entire thing...)
+      this->mouse_buttons_->x = this->last_mouse_pos.x;
+      this->mouse_buttons_->y = this->last_mouse_pos.y;
+
+      this->controllable_->drag(*this->mouse_buttons_, this->MOUSE_PAN_COEFFICIENT * panning_delta);
       
       this->panning_anchor = this->last_mouse_pos;
    }

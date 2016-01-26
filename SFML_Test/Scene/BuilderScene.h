@@ -32,7 +32,7 @@ public:
    virtual void process(Game& game, MouseWheelCommand& c);
 
    // mouse control interface
-   virtual void drag(sf::Vector2f delta);
+   virtual void drag(MouseButtonCommand& c, sf::Vector2f delta);
 
    virtual float get_scale();
    virtual void set_scale(float factor);
