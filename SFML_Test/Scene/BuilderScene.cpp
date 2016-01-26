@@ -281,8 +281,8 @@ void BuilderScene::drag(MouseButtonCommand& c, sf::Vector2f delta) {
          sf::RectangleShape select_rect;
          select_rect.setPosition(origin_pos);
          select_rect.setSize(end_pos - origin_pos);
-         select_rect.setFillColor(sf::Color(66, 108, 167));
-         select_rect.setOutlineColor(sf::Color(124, 160, 210));
+         select_rect.setFillColor(sf::Color(66, 108, 167, 175));
+         select_rect.setOutlineColor(sf::Color(124, 160, 210, 192));
          select_rect.setOutlineThickness(1.0);
          
          Service::get_logger().msg("BuilderScene", Logger::INFO, "dragging with left mouse button clicked");
@@ -397,15 +397,11 @@ void BuilderScene::click(MouseButtonCommand& c) {
          Service::get_logger().msg("BuilderScene", Logger::INFO, "selected_is_one_tile? " + std::to_string(selected_is_one_tile));
 
          // TODO: wow this is terrible... "selected_is_one_tile" is about the existing cursor and "is_one_tile_selected" is about the mouse drag selection
-         if ((!is_one_tile_selected &&
-         ((selected.left != selected_physics->get_position().x) ||
-         (selected.top != selected_physics->get_position().y) ||
-         (selected.width != selected_physics->get_size().x) ||
-         (selected.height != selected_physics->get_size().y))) ||
-         (!selected_physics->intersects(world_coord) &&
-         ((selected_is_one_tile && is_one_tile_selected) ||
-          (selected_is_one_tile && !is_one_tile_selected) ||
-          (!selected_is_one_tile && !is_one_tile_selected)))) {
+         if (!is_one_tile_selected || 
+            (!selected_physics->intersects(world_coord) &&
+             ((selected_is_one_tile && is_one_tile_selected) ||
+             (selected_is_one_tile && !is_one_tile_selected) ||
+             (!selected_is_one_tile && !is_one_tile_selected)))) {
             delete this->selected_tile;
             this->selected_tile = TileFactory::inst()->create_tile_cursor(sf::Vector2f(selected.left, selected.top), sf::Vector2f(selected.width, selected.height), tiles);
          } else {
