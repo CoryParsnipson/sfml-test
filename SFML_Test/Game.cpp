@@ -12,9 +12,12 @@ Game::Game()
 
    // initialize logging and register service (this should be done asap)
    this->full_logger_.console_start();
-   this->full_logger_.get_logger("console")->set_tag("InputController", false);
+   this->full_logger_.get_logger("console")->disable_all_tags();
+   this->full_logger_.get_logger("console")->set_tag("Map", true);
+   this->full_logger_.get_logger("console")->set_tag("BuilderScene", true);
 
    //this->full_logger_.file_start("log.txt");
+   //this->full_logger_.get_logger("file")->disable_all_tags();
    //this->full_logger_.get_logger("file")->set_tag("Viewport", false);
    //this->full_logger_.get_logger("file")->set_tag("InputController", false);
 

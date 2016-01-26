@@ -79,7 +79,7 @@ sf::Vector2f Viewport::get_default_center() {
 }
 
 sf::Vector2f Viewport::get_world_coord(const sf::Vector2i& point) {
-   return this->graphics.get_world_coord(point, this->view);
+   return this->graphics.get_world_coord(point, this->view) * this->zoom_factor;
 }
 
 sf::Vector2i Viewport::get_screen_coord(const sf::Vector2f& point) {

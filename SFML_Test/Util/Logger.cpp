@@ -5,6 +5,7 @@ Logger::category_map_t Logger::category_string = Logger::category_map_t();
 
 Logger::Logger()
 : enabled_(true)
+, new_tag_enabled_(true)
 {
    this->category_string[INFO] = "INFO";
    this->category_string[ALWAYS] = "ALWAYS";
@@ -33,12 +34,12 @@ void Logger::set_tag(std::string tag, bool tag_enable /* = true */) {
 
 void Logger::disable_all_tags() {
    this->set_all_tags(false);
-   this->disable();
+   this->new_tag_enabled_ = false;
 }
 
 void Logger::enable_all_tags() {
    this->set_all_tags(true);
-   this->enable();
+   this->new_tag_enabled_ = true;
 }
 
 std::string Logger::get_time() {
@@ -54,8 +55,8 @@ bool Logger::msg_enabled(std::string tag) {
    tag_map_t::const_iterator it = this->tag_map.find(tag);
    if (it == this->tag_map.end()) {
       // add unknown tags to tag map and set enabled to logger enable state
-      this->set_tag(tag, this->enabled_);
-      return this->enabled_;
+      this->set_tag(tag, this->new_tag_enabled_);
+      it = this->tag_map.find(tag);
    }
 
    return it->second && this->enabled_;

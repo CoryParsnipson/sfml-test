@@ -41,6 +41,7 @@ protected:
 
    tag_map_t tag_map;
    bool enabled_;
+   bool new_tag_enabled_;
 
    // protected helper methods
    void set_all_tags(bool enabled);
