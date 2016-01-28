@@ -1,5 +1,8 @@
 #include "FullLogger.h"
 
+#include "ConsoleLogger.h"
+#include "FileLogger.h"
+
 FullLogger::FullLogger() {
 }
 

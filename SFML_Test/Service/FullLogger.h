@@ -1,11 +1,7 @@
 #ifndef FULL_LOGGER_H
 #define FULL_LOGGER_H
 
-#include "dependencies.h"
 #include "Logger.h"
-
-#include "ConsoleLogger.h"
-#include "FileLogger.h"
 
 class FullLogger : public Logger {
 public:

@@ -1,10 +1,11 @@
 #include "InputController.h"
-#include "../Command/CloseCommand.h"
-#include "../Command/KeyPressCommand.h"
-#include "../Command/WindowResizeCommand.h"
-#include "../Command/MouseMoveCommand.h"
-#include "../Command/MouseButtonCommand.h"
-#include "../Command/MouseWheelCommand.h"
+
+#include "CloseCommand.h"
+#include "KeyPressCommand.h"
+#include "WindowResizeCommand.h"
+#include "MouseMoveCommand.h"
+#include "MouseButtonCommand.h"
+#include "MouseWheelCommand.h"
 
 #include "Game.h"
 

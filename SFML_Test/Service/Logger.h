@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include <time.h>
+#include <string>
 
 class Logger {
 public:
