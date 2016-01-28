@@ -5,7 +5,7 @@
 
 int main()
 {
-	Game g;
+   Game g;
 
    Scene* scene = new StartMenuScene();
    g.load_scene(scene);

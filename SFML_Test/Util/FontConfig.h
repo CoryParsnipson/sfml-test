@@ -1,7 +1,7 @@
 #ifndef FONT_CONFIG_H
 #define FONT_CONFIG_H
 
-#include "../dependencies.h"
+#include "dependencies.h"
 
 class FontConfig {
 public:
