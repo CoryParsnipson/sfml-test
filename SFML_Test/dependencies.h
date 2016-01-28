@@ -31,6 +31,5 @@
 // project includes
 #include "Settings.h"
 #include "Service.h"
-#include "Logger.h"
 
 #endif
