@@ -1,5 +1,7 @@
 #include "Logger.h"
 
+#include <time.h>
+
 // initialize static member variables
 Logger::category_map_t Logger::category_string = Logger::category_map_t();
 
