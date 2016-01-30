@@ -103,18 +103,21 @@ void BuilderScene::exit(Game& game) {
    this->grid.clear();
 }
 
-void BuilderScene::update(Game& game) {
+void BuilderScene::update(Game& game, Scene* scene, Entity* entity) {
    // map related work
-   this->map->update(*this, *this->viewports_["main"]);
+   this->map->draw(*this->viewports_["main"]);
+   this->map->update(game, this);
    
    // update entities
    if (this->selected_tile) {
-      this->selected_tile->update(*this, *this->viewports_["main"]);
+      this->selected_tile->update(game, this);
+      this->selected_tile->draw(*this->viewports_["main"]);
    }
 
    std::vector<Entity*>::const_iterator entity_it;
    for (entity_it = this->entities_.begin(); entity_it != this->entities_.end(); ++entity_it) {
-      (*entity_it)->update(*this, *this->viewports_["main"]);
+      (*entity_it)->update(game, this);
+      (*entity_it)->draw(*this->viewports_["main"]);
    }
 
    std::vector<sf::RectangleShape*>::const_iterator grid_it;
@@ -125,7 +128,8 @@ void BuilderScene::update(Game& game) {
    this->viewports_["main"]->draw(*this->origin_dot);
    this->viewports_["hud"]->draw(*this->center_dot);
 
-   this->e->update(*this, *this->viewports_["hud"]);
+   this->e->update(game, this);
+   this->e->draw(*this->viewports_["hud"]);
 
    // draw fixed hud items
    this->viewports_["hud"]->write("SFML_Test");

@@ -21,7 +21,11 @@ public:
    void set_show_debug_text(bool show);
    bool get_show_debug_text();
 
-   virtual void update(Entity& entity, Scene& scene, Viewport& viewport);
+   // drawable interface...
+   virtual void draw(Viewport& viewport);
+
+   // update interface
+   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 
 protected:
    bool show_outline_;

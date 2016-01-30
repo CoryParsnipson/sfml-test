@@ -27,7 +27,8 @@ public:
    bool intersects(sf::Vector2f other_point);
    bool intersects(sf::FloatRect other_bounding_box);
 
-   virtual void update(Entity& entity, Scene& scene, Viewport& viewport);
+   // update interface
+   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 
 protected:
    bool solid_; // let's try this...

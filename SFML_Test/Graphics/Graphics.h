@@ -3,22 +3,25 @@
 
 #include "dependencies.h"
 
+#include "Update.h"
 #include "GraphicsWriter.h"
 #include "Viewport.h"
 
 // SFML graphics interface
-class Graphics {
+class Graphics
+: public Update
+{
 public:
    Graphics();
    Graphics(sf::RenderWindow& window);
 
    bool is_open();
    void close();
-   
-   void update();
    void clear();
-
    void draw(sf::Drawable& d, sf::View* view = nullptr);
+
+   // update interface
+   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 
    // given a point on the screen, get the absolute world coordinate (apply global transforms)
    sf::Vector2f get_world_coord(const sf::Vector2i& point, sf::View* view = nullptr);

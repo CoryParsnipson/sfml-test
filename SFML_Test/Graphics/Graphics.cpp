@@ -21,8 +21,8 @@ void Graphics::close() {
    this->window->close();
 }
 
-void Graphics::update() {
-   this->window->display();
+void Graphics::clear() {
+   this->window->clear();
 }
 
 void Graphics::draw(sf::Drawable& d, sf::View* view) {
@@ -35,6 +35,10 @@ void Graphics::draw(sf::Drawable& d, sf::View* view) {
    this->window->setView(*view);
    this->window->draw(d);
    this->window->setView(original_view);
+}
+
+void Graphics::update(Game& game, Scene* scene, Entity* entity) {
+   this->window->display();
 }
 
 sf::Vector2f Graphics::get_world_coord(const sf::Vector2i& point, sf::View* view) {
@@ -65,8 +69,4 @@ void Graphics::write(std::string msg, sf::Vector2f pos, const FontConfig* config
 
 void Graphics::load_font(std::string font_name, std::string filename) {
    this->writer.load_font(font_name, filename);
-}
-
-void Graphics::clear() {
-   this->window->clear();
 }

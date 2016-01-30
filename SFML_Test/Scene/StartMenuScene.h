@@ -4,7 +4,9 @@
 #include "Scene.h"
 #include "FontConfig.h"
 
-class StartMenuScene : public Scene {
+class StartMenuScene
+: public Scene
+{
 public:
    StartMenuScene();
    ~StartMenuScene();
@@ -12,7 +14,8 @@ public:
    virtual void enter(Game& game);
    virtual void exit(Game& game);
 
-   virtual void update(Game& game);
+   // update interface
+   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 
    // command interface
    virtual void process(Game& game, CloseCommand& c);

@@ -2,11 +2,9 @@
 #define MAP_H
 
 #include "dependencies.h"
-
+#include "Update.h"
 #include "Entity.h"
 
-// forward declarations
-class Scene;
 class Viewport;
 
 // needed for comparison function in std::map with Vector2i as key
@@ -17,7 +15,7 @@ struct vector2i_cmp {
 };
 
 class Map
-: public Entity
+: public Update
 {
 public:
    typedef std::vector<Entity*> tiles_t;
@@ -26,8 +24,11 @@ public:
    Map();
    virtual ~Map();
 
-   // public interface
-   virtual void update(Scene& scene, Viewport& viewport);
+   // drawable interface 
+   virtual void draw(Viewport& viewport);
+
+   // update interface
+   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 
    virtual void add(int x, int y, Entity* tile);
    virtual void add(sf::Vector2f pos, Entity* tile);

@@ -26,6 +26,7 @@ DL_INCLUDES = -lsfml-window -lsfml-graphics -lsfml-system
 INCLUDE_PATHS = 
 INCLUDE_PATHS += SFML_Test
 INCLUDE_PATHS += SFML_Test/Util
+INCLUDE_PATHS += SFML_Test/Game
 INCLUDE_PATHS += SFML_Test/Service/Logger
 INCLUDE_PATHS += SFML_Test/Service/Event
 INCLUDE_PATHS += SFML_Test/Service
@@ -41,7 +42,7 @@ INCLUDE_PATHS += SFML_Test/Factory
 
 CXX_FILES = 
 CXX_FILES += $(PROJECT_DIR)/*.cpp
-CXX_FILES += $(PROJECT_DIR)/Util/*.cpp
+CXX_FILES += $(PROJECT_DIR)/Game/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Service/Event/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Service/Logger/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Service/*.cpp

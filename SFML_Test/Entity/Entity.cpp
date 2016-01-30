@@ -5,6 +5,7 @@
 
 #include "Part.h"
 #include "PhysicsPart.h"
+#include "GraphicsPart.h"
 
 Entity::Entity(std::string name)
 : name_(name)
@@ -32,10 +33,21 @@ Part* Entity::get(std::string part_name) {
    return it->second;
 }
 
-void Entity::update(Scene& scene, Viewport& viewport) {
+void Entity::draw(Viewport& viewport) {
+   GraphicsPart* graphics;
+
    part_list_t::const_iterator it;
    for (it = this->parts_.begin(); it != this->parts_.end(); it++) {
-      it->second->update(*this, scene, viewport);
+      if ((graphics = dynamic_cast<GraphicsPart*>(it->second))) {
+         graphics->draw(viewport);
+      }
+   }
+}
+
+void Entity::update(Game& game, Scene* scene, Entity* entity) {
+   part_list_t::const_iterator it;
+   for (it = this->parts_.begin(); it != this->parts_.end(); it++) {
+      it->second->update(game, scene, this);
    }
 }
 

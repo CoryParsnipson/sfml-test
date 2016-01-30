@@ -7,7 +7,6 @@
 
 // forward declarations
 class Map;
-class Entity;
 class MapBuilder;
 
 class BuilderScene
@@ -21,7 +20,8 @@ public:
    virtual void enter(Game& game);
    virtual void exit(Game& game);
 
-   virtual void update(Game& game);
+   // update interface
+   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 
    // command interface
    virtual void process(Game& game, CloseCommand& c);

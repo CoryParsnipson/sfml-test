@@ -3,23 +3,30 @@
 
 #include "dependencies.h"
 
+#include "Update.h"
+
 // forward declarations
 class Part;
-class Scene;
 class Viewport;
 
-class Entity {
+class Entity
+: public Update
+{
 public:
    typedef std::map<std::string, Part*> part_list_t;
 
    Entity(std::string name = "entity");
    virtual ~Entity();
    
-   virtual void update(Scene& scene, Viewport& viewport);
-
    virtual void add(Part* part);
-   // remove part
+   // virtual void remove()
    virtual Part* get(std::string part_name);
+
+   // drawable interface
+   virtual void draw(Viewport& viewport);
+
+   // update interface
+   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 
    std::string to_string();
 

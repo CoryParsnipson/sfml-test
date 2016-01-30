@@ -10,13 +10,17 @@
 #include "MouseButtonCommand.h"
 #include "MouseWheelCommand.h"
 
+#include "Update.h"
+
 #include "Viewport.h"
 
 // forward declarations
 class Game;
 class Entity;
 
-class Scene {
+class Scene
+: public Update
+{
 public:
    Scene() {}
    virtual ~Scene() {
@@ -30,9 +34,7 @@ public:
    virtual void enter(Game& game) {}
    virtual void exit(Game& game) {}
 
-   virtual void update(Game& game) = 0;
-
-   // command interface
+   // command interface (TODO: get rid of this?)
    virtual void process(Game& game, CloseCommand& c) = 0;
    virtual void process(Game& game, KeyPressCommand& c) = 0;
    virtual void process(Game& game, WindowResizeCommand& c) = 0;

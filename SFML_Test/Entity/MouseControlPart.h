@@ -13,6 +13,10 @@ public:
    MouseControlPart(std::string id = "control");
    virtual ~MouseControlPart();
 
+   // mouse util interface
+   virtual void set_controllable(MouseControllable* c = nullptr);
+
+   // command interface
    virtual void process(CloseCommand& c);
    virtual void process(KeyPressCommand& c);
    virtual void process(WindowResizeCommand& c);
@@ -20,9 +24,8 @@ public:
    virtual void process(MouseButtonCommand& c);
    virtual void process(MouseWheelCommand& c);
    
-   virtual void set_controllable(MouseControllable* c = nullptr);
-
-   virtual void update(Entity& entity, Scene& scene, Viewport& viewport);
+   // update interface
+   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 
 protected:
    bool is_panning;

@@ -24,7 +24,7 @@ void StartMenuScene::enter(Game& game) {
 void StartMenuScene::exit(Game& game) {
 }
 
-void StartMenuScene::update(Game& game) {
+void StartMenuScene::update(Game& game, Scene* scene, Entity* entity) {
    this->viewports_["main"]->write(
       "SFML TEST",
       this->viewports_["main"]->get_center(),

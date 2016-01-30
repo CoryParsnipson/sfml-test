@@ -7,7 +7,6 @@
 #include "PhysicsPart.h"
 
 Map::Map()
-: Entity("map")
 {
 }
 
@@ -18,10 +17,17 @@ Map::~Map() {
    }
 }
 
-void Map::update(Scene& scene, Viewport& viewport) {
+void Map::draw(Viewport& viewport) {
    Map::tile_grid_t::const_iterator it;
    for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
-      it->second->update(scene, viewport);
+      it->second->draw(viewport);
+   }
+}
+
+void Map::update(Game& game, Scene* scene, Entity* entity) {
+   Map::tile_grid_t::const_iterator it;
+   for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
+      it->second->update(game, scene);
    }
 }
 

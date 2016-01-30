@@ -3,12 +3,13 @@
 
 #include "dependencies.h"
 
-// forward declarations
-class Entity;
-class Scene;
+#include "Update.h"
+
 class Viewport;
 
-class Part {
+class Part
+: public Update
+{
 public:
    Part(std::string id) : id(id) {};
    virtual ~Part() {};
@@ -18,7 +19,8 @@ public:
    // send message
    // receive message
 
-   virtual void update(Entity& entity, Scene& scene, Viewport& viewport) = 0;
+   // update interface
+   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr) = 0;
 
 protected:
    std::string id;

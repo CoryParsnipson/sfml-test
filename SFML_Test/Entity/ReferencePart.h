@@ -15,7 +15,8 @@ public:
    virtual void add(Entity* entity);
    virtual void remove(Entity* entity);
 
-   virtual void update(Entity& entity, Scene& scene, Viewport& viewport);
+   // update interface
+   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 
 protected:
    entities_t references_;

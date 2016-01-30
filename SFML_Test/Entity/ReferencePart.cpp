@@ -41,5 +41,5 @@ void ReferencePart::remove(Entity* entity) {
    }
 } 
 
-void ReferencePart::update(Entity& entity, Scene& scene, Viewport& viewport) {
+void ReferencePart::update(Game& game, Scene* scene, Entity* entity) {
 }

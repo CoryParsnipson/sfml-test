@@ -123,7 +123,7 @@ void Game::main_loop() {
 
       // update
       this->scenes_.top()->update(*this);
-      this->graphics.update();
+      this->graphics.update(*this);
    }
 }
 
