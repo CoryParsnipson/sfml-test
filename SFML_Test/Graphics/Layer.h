@@ -16,9 +16,13 @@ public:
 
    typedef std::list<Draw*> DrawableList;
 
-   Layer(sf::Vector2f size);
+   Layer(std::string id, sf::Vector2f size);
    virtual ~Layer();
 
+   std::string id();
+   std::string to_string();
+
+   // view interface
    void set_size(sf::Vector2f size);
    void set_center(sf::Vector2f center);
 
@@ -37,9 +41,11 @@ public:
    virtual void click(MouseButtonCommand& c);
 
 protected:
-   float zoom_factor_;
+   std::string id_;
 
+   float zoom_factor_;
    sf::View* view_;
+
    DrawableList drawables_;
 };
 

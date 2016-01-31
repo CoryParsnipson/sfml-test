@@ -6,8 +6,9 @@
 const float Layer::ZOOM_FACTOR_MIN = 0.125;
 const float Layer::ZOOM_FACTOR_MAX = 3.0;
 
-Layer::Layer(sf::Vector2f size)
-: zoom_factor_(1.0)
+Layer::Layer(std::string id, sf::Vector2f size)
+: id_(id)
+, zoom_factor_(1.0)
 , view_(nullptr)
 {
    this->view_ = new sf::View(sf::Vector2f(size.x / 2.f, size.y / 2.f), size);
@@ -18,6 +19,14 @@ Layer::~Layer() {
 
    // this do not own any drawables, so don't delete them
    this->drawables_.clear();
+}
+
+std::string Layer::id() {
+   return this->id_;
+}
+
+std::string Layer::to_string() {
+   return "[Layer: '" + this->id_ + "']";
 }
 
 void Layer::set_size(sf::Vector2f size) {

@@ -1,14 +1,22 @@
 #include "Viewport.h"
 #include "Graphics.h"
+#include "Layer.h"
 
 // initialize static member variables
 const float Viewport::ZOOM_FACTOR_MIN = 0.125;
 const float Viewport::ZOOM_FACTOR_MAX = 3.0;
 
 Viewport::Viewport(Graphics& graphics, sf::Vector2f size)
-: graphics(graphics)
+: size_(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT) // TODO: redo?
+, graphics(graphics)
 , zoom_factor(1.0)
 {
+   this->add("main"); // add default layer
+
+
+
+
+   // TODO: clear this out
    this->default_size = size;
 
    this->default_center.x = this->default_size.x / 2.f;
@@ -22,6 +30,52 @@ Viewport::Viewport(Graphics& graphics, sf::Vector2f size)
 
    this->view = new sf::View(this->default_center, this->default_size);
 }
+
+Layer* Viewport::add(std::string id) {
+   Layer* l = new Layer(id, this->size_);
+   this->layers_.push_back(l);
+
+   return l;
+}
+
+Layer* Viewport::get(std::string id) {
+   LayerList::const_iterator it;
+   for (it = this->layers_.begin(); it != this->layers_.end(); ++it) {
+      if((*it)->id().compare(id) == 0) {
+         return *it;
+      }
+   }
+
+   return nullptr;
+}
+
+void Viewport::remove(std::string id) {
+   LayerList::const_iterator it;
+   for (it = this->layers_.begin(); it != this->layers_.end(); ++it) {
+      if((*it)->id().compare(id) == 0) {
+         delete *it;
+
+         this->layers_.erase(it);
+         return;
+      }
+   }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Viewport::~Viewport() {
    delete this->view;

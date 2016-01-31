@@ -6,7 +6,7 @@
 #include "FontConfig.h"
 #include "MouseUtil.h"
 
-// forward declarations
+class Layer;
 class Graphics;
 
 // ----------------------------------------------------------------------------
@@ -20,9 +20,27 @@ public:
    static const float ZOOM_FACTOR_MIN;
    static const float ZOOM_FACTOR_MAX;
 
+   typedef std::list<Layer*> LayerList;
+   
    Viewport(Graphics& graphics, sf::Vector2f size);
    virtual ~Viewport();
 
+   // layer management interface
+   Layer* add(std::string id);
+   Layer* get(std::string id);
+   void remove(std::string id);
+
+
+
+
+
+
+
+
+
+
+
+   // TODO: delete everything below
    void draw(sf::Drawable& d);
    void write(std::string msg, sf::Vector2f pos = sf::Vector2f(0, 0), const FontConfig* config = nullptr);
 
@@ -53,6 +71,11 @@ public:
    Graphics& get_graphics();
 
 protected:
+   LayerList layers_;
+   sf::Vector2f size_;
+
+
+
    Graphics& graphics;
 
    float zoom_factor;
