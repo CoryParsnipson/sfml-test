@@ -59,15 +59,15 @@ void GraphicsPart::draw(Viewport& viewport) {
       }
    }
 
+   sf::Vector2f pos(0, 0);
    shape_list_t::iterator shape_it;
    for (shape_it = this->shapes_.begin(); shape_it != this->shapes_.end(); shape_it++) {
+      pos = (*shape_it)->getPosition();
       viewport.draw(*(*shape_it));
    }
 
    // draw diagnostic info
-   if (false && this->show_debug_text_) {
-      //sf::Vector2f pos = physics->get_position();
-      sf::Vector2f pos(0, 0);
+   if (this->show_debug_text_) {
       sf::Vector2i map_idx;
       sf::RectangleShape bounding_box_graphic;
       
@@ -83,6 +83,7 @@ void GraphicsPart::draw(Viewport& viewport) {
       // draw physics bounding box
       //bounding_box_graphic.setSize(physics->get_size());
       //bounding_box_graphic.setPosition(physics->get_position());
+      bounding_box_graphic.setPosition(pos);
       bounding_box_graphic.setFillColor(sf::Color::Transparent);
       bounding_box_graphic.setOutlineColor(sf::Color::Red); // change color depending on solidity
       bounding_box_graphic.setOutlineThickness(1.0);
