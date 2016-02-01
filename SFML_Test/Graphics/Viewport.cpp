@@ -2,33 +2,29 @@
 #include "Graphics.h"
 #include "Layer.h"
 
-// initialize static member variables
-const float Viewport::ZOOM_FACTOR_MIN = 0.125;
-const float Viewport::ZOOM_FACTOR_MAX = 3.0;
-
-Viewport::Viewport(Graphics& graphics, sf::Vector2f size)
-: size_(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT) // TODO: redo?
-, graphics(graphics)
-, zoom_factor(1.0)
+Viewport::Viewport(sf::Vector2f size)
+: size_(size)
 {
    this->add("main"); // add default layer
+}
 
+Viewport::~Viewport() {
+   LayerList::const_iterator it;
+   for (it = this->layers_.begin(); it != this->layers_.end(); ++it) {
+      delete (*it);
+   }
+   this->layers_.clear();
+}
 
+void Viewport::set_viewport(const sf::FloatRect& viewport) {
+   LayerList::const_iterator it;
+   for (it = this->layers_.begin(); it != this->layers_.end(); ++it) {
+      (*it)->set_viewport(viewport);
+   }
+}
 
-
-   // TODO: clear this out
-   this->default_size = size;
-
-   this->default_center.x = this->default_size.x / 2.f;
-   this->default_center.y = this->default_size.y / 2.f;
-
-   Service::get_logger().msg(
-      "Viewport",
-      Logger::INFO,
-      "default center (" + std::to_string(this->default_center.x) + ", " + std::to_string(this->default_center.y) + ")"
-   );
-
-   this->view = new sf::View(this->default_center, this->default_size);
+sf::FloatRect Viewport::get_viewport() {
+   return (*this->layers_.begin())->get_viewport();
 }
 
 Layer* Viewport::add(std::string id) {
@@ -49,6 +45,19 @@ Layer* Viewport::get(std::string id) {
    return nullptr;
 }
 
+void Viewport::insert(std::string id, int idx) {
+   if (idx < 0) {
+      idx = 0;
+   }
+
+   LayerList::const_iterator it = this->layers_.begin() + idx;
+   this->layers_.insert(it, new Layer(id, this->size_));
+}
+
+void Viewport::move(std::string id, int idx) {
+   throw std::runtime_error("Implement me!");
+}
+
 void Viewport::remove(std::string id) {
    LayerList::const_iterator it;
    for (it = this->layers_.begin(); it != this->layers_.end(); ++it) {
@@ -61,103 +70,23 @@ void Viewport::remove(std::string id) {
    }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Viewport::~Viewport() {
-   delete this->view;
+void Viewport::resize(sf::Vector2f size) {
+   LayerList::const_iterator it;
+   for (it = this->layers_.begin(); it != this->layers_.end(); ++it) {
+      (*it)->set_size(size);
+   }
 }
 
-sf::View& Viewport::get_view() {
-   return *(this->view);
+void Viewport::recenter(sf::Vector2f center) {
+   LayerList::const_iterator it;
+   for (it = this->layers_.begin(); it != this->layers_.end(); ++it) {
+      (*it)->set_center(center);
+   }
 }
 
-Graphics& Viewport::get_graphics() {
-   return this->graphics;
+void Viewport::draw(Graphics& graphics) {
+   LayerList::const_iterator it;
+   for (it = this->layers_.begin(); it != this->layers_.end(); ++it) {
+      (*it)->draw(graphics);
+   }
 }
-
-void Viewport::draw(sf::Drawable& d) {
-   this->graphics.draw(d, this->view);
-}
-
-void Viewport::write(std::string msg, sf::Vector2f pos, const FontConfig* config) {
-   this->graphics.write(msg, pos, config, &this->get_view());
-}
-
-void Viewport::set_size(sf::Vector2f size) {
-   this->view->setSize(size);
-}
-
-sf::Vector2f Viewport::get_size() {
-   return this->view->getSize();
-}
-
-void Viewport::set_default_size(sf::Vector2f size) {
-   this->default_size = size;
-   
-   // don't forget to update viewport size
-   this->set_scale(this->zoom_factor);
-}
-
-sf::Vector2f Viewport::get_default_size() {
-   return this->default_size;
-}
-
-void Viewport::set_center(sf::Vector2f center) {
-   this->view->setCenter(center);
-}
-
-sf::Vector2f Viewport::get_center() {
-   return this->view->getCenter();
-}
-
-void Viewport::set_default_center(sf::Vector2f size) {
-   this->default_center = size;
-}
-
-sf::Vector2f Viewport::get_default_center() {
-   return this->default_center;
-}
-
-sf::Vector2f Viewport::get_world_coord(const sf::Vector2i& point) {
-   return this->graphics.get_world_coord(point, this->view) * this->zoom_factor;
-}
-
-sf::Vector2i Viewport::get_screen_coord(const sf::Vector2f& point) {
-   return this->graphics.get_screen_coord(point, this->view);
-}
-
-void Viewport::drag(MouseButtonCommand& c, sf::Vector2f delta) {
-   this->view->move(delta);
-}
-
-float Viewport::get_scale() {
-   return this->zoom_factor;
-}
-
-void Viewport::set_scale(float factor) {
-   factor = std::max(factor, Viewport::ZOOM_FACTOR_MIN);
-   factor = std::min(factor, Viewport::ZOOM_FACTOR_MAX);
-
-   this->zoom_factor = factor;
-
-   Service::get_logger().msg("Viewport", Logger::INFO, "Zoom factor: " + std::to_string(this->zoom_factor));
-
-   // update viewport size
-   this->set_size(this->zoom_factor * this->get_default_size());
-}
-
-void Viewport::click(MouseButtonCommand& c) {}

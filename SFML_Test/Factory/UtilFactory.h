@@ -3,9 +3,6 @@
 
 #include "Entity.h"
 
-// forward declarations
-class Viewport;
-
 class UtilFactory {
 public:
    static UtilFactory* inst();

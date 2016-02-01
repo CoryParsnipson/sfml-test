@@ -3,87 +3,37 @@
 
 #include "dependencies.h"
 
-#include "FontConfig.h"
-#include "MouseUtil.h"
+#include "Draw.h"
 
-class Layer;
-class Graphics;
-
-// ----------------------------------------------------------------------------
-// This class nicely encapsulates an sf::View object and contains all of the
-// necessary state for it as well.
-// ----------------------------------------------------------------------------
 class Viewport
-: public MouseControllable 
 {
 public:
-   static const float ZOOM_FACTOR_MIN;
-   static const float ZOOM_FACTOR_MAX;
-
-   typedef std::list<Layer*> LayerList;
+   typedef std::vector<Layer*> LayerList;
    
-   Viewport(Graphics& graphics, sf::Vector2f size);
+   Viewport(sf::Vector2f size);
    virtual ~Viewport();
+
+   // viewport management
+   void set_viewport(const sf::FloatRect& viewport);
+   sf::FloatRect get_viewport();
 
    // layer management interface
    Layer* add(std::string id);
    Layer* get(std::string id);
+   void insert(std::string id, int idx);
+   void move(std::string id, int idx);
    void remove(std::string id);
 
+   void resize(sf::Vector2f size);
+   void recenter(sf::Vector2f center);
 
-
-
-
-
-
-
-
-
-
-   // TODO: delete everything below
-   void draw(sf::Drawable& d);
-   void write(std::string msg, sf::Vector2f pos = sf::Vector2f(0, 0), const FontConfig* config = nullptr);
-
-   void set_size(sf::Vector2f size);
-   sf::Vector2f get_size();
-   
-   void set_default_size(sf::Vector2f size);
-   sf::Vector2f get_default_size();
-
-   void set_center(sf::Vector2f center);
-   sf::Vector2f get_center();
-
-   void set_default_center(sf::Vector2f size);
-   sf::Vector2f get_default_center();
-   
-   sf::Vector2f get_world_coord(const sf::Vector2i& point);
-   sf::Vector2i get_screen_coord(const sf::Vector2f& point);
-
-   // mouse control interface
-   virtual void drag(MouseButtonCommand& c, sf::Vector2f delta);
-
-   virtual float get_scale();
-   virtual void set_scale(float factor);
-
-   virtual void click(MouseButtonCommand& c);
-
-   sf::View& get_view();
-   Graphics& get_graphics();
+   // draw interface
+   virtual void draw(Graphics& graphics, Layer& layer) { this->draw(graphics); }
+   virtual void draw(Graphics& graphics);
 
 protected:
    LayerList layers_;
    sf::Vector2f size_;
-
-
-
-   Graphics& graphics;
-
-   float zoom_factor;
-
-   sf::Vector2f default_size;
-   sf::Vector2f default_center;
-
-   sf::View* view;
 };
 
 #endif

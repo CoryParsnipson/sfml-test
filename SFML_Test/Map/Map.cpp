@@ -17,10 +17,10 @@ Map::~Map() {
    }
 }
 
-void Map::draw(Viewport& viewport) {
+void Map::draw(Graphics& graphics, Layer& layer) {
    Map::tile_grid_t::const_iterator it;
    for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
-      it->second->draw(viewport);
+      it->second->draw(graphics, layer);
    }
 }
 

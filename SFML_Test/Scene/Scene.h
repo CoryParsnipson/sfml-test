@@ -10,29 +10,48 @@
 #include "MouseButtonCommand.h"
 #include "MouseWheelCommand.h"
 
+#include "Draw.h"
 #include "Update.h"
-
 #include "Viewport.h"
+#include "Entity.h"
 
 // forward declarations
 class Game;
-class Entity;
 
 class Scene
-: public Update
+: public Draw
+, public Update
 {
 public:
-   Scene() {}
+   typedef std::vector<Entity*> EntityList;
+
+   Scene() : viewport_(nullptr) {}
    virtual ~Scene() {
-      std::map<std::string, Viewport*>::const_iterator it;
-      for (it = this->viewports_.begin(); it != this->viewports_.end(); ++it) {
-         delete it->second;
+      delete this->viewport_;
+
+      EntityList::const_iterator it;
+      for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
+         delete *it;
       }
-      this->viewports_.clear();
+      this->entities_.clear();
    }
 
    virtual void enter(Game& game) {}
    virtual void exit(Game& game) {}
+
+   // draw interface
+   virtual void draw(Graphics& graphics, Layer& layer) { this->draw(graphics); }
+   virtual void draw(Graphics& graphics) {
+      this->viewport_->draw(graphics);
+   }
+
+   // update interface
+   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr) {
+      EntityList::const_iterator it;
+      for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
+         (*it)->update(game, this);
+      }
+   }
 
    // command interface (TODO: get rid of this?)
    virtual void process(Game& game, CloseCommand& c) = 0;
@@ -43,11 +62,8 @@ public:
    virtual void process(Game& game, MouseWheelCommand& c) = 0;
 
 protected:
-   bool is_running_; // false to exit scene
-   
-   // make these private with protected accessor methods?
-   std::map<std::string, Viewport*> viewports_;
-   std::vector<Entity*> entities_;
+   Viewport* viewport_;
+   EntityList entities_;
 };
 
 #endif

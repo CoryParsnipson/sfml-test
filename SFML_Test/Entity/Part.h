@@ -3,12 +3,14 @@
 
 #include "dependencies.h"
 
+#include "Draw.h"
 #include "Update.h"
 
 class Viewport;
 
 class Part
-: public Update
+: public Draw
+, public Update
 {
 public:
    Part(std::string id) : id(id) {};
@@ -18,6 +20,9 @@ public:
 
    // send message
    // receive message
+
+   // draw interface
+   virtual void draw(Graphics& graphics, Layer& layer) {}
 
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr) = 0;

@@ -25,20 +25,8 @@ void Graphics::clear() {
    this->window->clear();
 }
 
-void Graphics::draw(sf::Drawable& d, sf::View* view) {
-   if (!view) {
-      this->window->draw(d); 
-      return;
-   }
-
-   sf::View original_view = this->window->getView();
-   this->window->setView(*view);
-   this->window->draw(d);
-   this->window->setView(original_view);
-}
-
-void Graphics::update(Game& game, Scene* scene, Entity* entity) {
-   this->window->display();
+sf::RenderWindow& Graphics::get_window() {
+   return *(this->window);
 }
 
 sf::Vector2f Graphics::get_world_coord(const sf::Vector2i& point, sf::View* view) {
@@ -49,24 +37,12 @@ sf::Vector2i Graphics::get_screen_coord(const sf::Vector2f& point, sf::View* vie
    return (view ? this->window->mapCoordsToPixel(point, *view) : this->window->mapCoordsToPixel(point));
 }
 
-sf::RenderWindow& Graphics::get_window() {
-   return *(this->window);
+void Graphics::draw(sf::Drawable& d, sf::View& view) {
+   this->window->setView(view);
+   this->window->draw(d);
 }
 
-void Graphics::write(std::string msg, sf::Vector2f pos, const FontConfig* config, sf::View* view) {
-   sf::View original_view = this->window->getView();
-
-   if (view) {
-      this->window->setView(*view);
-   }
-
-   this->writer.write(*this, msg, pos, config);
-
-   if (view) {
-      this->window->setView(original_view);
-   }
+void Graphics::update(Game& game, Scene* scene, Entity* entity) {
+   this->window->display();
 }
 
-void Graphics::load_font(std::string font_name, std::string filename) {
-   this->writer.load_font(font_name, filename);
-}

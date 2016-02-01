@@ -4,10 +4,7 @@
 #include "dependencies.h"
 
 #include "Update.h"
-#include "GraphicsWriter.h"
-#include "Viewport.h"
 
-// SFML graphics interface
 class Graphics
 : public Update
 {
@@ -18,10 +15,8 @@ public:
    bool is_open();
    void close();
    void clear();
-   void draw(sf::Drawable& d, sf::View* view = nullptr);
 
-   // update interface
-   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
+   sf::RenderWindow& get_window();
 
    // given a point on the screen, get the absolute world coordinate (apply global transforms)
    sf::Vector2f get_world_coord(const sf::Vector2i& point, sf::View* view = nullptr);
@@ -29,15 +24,14 @@ public:
    // given an absolute world coordinate, get its screen coordinate
    sf::Vector2i get_screen_coord(const sf::Vector2f& point, sf::View* view = nullptr);
 
-   sf::RenderWindow& get_window();
+   // draw interface
+   virtual void draw(sf::Drawable& d, sf::View& view);
 
-   // graphics writer functions
-   void write(std::string msg, sf::Vector2f pos = sf::Vector2f(0, 0), const FontConfig* config = nullptr, sf::View* view = nullptr);
-   void load_font(std::string font_name, std::string filename);
+   // update interface
+   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
    
 protected:
    sf::RenderWindow* window;
-   GraphicsWriter writer;
 };
 
 #endif

@@ -1,5 +1,6 @@
 #include "Game.h"
 
+#include "TextFactory.h"
 #include "InputController.h"
 #include "TextureManager.h"
 
@@ -13,8 +14,10 @@ Game::Game()
    // initialize logging and register service (this should be done asap)
    this->full_logger_.console_start();
    this->full_logger_.get_logger("console")->disable_all_tags();
-   this->full_logger_.get_logger("console")->set_tag("Map", true);
-   this->full_logger_.get_logger("console")->set_tag("BuilderScene", true);
+
+   this->full_logger_.get_logger("console")->set_tag("TextFactory", true);
+   this->full_logger_.get_logger("console")->set_tag("StartMenuScene", true);
+   this->full_logger_.get_logger("console")->set_tag("GraphicsPart", true);
 
    //this->full_logger_.file_start("log.txt");
    //this->full_logger_.get_logger("file")->disable_all_tags();
@@ -28,7 +31,7 @@ Game::Game()
    Service::get_input().registerInputListener(dynamic_cast<InputListener*>(this));
    
    // load fonts
-   this->graphics.load_font("retro", "retro.ttf");
+   TextFactory::inst()->load_font("retro", "retro.ttf");
 }
 
 Game::~Game() {
@@ -123,6 +126,11 @@ void Game::main_loop() {
 
       // update
       this->scenes_.top()->update(*this);
+
+      // draw
+      this->scenes_.top()->draw(graphics);
+
+      // render scene
       this->graphics.update(*this);
    }
 }

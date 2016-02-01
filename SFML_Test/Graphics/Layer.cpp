@@ -29,12 +29,20 @@ std::string Layer::to_string() {
    return "[Layer: '" + this->id_ + "']";
 }
 
+sf::View& Layer::get_view() {
+   return *this->view_;
+}
+
 void Layer::set_size(sf::Vector2f size) {
    this->view_->setSize(size * this->zoom_factor_);
 }
 
 void Layer::set_center(sf::Vector2f center) {
    this->view_->setCenter(center);
+}
+
+void Layer::set_viewport(const sf::FloatRect& viewport) {
+   this->view_->setViewport(viewport);
 }
 
 sf::Vector2f Layer::get_size() {
@@ -45,10 +53,35 @@ sf::Vector2f Layer::get_center() {
    return this->view_->getCenter();
 }
 
-void Layer::draw(Graphics& graphics, sf::View* view) {
+sf::FloatRect Layer::get_viewport() {
+   return this->view_->getViewport();
+}
+
+void Layer::add(Draw* drawable) {
+   this->drawables_.push_back(drawable);
+}
+
+void Layer::remove(Draw* drawable) {
    DrawableList::const_iterator it;
    for (it = this->drawables_.begin(); it != this->drawables_.end(); ++it) {
-      (*it)->draw(graphics, this->view_);
+      if (drawable == *it) {
+         this->drawables_.erase(it);
+         return;
+      }
+   }
+}
+
+void Layer::draw(Graphics& graphics) {
+   DrawableList::const_iterator it;
+   for (it = this->drawables_.begin(); it != this->drawables_.end();) {
+      if (!(*it)) {
+         Service::get_logger().msg("Layer", Logger::WARNING, "Removing null pointer from drawables list.");
+         this->drawables_.erase(it);
+         continue;
+      }
+
+      (*it)->draw(graphics, *this);
+      ++it;
    }
 }
 

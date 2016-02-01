@@ -1,8 +1,7 @@
 #include "Entity.h"
 
+#include "Graphics.h"
 #include "Scene.h"
-#include "Viewport.h"
-
 #include "Part.h"
 #include "PhysicsPart.h"
 #include "GraphicsPart.h"
@@ -13,8 +12,25 @@ Entity::Entity(std::string name)
 }
 
 Entity::~Entity() {
-   // for simplicity, the entity will assume ownership of all parts (for now)
+   // the entity will assume ownership of all parts (for now)
+   PartList::const_iterator it;
+   for (it = this->parts_.begin(); it != this->parts_.end(); it++) {
+      delete it->second;
+   }
    this->parts_.clear();
+}
+
+std::string Entity::to_string() {
+   std::string description = "[Entity \"" + this->name_ + "\"";
+   
+   PhysicsPart* physics = dynamic_cast<PhysicsPart*>(this->get("physics"));
+   if (physics) {
+      sf::Vector2f pos = physics->get_position();
+      description += "@ (" + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ")";
+   }
+   description += "]";
+
+   return description;
 }
 
 void Entity::add(Part* part) {
@@ -26,41 +42,23 @@ void Entity::add(Part* part) {
 }
 
 Part* Entity::get(std::string part_name) {
-   part_list_t::const_iterator it = this->parts_.find(part_name);
+   PartList::const_iterator it = this->parts_.find(part_name);
    if (it == this->parts_.end()) {
       return nullptr;
    }
    return it->second;
 }
 
-void Entity::draw(Viewport& viewport) {
-   GraphicsPart* graphics;
-
-   part_list_t::const_iterator it;
+void Entity::draw(Graphics& graphics, Layer& layer) {
+   PartList::const_iterator it;
    for (it = this->parts_.begin(); it != this->parts_.end(); it++) {
-      if ((graphics = dynamic_cast<GraphicsPart*>(it->second))) {
-         graphics->draw(viewport);
-      }
+      it->second->draw(graphics, layer);
    }
 }
 
 void Entity::update(Game& game, Scene* scene, Entity* entity) {
-   part_list_t::const_iterator it;
+   PartList::const_iterator it;
    for (it = this->parts_.begin(); it != this->parts_.end(); it++) {
       it->second->update(game, scene, this);
    }
-}
-
-std::string Entity::to_string() {
-   std::string description = "[Entity \"" + this->name_ + "\"";
-   
-   PhysicsPart* physics = dynamic_cast<PhysicsPart*>(this->get("physics"));
-   if (physics) {
-      sf::Vector2f pos = physics->get_position();
-      description += "@ (" + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ")";
-   }
-   
-   description += "]";
-
-   return description;
 }

@@ -6,15 +6,16 @@
 #include "Draw.h"
 #include "MouseUtil.h"
 
+class Graphics;
+
 class Layer
-: public Draw
-, public MouseControllable
+: public MouseControllable
 {
 public:
    static const float ZOOM_FACTOR_MIN;
    static const float ZOOM_FACTOR_MAX;
-
-   typedef std::list<Draw*> DrawableList;
+   
+   typedef std::vector<Draw*> DrawableList;
 
    Layer(std::string id, sf::Vector2f size);
    virtual ~Layer();
@@ -22,15 +23,22 @@ public:
    std::string id();
    std::string to_string();
 
+   sf::View& get_view();
+
    // view interface
    void set_size(sf::Vector2f size);
    void set_center(sf::Vector2f center);
+   void set_viewport(const sf::FloatRect& viewport);
 
    sf::Vector2f get_size();
    sf::Vector2f get_center();
+   sf::FloatRect get_viewport();
 
    // draw interface
-   virtual void draw(Graphics& graphics, sf::View* view = nullptr);
+   void add(Draw* drawable);
+   void remove(Draw* drawable);
+
+   void draw(Graphics& graphics);
 
    // mouse control interface
    virtual void drag(MouseButtonCommand& c, sf::Vector2f delta);

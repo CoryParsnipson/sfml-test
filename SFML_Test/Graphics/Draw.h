@@ -4,10 +4,11 @@
 #include "dependencies.h"
 
 class Graphics;
+class Layer;
 
 class Draw {
 public:
-   virtual void draw(Graphics& graphics, sf::View* view = nullptr) = 0;
+   virtual void draw(Graphics& graphics, Layer& layer) = 0;
 };
 
 #endif
