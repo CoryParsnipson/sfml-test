@@ -60,7 +60,7 @@ bool GraphicsPart::get_show_debug_text() {
 void GraphicsPart::draw(Graphics& graphics, Layer& layer) {
    SpriteList::const_iterator sprite_it;
    for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
-      graphics.draw(*(*sprite_it), layer.get_view());
+      graphics.draw(*(*sprite_it), layer);
 
       // draw outline for this sprite
       if (this->show_outline_) {
@@ -71,13 +71,13 @@ void GraphicsPart::draw(Graphics& graphics, Layer& layer) {
          s.setOutlineColor(sf::Color::Blue);
          s.setFillColor(sf::Color::Transparent);
 
-         graphics.draw(s, layer.get_view());
+         graphics.draw(s, layer);
       }
    }
 
    ShapeList::const_iterator shape_it;
    for (shape_it = this->shapes_.begin(); shape_it != this->shapes_.end(); ++shape_it) {
-      graphics.draw(*(*shape_it), layer.get_view());
+      graphics.draw(*(*shape_it), layer);
    }
 
    sf::Vector2f pos(0, 0);
@@ -89,7 +89,7 @@ void GraphicsPart::draw(Graphics& graphics, Layer& layer) {
       size.x = (*text_it)->getGlobalBounds().width;
       size.y = (*text_it)->getGlobalBounds().height;
 
-      graphics.draw(*(*text_it), layer.get_view());
+      graphics.draw(*(*text_it), layer);
    }
 
    // draw diagnostic info
@@ -112,7 +112,7 @@ void GraphicsPart::draw(Graphics& graphics, Layer& layer) {
       bounding_box_graphic.setOutlineColor(sf::Color::Red); // change color depending on solidity
       bounding_box_graphic.setOutlineThickness(1.0);
 
-      graphics.draw(bounding_box_graphic, layer.get_view());
+      graphics.draw(bounding_box_graphic, layer);
    }
 }
 

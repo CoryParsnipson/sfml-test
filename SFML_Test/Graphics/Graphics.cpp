@@ -1,5 +1,7 @@
 #include "Graphics.h"
 
+#include "Layer.h"
+
 Graphics::Graphics()
 {
    this->window = new sf::RenderWindow(sf::VideoMode(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT), "SFML Test");
@@ -37,8 +39,8 @@ sf::Vector2i Graphics::get_screen_coord(const sf::Vector2f& point, sf::View* vie
    return (view ? this->window->mapCoordsToPixel(point, *view) : this->window->mapCoordsToPixel(point));
 }
 
-void Graphics::draw(sf::Drawable& d, sf::View& view) {
-   this->window->setView(view);
+void Graphics::draw(sf::Drawable& d, Layer& layer) {
+   this->window->setView(layer.get_view());
    this->window->draw(d);
 }
 

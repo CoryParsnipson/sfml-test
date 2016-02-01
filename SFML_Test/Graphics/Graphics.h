@@ -5,6 +5,8 @@
 
 #include "Update.h"
 
+class Layer;
+
 class Graphics
 : public Update
 {
@@ -25,7 +27,7 @@ public:
    sf::Vector2i get_screen_coord(const sf::Vector2f& point, sf::View* view = nullptr);
 
    // draw interface
-   virtual void draw(sf::Drawable& d, sf::View& view);
+   virtual void draw(sf::Drawable& d, Layer& layer);
 
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
