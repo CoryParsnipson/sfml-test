@@ -72,7 +72,6 @@ void StartMenuScene::process(Game& game, KeyPressCommand& c) {
    if (c.event.code == sf::Keyboard::Key::Space || c.event.code == sf::Keyboard::Key::Return) {
       //game.switch_scene(new BuilderScene());
    } else if (c.event.code == sf::Keyboard::Key::B) {
-      // TODO: this is not working for some reason...
       EntityList::const_iterator it;
       for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
          GraphicsPart* graphics_part = dynamic_cast<GraphicsPart*>((*it)->get("graphics"));

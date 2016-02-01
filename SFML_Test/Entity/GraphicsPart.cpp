@@ -84,8 +84,9 @@ void GraphicsPart::draw(Graphics& graphics, Layer& layer) {
    sf::Vector2f size(0, 0);
    TextList::const_iterator text_it;
    for (text_it = this->texts_.begin(); text_it != this->texts_.end(); ++text_it) {
-      pos = (*text_it)->getPosition();
-
+      pos.x = (*text_it)->getGlobalBounds().left;
+      pos.y = (*text_it)->getGlobalBounds().top;
+      
       size.x = (*text_it)->getGlobalBounds().width;
       size.y = (*text_it)->getGlobalBounds().height;
 
@@ -108,6 +109,7 @@ void GraphicsPart::draw(Graphics& graphics, Layer& layer) {
 
       // draw physics bounding box
       bounding_box_graphic.setPosition(pos);
+      bounding_box_graphic.setSize(size);
       bounding_box_graphic.setFillColor(sf::Color::Transparent);
       bounding_box_graphic.setOutlineColor(sf::Color::Red); // change color depending on solidity
       bounding_box_graphic.setOutlineThickness(1.0);
