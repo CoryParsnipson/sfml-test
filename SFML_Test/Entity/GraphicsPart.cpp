@@ -19,30 +19,10 @@ GraphicsPart::~GraphicsPart() {
       delete *sprite_it;
    }
    this->sprites_.clear();
-
-   ShapeList::const_iterator shape_it;
-   for (shape_it = this->shapes_.begin(); shape_it != this->shapes_.end(); ++shape_it) {
-      delete *shape_it;
-   }
-   this->shapes_.clear();
-
-   TextList::const_iterator text_it;
-   for (text_it = this->texts_.begin(); text_it != this->texts_.end(); ++text_it) {
-      delete *text_it;
-   }
-   this->texts_.clear();
 }
 
-void GraphicsPart::add(sf::Sprite* sprite) {
+void GraphicsPart::add(sf::Drawable* sprite) {
    this->sprites_.push_back(sprite);
-}
-
-void GraphicsPart::add(sf::Shape* shape) {
-   this->shapes_.push_back(shape);
-}
-
-void GraphicsPart::add(sf::Text* text) {
-   this->texts_.push_back(text);
 }
 
 void GraphicsPart::set_show_outline(bool show) {
@@ -58,39 +38,55 @@ bool GraphicsPart::get_show_debug_text() {
 }
 
 void GraphicsPart::draw(Graphics& graphics, Layer& layer) {
+   sf::Vector2f pos(0, 0);
+   sf::Vector2f size(0, 0);
+
    SpriteList::const_iterator sprite_it;
    for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
+      // TODO: okay, do this better. definitely do this better
+      // For some reason, getGlobalBounds is not in the sf::Transformable interface, but
+      // it is present on all its child classes
+      sf::Sprite* sp = dynamic_cast<sf::Sprite*>(*sprite_it);
+      sf::Shape* sh = dynamic_cast<sf::Shape*>(*sprite_it);
+      sf::Text* te = dynamic_cast<sf::Text*>(*sprite_it);
+
+      if (sp) {
+         pos.x = sp->getGlobalBounds().left;
+         pos.y = sp->getGlobalBounds().top;
+
+         size.x = sp->getGlobalBounds().width;
+         size.y = sp->getGlobalBounds().height;
+      }
+
+      if (sh) {
+         pos.x = sh->getGlobalBounds().left;
+         pos.y = sh->getGlobalBounds().top;
+
+         size.x = sh->getGlobalBounds().width;
+         size.y = sh->getGlobalBounds().height;
+      }
+
+      if (te) {
+         pos.x = te->getGlobalBounds().left;
+         pos.y = te->getGlobalBounds().top;
+
+         size.x = te->getGlobalBounds().width;
+         size.y = te->getGlobalBounds().height;
+      }
+      
       graphics.draw(*(*sprite_it), layer);
 
       // draw outline for this sprite
       if (this->show_outline_) {
-         sf::RectangleShape s(sf::Vector2f((*sprite_it)->getGlobalBounds().width, (*sprite_it)->getGlobalBounds().height));      
+         sf::RectangleShape s(size);
 
-         s.setPosition((*sprite_it)->getPosition());
+         s.setPosition(pos);
          s.setOutlineThickness(1);
          s.setOutlineColor(sf::Color::Blue);
          s.setFillColor(sf::Color::Transparent);
 
          graphics.draw(s, layer);
       }
-   }
-
-   ShapeList::const_iterator shape_it;
-   for (shape_it = this->shapes_.begin(); shape_it != this->shapes_.end(); ++shape_it) {
-      graphics.draw(*(*shape_it), layer);
-   }
-
-   sf::Vector2f pos(0, 0);
-   sf::Vector2f size(0, 0);
-   TextList::const_iterator text_it;
-   for (text_it = this->texts_.begin(); text_it != this->texts_.end(); ++text_it) {
-      pos.x = (*text_it)->getGlobalBounds().left;
-      pos.y = (*text_it)->getGlobalBounds().top;
-      
-      size.x = (*text_it)->getGlobalBounds().width;
-      size.y = (*text_it)->getGlobalBounds().height;
-
-      graphics.draw(*(*text_it), layer);
    }
 
    // draw diagnostic info
@@ -132,16 +128,14 @@ void GraphicsPart::update(Game& game, Scene* scene, Entity* entity) {
    SpriteList::const_iterator sprite_it;
    for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); sprite_it++) {
       // update graphics draw location based on physical position of entity
-      (*sprite_it)->setPosition(physics->get_position());
-   }
+      
+      // TODO: UGGGGHHHHH
+      sf::Sprite* sp = dynamic_cast<sf::Sprite*>(*sprite_it);
+      sf::Shape* sh = dynamic_cast<sf::Shape*>(*sprite_it);
+      sf::Text* te = dynamic_cast<sf::Text*>(*sprite_it);
 
-   ShapeList::const_iterator shape_it;
-   for (shape_it = this->shapes_.begin(); shape_it != this->shapes_.end(); shape_it++) {
-      (*shape_it)->setPosition(physics->get_position());
-   }
-
-   TextList::const_iterator text_it;
-   for (text_it = this->texts_.begin(); text_it != this->texts_.end(); ++text_it) {
-      (*text_it)->setPosition(physics->get_position());
+      if (sp) { sp->setPosition(physics->get_position()); }
+      if (sh) { sh->setPosition(physics->get_position()); }
+      if (te) { te->setPosition(physics->get_position()); }
    }
 }

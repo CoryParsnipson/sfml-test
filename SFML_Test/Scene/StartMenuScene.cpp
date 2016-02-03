@@ -70,7 +70,7 @@ void StartMenuScene::process(Game& game, CloseCommand& c) {
 
 void StartMenuScene::process(Game& game, KeyPressCommand& c) {
    if (c.event.code == sf::Keyboard::Key::Space || c.event.code == sf::Keyboard::Key::Return) {
-      //game.switch_scene(new BuilderScene());
+      game.switch_scene(new BuilderScene());
    } else if (c.event.code == sf::Keyboard::Key::B) {
       EntityList::const_iterator it;
       for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {

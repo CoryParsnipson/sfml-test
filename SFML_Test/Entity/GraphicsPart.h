@@ -9,16 +9,12 @@ class GraphicsPart
 : public Part
 {
 public:
-   typedef std::vector<sf::Sprite*> SpriteList;
-   typedef std::vector<sf::Shape*> ShapeList;
-   typedef std::vector<sf::Text*> TextList;
+   typedef std::vector<sf::Drawable*> SpriteList;
 
    GraphicsPart(std::string id = "graphics");
    virtual ~GraphicsPart();
 
-   virtual void add(sf::Sprite* sprite);
-   virtual void add(sf::Shape* shape);
-   virtual void add(sf::Text* text);
+   virtual void add(sf::Drawable* sprite);
    // virtual remove();
 
    void set_show_outline(bool show);
@@ -36,8 +32,6 @@ protected:
    bool show_debug_text_;
 
    SpriteList sprites_;
-   ShapeList shapes_;
-   TextList texts_;
 };
 
 #endif

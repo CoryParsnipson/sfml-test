@@ -9,6 +9,8 @@ public:
    virtual ~UtilFactory();
 
    virtual Entity* create_mouse();
+   
+   virtual Entity* create_graphic(sf::Drawable* d);
 
 protected:
    // seal off constructors

@@ -15,7 +15,6 @@
 #include "Viewport.h"
 #include "Entity.h"
 
-// forward declarations
 class Game;
 
 class Scene
