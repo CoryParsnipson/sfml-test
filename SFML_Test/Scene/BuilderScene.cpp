@@ -54,6 +54,7 @@ void BuilderScene::enter(Game& game) {
    this->viewport_ = new Viewport(this->reset_size_);
 
    // fixed layer above map and sprites
+   this->viewport_->add("overlay");
    this->viewport_->add("hud");
 
    // load textures
@@ -160,7 +161,7 @@ void BuilderScene::update(Game& game, Scene* scene, Entity* entity) {
          this->selection_rectangle_ = UtilFactory::inst()->create_graphic(sr);
 
          this->entities_.push_back(this->selection_rectangle_);
-         this->viewport_->get("main")->add(this->selection_rectangle_);
+         this->viewport_->get("overlay")->add(this->selection_rectangle_);
       }
 
       // update position and size of selection rectangle
@@ -354,7 +355,7 @@ void BuilderScene::click(MouseButtonCommand& c) {
                }
             }
 
-            this->viewport_->get("main")->remove(this->selection_rectangle_);
+            this->viewport_->get("overlay")->remove(this->selection_rectangle_);
             delete this->selection_rectangle_;
             this->selection_rectangle_ = nullptr;
          }
