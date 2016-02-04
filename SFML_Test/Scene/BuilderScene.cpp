@@ -17,10 +17,13 @@
 
 BuilderScene::BuilderScene()
 : map_(nullptr)
+, center_dot_(nullptr)
 , mouse_(nullptr)
+, selection_rectangle_(nullptr)
 , tile_cursor_(nullptr)
 , reset_size_(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT)
 , reset_center_(reset_size_.x / 2.f, reset_size_.y / 2.f)
+, last_mouse_pos_(nullptr)
 
 , click_press_pos_(nullptr)
 , click_release_pos_(nullptr)
@@ -34,14 +37,14 @@ BuilderScene::BuilderScene()
 BuilderScene::~BuilderScene() {
    delete this->map_;
 
-   delete this->click_press_pos_;
-   delete this->click_release_pos_;
+   //delete this->click_press_pos_;
+   //delete this->click_release_pos_;
 
-   std::vector<sf::RectangleShape*>::const_iterator it;
-   for (it = this->grid.begin(); it != this->grid.end(); ++it) {
-      delete *it;
-   }
-   this->grid.clear();
+   //std::vector<sf::RectangleShape*>::const_iterator it;
+   //for (it = this->grid.begin(); it != this->grid.end(); ++it) {
+   //   delete *it;
+   //}
+   //this->grid.clear();
 }
 
 void BuilderScene::enter(Game& game) {
@@ -138,6 +141,37 @@ void BuilderScene::update(Game& game, Scene* scene, Entity* entity) {
    this->map_->update(game, this);
    
    // update entities
+   if (this->click_press_pos_ && this->last_mouse_pos_) {
+      sf::Vector2f origin_pos;
+      sf::Vector2f end_pos;
+
+      origin_pos.x = std::min(this->click_press_pos_->x, this->last_mouse_pos_->x);
+      origin_pos.y = std::min(this->click_press_pos_->y, this->last_mouse_pos_->y);
+
+      end_pos.x = std::max(this->click_press_pos_->x, this->last_mouse_pos_->x);
+      end_pos.y = std::max(this->click_press_pos_->y, this->last_mouse_pos_->y);
+
+      if (!this->selection_rectangle_) {
+         sf::RectangleShape* sr = new sf::RectangleShape();
+         sr->setFillColor(sf::Color(66, 108, 167, 175));
+         sr->setOutlineColor(sf::Color(124, 160, 210, 192));
+         sr->setOutlineThickness(1.0);
+
+         this->selection_rectangle_ = UtilFactory::inst()->create_graphic(sr);
+
+         this->entities_.push_back(this->selection_rectangle_);
+         this->viewport_->get("main")->add(this->selection_rectangle_);
+      }
+
+      // update position and size of selection rectangle
+      GraphicsPart* sr_graphics = dynamic_cast<GraphicsPart*>(this->selection_rectangle_->get("graphics"));
+      sf::RectangleShape* sr = dynamic_cast<sf::RectangleShape*>(sr_graphics->get(0));
+
+      sr->setPosition(origin_pos);
+      sr->setSize(end_pos - origin_pos);
+   }
+
+
    //if (this->selected_tile) {
    //   this->selected_tile->update(game, this);
    //   this->selected_tile->draw(*this->viewports_["main"]);
@@ -266,10 +300,6 @@ void BuilderScene::process(Game& game, MouseMoveCommand& c) {}
 void BuilderScene::process(Game& game, MouseWheelCommand& c) {}
 
 void BuilderScene::drag(MouseButtonCommand& c, sf::Vector2f delta) {
-   if (c.state == MouseButtonCommand::RELEASED) {
-      return;
-   }
-
    Layer* main_layer = this->viewport_->get("main");
    if (!main_layer) {
       Service::get_logger().msg("BuilderScene", Logger::WARNING, "Main viewport cannot be found...");
@@ -277,44 +307,12 @@ void BuilderScene::drag(MouseButtonCommand& c, sf::Vector2f delta) {
    }
 
    if (c.button == MouseButtonCommand::LEFT) {
-      if (this->click_release_pos_ || !this->click_press_pos_) {
-         return;
-      }
-
       // update last mouse position
-      this->last_mouse_pos_.x = c.x;
-      this->last_mouse_pos_.y = c.y;
+      delete this->last_mouse_pos_;
+      this->last_mouse_pos_ = new sf::Vector2f(c.x, c.y);
    } else if (c.button == MouseButtonCommand::RIGHT) {
       main_layer->drag(c, delta);
    }
-
-   //try {
-   //   if (this->click_press_pos && !this->click_release_pos && c.button == MouseButtonCommand::LEFT) {
-   //      sf::Vector2f world_mouse_pos = this->viewports_.at("main")->get_world_coord(sf::Vector2i(c.x, c.y));
-
-   //      sf::Vector2f origin_pos;
-   //      sf::Vector2f end_pos;
-
-   //      origin_pos.x = std::min(this->click_press_pos->x, world_mouse_pos.x);
-   //      origin_pos.y = std::min(this->click_press_pos->y, world_mouse_pos.y);
-
-   //      end_pos.x = std::max(this->click_press_pos->x, world_mouse_pos.x);
-   //      end_pos.y = std::max(this->click_press_pos->y, world_mouse_pos.y);
-
-   //      sf::RectangleShape select_rect;
-   //      select_rect.setPosition(origin_pos);
-   //      select_rect.setSize(end_pos - origin_pos);
-   //      select_rect.setFillColor(sf::Color(66, 108, 167, 175));
-   //      select_rect.setOutlineColor(sf::Color(124, 160, 210, 192));
-   //      select_rect.setOutlineThickness(1.0);
-   //      
-   //      Service::get_logger().msg("BuilderScene", Logger::INFO, "dragging with left mouse button clicked");
-
-   //      this->viewports_.at("main")->draw(select_rect);
-   //   } else if (c.button == MouseButtonCommand::RIGHT) {
-   //      this->viewports_.at("main")->drag(c, delta);
-   //   }
-   //}
 }
 
 float BuilderScene::get_scale() {
@@ -337,6 +335,40 @@ void BuilderScene::set_scale(float factor) {
 }
 
 void BuilderScene::click(MouseButtonCommand& c) {
+   if (c.button == MouseButtonCommand::LEFT) {
+      if (c.state == MouseButtonCommand::PRESSED) {
+         if (this->click_release_pos_) {
+            return;
+         }
+
+         delete this->click_press_pos_;
+         this->click_press_pos_ = new sf::Vector2f(c.x, c.y);
+      } else if (c.state == MouseButtonCommand::RELEASED) {
+         if (this->selection_rectangle_) {
+            // remove selection rectangle from entities, layer, and delete it
+            EntityList::const_iterator it;
+            for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
+               if (*it == this->selection_rectangle_) {
+                  this->entities_.erase(it);
+                  break;
+               }
+            }
+
+            this->viewport_->get("main")->remove(this->selection_rectangle_);
+            delete this->selection_rectangle_;
+            this->selection_rectangle_ = nullptr;
+         }
+
+         delete this->click_press_pos_;
+         this->click_press_pos_ = nullptr;
+
+         delete this->last_mouse_pos_;
+         this->last_mouse_pos_ = nullptr;
+         return;
+      }
+   } else if (c.button == MouseButtonCommand::RIGHT) {
+   }
+
    //sf::Vector2f world_coord;
 
    //try {

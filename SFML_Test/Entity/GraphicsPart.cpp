@@ -25,6 +25,25 @@ void GraphicsPart::add(sf::Drawable* sprite) {
    this->sprites_.push_back(sprite);
 }
 
+sf::Drawable* GraphicsPart::get(int idx) {
+   sf::Drawable* sprite = nullptr;
+
+   if (idx < 0 || idx >= (signed)this->sprites_.size()) {
+      return sprite;
+   }
+
+   SpriteList::const_iterator sprite_it;
+   for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
+      if (idx == 0) {
+         sprite = *sprite_it;
+         break;
+      }
+      --idx;
+   }
+
+   return sprite;
+}
+
 void GraphicsPart::set_show_outline(bool show) {
    this->show_outline_ = show;
 }
@@ -73,6 +92,9 @@ void GraphicsPart::draw(Graphics& graphics, Layer& layer) {
          size.x = te->getGlobalBounds().width;
          size.y = te->getGlobalBounds().height;
       }
+
+      // convert pos to world coordinates
+      pos = graphics.get_world_coord(static_cast<sf::Vector2i>(pos), &layer.get_view());
       
       graphics.draw(*(*sprite_it), layer);
 

@@ -36,7 +36,7 @@ Entity* UtilFactory::create_mouse() {
    return mouse;
 }
 
-Entity* UtilFactory::create_graphic(sf::Drawable* d) {
+Entity* UtilFactory::create_graphic(sf::Drawable* d, sf::Vector2f* pos) {
    Entity* e = new Entity();
    GraphicsPart* graphics_part = new GraphicsPart();
 

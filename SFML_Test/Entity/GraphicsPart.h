@@ -15,6 +15,7 @@ public:
    virtual ~GraphicsPart();
 
    virtual void add(sf::Drawable* sprite);
+   virtual sf::Drawable* get(int idx); // ok, not a good solution
    // virtual remove();
 
    void set_show_outline(bool show);

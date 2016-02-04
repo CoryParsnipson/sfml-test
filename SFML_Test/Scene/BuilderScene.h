@@ -45,17 +45,19 @@ protected:
    Map* map_;
 
    // entity pointers (no ownership)
-   Entity* mouse_;
-   Entity* tile_cursor_;
-   
    Entity* center_dot_;
+
+   Entity* mouse_;
+
+   Entity* selection_rectangle_;
+   Entity* tile_cursor_;
 
    // scene state
    sf::Vector2f reset_size_;
    sf::Vector2f reset_center_;
 
    // mouse controllable state
-   sf::Vector2f last_mouse_pos_;
+   sf::Vector2f* last_mouse_pos_;
 
    sf::Vector2f* click_press_pos_;
    sf::Vector2f* click_release_pos_;
