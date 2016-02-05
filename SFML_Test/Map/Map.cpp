@@ -11,21 +11,21 @@ Map::Map()
 }
 
 Map::~Map() {
-   Map::tile_grid_t::iterator it;
+   Map::TileGrid::iterator it;
    for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
       delete it->second;
    }
 }
 
 void Map::draw(Graphics& graphics, Layer& layer) {
-   Map::tile_grid_t::const_iterator it;
+   Map::TileGrid::const_iterator it;
    for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
       it->second->draw(graphics, layer);
    }
 }
 
 void Map::update(Game& game, Scene* scene, Entity* entity) {
-   Map::tile_grid_t::const_iterator it;
+   Map::TileGrid::const_iterator it;
    for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
       it->second->update(game, scene);
    }
@@ -49,9 +49,9 @@ void Map::add(sf::Vector2i pos, Entity* tile) {
    this->tiles_[pos] = tile;
 }
 
-Map::tiles_t Map::intersects(sf::Vector2i point) {
-   Map::tiles_t tiles;
-   Map::tile_grid_t::const_iterator it;
+Map::TileList Map::intersects(sf::Vector2i point) {
+   Map::TileList tiles;
+   Map::TileGrid::const_iterator it;
 
    for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
       PhysicsPart* tile_physics = dynamic_cast<PhysicsPart*>(it->second->get("physics"));
@@ -63,13 +63,13 @@ Map::tiles_t Map::intersects(sf::Vector2i point) {
    return tiles;
 }
 
-Map::tiles_t Map::intersects(sf::Vector2f point) {
+Map::TileList Map::intersects(sf::Vector2f point) {
    return this->intersects(static_cast<sf::Vector2i>(point));
 }
 
-Map::tiles_t Map::intersects(sf::FloatRect rect) {
-   Map::tiles_t tiles;
-   Map::tile_grid_t::const_iterator it;
+Map::TileList Map::intersects(sf::FloatRect rect) {
+   Map::TileList tiles;
+   Map::TileGrid::const_iterator it;
 
    for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
       PhysicsPart* tile_physics = dynamic_cast<PhysicsPart*>(it->second->get("physics"));
@@ -81,7 +81,7 @@ Map::tiles_t Map::intersects(sf::FloatRect rect) {
    return tiles;
 }
 
-Map::tile_grid_t Map::get_tiles() {
+Map::TileGrid Map::get_tiles() {
    return this->tiles_;
 }
 

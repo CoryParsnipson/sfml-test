@@ -68,6 +68,8 @@ protected:
    int last_frame_time;
    int frame_measurement_interval;
    int frame_count;
+
+   void round_to_nearest_tile(sf::Vector2f& one, sf::Vector2f& two); // TODO: move this to the proper place
 };
 
 #endif

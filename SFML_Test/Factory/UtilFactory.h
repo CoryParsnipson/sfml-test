@@ -10,7 +10,9 @@ public:
 
    virtual Entity* create_mouse();
    
-   virtual Entity* create_graphic(sf::Drawable* d, sf::Vector2f* pos = nullptr);
+   virtual Entity* create_graphic(sf::Drawable* d, sf::FloatRect bounding_box);
+
+   virtual sf::FloatRect* create_float_rect(sf::Vector2f& one, sf::Vector2f& two);
 
 protected:
    // seal off constructors
