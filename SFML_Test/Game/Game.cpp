@@ -18,6 +18,7 @@ Game::Game()
    this->full_logger_.get_logger("console")->set_tag("TextFactory", true);
 
    this->full_logger_.get_logger("console")->set_tag("GraphicsPart", true);
+   this->full_logger_.get_logger("console")->set_tag("ControlPart", true);
 
    this->full_logger_.get_logger("console")->set_tag("StartMenuScene", true);
    this->full_logger_.get_logger("console")->set_tag("BuilderScene", true);

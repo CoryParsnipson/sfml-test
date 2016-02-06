@@ -93,9 +93,6 @@ void GraphicsPart::draw(Graphics& graphics, Layer& layer) {
          size.y = te->getGlobalBounds().height;
       }
 
-      // convert pos to world coordinates
-      pos = graphics.get_world_coord(static_cast<sf::Vector2i>(pos), &layer.get_view());
-      
       graphics.draw(*(*sprite_it), layer);
 
       // draw outline for this sprite

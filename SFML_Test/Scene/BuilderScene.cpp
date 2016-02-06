@@ -371,6 +371,11 @@ void BuilderScene::click(MouseButtonCommand& c) {
             is_drag_gesture = (sr_size.x >= Settings::Instance()->TILE_WIDTH / 3.f) && (sr_size.y >= Settings::Instance()->TILE_HEIGHT / 3.f);
          }
 
+         // account for main layer pan
+         sf::Vector2f pan_delta = this->viewport_->get("main")->get_center() - this->reset_center_;
+         *this->click_press_pos_ += pan_delta;
+         *this->click_release_pos_ += pan_delta;
+         
          if (!this->tile_cursor_) {
             // create a tile cursor
             Map::TileList cursor_tiles;
@@ -436,8 +441,8 @@ void BuilderScene::round_to_nearest_tile(sf::Vector2f& one, sf::Vector2f& two) {
    end_point.x = Settings::Instance()->TILE_WIDTH * std::round(end_point.x / Settings::Instance()->TILE_WIDTH);
    end_point.y = Settings::Instance()->TILE_HEIGHT * std::round(end_point.y / Settings::Instance()->TILE_HEIGHT);
 
-   new_rect->left = Settings::Instance()->TILE_WIDTH * std::round(new_rect->left / Settings::Instance()->TILE_WIDTH);
-   new_rect->top = Settings::Instance()->TILE_HEIGHT * std::round(new_rect->top / Settings::Instance()->TILE_HEIGHT);
+   new_rect->left = Settings::Instance()->TILE_WIDTH * std::floor(new_rect->left / Settings::Instance()->TILE_WIDTH);
+   new_rect->top = Settings::Instance()->TILE_HEIGHT * std::floor(new_rect->top / Settings::Instance()->TILE_HEIGHT);
 
    new_rect->width = end_point.x - new_rect->left;
    new_rect->height = end_point.y - new_rect->top;
