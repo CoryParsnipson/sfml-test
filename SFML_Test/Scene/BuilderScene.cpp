@@ -432,11 +432,15 @@ void BuilderScene::round_to_nearest_tile(sf::Vector2f& one, sf::Vector2f& two) {
    sf::FloatRect* new_rect = UtilFactory::inst()->create_float_rect(one, two);
 
    // round to nearest tile
-   new_rect->left = Settings::Instance()->TILE_WIDTH * std::floor(new_rect->left / Settings::Instance()->TILE_WIDTH);
-   new_rect->top = Settings::Instance()->TILE_HEIGHT * std::floor(new_rect->top / Settings::Instance()->TILE_HEIGHT);
+   sf::Vector2f end_point(new_rect->left + new_rect->width, new_rect->top + new_rect->height);
+   end_point.x = Settings::Instance()->TILE_WIDTH * std::round(end_point.x / Settings::Instance()->TILE_WIDTH);
+   end_point.y = Settings::Instance()->TILE_HEIGHT * std::round(end_point.y / Settings::Instance()->TILE_HEIGHT);
 
-   new_rect->width = Settings::Instance()->TILE_WIDTH * std::ceil(new_rect->width / Settings::Instance()->TILE_WIDTH);
-   new_rect->height = Settings::Instance()->TILE_HEIGHT * std::ceil(new_rect->height / Settings::Instance()->TILE_HEIGHT);
+   new_rect->left = Settings::Instance()->TILE_WIDTH * std::round(new_rect->left / Settings::Instance()->TILE_WIDTH);
+   new_rect->top = Settings::Instance()->TILE_HEIGHT * std::round(new_rect->top / Settings::Instance()->TILE_HEIGHT);
+
+   new_rect->width = end_point.x - new_rect->left;
+   new_rect->height = end_point.y - new_rect->top;
 
    // ensure minimum size
    new_rect->width = std::max(new_rect->width, Settings::Instance()->TILE_WIDTH);
