@@ -27,6 +27,10 @@ sf::FloatRect Viewport::get_viewport() {
    return (*this->layers_.begin())->get_viewport();
 }
 
+Viewport::LayerList Viewport::layers() {
+   return this->layers_;
+}
+
 Layer* Viewport::add(std::string id) {
    Layer* l = new Layer(id, this->size_);
    this->layers_.push_back(l);

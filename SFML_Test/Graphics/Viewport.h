@@ -18,6 +18,8 @@ public:
    sf::FloatRect get_viewport();
 
    // layer management interface
+   LayerList layers();
+
    Layer* add(std::string id);
    Layer* get(std::string id);
    void insert(std::string id, int idx);

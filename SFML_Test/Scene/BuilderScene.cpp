@@ -281,11 +281,22 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
 }
 
 void BuilderScene::process(Game& game, WindowResizeCommand& c) {
+   Viewport::LayerList layers = this->viewport_->layers();
+
+   sf::Vector2f new_size(c.width, c.height);
    sf::Vector2f new_center(c.width / 2.f, c.height / 2.f);
 
    // update viewport
-   this->viewport_->resize(sf::Vector2f((float)c.width, (float)c.height));
-   this->viewport_->recenter(new_center);
+   Viewport::LayerList::const_iterator it;
+   for (it = layers.begin(); it != layers.end(); ++it) {
+      if ((*it)->id() == "main") {
+         (*it)->set_size(new_size);
+         continue;
+      }
+      
+      (*it)->set_size(new_size);
+      (*it)->set_center(new_center);
+   }
 
    // reposition center dot
    PhysicsPart* center_dot_physics = dynamic_cast<PhysicsPart*>(this->center_dot_->get("physics"));
