@@ -62,9 +62,6 @@ void BuilderScene::enter(Game& game) {
    this->viewport_->add("overlay");
    this->viewport_->add("hud");
 
-   this->viewport_->layer("overlay")->set_fixed(true);
-   this->viewport_->layer("hud")->set_fixed(true);
-
    // load textures
    game.texture_manager.create_texture("tile_solid", "flatmap_test_texture.png", sf::IntRect(0, 0, 40, 40));
    game.texture_manager.create_texture("tile_clear", "flatmap_test_texture.png", sf::IntRect(40, 0, 40, 40));
@@ -178,8 +175,10 @@ void BuilderScene::update(Game& game, Scene* scene, Entity* entity) {
 
       delete new_rect;
       new_rect = nullptr;
-   }
 
+      delete this->last_mouse_pos_;
+      this->last_mouse_pos_ = nullptr;
+   }
 
    //std::vector<sf::RectangleShape*>::const_iterator grid_it;
    //for (grid_it = this->grid.begin(); grid_it != this->grid.end(); grid_it++) {
@@ -366,10 +365,10 @@ void BuilderScene::click(MouseButtonCommand& c) {
             is_drag_gesture = (sr_size.x >= Settings::Instance()->TILE_WIDTH / 3.f) && (sr_size.y >= Settings::Instance()->TILE_HEIGHT / 3.f);
          }
 
-         // account for main layer pan and zoom
-         *this->click_press_pos_ += this->viewport_->layer("main")->get_pan_delta();
-         *this->click_release_pos_ += this->viewport_->layer("main")->get_pan_delta();
-         
+         // deleteme
+         *this->click_press_pos_ -= this->viewport_->layer("main")->get_pan_delta();
+         *this->click_release_pos_ -= this->viewport_->layer("main")->get_pan_delta();
+
          if (!this->tile_cursor_) {
             // create a tile cursor
             Map::TileList cursor_tiles;
@@ -409,9 +408,6 @@ void BuilderScene::click(MouseButtonCommand& c) {
 
          delete this->click_press_pos_;
          this->click_press_pos_ = nullptr;
-
-         delete this->last_mouse_pos_;
-         this->last_mouse_pos_ = nullptr;
 
          delete this->click_release_pos_;
          this->click_release_pos_ = nullptr;

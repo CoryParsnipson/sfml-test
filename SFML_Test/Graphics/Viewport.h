@@ -27,7 +27,7 @@ public:
    void remove(std::string id);
 
    void resize(sf::Vector2f size);
-   void recenter(sf::Vector2f center, bool include_non_fixed = false);
+   void recenter(sf::Vector2f center);
 
    void reset();
 

@@ -8,7 +8,6 @@ const float Layer::ZOOM_FACTOR_MAX = 3.0;
 
 Layer::Layer(std::string id, sf::Vector2f size)
 : id_(id)
-, is_fixed_(false)
 , zoom_factor_(1.0)
 , original_center_(size.x / 2.f, size.y / 2.f)
 , view_(nullptr)
@@ -35,27 +34,25 @@ sf::View& Layer::get_view() {
    return *this->view_;
 }
 
-void Layer::set_fixed(bool fixed) {
-   this->is_fixed_ = fixed;
-}
-
 void Layer::set_size(sf::Vector2f size) {
    this->view_->setSize(size * this->zoom_factor_);
 }
 
 void Layer::set_center(sf::Vector2f center) {
+   sf::Vector2f pan_delta = this->original_center_ - this->get_center();
+   
+   // recenter view
    this->view_->setCenter(center);
    
+   // re-apply panning
+   this->view_->move(-pan_delta);
+
    // update original center
    this->original_center_ = center;
 }
 
 void Layer::set_viewport(const sf::FloatRect& viewport) {
    this->view_->setViewport(viewport);
-}
-
-bool Layer::get_fixed() {
-   return this->is_fixed_;
 }
 
 sf::Vector2f Layer::get_size() {
@@ -116,10 +113,6 @@ void Layer::draw(Graphics& graphics) {
 }
 
 void Layer::drag(MouseButtonCommand& c, sf::Vector2f delta) {
-   if (this->is_fixed_) {
-      return;
-   }
-
    this->view_->move(delta);
 }
 
@@ -128,10 +121,6 @@ float Layer::get_scale() {
 }
 
 void Layer::set_scale(float factor) {
-   if (this->is_fixed_) {
-      return;
-   }
-
    factor = std::max(factor, Layer::ZOOM_FACTOR_MIN);
    factor = std::min(factor, Layer::ZOOM_FACTOR_MAX);
    Service::get_logger().msg("Layer", Logger::INFO, "Zoom factor: " + std::to_string(this->zoom_factor_));
