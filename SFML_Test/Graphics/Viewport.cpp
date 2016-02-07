@@ -38,7 +38,7 @@ Layer* Viewport::add(std::string id) {
    return l;
 }
 
-Layer* Viewport::get(std::string id) {
+Layer* Viewport::layer(std::string id) {
    LayerList::const_iterator it;
    for (it = this->layers_.begin(); it != this->layers_.end(); ++it) {
       if((*it)->id().compare(id) == 0) {

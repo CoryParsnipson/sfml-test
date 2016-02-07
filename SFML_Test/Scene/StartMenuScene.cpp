@@ -24,7 +24,7 @@ void StartMenuScene::enter(Game& game) {
    Entity* title_text = TextFactory::inst()->create_text(
       "SFML TEST",
       "retro",
-      this->viewport_->get("main")->get_center(),
+      this->viewport_->layer("main")->get_center(),
       36,
       TextFactory::ALIGN::CENTER
    );
@@ -32,7 +32,7 @@ void StartMenuScene::enter(Game& game) {
    Entity* subtitle_text1 = TextFactory::inst()->create_text(
       "main menu",
       "retro",
-      this->viewport_->get("main")->get_center() + sf::Vector2f(0, 45),
+      this->viewport_->layer("main")->get_center() + sf::Vector2f(0, 45),
       12,
       TextFactory::ALIGN::CENTER
    );
@@ -40,7 +40,7 @@ void StartMenuScene::enter(Game& game) {
    Entity* subtitle_text2 = TextFactory::inst()->create_text(
       "(Press SPACE or ENTER)",
       "retro",
-      this->viewport_->get("main")->get_center() + sf::Vector2f(0, 60),
+      this->viewport_->layer("main")->get_center() + sf::Vector2f(0, 60),
       12,
       TextFactory::ALIGN::CENTER
    );
@@ -51,9 +51,9 @@ void StartMenuScene::enter(Game& game) {
    this->entities_.push_back(subtitle_text2);
 
    // add to draw list
-   this->viewport_->get("main")->add(title_text);
-   this->viewport_->get("main")->add(subtitle_text1);
-   this->viewport_->get("main")->add(subtitle_text2);
+   this->viewport_->layer("main")->add(title_text);
+   this->viewport_->layer("main")->add(subtitle_text1);
+   this->viewport_->layer("main")->add(subtitle_text2);
 }
 
 void StartMenuScene::exit(Game& game) {

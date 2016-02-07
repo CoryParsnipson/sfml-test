@@ -35,6 +35,7 @@ public:
    sf::Vector2f get_size();
    sf::Vector2f get_center();
    sf::FloatRect get_viewport();
+   sf::Transform get_transform();
    
    void reset_pan();
    void reset_zoom();
@@ -60,7 +61,7 @@ protected:
 
    bool is_fixed_;
    float zoom_factor_;
-   sf::Vector2f pan_delta_;
+   sf::Vector2f original_center_;
 
    sf::View* view_;
 

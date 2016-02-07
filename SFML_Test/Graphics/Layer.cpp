@@ -10,10 +10,10 @@ Layer::Layer(std::string id, sf::Vector2f size)
 : id_(id)
 , is_fixed_(false)
 , zoom_factor_(1.0)
-, pan_delta_(0, 0)
+, original_center_(size.x / 2.f, size.y / 2.f)
 , view_(nullptr)
 {
-   this->view_ = new sf::View(sf::Vector2f(size.x / 2.f, size.y / 2.f), size);
+   this->view_ = new sf::View(original_center_, size);
 }
 
 Layer::~Layer() {
@@ -45,10 +45,9 @@ void Layer::set_size(sf::Vector2f size) {
 
 void Layer::set_center(sf::Vector2f center) {
    this->view_->setCenter(center);
-
-   // update pan delta
-   this->pan_delta_.x = 0;
-   this->pan_delta_.y = 0;
+   
+   // update original center
+   this->original_center_ = center;
 }
 
 void Layer::set_viewport(const sf::FloatRect& viewport) {
@@ -71,9 +70,13 @@ sf::FloatRect Layer::get_viewport() {
    return this->view_->getViewport();
 }
 
+sf::Transform Layer::get_transform() {
+   return this->view_->getTransform();
+}
+
 void Layer::reset_pan() {
-   sf::Vector2f reset_delta = this->get_center() - this->pan_delta_;
-   this->set_center(reset_delta);
+   sf::Vector2f pan_delta = this->original_center_ - this->get_center();
+   this->view_->move(pan_delta);
 }
 
 void Layer::reset_zoom() {
@@ -81,7 +84,7 @@ void Layer::reset_zoom() {
 }
 
 sf::Vector2f Layer::get_pan_delta() {
-   return this->pan_delta_;
+   return (this->original_center_ - this->get_center());
 }
 
 void Layer::add(Draw* drawable) {
@@ -118,9 +121,6 @@ void Layer::drag(MouseButtonCommand& c, sf::Vector2f delta) {
    }
 
    this->view_->move(delta);
-
-   // update pan_delta
-   this->pan_delta_ = delta + this->pan_delta_;
 }
 
 float Layer::get_scale() {

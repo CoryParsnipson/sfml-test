@@ -19,9 +19,9 @@ public:
 
    // layer management interface
    LayerList layers();
+   Layer* layer(std::string id); // get layer
 
    Layer* add(std::string id);
-   Layer* get(std::string id);
    void insert(std::string id, int idx);
    void move(std::string id, int idx);
    void remove(std::string id);

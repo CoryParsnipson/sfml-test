@@ -62,8 +62,8 @@ void BuilderScene::enter(Game& game) {
    this->viewport_->add("overlay");
    this->viewport_->add("hud");
 
-   this->viewport_->get("overlay")->set_fixed(true);
-   this->viewport_->get("hud")->set_fixed(true);
+   this->viewport_->layer("overlay")->set_fixed(true);
+   this->viewport_->layer("hud")->set_fixed(true);
 
    // load textures
    game.texture_manager.create_texture("tile_solid", "flatmap_test_texture.png", sf::IntRect(0, 0, 40, 40));
@@ -79,7 +79,7 @@ void BuilderScene::enter(Game& game) {
    map_builder->build();
 
    this->map_ = map_builder->get_map();
-   this->viewport_->get("main")->add(this->map_); // add map to draw list
+   this->viewport_->layer("main")->add(this->map_); // add map to draw list
 
    delete serializer;
    delete map_builder;
@@ -87,7 +87,7 @@ void BuilderScene::enter(Game& game) {
    // initialize entities
    this->mouse_ = UtilFactory::inst()->create_mouse();
    this->entities_.push_back(this->mouse_);
-   this->viewport_->get("hud")->add(this->mouse_);
+   this->viewport_->layer("hud")->add(this->mouse_);
 
    // hook up mouse controller to user input
    Service::get_input().registerInputListener(dynamic_cast<InputListener*>(this->mouse_->get("control")));
@@ -97,15 +97,15 @@ void BuilderScene::enter(Game& game) {
    
    // create fixed hud items
    Entity* t = TextFactory::inst()->create_text("SFML_Test", "retro");
-   this->viewport_->get("hud")->add(t);
+   this->viewport_->layer("hud")->add(t);
    this->entities_.push_back(t);
 
    t = TextFactory::inst()->create_text("r: reset pan position", "retro", sf::Vector2f(0, 15));
-   this->viewport_->get("hud")->add(t);
+   this->viewport_->layer("hud")->add(t);
    this->entities_.push_back(t);
    
    t = TextFactory::inst()->create_text("right click: click and drag to pan", "retro", sf::Vector2f(0, 30));
-   this->viewport_->get("hud")->add(t);
+   this->viewport_->layer("hud")->add(t);
    this->entities_.push_back(t);
 
    sf::RectangleShape* origin_dot = new sf::RectangleShape(sf::Vector2f(3, 3));
@@ -113,7 +113,7 @@ void BuilderScene::enter(Game& game) {
    Entity* origin_dot_entity = UtilFactory::inst()->create_graphic(origin_dot, origin_dot->getGlobalBounds());
 
    this->entities_.push_back(origin_dot_entity);
-   this->viewport_->get("main")->add(origin_dot_entity);
+   this->viewport_->layer("main")->add(origin_dot_entity);
 
    sf::RectangleShape* center_dot_graphic = new sf::RectangleShape(sf::Vector2f(3, 3));
    center_dot_graphic->setFillColor(sf::Color(255, 104, 2));
@@ -121,7 +121,7 @@ void BuilderScene::enter(Game& game) {
    this->center_dot_ = UtilFactory::inst()->create_graphic(center_dot_graphic, center_dot_graphic->getGlobalBounds());
 
    this->entities_.push_back(this->center_dot_);
-   this->viewport_->get("hud")->add(this->center_dot_);
+   this->viewport_->layer("hud")->add(this->center_dot_);
 
    //for (int r = 0; r < 40; r++) {
    //   for (int c = 0; c < 40; c++) {
@@ -160,7 +160,7 @@ void BuilderScene::update(Game& game, Scene* scene, Entity* entity) {
          this->selection_rectangle_ = UtilFactory::inst()->create_graphic(sr, sr->getGlobalBounds());
 
          this->entities_.push_back(this->selection_rectangle_);
-         this->viewport_->get("overlay")->add(this->selection_rectangle_);
+         this->viewport_->layer("overlay")->add(this->selection_rectangle_);
       }
 
       sf::FloatRect* new_rect = UtilFactory::inst()->create_float_rect(*this->click_press_pos_, *this->last_mouse_pos_);
@@ -305,7 +305,7 @@ void BuilderScene::process(Game& game, MouseMoveCommand& c) {}
 void BuilderScene::process(Game& game, MouseWheelCommand& c) {}
 
 void BuilderScene::drag(MouseButtonCommand& c, sf::Vector2f delta) {
-   Layer* main_layer = this->viewport_->get("main");
+   Layer* main_layer = this->viewport_->layer("main");
    if (!main_layer) {
       Service::get_logger().msg("BuilderScene", Logger::WARNING, "Main viewport cannot be found...");
       return;
@@ -321,7 +321,7 @@ void BuilderScene::drag(MouseButtonCommand& c, sf::Vector2f delta) {
 }
 
 float BuilderScene::get_scale() {
-   Layer* main_layer = this->viewport_->get("main");
+   Layer* main_layer = this->viewport_->layer("main");
    if (main_layer) {
       return main_layer->get_scale();
    }
@@ -331,7 +331,7 @@ float BuilderScene::get_scale() {
 }
 
 void BuilderScene::set_scale(float factor) {
-   Layer* main_layer = this->viewport_->get("main");
+   Layer* main_layer = this->viewport_->layer("main");
    if (main_layer) {
       main_layer->set_scale(factor);
    } else {
@@ -367,8 +367,8 @@ void BuilderScene::click(MouseButtonCommand& c) {
          }
 
          // account for main layer pan and zoom
-         *this->click_press_pos_ += this->viewport_->get("main")->get_pan_delta();
-         *this->click_release_pos_ += this->viewport_->get("main")->get_pan_delta();
+         *this->click_press_pos_ += this->viewport_->layer("main")->get_pan_delta();
+         *this->click_release_pos_ += this->viewport_->layer("main")->get_pan_delta();
          
          if (!this->tile_cursor_) {
             // create a tile cursor
@@ -378,7 +378,7 @@ void BuilderScene::click(MouseButtonCommand& c) {
             this->tile_cursor_ = TileFactory::inst()->create_tile_cursor(*this->click_press_pos_, *this->click_release_pos_, cursor_tiles);
             this->round_to_nearest_tile(*this->click_press_pos_, *this->click_release_pos_);
 
-            this->viewport_->get("main")->add(this->tile_cursor_);
+            this->viewport_->layer("main")->add(this->tile_cursor_);
          } else {
             PhysicsPart* tc_physics = dynamic_cast<PhysicsPart*>(this->tile_cursor_->get("physics"));
 
@@ -386,7 +386,7 @@ void BuilderScene::click(MouseButtonCommand& c) {
                this->round_to_nearest_tile(*this->click_press_pos_, *this->click_release_pos_);
             } else {
                // deselect
-               this->viewport_->get("main")->remove(this->tile_cursor_);
+               this->viewport_->layer("main")->remove(this->tile_cursor_);
                delete this->tile_cursor_;
                this->tile_cursor_ = nullptr;
             }
@@ -402,7 +402,7 @@ void BuilderScene::click(MouseButtonCommand& c) {
                }
             }
 
-            this->viewport_->get("overlay")->remove(this->selection_rectangle_);
+            this->viewport_->layer("overlay")->remove(this->selection_rectangle_);
             delete this->selection_rectangle_;
             this->selection_rectangle_ = nullptr;
          }
@@ -445,12 +445,17 @@ void BuilderScene::round_to_nearest_tile(sf::Vector2f& one, sf::Vector2f& two) {
    new_rect->width = std::max(new_rect->width, Settings::Instance()->TILE_WIDTH);
    new_rect->height = std::max(new_rect->height, Settings::Instance()->TILE_HEIGHT);
 
+   sf::Vector2f final_origin = sf::Vector2f(new_rect->left, new_rect->top);
+   sf::Vector2f final_end = sf::Vector2f(new_rect->left + new_rect->width, new_rect->top + new_rect->height);
+
+   sf::Vector2f final_size = final_end - final_origin;
+
    // update tile cursor entity
-   tc_physics->set_position(new_rect->left, new_rect->top);
-   tc_physics->set_size(new_rect->width, new_rect->height);
+   tc_physics->set_position(final_origin);
+   tc_physics->set_size(final_size);
    
-   tc_rect->setPosition(sf::Vector2f(new_rect->left, new_rect->top));
-   tc_rect->setSize(sf::Vector2f(new_rect->width, new_rect->height));
+   tc_rect->setPosition(final_origin);
+   tc_rect->setSize(final_size);
 
    delete new_rect;
 }
