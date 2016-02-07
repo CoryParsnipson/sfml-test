@@ -52,10 +52,6 @@ protected:
    Entity* selection_rectangle_;
    Entity* tile_cursor_;
 
-   // scene state
-   sf::Vector2f reset_size_;
-   sf::Vector2f reset_center_;
-
    // mouse controllable state
    sf::Vector2f* last_mouse_pos_;
 

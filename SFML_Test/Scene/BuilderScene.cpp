@@ -21,8 +21,6 @@ BuilderScene::BuilderScene()
 , mouse_(nullptr)
 , selection_rectangle_(nullptr)
 , tile_cursor_(nullptr)
-, reset_size_(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT)
-, reset_center_(reset_size_.x / 2.f, reset_size_.y / 2.f)
 , last_mouse_pos_(nullptr)
 
 , click_press_pos_(nullptr)
@@ -58,7 +56,7 @@ void BuilderScene::enter(Game& game) {
    Service::get_logger().msg("BuilderScene", Logger::INFO, "Entering builder start menu state.");
    
    // create viewport(s)
-   this->viewport_ = new Viewport(this->reset_size_);
+   this->viewport_ = new Viewport(sf::Vector2f(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT));
 
    // fixed layer above map and sprites
    this->viewport_->add("overlay");
@@ -206,9 +204,7 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
 
    switch (c.event.code) {
    case sf::Keyboard::Key::R:
-      this->viewport_->get("main")->set_size(this->reset_size_);
-      this->viewport_->get("main")->set_center(this->reset_center_);
-      this->viewport_->get("main")->set_scale(1.0);
+      this->viewport_->reset();
    break;
    case sf::Keyboard::Key::F:
       //if (this->selected_tile) {
@@ -287,13 +283,6 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
 void BuilderScene::process(Game& game, WindowResizeCommand& c) {
    sf::Vector2f new_center(c.width / 2.f, c.height / 2.f);
 
-   // update reset size
-   this->reset_size_.x = c.width;
-   this->reset_size_.y = c.height;
-
-   this->reset_center_.x = new_center.x;
-   this->reset_center_.y = new_center.y;
-   
    // update viewport
    this->viewport_->resize(sf::Vector2f((float)c.width, (float)c.height));
    this->viewport_->recenter(new_center);
@@ -371,8 +360,8 @@ void BuilderScene::click(MouseButtonCommand& c) {
             is_drag_gesture = (sr_size.x >= Settings::Instance()->TILE_WIDTH / 3.f) && (sr_size.y >= Settings::Instance()->TILE_HEIGHT / 3.f);
          }
 
-         // account for main layer pan
-         sf::Vector2f pan_delta = this->viewport_->get("main")->get_center() - this->reset_center_;
+         // account for main layer pan and zoom
+         sf::Vector2f pan_delta = this->viewport_->get("main")->get_center() - this->viewport_->get("main")->get_pan_delta();
          *this->click_press_pos_ += pan_delta;
          *this->click_release_pos_ += pan_delta;
          

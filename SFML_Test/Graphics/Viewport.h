@@ -27,6 +27,8 @@ public:
    void resize(sf::Vector2f size);
    void recenter(sf::Vector2f center);
 
+   void reset();
+
    // draw interface
    virtual void draw(Graphics& graphics, Layer& layer) { this->draw(graphics); }
    virtual void draw(Graphics& graphics);

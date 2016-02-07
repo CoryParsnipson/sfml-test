@@ -33,6 +33,11 @@ public:
    sf::Vector2f get_size();
    sf::Vector2f get_center();
    sf::FloatRect get_viewport();
+   
+   void reset_pan();
+   void reset_zoom();
+
+   sf::Vector2f get_pan_delta();
 
    // draw interface
    void add(Draw* drawable);
@@ -50,6 +55,8 @@ public:
 
 protected:
    std::string id_;
+
+   sf::Vector2f pan_delta_;
 
    float zoom_factor_;
    sf::View* view_;

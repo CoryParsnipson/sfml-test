@@ -84,6 +84,15 @@ void Viewport::recenter(sf::Vector2f center) {
    }
 }
 
+void Viewport::reset() {
+   LayerList::const_iterator it;
+   for (it = this->layers_.begin(); it != this->layers_.end(); ++it) {
+      // reset zoom and pan for all viewports
+      (*it)->reset_pan();
+      (*it)->reset_zoom();
+   } 
+}
+
 void Viewport::draw(Graphics& graphics) {
    LayerList::const_iterator it;
    for (it = this->layers_.begin(); it != this->layers_.end(); ++it) {
