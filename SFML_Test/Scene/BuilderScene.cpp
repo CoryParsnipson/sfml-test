@@ -62,6 +62,9 @@ void BuilderScene::enter(Game& game) {
    this->viewport_->add("overlay");
    this->viewport_->add("hud");
 
+   this->viewport_->get("overlay")->set_fixed(true);
+   this->viewport_->get("hud")->set_fixed(true);
+
    // load textures
    game.texture_manager.create_texture("tile_solid", "flatmap_test_texture.png", sf::IntRect(0, 0, 40, 40));
    game.texture_manager.create_texture("tile_clear", "flatmap_test_texture.png", sf::IntRect(40, 0, 40, 40));
@@ -287,16 +290,8 @@ void BuilderScene::process(Game& game, WindowResizeCommand& c) {
    sf::Vector2f new_center(c.width / 2.f, c.height / 2.f);
 
    // update viewport
-   Viewport::LayerList::const_iterator it;
-   for (it = layers.begin(); it != layers.end(); ++it) {
-      if ((*it)->id() == "main") {
-         (*it)->set_size(new_size);
-         continue;
-      }
-      
-      (*it)->set_size(new_size);
-      (*it)->set_center(new_center);
-   }
+   this->viewport_->resize(new_size);
+   this->viewport_->recenter(new_center);
 
    // reposition center dot
    PhysicsPart* center_dot_physics = dynamic_cast<PhysicsPart*>(this->center_dot_->get("physics"));

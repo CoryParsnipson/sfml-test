@@ -81,9 +81,13 @@ void Viewport::resize(sf::Vector2f size) {
    }
 }
 
-void Viewport::recenter(sf::Vector2f center) {
+void Viewport::recenter(sf::Vector2f center, bool include_non_fixed) {
    LayerList::const_iterator it;
    for (it = this->layers_.begin(); it != this->layers_.end(); ++it) {
+      if (!(*it)->get_fixed() && !include_non_fixed) {
+         continue;
+      }
+
       (*it)->set_center(center);
    }
 }
@@ -91,7 +95,6 @@ void Viewport::recenter(sf::Vector2f center) {
 void Viewport::reset() {
    LayerList::const_iterator it;
    for (it = this->layers_.begin(); it != this->layers_.end(); ++it) {
-      // reset zoom and pan for all viewports
       (*it)->reset_pan();
       (*it)->reset_zoom();
    } 

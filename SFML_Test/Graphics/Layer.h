@@ -26,10 +26,12 @@ public:
    sf::View& get_view();
 
    // view interface
+   void set_fixed(bool fixed);
    void set_size(sf::Vector2f size);
    void set_center(sf::Vector2f center);
    void set_viewport(const sf::FloatRect& viewport);
 
+   bool get_fixed();
    sf::Vector2f get_size();
    sf::Vector2f get_center();
    sf::FloatRect get_viewport();
@@ -56,9 +58,10 @@ public:
 protected:
    std::string id_;
 
+   bool is_fixed_;
+   float zoom_factor_;
    sf::Vector2f pan_delta_;
 
-   float zoom_factor_;
    sf::View* view_;
 
    DrawableList drawables_;
