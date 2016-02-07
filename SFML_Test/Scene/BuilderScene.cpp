@@ -361,9 +361,8 @@ void BuilderScene::click(MouseButtonCommand& c) {
          }
 
          // account for main layer pan and zoom
-         sf::Vector2f pan_delta = this->viewport_->get("main")->get_center() - this->viewport_->get("main")->get_pan_delta();
-         *this->click_press_pos_ += pan_delta;
-         *this->click_release_pos_ += pan_delta;
+         *this->click_press_pos_ += this->viewport_->get("main")->get_pan_delta();
+         *this->click_release_pos_ += this->viewport_->get("main")->get_pan_delta();
          
          if (!this->tile_cursor_) {
             // create a tile cursor
