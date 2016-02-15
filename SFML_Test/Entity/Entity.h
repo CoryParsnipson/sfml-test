@@ -20,10 +20,17 @@ public:
    virtual ~Entity();
 
    std::string to_string();
+
+   void set_position(float x, float y);
+   void set_position(const sf::Vector2f& pos);
+
+   void set_size(float width, float height);
+   void set_size(const sf::Vector2f& size);
    
-   virtual void add(Part* part);
-   // virtual void remove()
-   virtual Part* get(std::string part_name);
+   // part management interface
+   void add(Part* part);
+   // void remove()
+   Part* get(std::string part_name);
 
    // draw interface
    virtual void draw(Graphics& graphics, Layer& layer);

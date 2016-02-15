@@ -28,9 +28,10 @@ public:
    virtual ~Scene() {
       delete this->viewport_;
 
-      EntityList::const_iterator it;
+      EntityList::iterator it;
       for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
          delete *it;
+         *it = nullptr;
       }
       this->entities_.clear();
    }

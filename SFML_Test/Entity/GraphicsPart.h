@@ -20,6 +20,12 @@ public:
    virtual Graphic* get(int idx);
    // virtual remove();
 
+   virtual void set_position(float x, float y);
+   virtual void set_position(const sf::Vector2f& pos);
+
+   virtual void set_size(float width, float height);
+   virtual void set_size(const sf::Vector2f& size);
+
    void set_show_outline(bool show);
    void set_show_debug_text(bool show);
    bool get_show_debug_text();

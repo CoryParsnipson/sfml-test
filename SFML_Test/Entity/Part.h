@@ -18,6 +18,12 @@ public:
 
    std::string name() { return this->id; };
 
+   virtual void set_position(float x, float y) {}
+   virtual void set_position(const sf::Vector2f& pos) {}
+
+   virtual void set_size(float width, float height) {}
+   virtual void set_size(const sf::Vector2f& size) {}
+
    // send message
    // receive message
 

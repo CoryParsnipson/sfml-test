@@ -8,13 +8,13 @@ public:
    PhysicsPart(std::string id = "physics", sf::FloatRect bounding_box = sf::FloatRect(0, 0, 0, 0));
    virtual ~PhysicsPart();
 
-   void set_position(sf::Vector2f pos);
-   void set_position(float x, float y);
+   virtual void set_position(float x, float y);
+   virtual void set_position(const sf::Vector2f& pos);
 
    sf::Vector2f get_position();
 
-   void set_size(sf::Vector2f size);
-   void set_size(float width, float height);
+   virtual void set_size(float width, float height);
+   virtual void set_size(const sf::Vector2f& size);
    
    sf::Vector2f get_size();
 

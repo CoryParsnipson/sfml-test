@@ -33,6 +33,34 @@ std::string Entity::to_string() {
    return description;
 }
 
+void Entity::set_position(float x, float y) {
+   PartList::const_iterator it;
+   for (it = this->parts_.begin(); it != this->parts_.end(); ++it) {
+      it->second->set_position(x, y);
+   }
+}
+
+void Entity::set_position(const sf::Vector2f& pos) {
+   PartList::const_iterator it;
+   for (it = this->parts_.begin(); it != this->parts_.end(); ++it) {
+      it->second->set_position(pos);
+   }
+}
+
+void Entity::set_size(float width, float height) {
+   PartList::const_iterator it;
+   for (it = this->parts_.begin(); it != this->parts_.end(); ++it) {
+      it->second->set_size(width, height);
+   }
+}
+
+void Entity::set_size(const sf::Vector2f& size) {
+   PartList::const_iterator it;
+   for (it = this->parts_.begin(); it != this->parts_.end(); ++it) {
+      it->second->set_size(size);
+   }
+}
+
 void Entity::add(Part* part) {
    // if part name already exists, delete it
    if (this->parts_.find(part->name()) == this->parts_.end()) {

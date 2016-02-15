@@ -23,6 +23,8 @@ Game::Game()
    this->full_logger_.get_logger("console")->set_tag("StartMenuScene", true);
    this->full_logger_.get_logger("console")->set_tag("BuilderScene", true);
 
+   this->full_logger_.get_logger("console")->set_tag("Layer", true);
+
    //this->full_logger_.file_start("log.txt");
    //this->full_logger_.get_logger("file")->disable_all_tags();
    //this->full_logger_.get_logger("file")->set_tag("Viewport", false);

@@ -35,7 +35,7 @@ Entity* UtilFactory::create_mouse() {
    mouse->add(graphics_part);
    mouse->add(physics_part);
    mouse->add(control_part);
-   
+
    return mouse;
 }
 
@@ -48,6 +48,8 @@ Entity* UtilFactory::create_graphic(Graphic* g, sf::FloatRect bounding_box) {
 
    e->add(graphics_part);
    e->add(physics_part);
+
+   e->set_position(bounding_box.left, bounding_box.top);
 
    return e;
 }

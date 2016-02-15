@@ -13,27 +13,27 @@ PhysicsPart::PhysicsPart(std::string id, sf::FloatRect bounding_box)
 PhysicsPart::~PhysicsPart() {
 }
 
-void PhysicsPart::set_position(sf::Vector2f pos) {
-   this->bounding_box_.left = pos.x;
-   this->bounding_box_.top = pos.y;
-}
-
 void PhysicsPart::set_position(float x, float y) {
    this->bounding_box_.left = x;
    this->bounding_box_.top = y;
+}
+
+void PhysicsPart::set_position(const sf::Vector2f& pos) {
+   this->bounding_box_.left = pos.x;
+   this->bounding_box_.top = pos.y;
 }
 
 sf::Vector2f PhysicsPart::get_position() {
    return sf::Vector2f(this->bounding_box_.left, this->bounding_box_.top);
 }
 
-void PhysicsPart::set_size(sf::Vector2f size) {
-   this->set_size(size.x, size.y);
-}
-
 void PhysicsPart::set_size(float width, float height) {
    this->bounding_box_.width = std::max(0.f, width);
    this->bounding_box_.height = std::max(0.f, height);
+}
+
+void PhysicsPart::set_size(const sf::Vector2f& size) {
+   this->set_size(size.x, size.y);
 }
 
 sf::Vector2f PhysicsPart::get_size() {

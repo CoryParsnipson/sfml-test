@@ -31,12 +31,12 @@ Entity* TileFactory::create_tile(Texture& t, sf::Vector2f pos) {
    PhysicsPart* physics_part = new PhysicsPart();
 
    graphics_part->add(new Sprite(t));
-   
-   physics_part->set_position(pos);
    physics_part->set_size(t.get_size());
   
    tile->add(graphics_part);
    tile->add(physics_part); 
+
+   tile->set_position(pos);
 
    return tile;
 }
@@ -50,15 +50,12 @@ Entity* TileFactory::create_tile_cursor(sf::Vector2f& one, sf::Vector2f& two, st
    sf::FloatRect* rect = UtilFactory::inst()->create_float_rect(one, two);
    
    Shape* cursor_graphic = new Shape(new sf::RectangleShape());
-   cursor_graphic->set_position(rect->left, rect->top);
    cursor_graphic->set_size(rect->width, rect->height);
    cursor_graphic->set_fill_color(sf::Color(225, 225, 225, 128));
    cursor_graphic->set_outline_color(sf::Color(255, 255, 255, 192));
    cursor_graphic->set_outline_thickness(2.0);
 
    graphics_part->add(cursor_graphic);
-
-   physics_part->set_position(rect->left, rect->top);
    physics_part->set_size(rect->width, rect->height);
 
    std::vector<Entity*>::const_iterator it;
@@ -69,6 +66,8 @@ Entity* TileFactory::create_tile_cursor(sf::Vector2f& one, sf::Vector2f& two, st
    cursor->add(graphics_part);
    cursor->add(physics_part);
    cursor->add(ref_part);
+
+   cursor->set_position(rect->left, rect->top);
 
    delete rect;
    rect = nullptr;

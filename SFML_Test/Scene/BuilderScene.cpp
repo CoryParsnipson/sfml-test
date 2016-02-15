@@ -24,9 +24,9 @@ BuilderScene::BuilderScene()
 , selection_rectangle_(nullptr)
 , tile_cursor_(nullptr)
 , last_mouse_pos_(nullptr)
-
 , click_press_pos_(nullptr)
 , click_release_pos_(nullptr)
+
 , last_frame_time(0)
 , frame_measurement_interval(6)
 , frame_count(0)
@@ -36,7 +36,6 @@ BuilderScene::BuilderScene()
 BuilderScene::~BuilderScene() {
    delete this->map_;
 
-   delete this->selection_rectangle_;
    delete this->tile_cursor_;
 
    delete this->last_mouse_pos_;
@@ -163,16 +162,8 @@ void BuilderScene::update(Game& game, Scene* scene, Entity* entity) {
 
       sf::FloatRect* new_rect = UtilFactory::inst()->create_float_rect(*this->click_press_pos_, *this->last_mouse_pos_);
 
-      // update position and size of selection rectangle
-      GraphicsPart* sr_graphics = dynamic_cast<GraphicsPart*>(this->selection_rectangle_->get("graphics"));
-      sr = dynamic_cast<Shape*>(sr_graphics->get(0));
-
-      sr->set_position(sf::Vector2f(new_rect->left, new_rect->top));
-      sr->set_size(sf::Vector2f(new_rect->width, new_rect->height));
-
-      PhysicsPart* sr_physics = dynamic_cast<PhysicsPart*>(this->selection_rectangle_->get("physics"));
-      sr_physics->set_position(new_rect->left, new_rect->top);
-      sr_physics->set_size(new_rect->width, new_rect->height);
+      this->selection_rectangle_->set_position(new_rect->left, new_rect->top);
+      this->selection_rectangle_->set_size(new_rect->width, new_rect->height);
 
       delete new_rect;
       new_rect = nullptr;
@@ -425,20 +416,23 @@ void BuilderScene::round_to_nearest_tile(sf::Vector2f& one, sf::Vector2f& two) {
 
    sf::FloatRect* new_rect = UtilFactory::inst()->create_float_rect(one, two);
 
+   float tile_width = Settings::Instance()->TILE_WIDTH;
+   float tile_height = Settings::Instance()->TILE_HEIGHT;
+
    // round to nearest tile
    sf::Vector2f end_point(new_rect->left + new_rect->width, new_rect->top + new_rect->height);
-   end_point.x = Settings::Instance()->TILE_WIDTH * std::round(end_point.x / Settings::Instance()->TILE_WIDTH);
-   end_point.y = Settings::Instance()->TILE_HEIGHT * std::round(end_point.y / Settings::Instance()->TILE_HEIGHT);
+   end_point.x = tile_width * std::round(end_point.x / tile_width);
+   end_point.y = tile_height * std::round(end_point.y / tile_height);
 
-   new_rect->left = Settings::Instance()->TILE_WIDTH * std::floor(new_rect->left / Settings::Instance()->TILE_WIDTH);
-   new_rect->top = Settings::Instance()->TILE_HEIGHT * std::floor(new_rect->top / Settings::Instance()->TILE_HEIGHT);
+   new_rect->left = tile_width * std::floor(new_rect->left / tile_width);
+   new_rect->top = tile_height * std::floor(new_rect->top / tile_height);
 
    new_rect->width = end_point.x - new_rect->left;
    new_rect->height = end_point.y - new_rect->top;
 
    // ensure minimum size
-   new_rect->width = std::max(new_rect->width, Settings::Instance()->TILE_WIDTH);
-   new_rect->height = std::max(new_rect->height, Settings::Instance()->TILE_HEIGHT);
+   new_rect->width = std::max(new_rect->width, tile_width);
+   new_rect->height = std::max(new_rect->height, tile_height);
 
    sf::Vector2f final_origin = sf::Vector2f(new_rect->left, new_rect->top);
    sf::Vector2f final_end = sf::Vector2f(new_rect->left + new_rect->width, new_rect->top + new_rect->height);
