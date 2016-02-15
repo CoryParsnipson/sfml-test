@@ -3,6 +3,8 @@
 
 #include "Entity.h"
 
+class Graphic;
+
 class UtilFactory {
 public:
    static UtilFactory* inst();
@@ -10,7 +12,7 @@ public:
 
    virtual Entity* create_mouse();
    
-   virtual Entity* create_graphic(sf::Drawable* d, sf::FloatRect bounding_box);
+   virtual Entity* create_graphic(Graphic* g, sf::FloatRect bounding_box);
 
    virtual sf::FloatRect* create_float_rect(sf::Vector2f& one, sf::Vector2f& two);
 

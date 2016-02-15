@@ -1,6 +1,8 @@
 #include "GraphicsPart.h"
 
 #include "Graphics.h"
+#include "Graphic.h"
+#include "Viewport.h"
 #include "Layer.h"
 #include "Entity.h"
 #include "PhysicsPart.h"
@@ -21,12 +23,12 @@ GraphicsPart::~GraphicsPart() {
    this->sprites_.clear();
 }
 
-void GraphicsPart::add(sf::Drawable* sprite) {
+void GraphicsPart::add(Graphic* sprite) {
    this->sprites_.push_back(sprite);
 }
 
-sf::Drawable* GraphicsPart::get(int idx) {
-   sf::Drawable* sprite = nullptr;
+Graphic* GraphicsPart::get(int idx) {
+   Graphic* sprite = nullptr;
 
    if (idx < 0 || idx >= (signed)this->sprites_.size()) {
       return sprite;
@@ -57,49 +59,15 @@ bool GraphicsPart::get_show_debug_text() {
 }
 
 void GraphicsPart::draw(Graphics& graphics, Layer& layer) {
-   sf::Vector2f pos(0, 0);
-   sf::Vector2f size(0, 0);
-
    SpriteList::const_iterator sprite_it;
    for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
-      // TODO: okay, do this better. definitely do this better
-      // For some reason, getGlobalBounds is not in the sf::Transformable interface, but
-      // it is present on all its child classes
-      sf::Sprite* sp = dynamic_cast<sf::Sprite*>(*sprite_it);
-      sf::Shape* sh = dynamic_cast<sf::Shape*>(*sprite_it);
-      sf::Text* te = dynamic_cast<sf::Text*>(*sprite_it);
-
-      if (sp) {
-         pos.x = sp->getGlobalBounds().left;
-         pos.y = sp->getGlobalBounds().top;
-
-         size.x = sp->getGlobalBounds().width;
-         size.y = sp->getGlobalBounds().height;
-      }
-
-      if (sh) {
-         pos.x = sh->getGlobalBounds().left;
-         pos.y = sh->getGlobalBounds().top;
-
-         size.x = sh->getGlobalBounds().width;
-         size.y = sh->getGlobalBounds().height;
-      }
-
-      if (te) {
-         pos.x = te->getGlobalBounds().left;
-         pos.y = te->getGlobalBounds().top;
-
-         size.x = te->getGlobalBounds().width;
-         size.y = te->getGlobalBounds().height;
-      }
-
-      graphics.draw(*(*sprite_it), layer);
+      (*sprite_it)->draw(graphics, layer);
 
       // draw outline for this sprite
       if (this->show_outline_) {
-         sf::RectangleShape s(size);
+         sf::RectangleShape s((*sprite_it)->get_size());
 
-         s.setPosition(pos);
+         s.setPosition((*sprite_it)->get_position());
          s.setOutlineThickness(1);
          s.setOutlineColor(sf::Color::Blue);
          s.setFillColor(sf::Color::Transparent);
@@ -109,28 +77,28 @@ void GraphicsPart::draw(Graphics& graphics, Layer& layer) {
    }
 
    // draw diagnostic info
-   if (this->show_debug_text_) {
-      sf::Vector2i map_idx;
-      sf::RectangleShape bounding_box_graphic;
-      
-      // convert to map index (TODO: encapsulate this logic somewhere else...)
-      //map_idx = static_cast<sf::Vector2i>(viewport.get_world_coord(static_cast<sf::Vector2i>(pos)));
+   //if (this->show_debug_text_) {
+   //   sf::Vector2i map_idx;
+   //   sf::RectangleShape bounding_box_graphic;
+   //   
+   //   // convert to map index (TODO: encapsulate this logic somewhere else...)
+   //   //map_idx = static_cast<sf::Vector2i>(viewport.get_world_coord(static_cast<sf::Vector2i>(pos)));
 
-      //map_idx.x = (int)(map_idx.x / (viewport.get_scale() * Settings::Instance()->TILE_WIDTH));
-      //map_idx.y = (int)(map_idx.y / (viewport.get_scale() * Settings::Instance()->TILE_HEIGHT));
-   
-      //viewport.write(std::to_string(map_idx.x) + ", " + std::to_string(map_idx.y), pos - sf::Vector2f(0, 11), &this->font_debug_);
-      //viewport.write(std::to_string((int)pos.x) + ", " + std::to_string((int)pos.y), pos - sf::Vector2f(0, 11), &this->font_debug_);
+   //   //map_idx.x = (int)(map_idx.x / (viewport.get_scale() * Settings::Instance()->TILE_WIDTH));
+   //   //map_idx.y = (int)(map_idx.y / (viewport.get_scale() * Settings::Instance()->TILE_HEIGHT));
+   //
+   //   //viewport.write(std::to_string(map_idx.x) + ", " + std::to_string(map_idx.y), pos - sf::Vector2f(0, 11), &this->font_debug_);
+   //   //viewport.write(std::to_string((int)pos.x) + ", " + std::to_string((int)pos.y), pos - sf::Vector2f(0, 11), &this->font_debug_);
 
-      // draw physics bounding box
-      bounding_box_graphic.setPosition(pos);
-      bounding_box_graphic.setSize(size);
-      bounding_box_graphic.setFillColor(sf::Color::Transparent);
-      bounding_box_graphic.setOutlineColor(sf::Color::Red); // change color depending on solidity
-      bounding_box_graphic.setOutlineThickness(1.0);
+   //   // draw physics bounding box
+   //   bounding_box_graphic.setPosition(pos);
+   //   bounding_box_graphic.setSize(size);
+   //   bounding_box_graphic.setFillColor(sf::Color::Transparent);
+   //   bounding_box_graphic.setOutlineColor(sf::Color::Red); // change color depending on solidity
+   //   bounding_box_graphic.setOutlineThickness(1.0);
 
-      graphics.draw(bounding_box_graphic, layer);
-   }
+   //   graphics.draw(bounding_box_graphic, layer);
+   //}
 }
 
 void GraphicsPart::update(Game& game, Scene* scene, Entity* entity) {
@@ -147,14 +115,6 @@ void GraphicsPart::update(Game& game, Scene* scene, Entity* entity) {
    SpriteList::const_iterator sprite_it;
    for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); sprite_it++) {
       // update graphics draw location based on physical position of entity
-      
-      // TODO: UGGGGHHHHH
-      sf::Sprite* sp = dynamic_cast<sf::Sprite*>(*sprite_it);
-      sf::Shape* sh = dynamic_cast<sf::Shape*>(*sprite_it);
-      sf::Text* te = dynamic_cast<sf::Text*>(*sprite_it);
-
-      if (sp) { sp->setPosition(physics->get_position()); }
-      if (sh) { sh->setPosition(physics->get_position()); }
-      if (te) { te->setPosition(physics->get_position()); }
+      (*sprite_it)->set_position(physics->get_position());
    }
 }

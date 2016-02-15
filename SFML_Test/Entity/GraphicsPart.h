@@ -2,20 +2,22 @@
 #define GRAPHICS_PART_H
 
 #include "Part.h"
-#include "Texture.h"
-#include "Viewport.h"
+
+class Graphics;
+class Layer;
+class Graphic;
 
 class GraphicsPart
 : public Part
 {
 public:
-   typedef std::vector<sf::Drawable*> SpriteList;
+   typedef std::vector<Graphic*> SpriteList;
 
    GraphicsPart(std::string id = "graphics");
    virtual ~GraphicsPart();
 
-   virtual void add(sf::Drawable* sprite);
-   virtual sf::Drawable* get(int idx); // ok, not a good solution
+   virtual void add(Graphic* graphic);
+   virtual Graphic* get(int idx);
    // virtual remove();
 
    void set_show_outline(bool show);

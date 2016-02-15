@@ -2,6 +2,8 @@
 
 #include "UtilFactory.h"
 
+#include "Graphic.h"
+
 #include "GraphicsPart.h"
 #include "PhysicsPart.h"
 #include "ReferencePart.h"
@@ -28,7 +30,7 @@ Entity* TileFactory::create_tile(Texture& t, sf::Vector2f pos) {
    GraphicsPart* graphics_part = new GraphicsPart();
    PhysicsPart* physics_part = new PhysicsPart();
 
-   graphics_part->add(new sf::Sprite(t.get_texture()));
+   graphics_part->add(new Sprite(t));
    
    physics_part->set_position(pos);
    physics_part->set_size(t.get_size());
@@ -47,12 +49,12 @@ Entity* TileFactory::create_tile_cursor(sf::Vector2f& one, sf::Vector2f& two, st
 
    sf::FloatRect* rect = UtilFactory::inst()->create_float_rect(one, two);
    
-   sf::RectangleShape* cursor_graphic = new sf::RectangleShape();
-   cursor_graphic->setPosition(sf::Vector2f(rect->left, rect->top));
-   cursor_graphic->setSize(sf::Vector2f(rect->width, rect->height));
-   cursor_graphic->setFillColor(sf::Color(225, 225, 225, 128));
-   cursor_graphic->setOutlineColor(sf::Color(255, 255, 255, 192));
-   cursor_graphic->setOutlineThickness(2.0);
+   Shape* cursor_graphic = new Shape(new sf::RectangleShape());
+   cursor_graphic->set_position(rect->left, rect->top);
+   cursor_graphic->set_size(rect->width, rect->height);
+   cursor_graphic->set_fill_color(sf::Color(225, 225, 225, 128));
+   cursor_graphic->set_outline_color(sf::Color(255, 255, 255, 192));
+   cursor_graphic->set_outline_thickness(2.0);
 
    graphics_part->add(cursor_graphic);
 

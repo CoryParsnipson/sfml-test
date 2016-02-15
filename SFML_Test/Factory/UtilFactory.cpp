@@ -1,5 +1,7 @@
 #include "UtilFactory.h"
 
+#include "Graphic.h"
+
 #include "GraphicsPart.h"
 #include "PhysicsPart.h"
 #include "MouseControlPart.h"
@@ -23,8 +25,9 @@ Entity* UtilFactory::create_mouse() {
    PhysicsPart* physics_part = new PhysicsPart();
    MouseControlPart* control_part = new MouseControlPart("control");
    
-   sf::RectangleShape* cursor = new sf::RectangleShape(sf::Vector2f(6, 6));
-   cursor->setFillColor(sf::Color::Red);
+   Shape* cursor = new Shape(new sf::RectangleShape());
+   cursor->set_size(6, 6);
+   cursor->set_fill_color(sf::Color::Red);
 
    graphics_part->add(cursor);
    graphics_part->set_show_debug_text(true);
@@ -36,12 +39,12 @@ Entity* UtilFactory::create_mouse() {
    return mouse;
 }
 
-Entity* UtilFactory::create_graphic(sf::Drawable* d, sf::FloatRect bounding_box) {
+Entity* UtilFactory::create_graphic(Graphic* g, sf::FloatRect bounding_box) {
    Entity* e = new Entity();
    GraphicsPart* graphics_part = new GraphicsPart();
    PhysicsPart* physics_part = new PhysicsPart("physics", bounding_box);
 
-   graphics_part->add(d);
+   graphics_part->add(g);
 
    e->add(graphics_part);
    e->add(physics_part);

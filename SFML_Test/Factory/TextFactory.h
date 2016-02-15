@@ -3,7 +3,8 @@
 
 #include "dependencies.h"
 
-#include "Entity.h"
+class Text;
+class Entity;
 
 class TextFactory {
 public:
@@ -24,7 +25,7 @@ public:
    sf::Font* get_font(std::string font_name);
 
    // factory methods
-   virtual Entity* create_text(
+   virtual Text* create_text(
       std::string msg,
       sf::Font* font,
       sf::Vector2f pos = sf::Vector2f(0, 0),
@@ -33,7 +34,16 @@ public:
       sf::Color color = sf::Color::White
    );
 
-   virtual Entity* create_text(
+   virtual Text* create_text(
+      std::string msg,
+      std::string font,
+      sf::Vector2f pos = sf::Vector2f(0, 0),
+      int size = 12,
+      ALIGN alignment = ALIGN::LEFT,
+      sf::Color color = sf::Color::White
+   );
+   
+   virtual Entity* create_text_entity(
       std::string msg,
       std::string font,
       sf::Vector2f pos = sf::Vector2f(0, 0),
@@ -49,7 +59,7 @@ protected:
    TextFactory();
    TextFactory(TextFactory& f);
 
-   sf::Vector2f get_origin_from_alignment(sf::Text& t, ALIGN alignment);
+   sf::Vector2f get_origin_from_alignment(sf::FloatRect& bounds, ALIGN alignment);
 
    FontList fonts_;
 };

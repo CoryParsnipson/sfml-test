@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "Graphics.h"
 #include "Layer.h"
+#include "Graphic.h"
 #include "TextFactory.h"
 #include "GraphicsPart.h"
 
@@ -21,7 +22,7 @@ void StartMenuScene::enter(Game& game) {
    this->viewport_ = new Viewport(sf::Vector2f(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT));
 
    // populate entities
-   Entity* title_text = TextFactory::inst()->create_text(
+   Entity* title = TextFactory::inst()->create_text_entity(
       "SFML TEST",
       "retro",
       this->viewport_->layer("main")->get_center(),
@@ -29,7 +30,7 @@ void StartMenuScene::enter(Game& game) {
       TextFactory::ALIGN::CENTER
    );
 
-   Entity* subtitle_text1 = TextFactory::inst()->create_text(
+   Entity* subtitle1 = TextFactory::inst()->create_text_entity(
       "main menu",
       "retro",
       this->viewport_->layer("main")->get_center() + sf::Vector2f(0, 45),
@@ -37,7 +38,7 @@ void StartMenuScene::enter(Game& game) {
       TextFactory::ALIGN::CENTER
    );
 
-   Entity* subtitle_text2 = TextFactory::inst()->create_text(
+   Entity* subtitle2 = TextFactory::inst()->create_text_entity(
       "(Press SPACE or ENTER)",
       "retro",
       this->viewport_->layer("main")->get_center() + sf::Vector2f(0, 60),
@@ -46,14 +47,14 @@ void StartMenuScene::enter(Game& game) {
    );
 
    // add to update list
-   this->entities_.push_back(title_text);
-   this->entities_.push_back(subtitle_text1);
-   this->entities_.push_back(subtitle_text2);
+   this->entities_.push_back(title);
+   this->entities_.push_back(subtitle1);
+   this->entities_.push_back(subtitle2);
 
    // add to draw list
-   this->viewport_->layer("main")->add(title_text);
-   this->viewport_->layer("main")->add(subtitle_text1);
-   this->viewport_->layer("main")->add(subtitle_text2);
+   this->viewport_->layer("main")->add(title);
+   this->viewport_->layer("main")->add(subtitle1);
+   this->viewport_->layer("main")->add(subtitle2);
 }
 
 void StartMenuScene::exit(Game& game) {
@@ -83,6 +84,8 @@ void StartMenuScene::process(Game& game, KeyPressCommand& c) {
 void StartMenuScene::process(Game& game, WindowResizeCommand& c) {
    this->viewport_->resize(sf::Vector2f(c.width, c.height));
    this->viewport_->recenter(sf::Vector2f(c.width / 2.f, c.height / 2.f));
+
+   // TODO: readjust all entities
 }
 
 void StartMenuScene::process(Game& game, MouseMoveCommand& c) {}

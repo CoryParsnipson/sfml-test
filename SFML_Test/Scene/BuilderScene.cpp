@@ -3,6 +3,8 @@
 #include "Game.h"
 #include "Layer.h"
 
+#include "Graphic.h"
+
 #include "Entity.h"
 #include "GraphicsPart.h"
 #include "PhysicsPart.h"
@@ -25,7 +27,6 @@ BuilderScene::BuilderScene()
 
 , click_press_pos_(nullptr)
 , click_release_pos_(nullptr)
-//, fps_font("retro", 12, FontConfig::ALIGN::LEFT)
 , last_frame_time(0)
 , frame_measurement_interval(6)
 , frame_count(0)
@@ -34,8 +35,6 @@ BuilderScene::BuilderScene()
 
 BuilderScene::~BuilderScene() {
    delete this->map_;
-
-   delete this->mouse_;
 
    delete this->selection_rectangle_;
    delete this->tile_cursor_;
@@ -93,29 +92,31 @@ void BuilderScene::enter(Game& game) {
    dynamic_cast<MouseControlPart*>(this->mouse_->get("control"))->set_controllable(this);
    
    // create fixed hud items
-   Entity* t = TextFactory::inst()->create_text("SFML_Test", "retro");
+   Entity* t = TextFactory::inst()->create_text_entity("SFML_Test", "retro");
    this->viewport_->layer("hud")->add(t);
    this->entities_.push_back(t);
 
-   t = TextFactory::inst()->create_text("r: reset pan position", "retro", sf::Vector2f(0, 15));
+   t = TextFactory::inst()->create_text_entity("r: reset pan position", "retro", sf::Vector2f(0, 15));
    this->viewport_->layer("hud")->add(t);
    this->entities_.push_back(t);
    
-   t = TextFactory::inst()->create_text("right click: click and drag to pan", "retro", sf::Vector2f(0, 30));
+   t = TextFactory::inst()->create_text_entity("right click: click and drag to pan", "retro", sf::Vector2f(0, 30));
    this->viewport_->layer("hud")->add(t);
    this->entities_.push_back(t);
 
-   sf::RectangleShape* origin_dot = new sf::RectangleShape(sf::Vector2f(3, 3));
-   origin_dot->setFillColor(sf::Color::Yellow);
-   Entity* origin_dot_entity = UtilFactory::inst()->create_graphic(origin_dot, origin_dot->getGlobalBounds());
+   Shape* origin_dot = new Shape(new sf::RectangleShape());
+   origin_dot->set_size(3, 3);
+   origin_dot->set_fill_color(sf::Color::Yellow);
+   Entity* origin_dot_entity = UtilFactory::inst()->create_graphic(origin_dot, origin_dot->get_global_bounds());
 
    this->entities_.push_back(origin_dot_entity);
    this->viewport_->layer("main")->add(origin_dot_entity);
 
-   sf::RectangleShape* center_dot_graphic = new sf::RectangleShape(sf::Vector2f(3, 3));
-   center_dot_graphic->setFillColor(sf::Color(255, 104, 2));
-   center_dot_graphic->setPosition(Settings::Instance()->SCREEN_WIDTH / 2, Settings::Instance()->SCREEN_HEIGHT / 2);
-   this->center_dot_ = UtilFactory::inst()->create_graphic(center_dot_graphic, center_dot_graphic->getGlobalBounds());
+   Shape* center_dot_graphic = new Shape(new sf::RectangleShape());
+   center_dot_graphic->set_size(3, 3);
+   center_dot_graphic->set_fill_color(sf::Color(255, 104, 2));
+   center_dot_graphic->set_position(Settings::Instance()->SCREEN_WIDTH / 2, Settings::Instance()->SCREEN_HEIGHT / 2);
+   this->center_dot_ = UtilFactory::inst()->create_graphic(center_dot_graphic, center_dot_graphic->get_global_bounds());
 
    this->entities_.push_back(this->center_dot_);
    this->viewport_->layer("hud")->add(this->center_dot_);
@@ -146,15 +147,15 @@ void BuilderScene::update(Game& game, Scene* scene, Entity* entity) {
    
    // update entities
    if (this->click_press_pos_ && this->last_mouse_pos_) {
-      sf::RectangleShape* sr = nullptr;
+      Shape* sr = nullptr;
 
       if (!this->selection_rectangle_) {
-         sr = new sf::RectangleShape();
-         sr->setFillColor(sf::Color(66, 108, 167, 175));
-         sr->setOutlineColor(sf::Color(124, 160, 210, 192));
-         sr->setOutlineThickness(1.0);
+         sr = new Shape(new sf::RectangleShape());
+         sr->set_fill_color(sf::Color(66, 108, 167, 175));
+         sr->set_outline_color(sf::Color(124, 160, 210, 192));
+         sr->set_outline_thickness(1.0);
 
-         this->selection_rectangle_ = UtilFactory::inst()->create_graphic(sr, sr->getGlobalBounds());
+         this->selection_rectangle_ = UtilFactory::inst()->create_graphic(sr, sr->get_global_bounds());
 
          this->entities_.push_back(this->selection_rectangle_);
          this->viewport_->layer("overlay")->add(this->selection_rectangle_);
@@ -164,10 +165,10 @@ void BuilderScene::update(Game& game, Scene* scene, Entity* entity) {
 
       // update position and size of selection rectangle
       GraphicsPart* sr_graphics = dynamic_cast<GraphicsPart*>(this->selection_rectangle_->get("graphics"));
-      sr = dynamic_cast<sf::RectangleShape*>(sr_graphics->get(0));
+      sr = dynamic_cast<Shape*>(sr_graphics->get(0));
 
-      sr->setPosition(sf::Vector2f(new_rect->left, new_rect->top));
-      sr->setSize(sf::Vector2f(new_rect->width, new_rect->height));
+      sr->set_position(sf::Vector2f(new_rect->left, new_rect->top));
+      sr->set_size(sf::Vector2f(new_rect->width, new_rect->height));
 
       PhysicsPart* sr_physics = dynamic_cast<PhysicsPart*>(this->selection_rectangle_->get("physics"));
       sr_physics->set_position(new_rect->left, new_rect->top);
@@ -283,8 +284,6 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
 }
 
 void BuilderScene::process(Game& game, WindowResizeCommand& c) {
-   Viewport::LayerList layers = this->viewport_->layers();
-
    sf::Vector2f new_size(c.width, c.height);
    sf::Vector2f new_center(c.width / 2.f, c.height / 2.f);
 
@@ -365,7 +364,7 @@ void BuilderScene::click(MouseButtonCommand& c) {
             is_drag_gesture = (sr_size.x >= Settings::Instance()->TILE_WIDTH / 3.f) && (sr_size.y >= Settings::Instance()->TILE_HEIGHT / 3.f);
          }
 
-         // deleteme
+         // where should I put this code?
          *this->click_press_pos_ -= this->viewport_->layer("main")->get_pan_delta();
          *this->click_release_pos_ -= this->viewport_->layer("main")->get_pan_delta();
 
@@ -422,7 +421,7 @@ void BuilderScene::round_to_nearest_tile(sf::Vector2f& one, sf::Vector2f& two) {
 
    PhysicsPart* tc_physics = dynamic_cast<PhysicsPart*>(this->tile_cursor_->get("physics"));
    GraphicsPart* tc_graphics = dynamic_cast<GraphicsPart*>(this->tile_cursor_->get("graphics"));
-   sf::RectangleShape* tc_rect = dynamic_cast<sf::RectangleShape*>(tc_graphics->get(0));
+   Graphic* tc_rect = tc_graphics->get(0);
 
    sf::FloatRect* new_rect = UtilFactory::inst()->create_float_rect(one, two);
 
@@ -450,8 +449,8 @@ void BuilderScene::round_to_nearest_tile(sf::Vector2f& one, sf::Vector2f& two) {
    tc_physics->set_position(final_origin);
    tc_physics->set_size(final_size);
    
-   tc_rect->setPosition(final_origin);
-   tc_rect->setSize(final_size);
+   tc_rect->set_position(final_origin);
+   tc_rect->set_size(final_size);
 
    delete new_rect;
 }
