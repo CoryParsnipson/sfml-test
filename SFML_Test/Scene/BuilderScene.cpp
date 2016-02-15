@@ -410,10 +410,6 @@ void BuilderScene::round_to_nearest_tile(sf::Vector2f& one, sf::Vector2f& two) {
       return;
    }
 
-   PhysicsPart* tc_physics = dynamic_cast<PhysicsPart*>(this->tile_cursor_->get("physics"));
-   GraphicsPart* tc_graphics = dynamic_cast<GraphicsPart*>(this->tile_cursor_->get("graphics"));
-   Graphic* tc_rect = tc_graphics->get(0);
-
    sf::FloatRect* new_rect = UtilFactory::inst()->create_float_rect(one, two);
 
    float tile_width = Settings::Instance()->TILE_WIDTH;
@@ -424,8 +420,8 @@ void BuilderScene::round_to_nearest_tile(sf::Vector2f& one, sf::Vector2f& two) {
    end_point.x = tile_width * std::round(end_point.x / tile_width);
    end_point.y = tile_height * std::round(end_point.y / tile_height);
 
-   new_rect->left = tile_width * std::floor(new_rect->left / tile_width);
-   new_rect->top = tile_height * std::floor(new_rect->top / tile_height);
+   new_rect->left = tile_width * std::round(new_rect->left / tile_width);
+   new_rect->top = tile_height * std::round(new_rect->top / tile_height);
 
    new_rect->width = end_point.x - new_rect->left;
    new_rect->height = end_point.y - new_rect->top;
@@ -440,11 +436,8 @@ void BuilderScene::round_to_nearest_tile(sf::Vector2f& one, sf::Vector2f& two) {
    sf::Vector2f final_size = final_end - final_origin;
 
    // update tile cursor entity
-   tc_physics->set_position(final_origin);
-   tc_physics->set_size(final_size);
-   
-   tc_rect->set_position(final_origin);
-   tc_rect->set_size(final_size);
+   this->tile_cursor_->set_position(final_origin);
+   this->tile_cursor_->set_size(final_size);
 
    delete new_rect;
 }
