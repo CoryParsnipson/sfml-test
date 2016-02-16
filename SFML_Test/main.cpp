@@ -13,6 +13,5 @@ int main()
    // start game!
    g.start();
 
-   delete scene;
 	return 0;
 }

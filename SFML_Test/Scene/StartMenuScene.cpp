@@ -9,6 +9,7 @@
 #include "GraphicsPart.h"
 
 StartMenuScene::StartMenuScene()
+: Scene("StartMenuScene")
 {
 }
 
@@ -16,10 +17,10 @@ StartMenuScene::~StartMenuScene() {
 }
 
 void StartMenuScene::enter(Game& game) {
-   Service::get_logger().msg("StartMenuScene", Logger::INFO, "Entering game start menu state.");
+   Service::get_logger().msg(this->id_, Logger::INFO, "Entering game start menu state.");
 
    // create viewport(s)
-   this->viewport_ = new Viewport(sf::Vector2f(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT));
+   this->viewport_ = new Viewport(sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height()));
 
    // populate entities
    Entity* title = TextFactory::inst()->create_text_entity(
@@ -58,7 +59,7 @@ void StartMenuScene::enter(Game& game) {
 }
 
 void StartMenuScene::exit(Game& game) {
-   Service::get_logger().msg("StartMenuScene", Logger::INFO, "Exiting game start menu state.");
+   Service::get_logger().msg(this->id_, Logger::INFO, "Exiting game start menu state.");
 }
 
 void StartMenuScene::update(Game& game, Scene* scene, Entity* entity) {
@@ -82,10 +83,25 @@ void StartMenuScene::process(Game& game, KeyPressCommand& c) {
 }
 
 void StartMenuScene::process(Game& game, WindowResizeCommand& c) {
-   this->viewport_->resize(sf::Vector2f(c.width, c.height));
-   this->viewport_->recenter(sf::Vector2f(c.width / 2.f, c.height / 2.f));
+   sf::Vector2f offset;
+   sf::Vector2f new_size(c.width, c.height);
+   sf::Vector2f new_center(c.width / 2.f, c.height / 2.f);
 
-   // TODO: readjust all entities
+   this->viewport_->resize(new_size);
+   this->viewport_->recenter(new_center);
+
+   // readjust all entities
+   EntityList::const_iterator it;
+   for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
+      (*it)->set_position(new_center + offset);
+
+      GraphicsPart* graphics = dynamic_cast<GraphicsPart*>((*it)->get("graphics"));
+      offset.y += (2 + graphics->get(0)->get_size().y);
+   }
+
+   // update settings
+   Settings::Instance()->cur_width(new_size.x);
+   Settings::Instance()->cur_height(new_size.y);
 }
 
 void StartMenuScene::process(Game& game, MouseMoveCommand& c) {}

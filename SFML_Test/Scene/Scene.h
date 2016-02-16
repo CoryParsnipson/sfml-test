@@ -24,7 +24,11 @@ class Scene
 public:
    typedef std::vector<Entity*> EntityList;
 
-   Scene() : viewport_(nullptr) {}
+   Scene(std::string id)
+   : id_(id)
+   , viewport_(nullptr)
+   {}
+
    virtual ~Scene() {
       delete this->viewport_;
 
@@ -35,6 +39,8 @@ public:
       }
       this->entities_.clear();
    }
+
+   virtual std::string id() { return this->id_; }
 
    virtual void enter(Game& game) {}
    virtual void exit(Game& game) {}
@@ -62,6 +68,8 @@ public:
    virtual void process(Game& game, MouseWheelCommand& c) = 0;
 
 protected:
+   std::string id_;
+
    Viewport* viewport_;
    EntityList entities_;
 };

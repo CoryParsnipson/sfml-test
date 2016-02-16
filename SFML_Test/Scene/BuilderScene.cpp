@@ -18,7 +18,8 @@
 #include "FlatMapBuilder.h"
 
 BuilderScene::BuilderScene()
-: map_(nullptr)
+: Scene("BuilderScene")
+, map_(nullptr)
 , center_dot_(nullptr)
 , mouse_(nullptr)
 , selection_rectangle_(nullptr)
@@ -51,10 +52,10 @@ BuilderScene::~BuilderScene() {
 }
 
 void BuilderScene::enter(Game& game) {
-   Service::get_logger().msg("BuilderScene", Logger::INFO, "Entering builder start menu state.");
+   Service::get_logger().msg(this->id_, Logger::INFO, "Entering builder start menu state.");
    
    // create viewport(s)
-   this->viewport_ = new Viewport(sf::Vector2f(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT));
+   this->viewport_ = new Viewport(sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height()));
 
    // fixed layer above map and sprites
    this->viewport_->add("overlay");
@@ -114,7 +115,7 @@ void BuilderScene::enter(Game& game) {
    Shape* center_dot_graphic = new Shape(new sf::RectangleShape());
    center_dot_graphic->set_size(3, 3);
    center_dot_graphic->set_fill_color(sf::Color(255, 104, 2));
-   center_dot_graphic->set_position(Settings::Instance()->SCREEN_WIDTH / 2, Settings::Instance()->SCREEN_HEIGHT / 2);
+   center_dot_graphic->set_position(Settings::Instance()->cur_width() / 2, Settings::Instance()->cur_height() / 2);
    this->center_dot_ = UtilFactory::inst()->create_graphic(center_dot_graphic, center_dot_graphic->get_global_bounds());
 
    this->entities_.push_back(this->center_dot_);
@@ -146,15 +147,8 @@ void BuilderScene::update(Game& game, Scene* scene, Entity* entity) {
    
    // update entities
    if (this->click_press_pos_ && this->last_mouse_pos_) {
-      Shape* sr = nullptr;
-
       if (!this->selection_rectangle_) {
-         sr = new Shape(new sf::RectangleShape());
-         sr->set_fill_color(sf::Color(66, 108, 167, 175));
-         sr->set_outline_color(sf::Color(124, 160, 210, 192));
-         sr->set_outline_thickness(1.0);
-
-         this->selection_rectangle_ = UtilFactory::inst()->create_graphic(sr, sr->get_global_bounds());
+         this->selection_rectangle_ = TileFactory::inst()->create_selection_rectangle();
 
          this->entities_.push_back(this->selection_rectangle_);
          this->viewport_->layer("overlay")->add(this->selection_rectangle_);
@@ -203,11 +197,11 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
    case sf::Keyboard::Key::F:
       //if (this->selected_tile) {
       //   // TODO: refactor when infrastructure for this is up
-      //   Service::get_logger().msg("BuilderScene", Logger::INFO, "Adding new tiles.");
+      //   Service::get_logger().msg(this->id_, Logger::INFO, "Adding new tiles.");
 
       //   PhysicsPart* selected_physics = dynamic_cast<PhysicsPart*>(this->selected_tile->get("physics"));
       //   if (!selected_physics) {
-      //      Service::get_logger().msg("BuilderScene", Logger::WARNING, "In process KeyPressCommand (F) -> selected tile cursor has no physics component.");
+      //      Service::get_logger().msg(this->id_, Logger::WARNING, "In process KeyPressCommand (F) -> selected tile cursor has no physics component.");
       //      return;
       //   }
 
@@ -225,7 +219,7 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
       //   while (next_y < max_y) {
       //      while (next_x < max_x) {
       //         // figure out which tile chunks already exist in map
-      //         Service::get_logger().msg("BuilderScene", Logger::INFO, "checking tile " + std::to_string(next_x) + ", " + std::to_string(next_y));
+      //         Service::get_logger().msg(this->id_, Logger::INFO, "checking tile " + std::to_string(next_x) + ", " + std::to_string(next_y));
 
       //         if (this->map->intersects(proto_tile_bounds).size() == 0) {
       //            Entity* tile = TileFactory::inst()->create_tile(game.texture_manager.get_texture("tile_solid"), sf::Vector2f(next_x, next_y));
@@ -240,7 +234,7 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
       //            }
       //         } else {
       //            // TODO: modify existing tiles
-      //            Service::get_logger().msg("BuilderScene", Logger::INFO, "poop");
+      //            Service::get_logger().msg(this->id_, Logger::INFO, "poop");
       //         }
 
       //         idx_x += 1;
@@ -283,10 +277,7 @@ void BuilderScene::process(Game& game, WindowResizeCommand& c) {
    this->viewport_->recenter(new_center);
 
    // reposition center dot
-   PhysicsPart* center_dot_physics = dynamic_cast<PhysicsPart*>(this->center_dot_->get("physics"));
-   if (center_dot_physics) {
-      center_dot_physics->set_position(new_center);
-   }
+   this->center_dot_->set_position(new_center);
 }
 
 void BuilderScene::process(Game& game, MouseButtonCommand& c) {}
@@ -296,7 +287,7 @@ void BuilderScene::process(Game& game, MouseWheelCommand& c) {}
 void BuilderScene::drag(MouseButtonCommand& c, sf::Vector2f delta) {
    Layer* main_layer = this->viewport_->layer("main");
    if (!main_layer) {
-      Service::get_logger().msg("BuilderScene", Logger::WARNING, "Main viewport cannot be found...");
+      Service::get_logger().msg(this->id_, Logger::WARNING, "Main viewport cannot be found...");
       return;
    }
 
@@ -315,7 +306,7 @@ float BuilderScene::get_scale() {
       return main_layer->get_scale();
    }
 
-   Service::get_logger().msg("BuilderScene", Logger::WARNING, "Main viewport cannot be found...");
+   Service::get_logger().msg(this->id_, Logger::WARNING, "Main viewport cannot be found...");
    return 1.0;
 }
 
@@ -324,7 +315,7 @@ void BuilderScene::set_scale(float factor) {
    if (main_layer) {
       main_layer->set_scale(factor);
    } else {
-      Service::get_logger().msg("BuilderScene", Logger::WARNING, "Main viewport cannot be found...");
+      Service::get_logger().msg(this->id_, Logger::WARNING, "Main viewport cannot be found...");
    }
 }
 
@@ -343,7 +334,7 @@ void BuilderScene::click(MouseButtonCommand& c) {
          this->click_release_pos_ = new sf::Vector2f(c.x, c.y);
 
          if (!this->click_press_pos_) {
-            Service::get_logger().msg("BuilderScene", Logger::WARNING, "click press position missing");
+            Service::get_logger().msg(this->id_, Logger::WARNING, "click press position missing");
             return;
          }
 

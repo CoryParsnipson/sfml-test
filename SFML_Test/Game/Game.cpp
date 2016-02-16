@@ -15,6 +15,8 @@ Game::Game()
    this->full_logger_.console_start();
    this->full_logger_.get_logger("console")->disable_all_tags();
 
+   this->full_logger_.get_logger("console")->set_tag("Game", true);
+
    this->full_logger_.get_logger("console")->set_tag("TextFactory", true);
 
    this->full_logger_.get_logger("console")->set_tag("GraphicsPart", true);
@@ -61,6 +63,8 @@ void Game::reset() {
 }
 
 void Game::load_scene(Scene* scene) {
+   Service::get_logger().msg("Game", Logger::INFO, "Loading scene '" + scene->id() + "'");
+
    assert(!this->next_scene_);
    this->next_scene_ = scene;
 }
@@ -68,6 +72,8 @@ void Game::load_scene(Scene* scene) {
 void Game::unload_scene() {
    assert(!this->prev_scene_);
    this->prev_scene_ = this->scenes_.top();
+   Service::get_logger().msg("Game", Logger::INFO, "Unloading scene '" + this->prev_scene_->id() + "'");
+
    this->scenes_.pop();
 }
 
@@ -103,17 +109,17 @@ void Game::process(MouseWheelCommand& c) {
 
 void Game::main_loop() {
    while (this->graphics.is_open()) {
-      // poll input
-      Service::get_input().pollEvents(*this);
-
       // clear graphics
       this->graphics.clear();
    
-      if (this->scenes_.empty() && !this->next_scene_) {
+      if (this->scenes_.empty() && !this->prev_scene_ && !this->next_scene_) {
          Service::get_logger().msg("Game", Logger::INFO, "Exiting game loop...");
          this->exit();
          return;
       }
+
+      // poll input
+      Service::get_input().pollEvents(*this);
 
       // check if we need to unload a scene
       if (this->prev_scene_) {

@@ -74,3 +74,24 @@ Entity* TileFactory::create_tile_cursor(sf::Vector2f& one, sf::Vector2f& two, st
 
    return cursor;
 }
+
+Entity* TileFactory::create_selection_rectangle(sf::FloatRect* bounds) {
+   Entity* sr = new Entity();
+   GraphicsPart* graphics_part = new GraphicsPart();
+   PhysicsPart* physics_part = new PhysicsPart();
+   
+   Graphic* sr_graphic = new Shape(new sf::RectangleShape());
+   sr_graphic->set_fill_color(sf::Color(66, 108, 167, 175));
+   sr_graphic->set_outline_color(sf::Color(124, 160, 210, 192));
+   sr_graphic->set_outline_thickness(1.0);
+
+   graphics_part->add(sr_graphic);
+
+   sr->add(graphics_part);
+   sr->add(physics_part);
+
+   sr->set_position(bounds ? bounds->left : 0, bounds ? bounds->top : 0);
+   sr->set_size(bounds ? bounds->width : 0, bounds ? bounds->height : 0);
+
+   return sr;
+}

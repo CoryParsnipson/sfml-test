@@ -19,8 +19,18 @@ public:
 	const float TILE_HEIGHT_RHOMBUS = SCALE_Y * 20; // px
 	const float TILE_HEIGHT_OVERLAP = TILE_HEIGHT_RHOMBUS / 2;
 
+   int cur_width(int new_width = 0);
+   int cur_height(int new_height = 0);
+
+protected:
+   int width_;
+   int height_;
+
 private:
-	Settings() {};
+	Settings()
+   : width_(SCREEN_WIDTH)
+   , height_(SCREEN_HEIGHT)
+   {};
 	Settings(const Settings& g) {}; // seal off copy constructor
 
 	static Settings* instance;

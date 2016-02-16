@@ -14,6 +14,8 @@ public:
 
    virtual Entity* create_tile_cursor(sf::Vector2f& one, sf::Vector2f& two, std::vector<Entity*> references);
 
+   virtual Entity* create_selection_rectangle(sf::FloatRect* bounds = nullptr);
+
 protected:
    // seal off constructors
    TileFactory();
