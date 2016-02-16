@@ -98,10 +98,6 @@ void StartMenuScene::process(Game& game, WindowResizeCommand& c) {
       GraphicsPart* graphics = dynamic_cast<GraphicsPart*>((*it)->get("graphics"));
       offset.y += (2 + graphics->get(0)->get_size().y);
    }
-
-   // update settings
-   Settings::Instance()->cur_width(new_size.x);
-   Settings::Instance()->cur_height(new_size.y);
 }
 
 void StartMenuScene::process(Game& game, MouseMoveCommand& c) {}

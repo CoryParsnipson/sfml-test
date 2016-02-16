@@ -233,6 +233,9 @@ void BuilderScene::process(Game& game, WindowResizeCommand& c) {
 
    // reposition center dot
    this->center_dot_->set_position(new_center);
+
+   // reposition fps display
+   this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 8);
 }
 
 void BuilderScene::process(Game& game, MouseButtonCommand& c) {}
