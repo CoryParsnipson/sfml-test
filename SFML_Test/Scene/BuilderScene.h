@@ -45,17 +45,14 @@ protected:
    Map* map_;
 
    // entity pointers (no ownership)
-   Entity* center_dot_;
-
    Entity* mouse_;
-
+   Entity* center_dot_;
    Entity* selection_rectangle_;
    Entity* tile_cursor_;
+   Entity* fps_display_;
 
    // mouse controllable state
    sf::Vector2f click_press_pos_;
-
-   std::vector<sf::RectangleShape*> grid;
 
    sf::Clock clock;
    int last_frame_time;
@@ -65,6 +62,8 @@ protected:
    void round_to_nearest_tile(sf::Vector2f& one, sf::Vector2f& two); // TODO: move this to the proper place
 
    // helper methods
+   void update_fps();
+
    void register_selection_rect();
    void deregister_selection_rect();
    void update_selection_rect(sf::Vector2f& origin_click, sf::Vector2f& mouse_pos);

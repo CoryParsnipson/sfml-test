@@ -20,8 +20,8 @@
 BuilderScene::BuilderScene()
 : Scene("BuilderScene")
 , map_(nullptr)
-, center_dot_(nullptr)
 , mouse_(nullptr)
+, center_dot_(nullptr)
 , selection_rectangle_(nullptr)
 , tile_cursor_(nullptr)
 
@@ -38,12 +38,6 @@ BuilderScene::~BuilderScene() {
 
    this->deregister_selection_rect();
    delete this->selection_rectangle_;
-
-   //std::vector<sf::RectangleShape*>::const_iterator it;
-   //for (it = this->grid.begin(); it != this->grid.end(); ++it) {
-   //   delete *it;
-   //}
-   //this->grid.clear();
 }
 
 void BuilderScene::enter(Game& game) {
@@ -116,15 +110,10 @@ void BuilderScene::enter(Game& game) {
    this->entities_.push_back(this->center_dot_);
    this->viewport_->layer("hud")->add(this->center_dot_);
 
-   //for (int r = 0; r < 40; r++) {
-   //   for (int c = 0; c < 40; c++) {
-   //      sf::RectangleShape* g = new sf::RectangleShape(sf::Vector2f(2, 2));
-   //      g->setFillColor(sf::Color::Blue);
-   //      g->setPosition(r * Settings::Instance()->TILE_WIDTH, c * Settings::Instance()->TILE_HEIGHT);
-
-   //      this->grid.push_back(g);
-   //   }
-   //}
+   this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", "retro");
+   this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 8);
+   this->entities_.push_back(this->fps_display_);
+   this->viewport_->layer("hud")->add(this->fps_display_);
 }
 
 void BuilderScene::exit(Game& game) {
@@ -142,21 +131,11 @@ void BuilderScene::update(Game& game, Scene* scene, Entity* entity) {
    
    // update entities
 
-   //std::vector<sf::RectangleShape*>::const_iterator grid_it;
-   //for (grid_it = this->grid.begin(); grid_it != this->grid.end(); grid_it++) {
-   //   this->viewports_["main"]->draw(**grid_it);
-   //}
-
-   //// calculate and show FPS
-   //if (!this->frame_count) {
-   //   this->last_frame_time = (((float)this->frame_measurement_interval / this->clock.getElapsedTime().asSeconds()) * Settings::Instance()->FRAMERATE_SMOOTHING)
-   //                           + (this->last_frame_time * (1.0 - Settings::Instance()->FRAMERATE_SMOOTHING));
-   //   this->clock.restart();
-   //}
-
-   //sf::Vector2f fps_pos(this->viewports_["hud"]->get_size().x - 60, 8);
-   //this->viewports_["hud"]->write("FPS: " + std::to_string(this->last_frame_time), fps_pos, &this->fps_font);
-   //this->frame_count = (this->frame_count + 1) % this->frame_measurement_interval;
+   // calculate and show FPS
+   if (!this->frame_count) {
+      this->update_fps();
+   }
+   this->frame_count = (this->frame_count + 1) % this->frame_measurement_interval;
 }
 
 void BuilderScene::process(Game& game, CloseCommand& c) {
@@ -346,6 +325,18 @@ void BuilderScene::round_to_nearest_tile(sf::Vector2f& one, sf::Vector2f& two) {
    this->tile_cursor_->set_size(final_size);
 
    delete new_rect;
+}
+
+void BuilderScene::update_fps() {
+   this->last_frame_time = (((float)this->frame_measurement_interval / this->clock.getElapsedTime().asSeconds()) * Settings::Instance()->FRAMERATE_SMOOTHING)
+                           + (this->last_frame_time * (1.0 - Settings::Instance()->FRAMERATE_SMOOTHING));
+   this->clock.restart();
+
+   // update fps entity
+   GraphicsPart* fps_graphic = dynamic_cast<GraphicsPart*>(fps_display_->get("graphics"));
+   if (fps_graphic) {
+      fps_graphic->get(0)->set_string("FPS: " + std::to_string(this->last_frame_time));
+   }
 }
 
 void BuilderScene::register_selection_rect() {
