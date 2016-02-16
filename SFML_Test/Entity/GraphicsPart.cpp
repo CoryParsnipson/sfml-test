@@ -86,47 +86,44 @@ bool GraphicsPart::get_show_debug_text() {
    return this->show_debug_text_;
 }
 
+bool GraphicsPart::get_show_outline() {
+   return this->show_outline_;
+}
+
 void GraphicsPart::draw(Graphics& graphics, Layer& layer) {
    SpriteList::const_iterator sprite_it;
    for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
       (*sprite_it)->draw(graphics, layer);
 
+      sf::FloatRect bounds_rect = (*sprite_it)->get_global_bounds();
+
       // draw outline for this sprite
       if (this->show_outline_) {
-         sf::RectangleShape s((*sprite_it)->get_size());
+         sf::RectangleShape bounds;
+         
+         bounds.setPosition(sf::Vector2f(bounds_rect.left, bounds_rect.top));
+         bounds.setSize(sf::Vector2f(bounds_rect.width, bounds_rect.height));
 
-         s.setPosition((*sprite_it)->get_position());
-         s.setOutlineThickness(1);
-         s.setOutlineColor(sf::Color::Blue);
-         s.setFillColor(sf::Color::Transparent);
+         bounds.setFillColor(sf::Color::Transparent);
+         bounds.setOutlineColor(sf::Color::Blue);
+         bounds.setOutlineThickness(1.0);
 
-         graphics.draw(s, layer);
+         graphics.draw(bounds, layer);
       }
 
       // draw diagnostic info
       if (this->show_debug_text_) {
-         sf::Vector2i map_idx;
-         sf::RectangleShape bounding_box_graphic;
-         
-         // convert to map index (TODO: encapsulate this logic somewhere else...)
-         //map_idx = static_cast<sf::Vector2i>(viewport.get_world_coord(static_cast<sf::Vector2i>(pos)));
+         sf::Vector2f global_pos(bounds_rect.left, bounds_rect.top);
 
-         //map_idx.x = (int)(map_idx.x / (viewport.get_scale() * Settings::Instance()->TILE_WIDTH));
-         //map_idx.y = (int)(map_idx.y / (viewport.get_scale() * Settings::Instance()->TILE_HEIGHT));
-      
-         //viewport.write(std::to_string(map_idx.x) + ", " + std::to_string(map_idx.y), pos - sf::Vector2f(0, 11), &this->font_debug_);
-         //viewport.write(std::to_string((int)pos.x) + ", " + std::to_string((int)pos.y), pos - sf::Vector2f(0, 11), &this->font_debug_);
-         
-         sf::FloatRect bbpos = (*sprite_it)->get_global_bounds();
+         Text* debug_text = TextFactory::inst()->create_text(
+            std::to_string((int)global_pos.x) + ", " + std::to_string((int)global_pos.y),
+            "retro", 
+            global_pos - sf::Vector2f(0, 10)
+         );
+         debug_text->draw(graphics, layer);
 
-         // draw physics bounding box
-         bounding_box_graphic.setPosition(sf::Vector2f(bbpos.left, bbpos.top));
-         bounding_box_graphic.setSize(sf::Vector2f(bbpos.width, bbpos.height));
-         bounding_box_graphic.setFillColor(sf::Color::Transparent);
-         bounding_box_graphic.setOutlineColor(sf::Color::Red); // change color depending on solidity
-         bounding_box_graphic.setOutlineThickness(1.0);
-
-         graphics.draw(bounding_box_graphic, layer);
+         delete debug_text;
+         debug_text = nullptr;
       }
    }
 }

@@ -29,6 +29,7 @@ public:
    void set_show_outline(bool show);
    void set_show_debug_text(bool show);
    bool get_show_debug_text();
+   bool get_show_outline();
 
    // draw interface
    virtual void draw(Graphics& graphics, Layer& layer);

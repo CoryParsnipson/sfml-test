@@ -73,11 +73,11 @@ void StartMenuScene::process(Game& game, CloseCommand& c) {
 void StartMenuScene::process(Game& game, KeyPressCommand& c) {
    if (c.event.code == sf::Keyboard::Key::Space || c.event.code == sf::Keyboard::Key::Return) {
       game.switch_scene(new BuilderScene());
-   } else if (c.event.code == sf::Keyboard::Key::B) {
+   } else if (c.event.code == sf::Keyboard::Key::O) {
       EntityList::const_iterator it;
       for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
          GraphicsPart* graphics_part = dynamic_cast<GraphicsPart*>((*it)->get("graphics"));
-         graphics_part->set_show_debug_text(!graphics_part->get_show_debug_text());
+         graphics_part->set_show_outline(!graphics_part->get_show_outline());
       }
    }
 }

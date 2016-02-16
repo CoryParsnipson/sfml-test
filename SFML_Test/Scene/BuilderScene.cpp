@@ -110,7 +110,7 @@ void BuilderScene::enter(Game& game) {
    this->viewport_->layer("hud")->add(this->center_dot_);
 
    this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", "retro");
-   this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 8);
+   this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
    this->entities_.push_back(this->fps_display_);
    this->viewport_->layer("hud")->add(this->fps_display_);
 }
@@ -205,20 +205,20 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
       //   }
       //}
    break;
-   case sf::Keyboard::Key::D:
-      // toggle debug text on all tiles
+   case sf::Keyboard::Key::O:
+      // toggle outlines on all tiles
       for (it = this->map_->get_tiles().begin(); it != this->map_->get_tiles().end(); ++it) {
          GraphicsPart* tile_graphics = dynamic_cast<GraphicsPart*>(it->second->get("graphics"));
 
          if (tile_graphics) {
-            tile_graphics->set_show_debug_text(!tile_graphics->get_show_debug_text());
+            tile_graphics->set_show_outline(!tile_graphics->get_show_outline());
          }
       }
 
       for (e_it = this->entities_.begin(); e_it != this->entities_.end(); ++e_it) {
          GraphicsPart* e_graphics = dynamic_cast<GraphicsPart*>((*e_it)->get("graphics"));
          if (e_graphics) {
-            e_graphics->set_show_debug_text(!e_graphics->get_show_debug_text());
+            e_graphics->set_show_outline(!e_graphics->get_show_outline());
          }
       }
    break;
@@ -240,7 +240,7 @@ void BuilderScene::process(Game& game, WindowResizeCommand& c) {
    this->center_dot_->set_position(new_center);
 
    // reposition fps display
-   this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 8);
+   this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
 }
 
 void BuilderScene::process(Game& game, MouseButtonCommand& c) {}
