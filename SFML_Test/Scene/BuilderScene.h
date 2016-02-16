@@ -68,6 +68,10 @@ protected:
    void register_selection_rect();
    void deregister_selection_rect();
    void update_selection_rect(sf::Vector2f& origin_click, sf::Vector2f& mouse_pos);
+
+   void update_tile_cursor(sf::Vector2f& one, sf::Vector2f& two);
+   void add_tile_cursor(sf::Vector2f& one, sf::Vector2f& two);
+   void remove_tile_cursor();
 };
 
 #endif

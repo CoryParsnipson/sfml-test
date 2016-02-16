@@ -27,6 +27,11 @@ public:
    void set_size(float width, float height);
    void set_size(const sf::Vector2f& size);
    
+   bool intersects(sf::Vector2i& other);
+   bool intersects(sf::Vector2f& other);
+   bool intersects(sf::FloatRect& other);
+   //bool intersects(Entity& other); // TODO
+
    // part management interface
    void add(Part* part);
    // void remove()

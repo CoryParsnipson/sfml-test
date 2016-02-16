@@ -34,7 +34,7 @@ BuilderScene::BuilderScene()
 BuilderScene::~BuilderScene() {
    delete this->map_;
 
-   delete this->tile_cursor_;
+   this->remove_tile_cursor();
 
    this->deregister_selection_rect();
    delete this->selection_rectangle_;
@@ -303,39 +303,10 @@ void BuilderScene::click(MouseButtonCommand& c) {
          this->register_selection_rect();
 
       } else if (c.state == MouseButtonCommand::RELEASED) {
-         sf::Vector2f click_release_pos(c.x, c.y);
-
-         sf::Vector2f drag_area = click_release_pos - this->click_press_pos_;
-         bool is_drag_gesture = (std::abs(drag_area.x) >= Settings::Instance()->TILE_WIDTH / 3.f || 
-                                 std::abs(drag_area.y) >= Settings::Instance()->TILE_HEIGHT / 3.f);
-
-         // where should I put this code?
-         this->click_press_pos_ -= this->viewport_->layer("main")->get_pan_delta();
-         click_release_pos -= this->viewport_->layer("main")->get_pan_delta();
-
-         if (!this->tile_cursor_) {
-            // create a tile cursor
-            Map::TileList cursor_tiles;
-
-            delete this->tile_cursor_;
-            this->tile_cursor_ = TileFactory::inst()->create_tile_cursor(this->click_press_pos_, click_release_pos, cursor_tiles);
-            this->round_to_nearest_tile(this->click_press_pos_, click_release_pos);
-
-            this->viewport_->layer("main")->add(this->tile_cursor_);
-         } else {
-            PhysicsPart* tc_physics = dynamic_cast<PhysicsPart*>(this->tile_cursor_->get("physics"));
-
-            if (is_drag_gesture || (!is_drag_gesture && !tc_physics->intersects(this->click_press_pos_))) {
-               this->round_to_nearest_tile(this->click_press_pos_, click_release_pos);
-            } else {
-               // deselect
-               this->viewport_->layer("main")->remove(this->tile_cursor_);
-               delete this->tile_cursor_;
-               this->tile_cursor_ = nullptr;
-            }
-         }
-
          this->deregister_selection_rect();
+
+         sf::Vector2f click_release_pos(c.x, c.y);
+         this->update_tile_cursor(this->click_press_pos_, click_release_pos);
       }
    }
 }
@@ -412,4 +383,58 @@ void BuilderScene::update_selection_rect(sf::Vector2f& origin_click, sf::Vector2
    this->selection_rectangle_->set_size(new_rect->width, new_rect->height);
 
    delete new_rect;
+}
+
+void BuilderScene::update_tile_cursor(sf::Vector2f& one, sf::Vector2f& two) {
+   // need to compensate for the panning of main viewport layer
+   sf::Vector2f pan_delta = this->viewport_->layer("main")->get_pan_delta();
+   sf::Vector2f offset_one = one - pan_delta;
+   sf::Vector2f offset_two = two - pan_delta;
+
+   if (!this->tile_cursor_) {
+      this->add_tile_cursor(offset_one, offset_two);
+      return;
+   }
+
+   sf::FloatRect* new_rect = UtilFactory::inst()->create_float_rect(offset_one, offset_two);
+
+   bool is_drag_gesture = (new_rect->width >= Settings::Instance()->TILE_WIDTH / 3.f ||
+                           new_rect->height >= Settings::Instance()->TILE_HEIGHT / 3.f);
+
+   if (!is_drag_gesture && this->tile_cursor_->intersects(*new_rect)) {
+      this->remove_tile_cursor();
+      delete new_rect;
+      return;
+   }
+
+   this->tile_cursor_->set_position(new_rect->left, new_rect->top);
+   this->tile_cursor_->set_size(new_rect->width, new_rect->height);
+
+   this->round_to_nearest_tile(offset_one, offset_two);
+
+   delete new_rect;
+}
+
+void BuilderScene::add_tile_cursor(sf::Vector2f& one, sf::Vector2f& two) {
+   Map::TileList cursor_tiles;
+   this->tile_cursor_ = TileFactory::inst()->create_tile_cursor(one, two, cursor_tiles);
+   this->round_to_nearest_tile(one, two);
+
+   this->viewport_->layer("main")->add(this->tile_cursor_);
+   this->entities_.push_back(this->tile_cursor_);
+}
+
+void BuilderScene::remove_tile_cursor() {
+   this->viewport_->layer("main")->remove(this->tile_cursor_);
+
+   EntityList::const_iterator it;
+   for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
+      if (*it == this->tile_cursor_) {
+         this->entities_.erase(it);
+         break;
+      }
+   }
+
+   delete this->tile_cursor_;
+   this->tile_cursor_ = nullptr;
 }

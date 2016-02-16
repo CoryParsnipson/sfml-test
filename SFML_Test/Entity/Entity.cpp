@@ -61,6 +61,39 @@ void Entity::set_size(const sf::Vector2f& size) {
    }
 }
 
+bool Entity::intersects(sf::Vector2i& other) {
+   bool does_intersect = false;
+
+   PartList::const_iterator it;
+   for (it = this->parts_.begin(); it != this->parts_.end(); ++it) {
+      does_intersect |= it->second->intersects(other);
+   }
+   
+   return does_intersect;
+}
+
+bool Entity::intersects(sf::Vector2f& other) {
+   bool does_intersect = false;
+
+   PartList::const_iterator it;
+   for (it = this->parts_.begin(); it != this->parts_.end(); ++it) {
+      does_intersect |= it->second->intersects(other);
+   }
+   
+   return does_intersect;
+}
+
+bool Entity::intersects(sf::FloatRect& other) {
+   bool does_intersect = false;
+
+   PartList::const_iterator it;
+   for (it = this->parts_.begin(); it != this->parts_.end(); ++it) {
+      does_intersect |= it->second->intersects(other);
+   }
+   
+   return does_intersect;
+}
+
 void Entity::add(Part* part) {
    // if part name already exists, delete it
    if (this->parts_.find(part->name()) == this->parts_.end()) {

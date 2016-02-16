@@ -24,6 +24,10 @@ public:
    virtual void set_size(float width, float height) {}
    virtual void set_size(const sf::Vector2f& size) {}
 
+   virtual bool intersects(sf::Vector2i& other) { return false; }
+   virtual bool intersects(sf::Vector2f& other) { return false; }
+   virtual bool intersects(sf::FloatRect& other) { return false; }
+
    // send message
    // receive message
 

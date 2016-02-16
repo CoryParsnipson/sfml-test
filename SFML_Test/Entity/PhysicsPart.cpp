@@ -52,16 +52,16 @@ bool PhysicsPart::is_solid() {
    return this->solid_;
 }
 
-bool PhysicsPart::intersects(sf::Vector2i other_point) {
-   return this->bounding_box_.contains(static_cast<sf::Vector2f>(other_point));
+bool PhysicsPart::intersects(sf::Vector2i& other) {
+   return this->bounding_box_.contains(static_cast<sf::Vector2f>(other));
 }
 
-bool PhysicsPart::intersects(sf::Vector2f other_point) {
-   return this->bounding_box_.contains(other_point);
+bool PhysicsPart::intersects(sf::Vector2f& other) {
+   return this->bounding_box_.contains(other);
 }
 
-bool PhysicsPart::intersects(sf::FloatRect other_bounding_box) {
-   return this->bounding_box_.intersects(other_bounding_box);
+bool PhysicsPart::intersects(sf::FloatRect& other) {
+   return this->bounding_box_.intersects(other);
 }
 
 void PhysicsPart::update(Game& game, Scene* scene, Entity* entity) {
