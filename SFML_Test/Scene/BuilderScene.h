@@ -66,6 +66,11 @@ protected:
    int frame_count;
 
    void round_to_nearest_tile(sf::Vector2f& one, sf::Vector2f& two); // TODO: move this to the proper place
+
+   // helper methods
+   void register_selection_rect();
+   void deregister_selection_rect();
+   void update_selection_rect(sf::Vector2f& origin_click, sf::Vector2f& mouse_pos);
 };
 
 #endif

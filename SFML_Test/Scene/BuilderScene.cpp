@@ -44,6 +44,9 @@ BuilderScene::~BuilderScene() {
    delete this->click_press_pos_;
    delete this->click_release_pos_;
 
+   this->deregister_selection_rect();
+   delete this->selection_rectangle_;
+
    //std::vector<sf::RectangleShape*>::const_iterator it;
    //for (it = this->grid.begin(); it != this->grid.end(); ++it) {
    //   delete *it;
@@ -147,20 +150,7 @@ void BuilderScene::update(Game& game, Scene* scene, Entity* entity) {
    
    // update entities
    if (this->click_press_pos_ && this->last_mouse_pos_) {
-      if (!this->selection_rectangle_) {
-         this->selection_rectangle_ = TileFactory::inst()->create_selection_rectangle();
-
-         this->entities_.push_back(this->selection_rectangle_);
-         this->viewport_->layer("overlay")->add(this->selection_rectangle_);
-      }
-
-      sf::FloatRect* new_rect = UtilFactory::inst()->create_float_rect(*this->click_press_pos_, *this->last_mouse_pos_);
-
-      this->selection_rectangle_->set_position(new_rect->left, new_rect->top);
-      this->selection_rectangle_->set_size(new_rect->width, new_rect->height);
-
-      delete new_rect;
-      new_rect = nullptr;
+      this->update_selection_rect(*this->click_press_pos_, *this->last_mouse_pos_);
 
       delete this->last_mouse_pos_;
       this->last_mouse_pos_ = nullptr;
@@ -329,6 +319,9 @@ void BuilderScene::click(MouseButtonCommand& c) {
 
          delete this->click_press_pos_;
          this->click_press_pos_ = new sf::Vector2f(c.x, c.y);
+
+         this->register_selection_rect();
+
       } else if (c.state == MouseButtonCommand::RELEASED) {
          delete this->click_release_pos_;
          this->click_release_pos_ = new sf::Vector2f(c.x, c.y);
@@ -338,13 +331,9 @@ void BuilderScene::click(MouseButtonCommand& c) {
             return;
          }
 
-         bool is_drag_gesture = false;
-         if (this->selection_rectangle_) {
-            PhysicsPart* sr = dynamic_cast<PhysicsPart*>(this->selection_rectangle_->get("physics"));
-            sf::Vector2f sr_size = sr->get_size();
-
-            is_drag_gesture = (sr_size.x >= Settings::Instance()->TILE_WIDTH / 3.f) && (sr_size.y >= Settings::Instance()->TILE_HEIGHT / 3.f);
-         }
+         sf::Vector2f drag_area = *this->click_release_pos_ - *this->click_press_pos_;
+         bool is_drag_gesture = (std::abs(drag_area.x) >= Settings::Instance()->TILE_WIDTH / 3.f || 
+                                 std::abs(drag_area.y) >= Settings::Instance()->TILE_HEIGHT / 3.f);
 
          // where should I put this code?
          *this->click_press_pos_ -= this->viewport_->layer("main")->get_pan_delta();
@@ -372,20 +361,7 @@ void BuilderScene::click(MouseButtonCommand& c) {
             }
          }
 
-         // remove selection rectangle from entities, layer, and delete it
-         if (this->selection_rectangle_) {
-            EntityList::const_iterator it;
-            for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
-               if (*it == this->selection_rectangle_) {
-                  this->entities_.erase(it);
-                  break;
-               }
-            }
-
-            this->viewport_->layer("overlay")->remove(this->selection_rectangle_);
-            delete this->selection_rectangle_;
-            this->selection_rectangle_ = nullptr;
-         }
+         this->deregister_selection_rect();
 
          delete this->click_press_pos_;
          this->click_press_pos_ = nullptr;
@@ -411,8 +387,8 @@ void BuilderScene::round_to_nearest_tile(sf::Vector2f& one, sf::Vector2f& two) {
    end_point.x = tile_width * std::round(end_point.x / tile_width);
    end_point.y = tile_height * std::round(end_point.y / tile_height);
 
-   new_rect->left = tile_width * std::round(new_rect->left / tile_width);
-   new_rect->top = tile_height * std::round(new_rect->top / tile_height);
+   new_rect->left = tile_width * std::floor(new_rect->left / tile_width);
+   new_rect->top = tile_height * std::floor(new_rect->top / tile_height);
 
    new_rect->width = end_point.x - new_rect->left;
    new_rect->height = end_point.y - new_rect->top;
@@ -429,6 +405,43 @@ void BuilderScene::round_to_nearest_tile(sf::Vector2f& one, sf::Vector2f& two) {
    // update tile cursor entity
    this->tile_cursor_->set_position(final_origin);
    this->tile_cursor_->set_size(final_size);
+
+   delete new_rect;
+}
+
+void BuilderScene::register_selection_rect() {
+   if (!this->selection_rectangle_) {
+      this->selection_rectangle_ = TileFactory::inst()->create_selection_rectangle();
+   }
+   this->entities_.push_back(this->selection_rectangle_);
+   this->viewport_->layer("overlay")->add(this->selection_rectangle_);
+}
+
+void BuilderScene::deregister_selection_rect() {
+   if (!this->selection_rectangle_) {
+      return;
+   }
+   
+   EntityList::const_iterator it;
+   for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
+      if (*it == this->selection_rectangle_) {
+         this->entities_.erase(it);
+         break;
+      }
+   }
+
+   this->viewport_->layer("overlay")->remove(this->selection_rectangle_);
+}
+
+void BuilderScene::update_selection_rect(sf::Vector2f& origin_click, sf::Vector2f& mouse_pos) {
+   if (!this->selection_rectangle_) {
+      this->selection_rectangle_ = TileFactory::inst()->create_selection_rectangle();
+   }
+
+   sf::FloatRect* new_rect = UtilFactory::inst()->create_float_rect(origin_click, mouse_pos);
+
+   this->selection_rectangle_->set_position(new_rect->left, new_rect->top);
+   this->selection_rectangle_->set_size(new_rect->width, new_rect->height);
 
    delete new_rect;
 }
