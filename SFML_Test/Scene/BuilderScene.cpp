@@ -24,7 +24,6 @@ BuilderScene::BuilderScene()
 , center_dot_(nullptr)
 , selection_rectangle_(nullptr)
 , tile_cursor_(nullptr)
-
 , last_frame_time(0)
 , frame_measurement_interval(6)
 , frame_count(0)
@@ -129,8 +128,6 @@ void BuilderScene::update(Game& game, Scene* scene, Entity* entity) {
    // map related work
    this->map_->update(game, this);
    
-   // update entities
-
    // calculate and show FPS
    if (!this->frame_count) {
       this->update_fps();
@@ -143,6 +140,7 @@ void BuilderScene::process(Game& game, CloseCommand& c) {
 }
 
 void BuilderScene::process(Game& game, KeyPressCommand& c) {
+   EntityList::const_iterator e_it;
    Map::TileGrid::const_iterator it;
 
    switch (c.event.code) {
@@ -214,6 +212,13 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
 
          if (tile_graphics) {
             tile_graphics->set_show_debug_text(!tile_graphics->get_show_debug_text());
+         }
+      }
+
+      for (e_it = this->entities_.begin(); e_it != this->entities_.end(); ++e_it) {
+         GraphicsPart* e_graphics = dynamic_cast<GraphicsPart*>((*e_it)->get("graphics"));
+         if (e_graphics) {
+            e_graphics->set_show_debug_text(!e_graphics->get_show_debug_text());
          }
       }
    break;

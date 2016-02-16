@@ -102,31 +102,33 @@ void GraphicsPart::draw(Graphics& graphics, Layer& layer) {
 
          graphics.draw(s, layer);
       }
+
+      // draw diagnostic info
+      if (this->show_debug_text_) {
+         sf::Vector2i map_idx;
+         sf::RectangleShape bounding_box_graphic;
+         
+         // convert to map index (TODO: encapsulate this logic somewhere else...)
+         //map_idx = static_cast<sf::Vector2i>(viewport.get_world_coord(static_cast<sf::Vector2i>(pos)));
+
+         //map_idx.x = (int)(map_idx.x / (viewport.get_scale() * Settings::Instance()->TILE_WIDTH));
+         //map_idx.y = (int)(map_idx.y / (viewport.get_scale() * Settings::Instance()->TILE_HEIGHT));
+      
+         //viewport.write(std::to_string(map_idx.x) + ", " + std::to_string(map_idx.y), pos - sf::Vector2f(0, 11), &this->font_debug_);
+         //viewport.write(std::to_string((int)pos.x) + ", " + std::to_string((int)pos.y), pos - sf::Vector2f(0, 11), &this->font_debug_);
+         
+         sf::FloatRect bbpos = (*sprite_it)->get_global_bounds();
+
+         // draw physics bounding box
+         bounding_box_graphic.setPosition(sf::Vector2f(bbpos.left, bbpos.top));
+         bounding_box_graphic.setSize(sf::Vector2f(bbpos.width, bbpos.height));
+         bounding_box_graphic.setFillColor(sf::Color::Transparent);
+         bounding_box_graphic.setOutlineColor(sf::Color::Red); // change color depending on solidity
+         bounding_box_graphic.setOutlineThickness(1.0);
+
+         graphics.draw(bounding_box_graphic, layer);
+      }
    }
-
-   // draw diagnostic info
-   //if (this->show_debug_text_) {
-   //   sf::Vector2i map_idx;
-   //   sf::RectangleShape bounding_box_graphic;
-   //   
-   //   // convert to map index (TODO: encapsulate this logic somewhere else...)
-   //   //map_idx = static_cast<sf::Vector2i>(viewport.get_world_coord(static_cast<sf::Vector2i>(pos)));
-
-   //   //map_idx.x = (int)(map_idx.x / (viewport.get_scale() * Settings::Instance()->TILE_WIDTH));
-   //   //map_idx.y = (int)(map_idx.y / (viewport.get_scale() * Settings::Instance()->TILE_HEIGHT));
-   //
-   //   //viewport.write(std::to_string(map_idx.x) + ", " + std::to_string(map_idx.y), pos - sf::Vector2f(0, 11), &this->font_debug_);
-   //   //viewport.write(std::to_string((int)pos.x) + ", " + std::to_string((int)pos.y), pos - sf::Vector2f(0, 11), &this->font_debug_);
-
-   //   // draw physics bounding box
-   //   bounding_box_graphic.setPosition(pos);
-   //   bounding_box_graphic.setSize(size);
-   //   bounding_box_graphic.setFillColor(sf::Color::Transparent);
-   //   bounding_box_graphic.setOutlineColor(sf::Color::Red); // change color depending on solidity
-   //   bounding_box_graphic.setOutlineThickness(1.0);
-
-   //   graphics.draw(bounding_box_graphic, layer);
-   //}
 }
 
 void GraphicsPart::update(Game& game, Scene* scene, Entity* entity) {
