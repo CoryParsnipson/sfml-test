@@ -401,7 +401,7 @@ void BuilderScene::update_tile_cursor(sf::Vector2f& one, sf::Vector2f& two) {
    bool is_drag_gesture = (new_rect->width >= Settings::Instance()->TILE_WIDTH / 3.f ||
                            new_rect->height >= Settings::Instance()->TILE_HEIGHT / 3.f);
 
-   if (!is_drag_gesture && this->tile_cursor_->intersects(*new_rect)) {
+   if (!is_drag_gesture && this->tile_cursor_->intersects(offset_one)) {
       this->remove_tile_cursor();
       delete new_rect;
       return;
