@@ -53,10 +53,7 @@ protected:
    Entity* tile_cursor_;
 
    // mouse controllable state
-   sf::Vector2f* last_mouse_pos_;
-
-   sf::Vector2f* click_press_pos_;
-   sf::Vector2f* click_release_pos_;
+   sf::Vector2f click_press_pos_;
 
    std::vector<sf::RectangleShape*> grid;
 

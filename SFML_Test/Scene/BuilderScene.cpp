@@ -24,9 +24,6 @@ BuilderScene::BuilderScene()
 , mouse_(nullptr)
 , selection_rectangle_(nullptr)
 , tile_cursor_(nullptr)
-, last_mouse_pos_(nullptr)
-, click_press_pos_(nullptr)
-, click_release_pos_(nullptr)
 
 , last_frame_time(0)
 , frame_measurement_interval(6)
@@ -38,11 +35,6 @@ BuilderScene::~BuilderScene() {
    delete this->map_;
 
    delete this->tile_cursor_;
-
-   delete this->last_mouse_pos_;
-
-   delete this->click_press_pos_;
-   delete this->click_release_pos_;
 
    this->deregister_selection_rect();
    delete this->selection_rectangle_;
@@ -149,12 +141,6 @@ void BuilderScene::update(Game& game, Scene* scene, Entity* entity) {
    this->map_->update(game, this);
    
    // update entities
-   if (this->click_press_pos_ && this->last_mouse_pos_) {
-      this->update_selection_rect(*this->click_press_pos_, *this->last_mouse_pos_);
-
-      delete this->last_mouse_pos_;
-      this->last_mouse_pos_ = nullptr;
-   }
 
    //std::vector<sf::RectangleShape*>::const_iterator grid_it;
    //for (grid_it = this->grid.begin(); grid_it != this->grid.end(); grid_it++) {
@@ -282,9 +268,8 @@ void BuilderScene::drag(MouseButtonCommand& c, sf::Vector2f delta) {
    }
 
    if (c.button == MouseButtonCommand::LEFT) {
-      // update last mouse position
-      delete this->last_mouse_pos_;
-      this->last_mouse_pos_ = new sf::Vector2f(c.x, c.y);
+      sf::Vector2f mouse_pos(c.x, c.y);
+      this->update_selection_rect(this->click_press_pos_, mouse_pos);
    } else if (c.button == MouseButtonCommand::RIGHT) {
       main_layer->drag(c, delta);
    }
@@ -312,47 +297,36 @@ void BuilderScene::set_scale(float factor) {
 void BuilderScene::click(MouseButtonCommand& c) {
    if (c.button == MouseButtonCommand::LEFT) {
       if (c.state == MouseButtonCommand::PRESSED) {
-         if (this->click_release_pos_) {
-            // this shouldn't happen
-            return;
-         }
-
-         delete this->click_press_pos_;
-         this->click_press_pos_ = new sf::Vector2f(c.x, c.y);
+         this->click_press_pos_.x = c.x;
+         this->click_press_pos_.y = c.y;
 
          this->register_selection_rect();
 
       } else if (c.state == MouseButtonCommand::RELEASED) {
-         delete this->click_release_pos_;
-         this->click_release_pos_ = new sf::Vector2f(c.x, c.y);
+         sf::Vector2f click_release_pos(c.x, c.y);
 
-         if (!this->click_press_pos_) {
-            Service::get_logger().msg(this->id_, Logger::WARNING, "click press position missing");
-            return;
-         }
-
-         sf::Vector2f drag_area = *this->click_release_pos_ - *this->click_press_pos_;
+         sf::Vector2f drag_area = click_release_pos - this->click_press_pos_;
          bool is_drag_gesture = (std::abs(drag_area.x) >= Settings::Instance()->TILE_WIDTH / 3.f || 
                                  std::abs(drag_area.y) >= Settings::Instance()->TILE_HEIGHT / 3.f);
 
          // where should I put this code?
-         *this->click_press_pos_ -= this->viewport_->layer("main")->get_pan_delta();
-         *this->click_release_pos_ -= this->viewport_->layer("main")->get_pan_delta();
+         this->click_press_pos_ -= this->viewport_->layer("main")->get_pan_delta();
+         click_release_pos -= this->viewport_->layer("main")->get_pan_delta();
 
          if (!this->tile_cursor_) {
             // create a tile cursor
             Map::TileList cursor_tiles;
 
             delete this->tile_cursor_;
-            this->tile_cursor_ = TileFactory::inst()->create_tile_cursor(*this->click_press_pos_, *this->click_release_pos_, cursor_tiles);
-            this->round_to_nearest_tile(*this->click_press_pos_, *this->click_release_pos_);
+            this->tile_cursor_ = TileFactory::inst()->create_tile_cursor(this->click_press_pos_, click_release_pos, cursor_tiles);
+            this->round_to_nearest_tile(this->click_press_pos_, click_release_pos);
 
             this->viewport_->layer("main")->add(this->tile_cursor_);
          } else {
             PhysicsPart* tc_physics = dynamic_cast<PhysicsPart*>(this->tile_cursor_->get("physics"));
 
-            if (is_drag_gesture || (!is_drag_gesture && !tc_physics->intersects(*this->click_press_pos_))) {
-               this->round_to_nearest_tile(*this->click_press_pos_, *this->click_release_pos_);
+            if (is_drag_gesture || (!is_drag_gesture && !tc_physics->intersects(this->click_press_pos_))) {
+               this->round_to_nearest_tile(this->click_press_pos_, click_release_pos);
             } else {
                // deselect
                this->viewport_->layer("main")->remove(this->tile_cursor_);
@@ -362,12 +336,6 @@ void BuilderScene::click(MouseButtonCommand& c) {
          }
 
          this->deregister_selection_rect();
-
-         delete this->click_press_pos_;
-         this->click_press_pos_ = nullptr;
-
-         delete this->click_release_pos_;
-         this->click_release_pos_ = nullptr;
       }
    }
 }
