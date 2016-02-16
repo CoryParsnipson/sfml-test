@@ -126,7 +126,6 @@ void Game::main_loop() {
          this->prev_scene_->exit(*this);
          delete this->prev_scene_;
          this->prev_scene_ = nullptr;
-         continue; // do empty check again
       }
 
       // check if we need to load a scene
@@ -134,6 +133,10 @@ void Game::main_loop() {
          this->next_scene_->enter(*this);
          this->scenes_.push(this->next_scene_);
          this->next_scene_ = nullptr;
+      }
+
+      if (this->scenes_.empty()) {
+         continue;
       }
 
       // update
