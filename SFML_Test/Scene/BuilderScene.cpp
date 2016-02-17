@@ -46,6 +46,7 @@ void BuilderScene::enter(Game& game) {
    this->viewport_ = new Viewport(sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height()));
 
    // fixed layer above map and sprites
+   this->viewport_->add("debug");
    this->viewport_->add("overlay");
    this->viewport_->add("hud");
 
@@ -206,20 +207,38 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
       //}
    break;
    case sf::Keyboard::Key::O:
+      // TODO: fix this. chokes on Map class's shitty vector key comparison function, I think
       // toggle outlines on all tiles
       for (it = this->map_->get_tiles().begin(); it != this->map_->get_tiles().end(); ++it) {
-         GraphicsPart* tile_graphics = dynamic_cast<GraphicsPart*>(it->second->get("graphics"));
-
-         if (tile_graphics) {
-            tile_graphics->set_show_outline(!tile_graphics->get_show_outline());
+         GraphicsPart* d = dynamic_cast<GraphicsPart*>(it->second->get("debug"));
+         if (d) {
+            this->viewport_->layer("debug")->remove(d);
+            it->second->remove("debug");
+            continue;
          }
+
+         GraphicsPart* graphics_part = dynamic_cast<GraphicsPart*>(it->second->get("graphics"));
+         sf::FloatRect bounds(graphics_part->get(0)->get_global_bounds());
+         d = UtilFactory::inst()->create_debug_graphics(bounds);
+
+         it->second->add(d);
+         this->viewport_->layer("debug")->add(d);
       }
 
       for (e_it = this->entities_.begin(); e_it != this->entities_.end(); ++e_it) {
-         GraphicsPart* e_graphics = dynamic_cast<GraphicsPart*>((*e_it)->get("graphics"));
-         if (e_graphics) {
-            e_graphics->set_show_outline(!e_graphics->get_show_outline());
+         GraphicsPart* d = dynamic_cast<GraphicsPart*>((*e_it)->get("debug"));
+         if (d) {
+            this->viewport_->layer("debug")->remove(d);
+            (*e_it)->remove("debug");
+            continue;
          }
+
+         GraphicsPart* graphics_part = dynamic_cast<GraphicsPart*>((*e_it)->get("graphics"));
+         sf::FloatRect bounds(graphics_part->get(0)->get_global_bounds());
+         d = UtilFactory::inst()->create_debug_graphics(bounds);
+
+         (*e_it)->add(d);
+         this->viewport_->layer("debug")->add(d);
       }
    break;
    default:

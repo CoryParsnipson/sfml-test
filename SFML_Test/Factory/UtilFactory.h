@@ -4,6 +4,7 @@
 #include "Entity.h"
 
 class Graphic;
+class GraphicsPart;
 
 class UtilFactory {
 public:
@@ -13,6 +14,7 @@ public:
    virtual Entity* create_mouse();
    
    virtual Entity* create_graphic(Graphic* g, sf::FloatRect bounding_box);
+   virtual GraphicsPart* create_debug_graphics(sf::FloatRect& bounds);
 
    virtual sf::FloatRect* create_float_rect(sf::Vector2f& one, sf::Vector2f& two);
 

@@ -9,7 +9,8 @@
 class Graphics;
 
 class Layer
-: public MouseControllable
+: public Draw
+, public MouseControllable
 {
 public:
    static const float ZOOM_FACTOR_MIN;
@@ -40,11 +41,12 @@ public:
 
    sf::Vector2f get_pan_delta();
 
-   // draw interface
+   // draw management interface
    void add(Draw* drawable);
    void remove(Draw* drawable);
 
-   void draw(Graphics& graphics);
+   // draw interface
+   virtual void draw(Graphics& graphics);
 
    // mouse control interface
    virtual void drag(MouseButtonCommand& c, sf::Vector2f delta);

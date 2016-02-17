@@ -7,10 +7,8 @@ int main()
 {
    Game g;
 
-   Scene* scene = new StartMenuScene();
-   g.load_scene(scene);
-
-   // start game!
+   // don't need to delete scene objects given to game (messy, I know)
+   g.load_scene(new StartMenuScene());
    g.start();
 
 	return 0;

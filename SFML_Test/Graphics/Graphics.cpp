@@ -31,12 +31,20 @@ sf::RenderWindow& Graphics::get_window() {
    return *(this->window);
 }
 
-sf::Vector2f Graphics::get_world_coord(const sf::Vector2i& point, sf::View* view) {
-   return (view ? this->window->mapPixelToCoords(point, *view) : this->window->mapPixelToCoords(point));
+sf::Vector2f Graphics::get_world_coord(const sf::Vector2i& point, Layer* layer) {
+   return (layer ? this->window->mapPixelToCoords(point, layer->get_view()) : this->window->mapPixelToCoords(point));
 }
 
-sf::Vector2i Graphics::get_screen_coord(const sf::Vector2f& point, sf::View* view) {
-   return (view ? this->window->mapCoordsToPixel(point, *view) : this->window->mapCoordsToPixel(point));
+sf::Vector2i Graphics::get_screen_coord(const sf::Vector2f& point, Layer* layer) {
+   return (layer ? this->window->mapCoordsToPixel(point, layer->get_view()) : this->window->mapCoordsToPixel(point));
+}
+
+void Graphics::set_active_layer(Layer& layer) {
+   this->window->setView(layer.get_view());
+}
+
+void Graphics::draw(sf::Drawable& d) {
+   this->window->draw(d);
 }
 
 void Graphics::draw(sf::Drawable& d, Layer& layer) {

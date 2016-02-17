@@ -34,11 +34,11 @@ public:
 
    // part management interface
    void add(Part* part);
-   // void remove()
-   Part* get(std::string part_name);
+   void remove(const std::string& part_id);
+   Part* get(const std::string& part_name);
 
    // draw interface
-   virtual void draw(Graphics& graphics, Layer& layer);
+   virtual void draw(Graphics& graphics);
 
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);

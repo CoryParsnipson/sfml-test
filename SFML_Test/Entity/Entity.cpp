@@ -96,13 +96,19 @@ bool Entity::intersects(sf::FloatRect& other) {
 
 void Entity::add(Part* part) {
    // if part name already exists, delete it
-   if (this->parts_.find(part->name()) == this->parts_.end()) {
-      delete this->parts_[part->name()];
-   }
+   this->remove(part->name());
    this->parts_[part->name()] = part;
 }
 
-Part* Entity::get(std::string part_name) {
+void Entity::remove(const std::string& part_id) {
+   PartList::iterator part_it = this->parts_.find(part_id);
+   if (part_it != this->parts_.end()) {
+      delete part_it->second;
+      this->parts_.erase(part_it);
+   }
+}
+
+Part* Entity::get(const std::string& part_name) {
    PartList::const_iterator it = this->parts_.find(part_name);
    if (it == this->parts_.end()) {
       return nullptr;
@@ -110,10 +116,10 @@ Part* Entity::get(std::string part_name) {
    return it->second;
 }
 
-void Entity::draw(Graphics& graphics, Layer& layer) {
+void Entity::draw(Graphics& graphics) {
    PartList::const_iterator it;
    for (it = this->parts_.begin(); it != this->parts_.end(); it++) {
-      it->second->draw(graphics, layer);
+      it->second->draw(graphics);
    }
 }
 

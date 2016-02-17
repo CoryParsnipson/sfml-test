@@ -30,7 +30,7 @@ Entity* UtilFactory::create_mouse() {
    cursor->set_fill_color(sf::Color::Red);
 
    graphics_part->add(cursor);
-   graphics_part->set_show_debug_text(true);
+   //graphics_part->set_show_debug_text(true);
 
    mouse->add(graphics_part);
    mouse->add(physics_part);
@@ -52,6 +52,23 @@ Entity* UtilFactory::create_graphic(Graphic* g, sf::FloatRect bounding_box) {
    e->set_position(bounding_box.left, bounding_box.top);
 
    return e;
+}
+
+GraphicsPart* UtilFactory::create_debug_graphics(sf::FloatRect& bounds) {
+   GraphicsPart* debug = new GraphicsPart("debug");
+
+   Graphic* bounding_box = new Shape(new sf::RectangleShape());
+
+   bounding_box->set_position(bounds.left, bounds.top);
+   bounding_box->set_size(bounds.width, bounds.height);
+
+   bounding_box->set_fill_color(sf::Color::Transparent);
+   bounding_box->set_outline_color(sf::Color::Red);
+   bounding_box->set_outline_thickness(1.0);
+
+   debug->add(bounding_box);
+
+   return debug;
 }
 
 sf::FloatRect* UtilFactory::create_float_rect(sf::Vector2f& one, sf::Vector2f& two) {

@@ -107,7 +107,7 @@ void Layer::draw(Graphics& graphics) {
          continue;
       }
 
-      (*it)->draw(graphics, *this);
+      (*it)->draw(graphics);
       ++it;
    }
 }

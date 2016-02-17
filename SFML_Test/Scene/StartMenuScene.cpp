@@ -1,11 +1,14 @@
 #include "StartMenuScene.h"
 #include "BuilderScene.h"
 
+#include "UtilFactory.h"
+#include "TextFactory.h"
+
 #include "Game.h"
 #include "Graphics.h"
 #include "Layer.h"
+
 #include "Graphic.h"
-#include "TextFactory.h"
 #include "GraphicsPart.h"
 
 StartMenuScene::StartMenuScene()
@@ -21,6 +24,7 @@ void StartMenuScene::enter(Game& game) {
 
    // create viewport(s)
    this->viewport_ = new Viewport(sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height()));
+   this->viewport_->add("debug");
 
    // populate entities
    Entity* title = TextFactory::inst()->create_text_entity(
@@ -76,8 +80,19 @@ void StartMenuScene::process(Game& game, KeyPressCommand& c) {
    } else if (c.event.code == sf::Keyboard::Key::O) {
       EntityList::const_iterator it;
       for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
+         GraphicsPart* d = dynamic_cast<GraphicsPart*>((*it)->get("debug"));
+         if (d) {
+            this->viewport_->layer("debug")->remove(d);
+            (*it)->remove("debug");
+            continue;
+         }
+
          GraphicsPart* graphics_part = dynamic_cast<GraphicsPart*>((*it)->get("graphics"));
-         graphics_part->set_show_outline(!graphics_part->get_show_outline());
+         sf::FloatRect bounds(graphics_part->get(0)->get_global_bounds());
+         d = UtilFactory::inst()->create_debug_graphics(bounds);
+
+         (*it)->add(d);
+         this->viewport_->layer("debug")->add(d);
       }
    }
 }

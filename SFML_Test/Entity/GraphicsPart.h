@@ -26,21 +26,13 @@ public:
    virtual void set_size(float width, float height);
    virtual void set_size(const sf::Vector2f& size);
 
-   void set_show_outline(bool show);
-   void set_show_debug_text(bool show);
-   bool get_show_debug_text();
-   bool get_show_outline();
-
    // draw interface
-   virtual void draw(Graphics& graphics, Layer& layer);
+   virtual void draw(Graphics& graphics);
 
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 
 protected:
-   bool show_outline_;
-   bool show_debug_text_;
-
    SpriteList sprites_;
 };
 

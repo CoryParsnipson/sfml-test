@@ -32,7 +32,7 @@ public:
    // receive message
 
    // draw interface
-   virtual void draw(Graphics& graphics, Layer& layer) {}
+   virtual void draw(Graphics& graphics) {}
 
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr) = 0;

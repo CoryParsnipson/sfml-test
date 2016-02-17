@@ -9,13 +9,13 @@
 
 GraphicsPart::GraphicsPart(std::string id)
 : Part(id)
-, show_outline_(false)
-, show_debug_text_(false)
 {
    Service::get_logger().msg("GraphicsPart", Logger::INFO, "Creating GraphicsPart");
 }
 
 GraphicsPart::~GraphicsPart() {
+   Service::get_logger().msg("GraphicsPart", Logger::INFO, "Destroying GraphicsPart");
+
    SpriteList::const_iterator sprite_it;
    for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
       delete *sprite_it;
@@ -74,57 +74,10 @@ void GraphicsPart::set_size(const sf::Vector2f& size) {
    }
 }
 
-void GraphicsPart::set_show_outline(bool show) {
-   this->show_outline_ = show;
-}
-
-void GraphicsPart::set_show_debug_text(bool show) {
-   this->show_debug_text_ = show;
-}
-
-bool GraphicsPart::get_show_debug_text() {
-   return this->show_debug_text_;
-}
-
-bool GraphicsPart::get_show_outline() {
-   return this->show_outline_;
-}
-
-void GraphicsPart::draw(Graphics& graphics, Layer& layer) {
+void GraphicsPart::draw(Graphics& graphics) {
    SpriteList::const_iterator sprite_it;
    for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
-      (*sprite_it)->draw(graphics, layer);
-
-      sf::FloatRect bounds_rect = (*sprite_it)->get_global_bounds();
-
-      // draw outline for this sprite
-      if (this->show_outline_) {
-         sf::RectangleShape bounds;
-         
-         bounds.setPosition(sf::Vector2f(bounds_rect.left, bounds_rect.top));
-         bounds.setSize(sf::Vector2f(bounds_rect.width, bounds_rect.height));
-
-         bounds.setFillColor(sf::Color::Transparent);
-         bounds.setOutlineColor(sf::Color::Blue);
-         bounds.setOutlineThickness(1.0);
-
-         graphics.draw(bounds, layer);
-      }
-
-      // draw diagnostic info
-      if (this->show_debug_text_) {
-         sf::Vector2f global_pos(bounds_rect.left, bounds_rect.top);
-
-         Text* debug_text = TextFactory::inst()->create_text(
-            std::to_string((int)global_pos.x) + ", " + std::to_string((int)global_pos.y),
-            "retro", 
-            global_pos - sf::Vector2f(0, 10)
-         );
-         debug_text->draw(graphics, layer);
-
-         delete debug_text;
-         debug_text = nullptr;
-      }
+      (*sprite_it)->draw(graphics);
    }
 }
 

@@ -5,7 +5,10 @@
 
 #include "Draw.h"
 
+class Layer;
+
 class Viewport
+: public Draw
 {
 public:
    typedef std::vector<Layer*> LayerList;
@@ -32,7 +35,6 @@ public:
    void reset();
 
    // draw interface
-   virtual void draw(Graphics& graphics, Layer& layer) { this->draw(graphics); }
    virtual void draw(Graphics& graphics);
 
 protected:

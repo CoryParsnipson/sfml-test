@@ -17,10 +17,10 @@ Map::~Map() {
    }
 }
 
-void Map::draw(Graphics& graphics, Layer& layer) {
+void Map::draw(Graphics& graphics) {
    Map::TileGrid::const_iterator it;
    for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
-      it->second->draw(graphics, layer);
+      it->second->draw(graphics);
    }
 }
 

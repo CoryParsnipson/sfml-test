@@ -27,9 +27,13 @@ public:
    Scene(std::string id)
    : id_(id)
    , viewport_(nullptr)
-   {}
+   {
+      Service::get_logger().msg(this->id(), Logger::INFO, "Creating new Scene.");
+   }
 
    virtual ~Scene() {
+      Service::get_logger().msg(this->id(), Logger::INFO, "Destroying Scene.");
+
       delete this->viewport_;
 
       EntityList::iterator it;
@@ -46,7 +50,6 @@ public:
    virtual void exit(Game& game) {}
 
    // draw interface
-   virtual void draw(Graphics& graphics, Layer& layer) { this->draw(graphics); }
    virtual void draw(Graphics& graphics) {
       this->viewport_->draw(graphics);
    }

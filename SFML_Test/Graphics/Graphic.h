@@ -15,7 +15,7 @@ public:
    virtual ~Graphic() {}
 
    // draw interface
-   virtual void draw(Graphics& graphics, Layer& layer) = 0;
+   virtual void draw(Graphics& graphics) = 0;
 
    // common sfml drawable interface
    virtual sf::FloatRect get_local_bounds() const = 0;
@@ -108,8 +108,8 @@ public:
       delete this->drawable_;
    }
 
-   virtual void draw(Graphics& graphics, Layer& layer) {
-      graphics.draw(*this->drawable_, layer);
+   virtual void draw(Graphics& graphics) {
+      graphics.draw(*this->drawable_);
    }
 
    // common sfml drawable interface
@@ -197,8 +197,8 @@ public:
    }
 
    // draw interface
-   virtual void draw(Graphics& graphics, Layer& layer) {
-      graphics.draw(*this->drawable_, layer);
+   virtual void draw(Graphics& graphics) {
+      graphics.draw(*this->drawable_);
    }
 
    // common sfml drawable interface
@@ -285,8 +285,8 @@ public:
    }
 
    // draw interface
-   virtual void draw(Graphics& graphics, Layer& layer) {
-      graphics.draw(*this->drawable_, layer);
+   virtual void draw(Graphics& graphics) {
+      graphics.draw(*this->drawable_);
    }
 
    // common sfml drawable interface

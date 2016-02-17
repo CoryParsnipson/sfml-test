@@ -99,6 +99,7 @@ void Viewport::reset() {
 void Viewport::draw(Graphics& graphics) {
    LayerList::const_iterator it;
    for (it = this->layers_.begin(); it != this->layers_.end(); ++it) {
+      graphics.set_active_layer(*(*it));
       (*it)->draw(graphics);
    }
 }
