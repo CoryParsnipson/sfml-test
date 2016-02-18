@@ -52,5 +52,5 @@ void IsoMapBuilder::build_tile(int x, int y, std::string texture) {
       Service::get_logger().msg("IsoMap", Logger::WARNING, "Tile has no physics component.");
    }
 
-   this->map_->add(x, y, tile);
+   this->map_->add(tile);
 }

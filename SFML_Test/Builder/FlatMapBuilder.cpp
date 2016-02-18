@@ -45,5 +45,5 @@ void FlatMapBuilder::build_tile(int x, int y, std::string texture) {
    tile_pos.y = y * Settings::Instance()->TILE_HEIGHT;
 
    Entity* tile = TileFactory::inst()->create_tile(this->texture_manager_.get_texture(texture), tile_pos);
-   this->map_->add(x, y, tile);
+   this->map_->add(tile);
 }

@@ -142,7 +142,7 @@ void BuilderScene::process(Game& game, CloseCommand& c) {
 
 void BuilderScene::process(Game& game, KeyPressCommand& c) {
    EntityList::const_iterator e_it;
-   Map::TileGrid::const_iterator it;
+   Map::TileList::const_iterator it;
 
    switch (c.event.code) {
    case sf::Keyboard::Key::R:
@@ -207,28 +207,27 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
       //}
    break;
    case sf::Keyboard::Key::O:
-      // TODO: fix this. chokes on Map class's shitty vector key comparison function, I think
       // toggle outlines on all tiles
       for (it = this->map_->get_tiles().begin(); it != this->map_->get_tiles().end(); ++it) {
-         GraphicsPart* d = dynamic_cast<GraphicsPart*>(it->second->get("debug"));
+         GraphicsPart* d = dynamic_cast<GraphicsPart*>((*it)->get("debug"));
          if (d) {
-            this->viewport_->layer("debug")->remove(d);
-            it->second->remove("debug");
+            this->viewport_->layer("main")->remove(d);
+            (*it)->remove("debug");
             continue;
          }
 
-         GraphicsPart* graphics_part = dynamic_cast<GraphicsPart*>(it->second->get("graphics"));
+         GraphicsPart* graphics_part = dynamic_cast<GraphicsPart*>((*it)->get("graphics"));
          sf::FloatRect bounds(graphics_part->get(0)->get_global_bounds());
          d = UtilFactory::inst()->create_debug_graphics(bounds);
 
-         it->second->add(d);
-         this->viewport_->layer("debug")->add(d);
+         (*it)->add(d);
+         this->viewport_->layer("main")->add(d);
       }
 
       for (e_it = this->entities_.begin(); e_it != this->entities_.end(); ++e_it) {
          GraphicsPart* d = dynamic_cast<GraphicsPart*>((*e_it)->get("debug"));
          if (d) {
-            this->viewport_->layer("debug")->remove(d);
+            this->viewport_->layer("hud")->remove(d);
             (*e_it)->remove("debug");
             continue;
          }
@@ -238,7 +237,7 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
          d = UtilFactory::inst()->create_debug_graphics(bounds);
 
          (*e_it)->add(d);
-         this->viewport_->layer("debug")->add(d);
+         this->viewport_->layer("hud")->add(d);
       }
    break;
    default:
