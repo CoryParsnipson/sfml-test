@@ -19,7 +19,7 @@ UtilFactory::UtilFactory() {
 UtilFactory::~UtilFactory() {
 }
 
-Entity* UtilFactory::create_mouse() {
+Entity* UtilFactory::create_mouse(Layer* layer) {
    Entity* mouse = new Entity();
    GraphicsPart* graphics_part = new GraphicsPart();
    PhysicsPart* physics_part = new PhysicsPart();
@@ -28,9 +28,10 @@ Entity* UtilFactory::create_mouse() {
    Shape* cursor = new Shape(new sf::RectangleShape());
    cursor->set_size(6, 6);
    cursor->set_fill_color(sf::Color::Red);
+   cursor->layer(layer);
 
    graphics_part->add(cursor);
-   //graphics_part->set_show_debug_text(true);
+   //graphics_part->set_show_debug_text(true); // TODO redo this
 
    mouse->add(graphics_part);
    mouse->add(physics_part);
@@ -54,7 +55,7 @@ Entity* UtilFactory::create_graphic(Graphic* g, sf::FloatRect bounding_box) {
    return e;
 }
 
-GraphicsPart* UtilFactory::create_debug_graphics(sf::FloatRect& bounds) {
+GraphicsPart* UtilFactory::create_debug_graphics(sf::FloatRect& bounds, Layer* layer) {
    GraphicsPart* debug = new GraphicsPart("debug");
 
    Graphic* bounding_box = new Shape(new sf::RectangleShape());
@@ -65,6 +66,8 @@ GraphicsPart* UtilFactory::create_debug_graphics(sf::FloatRect& bounds) {
    bounding_box->set_fill_color(sf::Color::Transparent);
    bounding_box->set_outline_color(sf::Color::Red);
    bounding_box->set_outline_thickness(1.0);
+
+   bounding_box->layer(layer);
 
    debug->add(bounding_box);
 

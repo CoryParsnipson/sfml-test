@@ -54,7 +54,7 @@ sf::Font* TextFactory::get_font(std::string font_name) {
    return it->second;
 }
 
-Text* TextFactory::create_text(std::string msg, sf::Font* font, sf::Vector2f pos, int size, ALIGN alignment, sf::Color color) {
+Text* TextFactory::create_text(std::string msg, sf::Font* font, Layer* layer, sf::Vector2f pos, int size, ALIGN alignment, sf::Color color) {
    Text* t = new Text();
 
    t->set_font(font);
@@ -67,18 +67,20 @@ Text* TextFactory::create_text(std::string msg, sf::Font* font, sf::Vector2f pos
 
    t->set_position(pos);
 
+   t->layer(layer);
+
    return t;
 }
 
-Text* TextFactory::create_text(std::string msg, std::string font, sf::Vector2f pos, int size, ALIGN alignment, sf::Color color) {
-   return this->create_text(msg, this->get_font(font), pos, size, alignment, color);
+Text* TextFactory::create_text(std::string msg, std::string font, Layer* layer, sf::Vector2f pos, int size, ALIGN alignment, sf::Color color) {
+   return this->create_text(msg, this->get_font(font), layer, pos, size, alignment, color);
 }
 
-Entity* TextFactory::create_text_entity(std::string msg, std::string font, sf::Vector2f pos, int size, ALIGN alignment, sf::Color color) {
+Entity* TextFactory::create_text_entity(std::string msg, std::string font, Layer* layer, sf::Vector2f pos, int size, ALIGN alignment, sf::Color color) {
    Entity* text_entity = new Entity();
    GraphicsPart* text_entity_graphics = new GraphicsPart();
 
-   text_entity_graphics->add(this->create_text(msg, font, pos, size, alignment, color));
+   text_entity_graphics->add(this->create_text(msg, font, layer, pos, size, alignment, color));
    text_entity->add(text_entity_graphics);
 
    return text_entity;

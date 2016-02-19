@@ -9,12 +9,12 @@ public:
    static TileFactory* inst();
    virtual ~TileFactory();
 
-   virtual Entity* create_tile(Texture& t);
-   virtual Entity* create_tile(Texture& t, sf::Vector2f pos);
+   virtual Entity* create_tile(Texture& t, Layer* layer = nullptr);
+   virtual Entity* create_tile(Texture& t, sf::Vector2f pos, Layer* layer = nullptr);
 
-   virtual Entity* create_tile_cursor(sf::Vector2f& one, sf::Vector2f& two, std::vector<Entity*> references);
+   virtual Entity* create_tile_cursor(sf::Vector2f& one, sf::Vector2f& two, std::vector<Entity*> references, Layer* layer = nullptr);
 
-   virtual Entity* create_selection_rectangle(sf::FloatRect* bounds = nullptr);
+   virtual Entity* create_selection_rectangle(sf::FloatRect* bounds = nullptr, Layer* layer = nullptr);
 
 protected:
    // seal off constructors

@@ -5,6 +5,7 @@
 
 class Text;
 class Entity;
+class Layer;
 
 class TextFactory {
 public:
@@ -28,6 +29,7 @@ public:
    virtual Text* create_text(
       std::string msg,
       sf::Font* font,
+      Layer* layer = nullptr,
       sf::Vector2f pos = sf::Vector2f(0, 0),
       int size = 12,
       ALIGN alignment = ALIGN::LEFT,
@@ -37,6 +39,7 @@ public:
    virtual Text* create_text(
       std::string msg,
       std::string font,
+      Layer* layer = nullptr,
       sf::Vector2f pos = sf::Vector2f(0, 0),
       int size = 12,
       ALIGN alignment = ALIGN::LEFT,
@@ -46,6 +49,7 @@ public:
    virtual Entity* create_text_entity(
       std::string msg,
       std::string font,
+      Layer* layer = nullptr,
       sf::Vector2f pos = sf::Vector2f(0, 0),
       int size = 12,
       ALIGN alignment = ALIGN::LEFT,

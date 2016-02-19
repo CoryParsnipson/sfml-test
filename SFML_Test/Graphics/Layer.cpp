@@ -1,5 +1,6 @@
 #include "Layer.h"
 
+#include "Draw.h"
 #include "Graphics.h"
 
 // initialize static member variables

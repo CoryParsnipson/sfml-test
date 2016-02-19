@@ -81,6 +81,13 @@ void GraphicsPart::draw(Graphics& graphics) {
    }
 }
 
+void GraphicsPart::layer(Layer* layer) {
+   SpriteList::const_iterator sprite_it;
+   for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
+      (*sprite_it)->layer(layer);
+   }
+}
+
 void GraphicsPart::update(Game& game, Scene* scene, Entity* entity) {
    if (!entity) {
       Service::get_logger().msg("GraphicsPart", Logger::ERROR, "Entity null pointer received.");

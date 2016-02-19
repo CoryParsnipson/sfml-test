@@ -3,14 +3,13 @@
 
 #include "dependencies.h"
 
-#include "Draw.h"
 #include "MouseUtil.h"
 
 class Graphics;
+class Draw;
 
 class Layer
-: public Draw
-, public MouseControllable
+: public MouseControllable
 {
 public:
    static const float ZOOM_FACTOR_MIN;
@@ -45,7 +44,6 @@ public:
    void add(Draw* drawable);
    void remove(Draw* drawable);
 
-   // draw interface
    virtual void draw(Graphics& graphics);
 
    // mouse control interface

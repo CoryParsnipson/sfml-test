@@ -21,16 +21,19 @@ TileFactory::TileFactory() {
 TileFactory::~TileFactory() {
 }
 
-Entity* TileFactory::create_tile(Texture& t) {
-   return this->create_tile(t, sf::Vector2f(0, 0));
+Entity* TileFactory::create_tile(Texture& t, Layer* layer) {
+   return this->create_tile(t, sf::Vector2f(0, 0), layer);
 }
 
-Entity* TileFactory::create_tile(Texture& t, sf::Vector2f pos) {
+Entity* TileFactory::create_tile(Texture& t, sf::Vector2f pos, Layer* layer) {
    Entity* tile = new Entity();
    GraphicsPart* graphics_part = new GraphicsPart();
    PhysicsPart* physics_part = new PhysicsPart();
 
-   graphics_part->add(new Sprite(t));
+   Sprite* tile_sprite = new Sprite(t);
+   tile_sprite->layer(layer);
+
+   graphics_part->add(tile_sprite);
    physics_part->set_size(t.get_size());
   
    tile->add(graphics_part);
@@ -41,7 +44,7 @@ Entity* TileFactory::create_tile(Texture& t, sf::Vector2f pos) {
    return tile;
 }
 
-Entity* TileFactory::create_tile_cursor(sf::Vector2f& one, sf::Vector2f& two, std::vector<Entity*> references) {
+Entity* TileFactory::create_tile_cursor(sf::Vector2f& one, sf::Vector2f& two, std::vector<Entity*> references, Layer* layer) {
    Entity* cursor = new Entity();
    GraphicsPart* graphics_part = new GraphicsPart();
    PhysicsPart* physics_part = new PhysicsPart();
@@ -54,6 +57,7 @@ Entity* TileFactory::create_tile_cursor(sf::Vector2f& one, sf::Vector2f& two, st
    cursor_graphic->set_fill_color(sf::Color(225, 225, 225, 128));
    cursor_graphic->set_outline_color(sf::Color(255, 255, 255, 192));
    cursor_graphic->set_outline_thickness(2.0);
+   cursor_graphic->layer(layer);
 
    graphics_part->add(cursor_graphic);
    physics_part->set_size(rect->width, rect->height);
@@ -75,7 +79,7 @@ Entity* TileFactory::create_tile_cursor(sf::Vector2f& one, sf::Vector2f& two, st
    return cursor;
 }
 
-Entity* TileFactory::create_selection_rectangle(sf::FloatRect* bounds) {
+Entity* TileFactory::create_selection_rectangle(sf::FloatRect* bounds, Layer* layer) {
    Entity* sr = new Entity();
    GraphicsPart* graphics_part = new GraphicsPart();
    PhysicsPart* physics_part = new PhysicsPart();
@@ -84,6 +88,7 @@ Entity* TileFactory::create_selection_rectangle(sf::FloatRect* bounds) {
    sr_graphic->set_fill_color(sf::Color(66, 108, 167, 175));
    sr_graphic->set_outline_color(sf::Color(124, 160, 210, 192));
    sr_graphic->set_outline_thickness(1.0);
+   sr_graphic->layer(layer);
 
    graphics_part->add(sr_graphic);
 

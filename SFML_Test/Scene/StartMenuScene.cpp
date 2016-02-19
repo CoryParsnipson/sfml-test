@@ -27,39 +27,32 @@ void StartMenuScene::enter(Game& game) {
    this->viewport_->add("debug");
 
    // populate entities
-   Entity* title = TextFactory::inst()->create_text_entity(
+   this->entities_.push_back(TextFactory::inst()->create_text_entity(
       "SFML TEST",
       "retro",
+      this->viewport_->layer("main"),
       this->viewport_->layer("main")->get_center(),
       36,
       TextFactory::ALIGN::CENTER
-   );
+   ));
 
-   Entity* subtitle1 = TextFactory::inst()->create_text_entity(
+   this->entities_.push_back(TextFactory::inst()->create_text_entity(
       "main menu",
       "retro",
+      this->viewport_->layer("main"),
       this->viewport_->layer("main")->get_center() + sf::Vector2f(0, 45),
       12,
       TextFactory::ALIGN::CENTER
-   );
+   ));
 
-   Entity* subtitle2 = TextFactory::inst()->create_text_entity(
+   this->entities_.push_back(TextFactory::inst()->create_text_entity(
       "(Press SPACE or ENTER)",
       "retro",
+      this->viewport_->layer("main"),
       this->viewport_->layer("main")->get_center() + sf::Vector2f(0, 60),
       12,
       TextFactory::ALIGN::CENTER
-   );
-
-   // add to update list
-   this->entities_.push_back(title);
-   this->entities_.push_back(subtitle1);
-   this->entities_.push_back(subtitle2);
-
-   // add to draw list
-   this->viewport_->layer("main")->add(title);
-   this->viewport_->layer("main")->add(subtitle1);
-   this->viewport_->layer("main")->add(subtitle2);
+   ));
 }
 
 void StartMenuScene::exit(Game& game) {
@@ -80,19 +73,15 @@ void StartMenuScene::process(Game& game, KeyPressCommand& c) {
    } else if (c.event.code == sf::Keyboard::Key::O) {
       EntityList::const_iterator it;
       for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
-         GraphicsPart* d = dynamic_cast<GraphicsPart*>((*it)->get("debug"));
-         if (d) {
-            this->viewport_->layer("debug")->remove(d);
+         if (dynamic_cast<GraphicsPart*>((*it)->get("debug"))) {
             (*it)->remove("debug");
             continue;
          }
 
          GraphicsPart* graphics_part = dynamic_cast<GraphicsPart*>((*it)->get("graphics"));
          sf::FloatRect bounds(graphics_part->get(0)->get_global_bounds());
-         d = UtilFactory::inst()->create_debug_graphics(bounds);
 
-         (*it)->add(d);
-         this->viewport_->layer("debug")->add(d);
+         (*it)->add(UtilFactory::inst()->create_debug_graphics(bounds, this->viewport_->layer("debug")));
       }
    }
 }

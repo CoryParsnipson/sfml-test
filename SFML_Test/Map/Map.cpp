@@ -24,6 +24,13 @@ void Map::draw(Graphics& graphics) {
    }
 }
 
+void Map::layer(Layer* layer) {
+   Map::TileList::const_iterator it;
+   for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
+      (*it)->layer(layer);
+   }
+}
+
 void Map::update(Game& game, Scene* scene, Entity* entity) {
    Map::TileList::const_iterator it;
    for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
