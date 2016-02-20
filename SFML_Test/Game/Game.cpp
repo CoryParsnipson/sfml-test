@@ -5,8 +5,7 @@
 #include "TextureManager.h"
 
 Game::Game()
-: is_running_(false)
-, next_scene_(nullptr)
+: next_scene_(nullptr)
 , prev_scene_(nullptr)
 {
    Service::init(); // initialize service locator
@@ -47,9 +46,6 @@ Game::~Game() {
 }
 
 void Game::start() {
-   assert(!this->is_running_); // start should only be called once (or unless reset is called)
-
-   this->is_running_ = true;
    this->main_loop();
 }
 
@@ -59,7 +55,6 @@ void Game::reset() {
       delete this->scenes_.top();
       this->scenes_.pop();
    }
-   this->is_running_ = false;
 }
 
 void Game::load_scene(Scene* scene) {

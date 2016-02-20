@@ -370,10 +370,11 @@ void BuilderScene::register_selection_rect() {
          this->viewport_->layer("overlay"),
          this->show_debug_info_
       );
+
+      this->entities_.push_back(this->selection_rectangle_);
    } else {
       this->selection_rectangle_->layer(this->viewport_->layer("overlay"));
    }
-   this->entities_.push_back(this->selection_rectangle_);
 }
 
 void BuilderScene::deregister_selection_rect() {
@@ -381,13 +382,7 @@ void BuilderScene::deregister_selection_rect() {
       return;
    }
    
-   EntityList::const_iterator it;
-   for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
-      if (*it == this->selection_rectangle_) {
-         this->entities_.erase(it);
-         break;
-      }
-   }
+   // keep it in registered scene entities list, but remove it from screen
    this->selection_rectangle_->layer(nullptr);
 }
 
@@ -398,6 +393,8 @@ void BuilderScene::update_selection_rect(sf::Vector2f& origin_click, sf::Vector2
          this->viewport_->layer("overlay"),
          this->show_debug_info_
       );
+
+      this->entities_.push_back(this->selection_rectangle_);
    } else {
       this->selection_rectangle_->layer(this->viewport_->layer("overlay"));
    }

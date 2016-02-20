@@ -54,7 +54,6 @@ protected:
 	void main_loop();
    void exit();
 
-   bool is_running_;
    Scene* next_scene_;  // if this is not null, it will be placed on the top of scenes_ in the next update
    Scene* prev_scene_;  // a state that is to be unloaded in the next update, should be popped off scenes_
    std::stack<Scene*> scenes_;
