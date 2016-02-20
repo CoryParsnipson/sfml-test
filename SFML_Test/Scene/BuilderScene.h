@@ -58,11 +58,14 @@ protected:
    int last_frame_time;
    int frame_measurement_interval;
    int frame_count;
+   bool show_debug_info_;
 
    void round_to_nearest_tile(sf::Vector2f& one, sf::Vector2f& two); // TODO: move this to the proper place
 
    // helper methods
    void update_fps();
+
+   void toggle_debug_info();
 
    void register_selection_rect();
    void deregister_selection_rect();

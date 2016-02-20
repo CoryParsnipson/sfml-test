@@ -37,7 +37,7 @@ public:
 
    virtual void set_color(const sf::Color& color) = 0;
    
-   virtual const sf::Vector2f& get_position() const = 0;
+   virtual const sf::Vector2f& get_position() = 0;
 
    virtual sf::Vector2f get_size() const = 0;
 
@@ -132,7 +132,14 @@ public:
 
    virtual void set_color(const sf::Color& color) { this->drawable_->setColor(color); }
    
-   virtual const sf::Vector2f& get_position() const { return this->drawable_->getPosition(); }
+   virtual const sf::Vector2f& get_position() {
+      sf::FloatRect bounds = this->get_global_bounds();
+
+      this->bounds_pos_.x = bounds.left;
+      this->bounds_pos_.y = bounds.top;
+
+      return this->bounds_pos_;
+   }
 
    virtual sf::Vector2f get_size() const {
       sf::FloatRect bounds = this->get_local_bounds();
@@ -176,6 +183,7 @@ public:
    virtual sf::Vector2f find_character_pos(std::size_t index) const { return this->drawable_->findCharacterPos(index); }
 
 protected:
+   sf::Vector2f bounds_pos_;
    sf::Text* drawable_;
 };
 
@@ -229,7 +237,7 @@ public:
 
    virtual void set_color(const sf::Color& color) { this->drawable_->setColor(color); }
    
-   virtual const sf::Vector2f& get_position() const { return this->drawable_->getPosition(); }
+   virtual const sf::Vector2f& get_position() { return this->drawable_->getPosition(); }
 
    virtual sf::Vector2f get_size() const {
       sf::FloatRect bounds = this->get_local_bounds();
@@ -316,7 +324,7 @@ public:
 
    virtual void set_color(const sf::Color& color) { this->drawable_->setFillColor(color); }
    
-   virtual const sf::Vector2f& get_position() const { return this->drawable_->getPosition(); }
+   virtual const sf::Vector2f& get_position() { return this->drawable_->getPosition(); }
 
    virtual sf::Vector2f get_size() const {
       sf::FloatRect bounds = this->get_local_bounds();
@@ -350,7 +358,10 @@ public:
    virtual void set_texture_rect(const sf::IntRect& rect) { this->drawable_->setTextureRect(rect); }
    virtual void set_fill_color(const sf::Color& color) { this->drawable_->setFillColor(color); }
    virtual void set_outline_color(const sf::Color& color) { this->drawable_->setOutlineColor(color); }
-   virtual void set_outline_thickness(float thickness) { this->drawable_->setOutlineThickness(thickness); }
+   virtual void set_outline_thickness(float thickness) {
+      // negative number makes outline on inside edge instead of outside edge
+      this->drawable_->setOutlineThickness(-1 * thickness);
+   }
 
    virtual Texture* get_texture() const { return nullptr;} 
    virtual const sf::Color& get_fill_color() const { return sf::Color::Transparent; }

@@ -1,8 +1,10 @@
 #include "TextFactory.h"
 
 #include "Graphic.h"
+
 #include "Entity.h"
 #include "GraphicsPart.h"
+#include "DebugPart.h"
 
 // initialize static members
 TextFactory* TextFactory::inst_ = new TextFactory();
@@ -76,12 +78,19 @@ Text* TextFactory::create_text(std::string msg, std::string font, Layer* layer, 
    return this->create_text(msg, this->get_font(font), layer, pos, size, alignment, color);
 }
 
-Entity* TextFactory::create_text_entity(std::string msg, std::string font, Layer* layer, sf::Vector2f pos, int size, ALIGN alignment, sf::Color color) {
+Entity* TextFactory::create_text_entity(std::string msg, std::string font, Layer* layer, sf::Vector2f pos, int size, ALIGN alignment, sf::Color color, bool debug) {
    Entity* text_entity = new Entity();
    GraphicsPart* text_entity_graphics = new GraphicsPart();
 
    text_entity_graphics->add(this->create_text(msg, font, layer, pos, size, alignment, color));
    text_entity->add(text_entity_graphics);
+
+   if (debug) {
+      DebugPart* d = new DebugPart();
+      d->layer(layer);
+
+      text_entity->add(d);
+   }
 
    return text_entity;
 }

@@ -5,6 +5,7 @@
 #include "GraphicsPart.h"
 #include "PhysicsPart.h"
 #include "MouseControlPart.h"
+#include "DebugPart.h"
 
 // initialize static members 
 UtilFactory* UtilFactory::inst_ = new UtilFactory();
@@ -21,6 +22,7 @@ UtilFactory::~UtilFactory() {
 
 Entity* UtilFactory::create_mouse(Layer* layer) {
    Entity* mouse = new Entity();
+   DebugPart* debug_part = new DebugPart();
    GraphicsPart* graphics_part = new GraphicsPart();
    PhysicsPart* physics_part = new PhysicsPart();
    MouseControlPart* control_part = new MouseControlPart("control");
@@ -31,16 +33,18 @@ Entity* UtilFactory::create_mouse(Layer* layer) {
    cursor->layer(layer);
 
    graphics_part->add(cursor);
-   //graphics_part->set_show_debug_text(true); // TODO redo this
+
+   debug_part->layer(layer);
 
    mouse->add(graphics_part);
    mouse->add(physics_part);
    mouse->add(control_part);
+   mouse->add(debug_part);
 
    return mouse;
 }
 
-Entity* UtilFactory::create_graphic(Graphic* g, sf::FloatRect bounding_box) {
+Entity* UtilFactory::create_graphic(Graphic* g, sf::FloatRect bounding_box, bool debug) {
    Entity* e = new Entity();
    GraphicsPart* graphics_part = new GraphicsPart();
    PhysicsPart* physics_part = new PhysicsPart("physics", bounding_box);
@@ -50,28 +54,16 @@ Entity* UtilFactory::create_graphic(Graphic* g, sf::FloatRect bounding_box) {
    e->add(graphics_part);
    e->add(physics_part);
 
+   if (debug) {
+      DebugPart* debug_part = new DebugPart();
+      debug_part->layer(g->layer());
+
+      e->add(debug_part);
+   }
+
    e->set_position(bounding_box.left, bounding_box.top);
 
    return e;
-}
-
-GraphicsPart* UtilFactory::create_debug_graphics(sf::FloatRect& bounds, Layer* layer) {
-   GraphicsPart* debug = new GraphicsPart("debug");
-
-   Graphic* bounding_box = new Shape(new sf::RectangleShape());
-
-   bounding_box->set_position(bounds.left, bounds.top);
-   bounding_box->set_size(bounds.width, bounds.height);
-
-   bounding_box->set_fill_color(sf::Color::Transparent);
-   bounding_box->set_outline_color(sf::Color::Red);
-   bounding_box->set_outline_thickness(1.0);
-
-   bounding_box->layer(layer);
-
-   debug->add(bounding_box);
-
-   return debug;
 }
 
 sf::FloatRect* UtilFactory::create_float_rect(sf::Vector2f& one, sf::Vector2f& two) {

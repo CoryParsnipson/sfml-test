@@ -23,6 +23,12 @@ public:
    virtual void process(Game& game, MouseMoveCommand& c);
    virtual void process(Game& game, MouseButtonCommand& c);
    virtual void process(Game& game, MouseWheelCommand& c);
+
+protected:
+   bool show_debug_info_;
+
+   // helper methods
+   void toggle_debug_info();
 };
 
 #endif

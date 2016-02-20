@@ -6,6 +6,7 @@
 #include "Graphic.h"
 
 #include "Entity.h"
+#include "DebugPart.h"
 #include "GraphicsPart.h"
 #include "PhysicsPart.h"
 #include "ReferencePart.h"
@@ -27,11 +28,13 @@ BuilderScene::BuilderScene()
 , last_frame_time(0)
 , frame_measurement_interval(6)
 , frame_count(0)
+, show_debug_info_(false)
 {
 }
 
 BuilderScene::~BuilderScene() {
    delete this->map_;
+   delete this->mouse_;
 
    this->remove_tile_cursor();
 
@@ -71,7 +74,6 @@ void BuilderScene::enter(Game& game) {
 
    // initialize entities
    this->mouse_ = UtilFactory::inst()->create_mouse(this->viewport_->layer("hud"));
-   this->entities_.push_back(this->mouse_);
 
    // hook up mouse controller to user input
    Service::get_input().registerInputListener(dynamic_cast<InputListener*>(this->mouse_->get("control")));
@@ -94,7 +96,11 @@ void BuilderScene::enter(Game& game) {
    origin_dot->set_fill_color(sf::Color::Yellow);
    origin_dot->layer(this->viewport_->layer("main"));
 
-   Entity* origin_dot_entity = UtilFactory::inst()->create_graphic(origin_dot, origin_dot->get_global_bounds());
+   Entity* origin_dot_entity = UtilFactory::inst()->create_graphic(
+      origin_dot,
+      origin_dot->get_global_bounds(),
+      this->show_debug_info_
+   );
    this->entities_.push_back(origin_dot_entity);
 
    Shape* center_dot_graphic = new Shape(new sf::RectangleShape());
@@ -103,7 +109,11 @@ void BuilderScene::enter(Game& game) {
    center_dot_graphic->set_position(Settings::Instance()->cur_width() / 2, Settings::Instance()->cur_height() / 2);
    center_dot_graphic->layer(this->viewport_->layer("hud"));
 
-   this->center_dot_ = UtilFactory::inst()->create_graphic(center_dot_graphic, center_dot_graphic->get_global_bounds());
+   this->center_dot_ = UtilFactory::inst()->create_graphic(
+      center_dot_graphic,
+      center_dot_graphic->get_global_bounds(),
+      this->show_debug_info_
+   );
    this->entities_.push_back(this->center_dot_);
 
    this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", "retro", this->viewport_->layer("hud"));
@@ -121,8 +131,8 @@ void BuilderScene::draw(Graphics& graphics) {
 void BuilderScene::update(Game& game, Scene* scene, Entity* entity) {
    Scene::update(game, scene, entity);
 
-   // map related work
    this->map_->update(game, this);
+   this->mouse_->update(game, this);
    
    // calculate and show FPS
    if (!this->frame_count) {
@@ -136,9 +146,6 @@ void BuilderScene::process(Game& game, CloseCommand& c) {
 }
 
 void BuilderScene::process(Game& game, KeyPressCommand& c) {
-   EntityList::const_iterator e_it;
-   Map::TileList::const_iterator it;
-
    switch (c.event.code) {
    case sf::Keyboard::Key::R:
       this->viewport_->reset();
@@ -202,30 +209,7 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
       //}
    break;
    case sf::Keyboard::Key::O:
-      // toggle outlines on all tiles
-      for (it = this->map_->get_tiles().begin(); it != this->map_->get_tiles().end(); ++it) {
-         if (dynamic_cast<GraphicsPart*>((*it)->get("debug"))) {
-            (*it)->remove("debug");
-            continue;
-         }
-
-         GraphicsPart* graphics_part = dynamic_cast<GraphicsPart*>((*it)->get("graphics"));
-         sf::FloatRect bounds(graphics_part->get(0)->get_global_bounds());
-
-         (*it)->add(UtilFactory::inst()->create_debug_graphics(bounds, this->viewport_->layer("main")));
-      }
-
-      for (e_it = this->entities_.begin(); e_it != this->entities_.end(); ++e_it) {
-         if (dynamic_cast<GraphicsPart*>((*e_it)->get("debug"))) {
-            (*e_it)->remove("debug");
-            continue;
-         }
-
-         GraphicsPart* graphics_part = dynamic_cast<GraphicsPart*>((*e_it)->get("graphics"));
-         sf::FloatRect bounds(graphics_part->get(0)->get_global_bounds());
-
-         (*e_it)->add(UtilFactory::inst()->create_debug_graphics(bounds, this->viewport_->layer("hud")));
-      }
+      this->toggle_debug_info();      
    break;
    default:
       // do nothing
@@ -293,7 +277,7 @@ void BuilderScene::click(MouseButtonCommand& c) {
          this->click_press_pos_.y = c.y;
 
          this->register_selection_rect();
-
+         this->update_selection_rect(this->click_press_pos_, this->click_press_pos_);
       } else if (c.state == MouseButtonCommand::RELEASED) {
          this->deregister_selection_rect();
 
@@ -352,9 +336,42 @@ void BuilderScene::update_fps() {
    }
 }
 
+void BuilderScene::toggle_debug_info() {
+   EntityList::const_iterator e_it;
+   Map::TileList::const_iterator it;
+
+   this->show_debug_info_ = !this->show_debug_info_;
+
+   if (this->show_debug_info_) {
+      // turned debug info on, add debug components to all entities
+      for (it = this->map_->get_tiles().begin(); it != this->map_->get_tiles().end(); ++it) {
+         (*it)->add(new DebugPart());
+      }
+
+      for (e_it = this->entities_.begin(); e_it != this->entities_.end(); ++e_it) {
+         (*e_it)->add(new DebugPart());
+      }
+   } else {
+      // turned debug info off, remove debug components from all entities
+      for (it = this->map_->get_tiles().begin(); it != this->map_->get_tiles().end(); ++it) {
+         (*it)->remove("debug");
+      }
+
+      for (e_it = this->entities_.begin(); e_it != this->entities_.end(); ++e_it) {
+         (*e_it)->remove("debug");
+      }
+   }
+}
+
 void BuilderScene::register_selection_rect() {
    if (!this->selection_rectangle_) {
-      this->selection_rectangle_ = TileFactory::inst()->create_selection_rectangle(nullptr, this->viewport_->layer("overlay"));
+      this->selection_rectangle_ = TileFactory::inst()->create_selection_rectangle(
+         nullptr,
+         this->viewport_->layer("overlay"),
+         this->show_debug_info_
+      );
+   } else {
+      this->selection_rectangle_->layer(this->viewport_->layer("overlay"));
    }
    this->entities_.push_back(this->selection_rectangle_);
 }
@@ -376,7 +393,13 @@ void BuilderScene::deregister_selection_rect() {
 
 void BuilderScene::update_selection_rect(sf::Vector2f& origin_click, sf::Vector2f& mouse_pos) {
    if (!this->selection_rectangle_) {
-      this->selection_rectangle_ = TileFactory::inst()->create_selection_rectangle(nullptr, this->viewport_->layer("overlay"));
+      this->selection_rectangle_ = TileFactory::inst()->create_selection_rectangle(
+         nullptr,
+         this->viewport_->layer("overlay"),
+         this->show_debug_info_
+      );
+   } else {
+      this->selection_rectangle_->layer(this->viewport_->layer("overlay"));
    }
 
    sf::FloatRect* new_rect = UtilFactory::inst()->create_float_rect(origin_click, mouse_pos);
@@ -419,7 +442,13 @@ void BuilderScene::update_tile_cursor(sf::Vector2f& one, sf::Vector2f& two) {
 
 void BuilderScene::add_tile_cursor(sf::Vector2f& one, sf::Vector2f& two) {
    Map::TileList cursor_tiles;
-   this->tile_cursor_ = TileFactory::inst()->create_tile_cursor(one, two, cursor_tiles, this->viewport_->layer("main"));
+   this->tile_cursor_ = TileFactory::inst()->create_tile_cursor(
+      one,
+      two,
+      cursor_tiles,
+      this->viewport_->layer("main"),
+      this->show_debug_info_
+   );
    this->round_to_nearest_tile(one, two);
 
    this->entities_.push_back(this->tile_cursor_);

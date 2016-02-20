@@ -53,7 +53,8 @@ public:
       sf::Vector2f pos = sf::Vector2f(0, 0),
       int size = 12,
       ALIGN alignment = ALIGN::LEFT,
-      sf::Color color = sf::Color::White
+      sf::Color color = sf::Color::White,
+      bool debug = false
    );
 
 protected:

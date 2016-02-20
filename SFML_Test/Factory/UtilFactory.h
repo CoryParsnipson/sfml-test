@@ -13,8 +13,7 @@ public:
 
    virtual Entity* create_mouse(Layer* layer);
    
-   virtual Entity* create_graphic(Graphic* g, sf::FloatRect bounding_box);
-   virtual GraphicsPart* create_debug_graphics(sf::FloatRect& bounds, Layer* layer = nullptr);
+   virtual Entity* create_graphic(Graphic* g, sf::FloatRect bounding_box, bool debug = false);
 
    virtual sf::FloatRect* create_float_rect(sf::Vector2f& one, sf::Vector2f& two);
 
