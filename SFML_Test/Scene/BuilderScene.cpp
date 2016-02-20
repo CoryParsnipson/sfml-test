@@ -37,9 +37,6 @@ BuilderScene::~BuilderScene() {
    delete this->mouse_;
 
    this->remove_tile_cursor();
-
-   this->deregister_selection_rect();
-   delete this->selection_rectangle_;
 }
 
 void BuilderScene::enter(Game& game) {
