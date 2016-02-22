@@ -11,6 +11,7 @@
 
 DebugPart::DebugPart(std::string id)
 : Part(id)
+, show_text_(false)
 , pos_text_(new Text("", TextFactory::inst()->get_font("retro")))
 {
    Service::get_logger().msg("DebugPart", Logger::INFO, "Creating DebugPart");
@@ -28,13 +29,23 @@ DebugPart::~DebugPart() {
    this->sprites_.clear();
 }
 
+void DebugPart::show_text(bool show_text) {
+   this->show_text_ = show_text;
+}
+
+bool DebugPart::show_text() {
+   return this->show_text_;
+}
+
 void DebugPart::draw(Graphics& graphics) {
    SpriteList::const_iterator sprite_it;
    for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
       (*sprite_it)->draw(graphics);
    }
 
-   this->pos_text_->draw(graphics);
+   if (this->show_text()) {
+      this->pos_text_->draw(graphics);
+   }
 }
 
 void DebugPart::layer(Layer* layer) {
@@ -52,6 +63,11 @@ void DebugPart::update(Game& game, Scene* scene, Entity* entity) {
    GraphicsPart* graphics = dynamic_cast<GraphicsPart*>(entity->get("graphics"));
    PhysicsPart* physics = dynamic_cast<PhysicsPart*>(entity->get("physics"));
    Layer* layer = nullptr;
+
+   // get entity's debug enable
+   if (entity) {
+      this->show_text(entity->enable_debug_text());
+   }
 
    // update size and position of each debug part sprite based on entity's graphic part
    if (graphics) {
@@ -77,7 +93,7 @@ void DebugPart::update(Game& game, Scene* scene, Entity* entity) {
    }
 
    // write down position of entity based on entity's physics part
-   if (physics) {
+   if (physics && this->show_text()) {
       sf::Vector2f pos = physics->get_position();
       this->pos_text_->set_string(std::to_string((int)pos.x) + ", " + std::to_string((int)pos.y));
       this->pos_text_->set_position(pos);

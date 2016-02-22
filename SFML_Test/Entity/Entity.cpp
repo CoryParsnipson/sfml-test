@@ -7,7 +7,9 @@
 #include "GraphicsPart.h"
 
 Entity::Entity(std::string name)
-: name_(name)
+: enable_debug_wireframe_(true)
+, enable_debug_text_(false)
+, name_(name)
 {
 }
 
@@ -31,6 +33,22 @@ std::string Entity::to_string() {
    description += "]";
 
    return description;
+}
+
+void Entity::enable_debug_wireframe(bool debug_wireframe) {
+   this->enable_debug_wireframe_ = debug_wireframe;
+}
+
+bool Entity::enable_debug_wireframe() {
+   return this->enable_debug_wireframe_;
+}
+
+void Entity::enable_debug_text(bool debug_text) {
+   this->enable_debug_text_ = debug_text;
+}
+
+bool Entity::enable_debug_text() {
+   return this->enable_debug_text_;
 }
 
 void Entity::set_position(float x, float y) {

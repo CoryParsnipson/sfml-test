@@ -41,6 +41,8 @@ Entity* UtilFactory::create_mouse(Layer* layer) {
    mouse->add(control_part);
    mouse->add(debug_part);
 
+   mouse->enable_debug_text(true);
+
    return mouse;
 }
 

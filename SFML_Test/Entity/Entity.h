@@ -21,6 +21,12 @@ public:
 
    std::string to_string();
 
+   void enable_debug_wireframe(bool debug_wireframe);
+   bool enable_debug_wireframe();
+
+   void enable_debug_text(bool debug_text);
+   bool enable_debug_text();
+
    void set_position(float x, float y);
    void set_position(const sf::Vector2f& pos);
 
@@ -45,6 +51,9 @@ public:
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 
 protected:
+   bool enable_debug_wireframe_;
+   bool enable_debug_text_;
+
    std::string name_;
    PartList parts_;
 };

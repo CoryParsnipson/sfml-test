@@ -86,6 +86,7 @@ Entity* TileFactory::create_tile_cursor(sf::Vector2f& one, sf::Vector2f& two, st
       cursor->add(debug_part);
    }
 
+   cursor->enable_debug_text(true);
    cursor->set_position(rect->left, rect->top);
 
    delete rect;
@@ -117,6 +118,7 @@ Entity* TileFactory::create_selection_rectangle(sf::FloatRect* bounds, Layer* la
       sr->add(debug_part);
    }
 
+   sr->enable_debug_text(true);
    sr->set_position(bounds ? bounds->left : 0, bounds ? bounds->top : 0);
    sr->set_size(bounds ? bounds->width : 0, bounds ? bounds->height : 0);
 

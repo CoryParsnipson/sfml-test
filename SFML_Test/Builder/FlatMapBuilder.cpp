@@ -46,4 +46,7 @@ void FlatMapBuilder::build_tile(int x, int y, std::string texture) {
 
    Entity* tile = TileFactory::inst()->create_tile(this->texture_manager_.get_texture(texture), tile_pos);
    this->map_->add(tile);
+
+   // set debug preferences
+   tile->enable_debug_text(true);
 }

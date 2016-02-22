@@ -405,10 +405,14 @@ void BuilderScene::update_selection_rect(sf::Vector2f& origin_click, sf::Vector2
 }
 
 void BuilderScene::update_tile_cursor(sf::Vector2f& one, sf::Vector2f& two) {
-   // need to compensate for the panning of main viewport layer
+   // compensate for main viewport layer zoom
+   sf::Vector2f offset_one = one;
+   sf::Vector2f offset_two = two;
+   
+   // compensate for the panning of main viewport layer
    sf::Vector2f pan_delta = this->viewport_->layer("main")->get_pan_delta();
-   sf::Vector2f offset_one = one - pan_delta;
-   sf::Vector2f offset_two = two - pan_delta;
+   offset_one -= pan_delta;
+   offset_two -= pan_delta;
 
    if (!this->tile_cursor_) {
       this->add_tile_cursor(offset_one, offset_two);
