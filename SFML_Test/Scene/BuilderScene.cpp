@@ -406,8 +406,8 @@ void BuilderScene::update_selection_rect(sf::Vector2f& origin_click, sf::Vector2
 
 void BuilderScene::update_tile_cursor(sf::Vector2f& one, sf::Vector2f& two) {
    // compensate for main viewport layer zoom
-   sf::Vector2f offset_one = one;
-   sf::Vector2f offset_two = two;
+   sf::Vector2f offset_one = this->viewport_->layer("main")->get_scale() * (one - this->viewport_->layer("hud")->get_center()) + this->viewport_->layer("hud")->get_center();
+   sf::Vector2f offset_two = this->viewport_->layer("main")->get_scale() * (two - this->viewport_->layer("hud")->get_center()) + this->viewport_->layer("hud")->get_center();
    
    // compensate for the panning of main viewport layer
    sf::Vector2f pan_delta = this->viewport_->layer("main")->get_pan_delta();
