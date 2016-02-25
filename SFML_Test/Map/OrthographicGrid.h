@@ -16,6 +16,8 @@ public:
 
    virtual void origin(const sf::Vector2f& origin);
 
+   virtual sf::Vector2f coord_to_screen(const sf::Vector2f& coord);
+
    virtual sf::Vector2f floor(const sf::Vector2f& pos);
    virtual sf::Vector2f round(const sf::Vector2f& pos);
    virtual sf::Vector2f ceil(const sf::Vector2f& pos);

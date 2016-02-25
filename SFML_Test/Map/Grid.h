@@ -54,6 +54,8 @@ public:
    bool show_debug() { return this->show_debug_info_; }
    void show_debug(bool show_debug_info) { this->show_debug_info_ = show_debug_info; }
 
+   virtual sf::Vector2f coord_to_screen(const sf::Vector2f& coord) = 0;
+
    virtual sf::Vector2f floor(const sf::Vector2f& pos) = 0;
    virtual sf::Vector2f round(const sf::Vector2f& pos) = 0;
    virtual sf::Vector2f ceil(const sf::Vector2f& pos) = 0;

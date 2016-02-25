@@ -60,8 +60,6 @@ protected:
    int frame_count;
    bool show_debug_info_;
 
-   void round_to_nearest_tile(sf::Vector2f& one, sf::Vector2f& two); // TODO: move this to the proper place
-
    // helper methods
    void update_fps();
 
@@ -72,7 +70,6 @@ protected:
    void update_selection_rect(sf::Vector2f& origin_click, sf::Vector2f& mouse_pos);
 
    void update_tile_cursor(sf::Vector2f& one, sf::Vector2f& two);
-   void add_tile_cursor(sf::Vector2f& one, sf::Vector2f& two);
    void remove_tile_cursor();
 };
 

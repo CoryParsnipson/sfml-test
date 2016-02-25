@@ -296,43 +296,6 @@ void BuilderScene::click(MouseButtonCommand& c) {
    }
 }
 
-void BuilderScene::round_to_nearest_tile(sf::Vector2f& one, sf::Vector2f& two) {
-   if (!this->tile_cursor_) {
-      return;
-   }
-
-   sf::FloatRect* new_rect = UtilFactory::inst()->create_float_rect(one, two);
-
-   float tile_width = Settings::Instance()->TILE_WIDTH;
-   float tile_height = Settings::Instance()->TILE_HEIGHT;
-
-   // round to nearest tile
-   sf::Vector2f end_point(new_rect->left + new_rect->width, new_rect->top + new_rect->height);
-   end_point.x = tile_width * std::round(end_point.x / tile_width);
-   end_point.y = tile_height * std::round(end_point.y / tile_height);
-
-   new_rect->left = tile_width * std::floor(new_rect->left / tile_width);
-   new_rect->top = tile_height * std::floor(new_rect->top / tile_height);
-
-   new_rect->width = end_point.x - new_rect->left;
-   new_rect->height = end_point.y - new_rect->top;
-
-   // ensure minimum size
-   new_rect->width = std::max(new_rect->width, tile_width);
-   new_rect->height = std::max(new_rect->height, tile_height);
-
-   sf::Vector2f final_origin = sf::Vector2f(new_rect->left, new_rect->top);
-   sf::Vector2f final_end = sf::Vector2f(new_rect->left + new_rect->width, new_rect->top + new_rect->height);
-
-   sf::Vector2f final_size = final_end - final_origin;
-
-   // update tile cursor entity
-   this->tile_cursor_->set_position(final_origin);
-   this->tile_cursor_->set_size(final_size);
-
-   delete new_rect;
-}
-
 void BuilderScene::update_fps() {
    this->last_frame_time = (((float)this->frame_measurement_interval / this->clock.getElapsedTime().asSeconds()) * Settings::Instance()->FRAMERATE_SMOOTHING)
                            + (this->last_frame_time * (1.0 - Settings::Instance()->FRAMERATE_SMOOTHING));
@@ -426,42 +389,48 @@ void BuilderScene::update_tile_cursor(sf::Vector2f& one, sf::Vector2f& two) {
    offset_one -= pan_delta;
    offset_two -= pan_delta;
 
-   if (!this->tile_cursor_) {
-      this->add_tile_cursor(offset_one, offset_two);
-      return;
-   }
-
    sf::FloatRect* new_rect = UtilFactory::inst()->create_float_rect(offset_one, offset_two);
 
-   bool is_drag_gesture = (new_rect->width >= Settings::Instance()->TILE_WIDTH / 3.f ||
-                           new_rect->height >= Settings::Instance()->TILE_HEIGHT / 3.f);
+   bool is_drag_gesture = (new_rect->width >= this->map_->grid()->tile_width() / 3.f ||
+                           new_rect->height >= this->map_->grid()->tile_height() / 3.f);
 
-   if (!is_drag_gesture && this->tile_cursor_->intersects(offset_one)) {
+   if (!is_drag_gesture && this->tile_cursor_ && this->tile_cursor_->intersects(offset_one)) {
       this->remove_tile_cursor();
       delete new_rect;
       return;
    }
 
+   if (!this->tile_cursor_) {
+      Map::TileList cursor_tiles;
+      this->tile_cursor_ = TileFactory::inst()->create_tile_cursor(
+         one,
+         two,
+         cursor_tiles,
+         this->viewport_->layer("main"),
+         this->show_debug_info_
+      );
+
+      this->entities_.push_back(this->tile_cursor_);
+   }
+
+   // round to nearest map grid point
+   sf::Vector2f start_point(new_rect->left, new_rect->top);
+   sf::Vector2f end_point(new_rect->left + new_rect->width, new_rect->top + new_rect->height);
+
+   start_point = this->map_->grid()->floor(start_point);
+   end_point = this->map_->grid()->ceil(end_point);
+
+   // update new_rect
+   new_rect->left = start_point.x;
+   new_rect->top = start_point.y;
+
+   new_rect->width = std::max(end_point.x - new_rect->left, (float)this->map_->grid()->tile_width());
+   new_rect->height = std::max(end_point.y - new_rect->top, (float)this->map_->grid()->tile_height());
+
    this->tile_cursor_->set_position(new_rect->left, new_rect->top);
    this->tile_cursor_->set_size(new_rect->width, new_rect->height);
 
-   this->round_to_nearest_tile(offset_one, offset_two);
-
    delete new_rect;
-}
-
-void BuilderScene::add_tile_cursor(sf::Vector2f& one, sf::Vector2f& two) {
-   Map::TileList cursor_tiles;
-   this->tile_cursor_ = TileFactory::inst()->create_tile_cursor(
-      one,
-      two,
-      cursor_tiles,
-      this->viewport_->layer("main"),
-      this->show_debug_info_
-   );
-   this->round_to_nearest_tile(one, two);
-
-   this->entities_.push_back(this->tile_cursor_);
 }
 
 void BuilderScene::remove_tile_cursor() {

@@ -37,16 +37,20 @@ void OrthographicGrid::origin(const sf::Vector2f& origin) {
    this->create_origin_dot();
 }
 
+sf::Vector2f OrthographicGrid::coord_to_screen(const sf::Vector2f& coord) {
+   return sf::Vector2f(coord.x * this->tile_width(), coord.y * this->tile_height());
+}
+
 sf::Vector2f OrthographicGrid::floor(const sf::Vector2f& pos) {
-   return sf::Vector2f((int)(pos.x / this->tile_width()), (int)(pos.y / this->tile_height()));
+   return sf::Vector2f(std::floor(pos.x / this->tile_width()) * this->tile_width(), std::floor(pos.y / this->tile_height()) * this->tile_height());
 }
 
 sf::Vector2f OrthographicGrid::round(const sf::Vector2f& pos) {
-   return sf::Vector2f(std::round(pos.x / this->tile_width()), std::round(pos.y / this->tile_height()));
+   return sf::Vector2f(std::round(pos.x / this->tile_width()) * this->tile_width(), std::round(pos.y / this->tile_height()) * this->tile_height());
 }
 
 sf::Vector2f OrthographicGrid::ceil(const sf::Vector2f& pos) {
-   return sf::Vector2f(std::ceil(pos.x / this->tile_width()), std::ceil(pos.y / this->tile_height()));
+   return sf::Vector2f(std::ceil(pos.x / this->tile_width()) * this->tile_width(), std::ceil(pos.y / this->tile_height()) * this->tile_height());
 }
 
 void OrthographicGrid::draw(Graphics& graphics) {

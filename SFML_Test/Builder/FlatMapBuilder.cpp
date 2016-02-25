@@ -54,15 +54,13 @@ void FlatMapBuilder::build_map() {
 }
 
 void FlatMapBuilder::build_tile(int x, int y, std::string texture) {
-   if (!this->map_) {
-      this->build_map();
+   if (!this->map_ || !this->map_->grid()) {
+      Service::get_logger().msg("FlatMapBuilder", Logger::ERROR, "Need to define a grid for map before creating tiles.");
+      return;
    }
-   
-   sf::Vector2f tile_pos;
-   tile_pos.x = x * Settings::Instance()->TILE_WIDTH;
-   tile_pos.y = y * Settings::Instance()->TILE_HEIGHT;
 
-   Entity* tile = TileFactory::inst()->create_tile(this->texture_manager_.get_texture(texture), tile_pos);
+   sf::Vector2f grid_coord(x, y);
+   Entity* tile = TileFactory::inst()->create_tile(this->texture_manager_.get_texture(texture), this->map_->grid()->coord_to_screen(grid_coord));
    this->map_->add(tile);
 
    // set debug preferences
