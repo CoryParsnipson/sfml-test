@@ -54,3 +54,31 @@ void IsoMapBuilder::build_tile(int x, int y, std::string texture) {
 
    this->map_->add(tile);
 }
+
+void IsoMapBuilder::build_grid(const std::string& id, int tile_size) {
+   if (!this->map_) {
+      this->build_map();
+   }
+
+   // TODO: this should be IsomorphicGrid
+   //this->map_->add(new Grid(id, tile_size));
+}
+
+void IsoMapBuilder::build_grid(const std::string& id, const sf::Vector2f& tile_size) {
+   if (!this->map_) {
+      this->build_map();
+   }
+
+   // TODO: this should be IsomorphicGrid
+   //this->map_->add(new Grid(id, tile_size));
+}
+
+void IsoMapBuilder::build_grid(const std::string& id, const sf::Vector2f& tile_size, const sf::Vector2f& origin) {
+   if (!this->map_) {
+      this->build_map();
+   }
+
+   // TODO: this should be IsomorphicGrid
+   //this->map_->add(new Grid(id, tile_size));
+   //this->map_->grid()->origin(origin);
+}

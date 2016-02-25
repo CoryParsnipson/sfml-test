@@ -17,6 +17,7 @@
 #include "TextFactory.h"
 #include "TextSerializer.h"
 #include "FlatMapBuilder.h"
+#include "Grid.h"
 
 BuilderScene::BuilderScene()
 : Scene("BuilderScene")
@@ -46,6 +47,7 @@ void BuilderScene::enter(Game& game) {
    this->viewport_ = new Viewport(sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height()));
 
    // fixed layer above map and sprites
+   this->viewport_->add("grid");
    this->viewport_->add("overlay");
    this->viewport_->add("hud");
 
@@ -63,9 +65,9 @@ void BuilderScene::enter(Game& game) {
    map_builder->build();
 
    this->map_ = map_builder->get_map();
-   // TODO: need to change this so that individual tiles can specify which layer they are one
+   // TODO: need to change this so that individual tiles can specify which layer they are on
    this->map_->layer(this->viewport_->layer("main"));
-
+   
    delete serializer;
    delete map_builder;
 
@@ -87,18 +89,6 @@ void BuilderScene::enter(Game& game) {
    
    t = TextFactory::inst()->create_text_entity("right click: click and drag to pan", "retro", this->viewport_->layer("hud"), sf::Vector2f(0, 30));
    this->entities_.push_back(t);
-
-   Shape* origin_dot = new Shape(new sf::RectangleShape());
-   origin_dot->set_size(3, 3);
-   origin_dot->set_fill_color(sf::Color::Yellow);
-   origin_dot->layer(this->viewport_->layer("main"));
-
-   Entity* origin_dot_entity = UtilFactory::inst()->create_graphic(
-      origin_dot,
-      origin_dot->get_global_bounds(),
-      this->show_debug_info_
-   );
-   this->entities_.push_back(origin_dot_entity);
 
    Shape* center_dot_graphic = new Shape(new sf::RectangleShape());
    center_dot_graphic->set_size(3, 3);
@@ -208,6 +198,14 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
    case sf::Keyboard::Key::O:
       this->toggle_debug_info();      
    break;
+   case sf::Keyboard::Key::G:
+      // toggle map grid visibility
+      if (!this->map_->grid()->layer()) {
+         this->map_->grid()->layer(this->viewport_->layer("grid"));
+      } else {
+         this->map_->grid()->layer(nullptr);
+      }
+   break;
    default:
       // do nothing
    break;
@@ -240,11 +238,18 @@ void BuilderScene::drag(MouseButtonCommand& c, sf::Vector2f delta) {
       return;
    }
 
+   Layer* grid_layer = this->viewport_->layer("grid");
+   if (!grid_layer) {
+      Service::get_logger().msg(this->id_, Logger::WARNING, "Grid viewport cannot be found...");
+      return;
+   }
+
    if (c.button == MouseButtonCommand::LEFT) {
       sf::Vector2f mouse_pos(c.x, c.y);
       this->update_selection_rect(this->click_press_pos_, mouse_pos);
    } else if (c.button == MouseButtonCommand::RIGHT) {
       main_layer->drag(c, delta);
+      grid_layer->drag(c, delta);
    }
 }
 
@@ -264,6 +269,13 @@ void BuilderScene::set_scale(float factor) {
       main_layer->set_scale(factor);
    } else {
       Service::get_logger().msg(this->id_, Logger::WARNING, "Main viewport cannot be found...");
+   }
+
+   Layer* grid_layer = this->viewport_->layer("grid");
+   if (grid_layer) {
+      grid_layer->set_scale(factor);
+   } else {
+      Service::get_logger().msg(this->id_, Logger::WARNING, "Grid viewport cannot be found...");
    }
 }
 

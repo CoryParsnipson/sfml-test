@@ -7,6 +7,8 @@
 #include "Update.h"
 #include "Entity.h"
 
+class Grid;
+
 class Map
 : public Draw
 , public Update
@@ -24,16 +26,20 @@ public:
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 
-   virtual void add(Entity* tile);
+   void add(Entity* tile);
+   void add(Grid* grid);
 
    virtual TileList intersects(sf::Vector2i point);
    virtual TileList intersects(sf::Vector2f point);
    virtual TileList intersects(sf::FloatRect rect);
 
-   virtual const TileList& get_tiles();
+   const TileList& get_tiles();
    virtual std::string to_string();
+
+   Grid* grid();
  
 protected:
+   Grid* grid_;
    TileList tiles_;
 };
 

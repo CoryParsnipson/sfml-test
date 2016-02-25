@@ -6,7 +6,10 @@
 #include "Entity.h"
 #include "PhysicsPart.h"
 
+#include "Grid.h"
+
 Map::Map()
+: grid_(nullptr)
 {
 }
 
@@ -15,6 +18,9 @@ Map::~Map() {
    for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
       delete *it;
    }
+
+   delete this->grid_;
+   this->grid_ = nullptr;
 }
 
 void Map::draw(Graphics& graphics) {
@@ -49,6 +55,10 @@ void Map::add(Entity* tile) {
    }
 
    this->tiles_.push_back(tile);
+}
+
+void Map::add(Grid* grid) {
+   this->grid_ = grid;
 }
 
 Map::TileList Map::intersects(sf::Vector2i point) {
@@ -89,4 +99,8 @@ const Map::TileList& Map::get_tiles() {
 
 std::string Map::to_string() {
    return "[Map]";
+}
+
+Grid* Map::grid() {
+   return this->grid_;
 }
