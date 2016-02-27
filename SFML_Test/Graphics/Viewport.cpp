@@ -11,7 +11,7 @@ Viewport::Viewport(sf::Vector2f size)
 Viewport::~Viewport() {
    LayerList::const_iterator it;
    for (it = this->layers_.begin(); it != this->layers_.end(); ++it) {
-      delete (*it);
+      delete *it;
    }
    this->layers_.clear();
 }

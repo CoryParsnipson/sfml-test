@@ -33,7 +33,9 @@ void FlatMapBuilder::build() {
 
          // figure out type of serialized object
          if (type_token == "grid") {
-            this->build_grid(d["id"], sf::Vector2f(std::stoi(d["tile_width"]), std::stoi(d["tile_height"])));
+            sf::Vector2f tile_size(std::stoi(d["tile_width"]), std::stoi(d["tile_height"]));
+            sf::Vector2f origin(std::stoi(d["origin_x"]), std::stoi(d["origin_y"]));
+            this->build_grid(d["id"], tile_size, origin);
          } else if (type_token == "tile") {
             this->build_tile(std::stoi(d["pos_x"]), std::stoi(d["pos_y"]), d["texture"]);
          } else {

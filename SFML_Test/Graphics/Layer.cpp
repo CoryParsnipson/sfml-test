@@ -9,6 +9,7 @@ const float Layer::ZOOM_FACTOR_MAX = 3.0;
 
 Layer::Layer(std::string id, sf::Vector2f size)
 : id_(id)
+, visible_(true)
 , zoom_factor_(1.0)
 , original_center_(size.x / 2.f, size.y / 2.f)
 , view_(nullptr)
@@ -99,7 +100,23 @@ void Layer::remove(Draw* drawable) {
    }
 }
 
+void Layer::hide() {
+   this->visible_ = false;
+}
+
+void Layer::show() {
+   this->visible_ = true;
+}
+
+bool Layer::visible() {
+   return this->visible_;
+}
+
 void Layer::draw(Graphics& graphics) {
+   if (!this->visible_) {
+      return;
+   }
+
    DrawableList::const_iterator it;
    for (it = this->drawables_.begin(); it != this->drawables_.end();) {
       if (!(*it)) {

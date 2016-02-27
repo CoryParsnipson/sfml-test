@@ -45,16 +45,29 @@ public:
    }
    const sf::Vector2f& origin() { return this->origin_; }
 
-   void tile_width(int width) { this->tile_width_ = width; }
+   void tile_width(int width) {
+      this->tile_width_ = width;
+
+      // re-calculate origin mod
+      this->origin_mod_.x = (int)this->origin_.x % this->tile_width_;
+   }
    int tile_width() { return this->tile_width_; }
 
-   void tile_height(int height) { this->tile_height_ = height; }
+   void tile_height(int height) {
+      this->tile_height_ = height;
+      
+      // re-calculate origin mod
+      this->origin_mod_.y = (int)this->origin_.y % this->tile_height_;
+   }
    int tile_height() { return this->tile_height_; }
 
    bool show_debug() { return this->show_debug_info_; }
    void show_debug(bool show_debug_info) { this->show_debug_info_ = show_debug_info; }
 
    virtual sf::Vector2f coord_to_screen(const sf::Vector2f& coord) = 0;
+
+   virtual void move(const sf::Vector2f& delta) = 0;
+   virtual void set_position(const sf::Vector2f& pos) = 0;
 
    virtual sf::Vector2f floor(const sf::Vector2f& pos) = 0;
    virtual sf::Vector2f round(const sf::Vector2f& pos) = 0;
@@ -66,11 +79,13 @@ public:
 protected:
    std::string id_;
    sf::Vector2f origin_;
+   sf::Vector2f origin_mod_;
 
    int tile_width_;
    int tile_height_;
    
    bool show_debug_info_;
+   sf::Vector2f pan_delta_;
 };
 
 #endif

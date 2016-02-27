@@ -51,6 +51,8 @@ void BuilderScene::enter(Game& game) {
    this->viewport_->add("overlay");
    this->viewport_->add("hud");
 
+   this->viewport_->layer("grid")->hide(); // hide grid display layer by default
+
    // load textures
    game.texture_manager.create_texture("tile_solid", "flatmap_test_texture.png", sf::IntRect(0, 0, 40, 40));
    game.texture_manager.create_texture("tile_clear", "flatmap_test_texture.png", sf::IntRect(40, 0, 40, 40));
@@ -67,6 +69,8 @@ void BuilderScene::enter(Game& game) {
    this->map_ = map_builder->get_map();
    // TODO: need to change this so that individual tiles can specify which layer they are on
    this->map_->layer(this->viewport_->layer("main"));
+
+   this->map_->grid()->layer(this->viewport_->layer("grid"));
    
    delete serializer;
    delete map_builder;
@@ -136,6 +140,9 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
    switch (c.event.code) {
    case sf::Keyboard::Key::R:
       this->viewport_->reset();
+
+      // reset grid position too
+      this->map_->grid()->set_position(sf::Vector2f(0, 0));
    break;
    case sf::Keyboard::Key::F:
       //if (this->selected_tile) {
@@ -200,10 +207,10 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
    break;
    case sf::Keyboard::Key::G:
       // toggle map grid visibility
-      if (!this->map_->grid()->layer()) {
-         this->map_->grid()->layer(this->viewport_->layer("grid"));
+      if (this->viewport_->layer("grid")->visible()) {
+         this->viewport_->layer("grid")->hide();
       } else {
-         this->map_->grid()->layer(nullptr);
+         this->viewport_->layer("grid")->show();
       }
    break;
    default:
@@ -225,6 +232,13 @@ void BuilderScene::process(Game& game, WindowResizeCommand& c) {
 
    // reposition fps display
    this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
+
+   // update grid
+   sf::Vector2f inverse_pan_delta = this->viewport_->layer("main")->get_pan_delta();
+   inverse_pan_delta.x *= -1;
+   inverse_pan_delta.y *= -1;
+
+   this->map_->grid()->set_position(inverse_pan_delta);
 }
 
 void BuilderScene::process(Game& game, MouseButtonCommand& c) {}
@@ -250,6 +264,8 @@ void BuilderScene::drag(MouseButtonCommand& c, sf::Vector2f delta) {
    } else if (c.button == MouseButtonCommand::RIGHT) {
       main_layer->drag(c, delta);
       grid_layer->drag(c, delta);
+      
+      this->map_->grid()->move(delta);
    }
 }
 

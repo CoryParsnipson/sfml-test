@@ -44,6 +44,10 @@ public:
    void add(Draw* drawable);
    void remove(Draw* drawable);
 
+   void hide();
+   void show();
+   bool visible();
+
    virtual void draw(Graphics& graphics);
 
    // mouse control interface
@@ -56,6 +60,7 @@ public:
 
 protected:
    std::string id_;
+   bool visible_;
    float zoom_factor_;
    sf::Vector2f original_center_;
 
