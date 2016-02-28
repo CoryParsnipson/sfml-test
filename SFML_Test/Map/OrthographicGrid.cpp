@@ -63,6 +63,13 @@ void OrthographicGrid::move(const sf::Vector2f& delta) {
    this->create_gridlines();
 }
 
+void OrthographicGrid::set_scale(float factor) {
+   this->scale_factor_ = factor;
+
+   this->clear_gridlines();
+   this->create_gridlines();
+}
+
 void OrthographicGrid::set_position(const sf::Vector2f& pos) {
    this->pan_delta_ = pos;
 
@@ -131,14 +138,16 @@ void OrthographicGrid::create_origin_dot() {
 }
 
 void OrthographicGrid::create_gridlines() {
-   int cur_width = Settings::Instance()->cur_width();
-   int cur_height = Settings::Instance()->cur_height();
+   int cur_width = Settings::Instance()->cur_width() * this->scale_factor_;
+   int cur_height = Settings::Instance()->cur_height() * this->scale_factor_;
 
-   sf::Vector2f start_pos = this->round(this->pan_delta_);
+   sf::Vector2f center(Settings::Instance()->cur_width() / 2.f, Settings::Instance()->cur_height() / 2.f);
+   sf::Vector2f screen_start = center - sf::Vector2f(cur_width / 2.f, cur_height / 2.f) + this->pan_delta_;
+   sf::Vector2f start_pos = this->round(screen_start);
 
    for (int col_pos = 0; col_pos <= cur_width; col_pos += this->tile_width()) {
       Graphic* col = new Shape(new sf::RectangleShape(sf::Vector2f(1, cur_height)));
-      col->set_position(col_pos + start_pos.x, this->pan_delta_.y);
+      col->set_position(col_pos + start_pos.x, screen_start.y);
       col->set_fill_color(sf::Color(230, 230, 230, 90));
       col->layer(this->layer());
 
@@ -147,7 +156,7 @@ void OrthographicGrid::create_gridlines() {
 
    for (int row_pos = 0; row_pos <= cur_height; row_pos += this->tile_height()) {
       Graphic* row = new Shape(new sf::RectangleShape(sf::Vector2f(cur_width, 1)));
-      row->set_position(this->pan_delta_.x, row_pos + start_pos.y);
+      row->set_position(screen_start.x, row_pos + start_pos.y);
       row->set_fill_color(sf::Color(230, 230, 230, 90));
       row->layer(this->layer());
 

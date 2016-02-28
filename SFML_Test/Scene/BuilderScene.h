@@ -43,6 +43,7 @@ public:
 protected:
    // scene fixtures
    Map* map_;
+   sf::VertexArray backdrop_;
 
    // entity pointers (no ownership)
    Entity* mouse_;

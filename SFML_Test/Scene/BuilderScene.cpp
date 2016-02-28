@@ -22,6 +22,7 @@
 BuilderScene::BuilderScene()
 : Scene("BuilderScene")
 , map_(nullptr)
+, backdrop_(sf::TrianglesStrip, 4)
 , mouse_(nullptr)
 , center_dot_(nullptr)
 , selection_rectangle_(nullptr)
@@ -69,8 +70,17 @@ void BuilderScene::enter(Game& game) {
    this->map_ = map_builder->get_map();
    // TODO: need to change this so that individual tiles can specify which layer they are on
    this->map_->layer(this->viewport_->layer("main"));
-
    this->map_->grid()->layer(this->viewport_->layer("grid"));
+
+   this->backdrop_[0].position = sf::Vector2f(0, 0);
+   this->backdrop_[1].position = sf::Vector2f(0, Settings::Instance()->cur_height());
+   this->backdrop_[2].position = sf::Vector2f(Settings::Instance()->cur_width(), 0);
+   this->backdrop_[3].position = sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height());
+
+   this->backdrop_[0].color = sf::Color(50, 50, 50, 255);
+   this->backdrop_[1].color = sf::Color(25, 25, 25, 255);
+   this->backdrop_[2].color = sf::Color(50, 50, 50, 255);
+   this->backdrop_[3].color = sf::Color(25, 25, 25, 255);
    
    delete serializer;
    delete map_builder;
@@ -116,6 +126,7 @@ void BuilderScene::exit(Game& game) {
 }
 
 void BuilderScene::draw(Graphics& graphics) {
+   graphics.draw(this->backdrop_);
    Scene::draw(graphics);
 }
 
@@ -239,6 +250,12 @@ void BuilderScene::process(Game& game, WindowResizeCommand& c) {
    inverse_pan_delta.y *= -1;
 
    this->map_->grid()->set_position(inverse_pan_delta);
+
+   // update backsplash
+   this->backdrop_[0].position = sf::Vector2f(0, 0);
+   this->backdrop_[1].position = sf::Vector2f(0, Settings::Instance()->cur_height());
+   this->backdrop_[2].position = sf::Vector2f(Settings::Instance()->cur_width(), 0);
+   this->backdrop_[3].position = sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height());
 }
 
 void BuilderScene::process(Game& game, MouseButtonCommand& c) {}
@@ -283,6 +300,7 @@ void BuilderScene::set_scale(float factor) {
    Layer* main_layer = this->viewport_->layer("main");
    if (main_layer) {
       main_layer->set_scale(factor);
+      this->map_->grid()->set_scale(main_layer->get_scale());
    } else {
       Service::get_logger().msg(this->id_, Logger::WARNING, "Main viewport cannot be found...");
    }

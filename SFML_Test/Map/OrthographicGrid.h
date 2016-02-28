@@ -22,6 +22,7 @@ public:
    virtual sf::Vector2f coord_to_screen(const sf::Vector2f& coord);
 
    virtual void move(const sf::Vector2f& delta);
+   virtual void set_scale(float factor);
    virtual void set_position(const sf::Vector2f& pos);
 
    virtual sf::Vector2f floor(const sf::Vector2f& pos);

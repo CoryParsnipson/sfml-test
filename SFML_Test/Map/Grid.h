@@ -14,6 +14,7 @@ public:
    , tile_width_(0)
    , tile_height_(0)
    , show_debug_info_(false)
+   , scale_factor_(1.0)
    {
    }
 
@@ -23,6 +24,7 @@ public:
    , tile_width_(tile_size)
    , tile_height_(tile_size)
    , show_debug_info_(false)
+   , scale_factor_(1.0)
    {
    }
 
@@ -32,6 +34,7 @@ public:
    , tile_width_(tile_size.x)
    , tile_height_(tile_size.y)
    , show_debug_info_(false)
+   , scale_factor_(1.0)
    {
    }
 
@@ -67,6 +70,7 @@ public:
    virtual sf::Vector2f coord_to_screen(const sf::Vector2f& coord) = 0;
 
    virtual void move(const sf::Vector2f& delta) = 0;
+   virtual void set_scale(float factor) = 0;
    virtual void set_position(const sf::Vector2f& pos) = 0;
 
    virtual sf::Vector2f floor(const sf::Vector2f& pos) = 0;
@@ -86,6 +90,7 @@ protected:
    
    bool show_debug_info_;
    sf::Vector2f pan_delta_;
+   float scale_factor_;
 };
 
 #endif
