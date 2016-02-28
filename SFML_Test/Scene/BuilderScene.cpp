@@ -152,8 +152,9 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
    case sf::Keyboard::Key::R:
       this->viewport_->reset();
 
-      // reset grid position too
+      // reset grid too
       this->map_->grid()->set_position(sf::Vector2f(0, 0));
+      this->map_->grid()->set_scale(1.0);
    break;
    case sf::Keyboard::Key::F:
       //if (this->selected_tile) {
