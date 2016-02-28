@@ -2,6 +2,7 @@
 
 #include "Graphic.h"
 #include "UtilFactory.h"
+#include "TextFactory.h"
 
 OrthographicGrid::OrthographicGrid(const std::string& id)
 : Grid(id)
@@ -9,6 +10,7 @@ OrthographicGrid::OrthographicGrid(const std::string& id)
 {
    this->create_origin_dot();
    this->create_gridlines();
+   this->create_text_markers();
 }
 
 OrthographicGrid::OrthographicGrid(const std::string& id, int tile_size)
@@ -17,6 +19,7 @@ OrthographicGrid::OrthographicGrid(const std::string& id, int tile_size)
 {
    this->create_origin_dot();
    this->create_gridlines();
+   this->create_text_markers();
 }
 
 OrthographicGrid::OrthographicGrid(const std::string& id, const sf::Vector2f& tile_size)
@@ -25,11 +28,13 @@ OrthographicGrid::OrthographicGrid(const std::string& id, const sf::Vector2f& ti
 {
    this->create_origin_dot();
    this->create_gridlines();
+   this->create_text_markers();
 }
 
 OrthographicGrid::~OrthographicGrid() {
    delete this->origin_dot_;
    this->clear_gridlines();
+   this->clear_text_markers();
 }
 
 void OrthographicGrid::origin(const sf::Vector2f& origin) {
@@ -61,6 +66,9 @@ void OrthographicGrid::move(const sf::Vector2f& delta) {
 
    this->clear_gridlines();
    this->create_gridlines();
+
+   this->clear_text_markers();
+   this->create_text_markers();
 }
 
 void OrthographicGrid::set_scale(float factor) {
@@ -68,6 +76,9 @@ void OrthographicGrid::set_scale(float factor) {
 
    this->clear_gridlines();
    this->create_gridlines();
+
+   this->clear_text_markers();
+   this->create_text_markers();
 }
 
 void OrthographicGrid::set_position(const sf::Vector2f& pos) {
@@ -75,6 +86,9 @@ void OrthographicGrid::set_position(const sf::Vector2f& pos) {
 
    this->clear_gridlines();
    this->create_gridlines();
+
+   this->clear_text_markers();
+   this->create_text_markers();
 }
 
 sf::Vector2f OrthographicGrid::floor(const sf::Vector2f& pos) {
@@ -109,6 +123,11 @@ void OrthographicGrid::draw(Graphics& graphics) {
    }
 
    this->origin_dot_->draw(graphics);
+
+   TextMarkerList::const_iterator tm_it;
+   for (tm_it = this->text_markers_.begin(); tm_it != this->text_markers_.end(); ++tm_it) {
+      (*tm_it)->draw(graphics);
+   }
 }
 
 void OrthographicGrid::layer(Layer* layer) {
@@ -124,6 +143,11 @@ void OrthographicGrid::layer(Layer* layer) {
    for (it = this->grid_rows_.begin(); it != this->grid_rows_.end(); ++it) {
       (*it)->layer(layer);
    }
+
+   TextMarkerList::const_iterator tm_it;
+   for (tm_it = this->text_markers_.begin(); tm_it != this->text_markers_.end(); ++tm_it) {
+      (*tm_it)->layer(layer); 
+   }
 }
 
 Layer* OrthographicGrid::layer() {
@@ -132,7 +156,7 @@ Layer* OrthographicGrid::layer() {
 
 void OrthographicGrid::create_origin_dot() {
    this->origin_dot_ = new Shape(new sf::RectangleShape(sf::Vector2f(3, 3)));
-   this->origin_dot_->set_fill_color(sf::Color::White);
+   this->origin_dot_->set_fill_color(sf::Color(255, 157, 75, 255));
    this->origin_dot_->set_position(this->origin_);
    this->origin_dot_->layer(this->layer());
 }
@@ -175,4 +199,42 @@ void OrthographicGrid::clear_gridlines() {
       delete *it;
    }
    this->grid_rows_.clear();
+}
+
+void OrthographicGrid::create_text_markers() {
+   int cur_width = Settings::Instance()->cur_width() * this->scale_factor_;
+   int cur_height = Settings::Instance()->cur_height() * this->scale_factor_;
+   int text_interval = this->tile_width() * 8;
+   
+   sf::Vector2f pos;
+   sf::Vector2f center(Settings::Instance()->cur_width() / 2.f, Settings::Instance()->cur_height() / 2.f);
+   sf::Vector2f screen_start = center - sf::Vector2f(cur_width / 2.f, cur_height / 2.f) + this->pan_delta_;
+   sf::Vector2f start_pos(
+      std::round(screen_start.x / (8 * this->tile_width())) * 8 * this->tile_width(),
+      std::round(screen_start.y / (8 * this->tile_height())) * 8 * this->tile_height()
+   );
+   for (int col_pos = 0; col_pos <= cur_width; col_pos += text_interval) {
+      for (int row_pos = 0; row_pos <= cur_height; row_pos += text_interval) {
+         pos.x = col_pos + start_pos.x;
+         pos.y = row_pos + start_pos.y;
+
+         text_markers_.push_back(TextFactory::inst()->create_text(
+            std::to_string((int)pos.x) + ", " + std::to_string((int)pos.y),
+            "retro",
+            this->layer(),
+            pos + sf::Vector2f(4, 4),
+            8,
+            TextFactory::ALIGN::LEFT,
+            sf::Color(193, 193, 193, 255)
+         ));
+      }
+   }
+}
+
+void OrthographicGrid::clear_text_markers() {
+   TextMarkerList::const_iterator it;
+   for (it = this->text_markers_.begin(); it != this->text_markers_.end(); ++it) {
+      delete *it;
+   }
+   this->text_markers_.clear();
 }

@@ -100,8 +100,14 @@ void BuilderScene::enter(Game& game) {
 
    t = TextFactory::inst()->create_text_entity("r: reset pan position", "retro", this->viewport_->layer("hud"), sf::Vector2f(0, 15));
    this->entities_.push_back(t);
+
+   t = TextFactory::inst()->create_text_entity("g: toggle grid visibility", "retro", this->viewport_->layer("hud"), sf::Vector2f(0, 30));
+   this->entities_.push_back(t);
+
+   t = TextFactory::inst()->create_text_entity("o: toggle entity hitboxes", "retro", this->viewport_->layer("hud"), sf::Vector2f(0, 45));
+   this->entities_.push_back(t);
    
-   t = TextFactory::inst()->create_text_entity("right click: click and drag to pan", "retro", this->viewport_->layer("hud"), sf::Vector2f(0, 30));
+   t = TextFactory::inst()->create_text_entity("right click: click and drag to pan", "retro", this->viewport_->layer("hud"), sf::Vector2f(0, 60));
    this->entities_.push_back(t);
 
    Shape* center_dot_graphic = new Shape(new sf::RectangleShape());

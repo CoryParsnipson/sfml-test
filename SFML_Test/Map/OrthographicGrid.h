@@ -10,6 +10,7 @@ class OrthographicGrid
 {
 public:
    typedef std::list<Graphic*> GridlineList;
+   typedef std::list<Graphic*> TextMarkerList;
 
    OrthographicGrid(const std::string& id);
    OrthographicGrid(const std::string& id, int tile_size);
@@ -38,10 +39,15 @@ protected:
    Graphic* origin_dot_;
    GridlineList grid_cols_;
    GridlineList grid_rows_;
+   TextMarkerList text_markers_;
    
    void create_origin_dot();
+
    void create_gridlines();
    void clear_gridlines();
+
+   void create_text_markers();
+   void clear_text_markers();
 };
 
 #endif

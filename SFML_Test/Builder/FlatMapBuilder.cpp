@@ -64,9 +64,6 @@ void FlatMapBuilder::build_tile(int x, int y, std::string texture) {
    sf::Vector2f grid_coord(x, y);
    Entity* tile = TileFactory::inst()->create_tile(this->texture_manager_.get_texture(texture), this->map_->grid()->coord_to_screen(grid_coord));
    this->map_->add(tile);
-
-   // set debug preferences
-   tile->enable_debug_text(true);
 }
 
 void FlatMapBuilder::build_grid(const std::string& id, int tile_size) {
