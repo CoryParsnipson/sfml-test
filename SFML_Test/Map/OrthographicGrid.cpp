@@ -210,11 +210,11 @@ void OrthographicGrid::create_text_markers() {
    sf::Vector2f center(Settings::Instance()->cur_width() / 2.f, Settings::Instance()->cur_height() / 2.f);
    sf::Vector2f screen_start = center - sf::Vector2f(cur_width / 2.f, cur_height / 2.f) + this->pan_delta_;
    sf::Vector2f start_pos(
-      std::round(screen_start.x / (8 * this->tile_width())) * 8 * this->tile_width(),
-      std::round(screen_start.y / (8 * this->tile_height())) * 8 * this->tile_height()
+      std::ceil(screen_start.x / (8 * this->tile_width())) * 8 * this->tile_width(),
+      std::ceil(screen_start.y / (8 * this->tile_height())) * 8 * this->tile_height()
    );
-   for (int col_pos = 0; col_pos <= cur_width; col_pos += text_interval) {
-      for (int row_pos = 0; row_pos <= cur_height; row_pos += text_interval) {
+   for (int col_pos = -text_interval; col_pos <= cur_width; col_pos += text_interval) {
+      for (int row_pos = -text_interval; row_pos <= cur_height; row_pos += text_interval) {
          pos.x = col_pos + start_pos.x;
          pos.y = row_pos + start_pos.y;
 
