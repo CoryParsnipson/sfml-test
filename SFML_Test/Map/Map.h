@@ -29,6 +29,8 @@ public:
    void add(Entity* tile);
    void add(Grid* grid);
 
+   void remove(Entity* tile);
+
    virtual TileList intersects(sf::Vector2i point);
    virtual TileList intersects(sf::Vector2f point);
    virtual TileList intersects(sf::FloatRect rect);

@@ -4,6 +4,8 @@
 #include "Scene.h"
 #include "MouseUtil.h"
 
+class Texture;
+
 class Map;
 class MapBuilder;
 
@@ -72,6 +74,9 @@ protected:
 
    void update_tile_cursor(sf::Vector2f& one, sf::Vector2f& two);
    void remove_tile_cursor();
+
+   void set_tiles(Texture& tile_texture);
+   void remove_tiles();
 };
 
 #endif

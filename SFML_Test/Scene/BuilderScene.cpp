@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "Layer.h"
 
+#include "Texture.h"
 #include "Graphic.h"
 
 #include "Entity.h"
@@ -107,7 +108,16 @@ void BuilderScene::enter(Game& game) {
    t = TextFactory::inst()->create_text_entity("o: toggle entity hitboxes", "retro", this->viewport_->layer("hud"), sf::Vector2f(0, 45));
    this->entities_.push_back(t);
    
-   t = TextFactory::inst()->create_text_entity("right click: click and drag to pan", "retro", this->viewport_->layer("hud"), sf::Vector2f(0, 60));
+   t = TextFactory::inst()->create_text_entity("1: add green tiles at selection", "retro", this->viewport_->layer("hud"), sf::Vector2f(0, 60));
+   this->entities_.push_back(t);
+   
+   t = TextFactory::inst()->create_text_entity("2: add blue tiles at selection", "retro", this->viewport_->layer("hud"), sf::Vector2f(0, 75));
+   this->entities_.push_back(t);
+   
+   t = TextFactory::inst()->create_text_entity("del: remove tiles at selection", "retro", this->viewport_->layer("hud"), sf::Vector2f(0, 90));
+   this->entities_.push_back(t);
+   
+   t = TextFactory::inst()->create_text_entity("right click: click and drag to pan", "retro", this->viewport_->layer("hud"), sf::Vector2f(0, 105));
    this->entities_.push_back(t);
 
    Shape* center_dot_graphic = new Shape(new sf::RectangleShape());
@@ -162,63 +172,13 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
       this->map_->grid()->set_position(sf::Vector2f(0, 0));
       this->map_->grid()->set_scale(1.0);
    break;
-   case sf::Keyboard::Key::F:
-      //if (this->selected_tile) {
-      //   // TODO: refactor when infrastructure for this is up
-      //   Service::get_logger().msg(this->id_, Logger::INFO, "Adding new tiles.");
-
-      //   PhysicsPart* selected_physics = dynamic_cast<PhysicsPart*>(this->selected_tile->get("physics"));
-      //   if (!selected_physics) {
-      //      Service::get_logger().msg(this->id_, Logger::WARNING, "In process KeyPressCommand (F) -> selected tile cursor has no physics component.");
-      //      return;
-      //   }
-
-      //   // split selected tile area into tile-sized chunks
-      //   sf::FloatRect proto_tile_bounds(selected_physics->get_position(), sf::Vector2f(Settings::Instance()->TILE_WIDTH, Settings::Instance()->TILE_HEIGHT));
-      //   float next_x = selected_physics->get_position().x;
-      //   float next_y = selected_physics->get_position().y;
-
-      //   int idx_x = (int)(next_x / Settings::Instance()->TILE_WIDTH);
-      //   int idx_y = (int)(next_y / Settings::Instance()->TILE_HEIGHT);
-
-      //   float max_x = next_x + selected_physics->get_size().x;
-      //   float max_y = next_y + selected_physics->get_size().y;
-      //   
-      //   while (next_y < max_y) {
-      //      while (next_x < max_x) {
-      //         // figure out which tile chunks already exist in map
-      //         Service::get_logger().msg(this->id_, Logger::INFO, "checking tile " + std::to_string(next_x) + ", " + std::to_string(next_y));
-
-      //         if (this->map->intersects(proto_tile_bounds).size() == 0) {
-      //            Entity* tile = TileFactory::inst()->create_tile(game.texture_manager.get_texture("tile_solid"), sf::Vector2f(next_x, next_y));
-      //            ReferencePart* ref_part = dynamic_cast<ReferencePart*>(this->selected_tile->get("reference"));
-
-      //            // create new tiles
-      //            this->map->add(idx_x, idx_y, tile);
-
-      //            // add them to the cursor
-      //            if (ref_part) {
-      //               ref_part->add(tile);
-      //            }
-      //         } else {
-      //            // TODO: modify existing tiles
-      //            Service::get_logger().msg(this->id_, Logger::INFO, "poop");
-      //         }
-
-      //         idx_x += 1;
-      //         next_x += Settings::Instance()->TILE_WIDTH;
-   
-      //         proto_tile_bounds.left = next_x;
-      //         proto_tile_bounds.top = next_y;
-      //      }
-
-      //      idx_y += 1;
-      //      next_y += Settings::Instance()->TILE_HEIGHT;
-      //      
-      //      next_x = selected_physics->get_position().x;
-      //      idx_x = (int)(next_x / Settings::Instance()->TILE_WIDTH);
-      //   }
-      //}
+   case sf::Keyboard::Key::Num1:
+   case sf::Keyboard::Key::Numpad1:
+      this->set_tiles(game.texture_manager.get_texture("tile_solid"));
+   break;
+   case sf::Keyboard::Key::Num2:
+   case sf::Keyboard::Key::Numpad2:
+      this->set_tiles(game.texture_manager.get_texture("tile_clear"));
    break;
    case sf::Keyboard::Key::O:
       this->toggle_debug_info();      
@@ -230,6 +190,10 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
       } else {
          this->viewport_->layer("grid")->show();
       }
+   break;
+   case sf::Keyboard::Key::Delete:
+   case sf::Keyboard::Key::BackSpace:
+      this->remove_tiles();
    break;
    default:
       // do nothing
@@ -442,11 +406,9 @@ void BuilderScene::update_tile_cursor(sf::Vector2f& one, sf::Vector2f& two) {
    }
 
    if (!this->tile_cursor_) {
-      Map::TileList cursor_tiles;
       this->tile_cursor_ = TileFactory::inst()->create_tile_cursor(
          one,
          two,
-         cursor_tiles,
          this->viewport_->layer("main"),
          this->show_debug_info_
       );
@@ -485,4 +447,55 @@ void BuilderScene::remove_tile_cursor() {
 
    delete this->tile_cursor_;
    this->tile_cursor_ = nullptr;
+}
+
+void BuilderScene::set_tiles(Texture& tile_texture) {
+   if (!this->tile_cursor_) {
+      return;
+   }
+
+   Service::get_logger().msg(this->id_, Logger::INFO, "Adding new tiles.");
+
+   // get bounds of tile cursor
+   PhysicsPart* tc_physics = dynamic_cast<PhysicsPart*>(this->tile_cursor_->get("physics"));
+   if (!tc_physics) {
+      Service::get_logger().msg(this->id_, Logger::ERROR, "Tile cursor does not have physics part!");
+      return;
+   }
+   sf::FloatRect tc_bounds = tc_physics->get_bounding_box();
+
+   for (int tile_col = tc_bounds.left; tile_col < tc_bounds.left + tc_bounds.width; tile_col += this->map_->grid()->tile_width()) {
+      for (int tile_row = tc_bounds.top; tile_row < tc_bounds.top + tc_bounds.height; tile_row += this->map_->grid()->tile_height()) {
+         Entity* tile = TileFactory::inst()->create_tile(
+            tile_texture,
+            sf::Vector2f(tile_col, tile_row),
+            this->viewport_->layer("main"),
+            this->show_debug_info_
+         );
+         
+         this->map_->add(tile);
+      }
+   }
+}
+
+void BuilderScene::remove_tiles() {
+   if (!this->tile_cursor_) {
+      return;
+   }
+
+   Service::get_logger().msg(this->id_, Logger::INFO, "Removing tiles.");
+
+   // get bounds of tile cursor
+   PhysicsPart* tc_physics = dynamic_cast<PhysicsPart*>(this->tile_cursor_->get("physics"));
+   if (!tc_physics) {
+      Service::get_logger().msg(this->id_, Logger::ERROR, "Tile cursor does not have physics part!");
+      return;
+   }
+
+   // get intersecting entities on map
+   Map::TileList tiles = this->map_->intersects(tc_physics->get_bounding_box());
+   Map::TileList::const_iterator it;
+   for (it = tiles.begin(); it != tiles.end(); ++it) {
+      this->map_->remove(*it);
+   }
 }

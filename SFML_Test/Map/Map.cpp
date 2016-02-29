@@ -61,6 +61,18 @@ void Map::add(Grid* grid) {
    this->grid_ = grid;
 }
 
+void Map::remove(Entity* tile) {
+   Map::TileList::const_iterator it;
+   for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
+      if (tile == (*it)) {
+         this->tiles_.erase(it);
+         delete tile;
+         tile = nullptr;
+         return;
+      }
+   }
+}
+
 Map::TileList Map::intersects(sf::Vector2i point) {
    Map::TileList tiles;
    Map::TileList::const_iterator it;

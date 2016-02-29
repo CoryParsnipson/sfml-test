@@ -6,7 +6,6 @@
 
 #include "GraphicsPart.h"
 #include "PhysicsPart.h"
-#include "ReferencePart.h"
 #include "DebugPart.h"
 
 // initialize static members
@@ -52,11 +51,10 @@ Entity* TileFactory::create_tile(Texture& t, sf::Vector2f pos, Layer* layer, boo
    return tile;
 }
 
-Entity* TileFactory::create_tile_cursor(sf::Vector2f& one, sf::Vector2f& two, std::vector<Entity*> references, Layer* layer, bool debug) {
+Entity* TileFactory::create_tile_cursor(sf::Vector2f& one, sf::Vector2f& two, Layer* layer, bool debug) {
    Entity* cursor = new Entity();
    GraphicsPart* graphics_part = new GraphicsPart();
    PhysicsPart* physics_part = new PhysicsPart();
-   ReferencePart* ref_part = new ReferencePart();
 
    sf::FloatRect* rect = UtilFactory::inst()->create_float_rect(one, two);
    
@@ -70,14 +68,8 @@ Entity* TileFactory::create_tile_cursor(sf::Vector2f& one, sf::Vector2f& two, st
    graphics_part->add(cursor_graphic);
    physics_part->set_size(rect->width, rect->height);
 
-   std::vector<Entity*>::const_iterator it;
-   for (it = references.begin(); it != references.end(); ++it) {
-      ref_part->add(*it);
-   }
-
    cursor->add(graphics_part);
    cursor->add(physics_part);
-   cursor->add(ref_part);
 
    if (debug) {
       DebugPart* debug_part = new DebugPart();
