@@ -314,28 +314,19 @@ void BuilderScene::update_fps() {
 }
 
 void BuilderScene::toggle_debug_info() {
-   EntityList::const_iterator e_it;
-   Map::TileList::const_iterator it;
+   EntityList::const_iterator it;
 
    this->show_debug_info_ = !this->show_debug_info_;
 
    if (this->show_debug_info_) {
       // turned debug info on, add debug components to all entities
-      for (it = this->map_->get_tiles().begin(); it != this->map_->get_tiles().end(); ++it) {
+      for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
          (*it)->add(new DebugPart());
-      }
-
-      for (e_it = this->entities_.begin(); e_it != this->entities_.end(); ++e_it) {
-         (*e_it)->add(new DebugPart());
       }
    } else {
       // turned debug info off, remove debug components from all entities
-      for (it = this->map_->get_tiles().begin(); it != this->map_->get_tiles().end(); ++it) {
+      for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
          (*it)->remove("debug");
-      }
-
-      for (e_it = this->entities_.begin(); e_it != this->entities_.end(); ++e_it) {
-         (*e_it)->remove("debug");
       }
    }
 }
