@@ -24,7 +24,7 @@ void FlatMapBuilder::build() {
       Service::get_logger().msg("FlatMapBuilder", Logger::ERROR, "Serializer has not been initialized!");
       return;
    }
-   
+
    while (this->serializer_->next()) {
       Serializer::data_t d = this->serializer_->get();
 
@@ -61,8 +61,7 @@ void FlatMapBuilder::build_tile(int x, int y, std::string texture) {
       return;
    }
 
-   sf::Vector2f grid_coord(x, y);
-   Entity* tile = TileFactory::inst()->create_tile(this->texture_manager_.get_texture(texture), this->map_->grid()->coord_to_screen(grid_coord));
+   Entity* tile = TileFactory::inst()->create_tile(this->texture_manager_.get_texture(texture), sf::Vector2f(x, y));
    this->map_->add(tile);
 }
 
