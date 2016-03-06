@@ -26,7 +26,7 @@ void FlatMapBuilder::build() {
    }
 
    while (this->serializer_->next()) {
-      Serializer::data_t d = this->serializer_->get();
+      Serializer::SerializedObj d = this->serializer_->get();
 
       try {
          std::string type_token = d.at("type");

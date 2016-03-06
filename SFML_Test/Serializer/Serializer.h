@@ -8,7 +8,7 @@ class Entity;
 
 class Serializer {
 public:
-   typedef std::map<std::string, std::string> data_t;
+   typedef std::map<std::string, std::string> SerializedObj;
 
    Serializer() {};
    virtual ~Serializer() { this->close(); };
@@ -18,14 +18,14 @@ public:
    };
 
    virtual bool is_open() {
-      return this->file_.is_open(); 
+      return this->file_.is_open();
    };
 
    virtual void close() {
       this->file_.close();
    };
 
-   virtual data_t get() = 0;
+   virtual SerializedObj get() = 0;
    virtual bool next() = 0;
    virtual bool prev() = 0;
 

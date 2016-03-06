@@ -10,7 +10,7 @@
 TextSerializer::TextSerializer() {}
 TextSerializer::~TextSerializer() {}
 
-Serializer::data_t TextSerializer::get() {
+Serializer::SerializedObj TextSerializer::get() {
    return this->data_;
 }
 
@@ -54,7 +54,7 @@ void TextSerializer::set(Entity* entity) {
 
 std::string TextSerializer::remove_comments(std::string line) {
    std::string::size_type end_pos = line.find_first_of("#");
-   
+
    if (end_pos == std::string::npos) {
       return line;
    }
@@ -62,13 +62,13 @@ std::string TextSerializer::remove_comments(std::string line) {
    return boost::trim_copy(line.substr(0, end_pos));
 }
 
-Serializer::data_t TextSerializer::tokenize(std::string line) {
+Serializer::SerializedObj TextSerializer::tokenize(std::string line) {
 
    line = this->remove_comments(line);
    assert(line != "");
 
    std::string logger_output = "tokens -> ";
-   Serializer::data_t tokens;
+   Serializer::SerializedObj tokens;
    boost::char_separator<char> token_sep(",");
    boost::char_separator<char> kv_sep(":");
    boost::tokenizer<boost::char_separator<char> > tokenizer(line, token_sep);

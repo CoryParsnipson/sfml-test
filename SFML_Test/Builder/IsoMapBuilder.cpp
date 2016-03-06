@@ -22,9 +22,9 @@ void IsoMapBuilder::build() {
       Service::get_logger().msg("IsoMapBuilder", Logger::ERROR, "Serializer has not been initialized!");
       return;
    }
-   
+
    while (this->serializer_->next()) {
-      Serializer::data_t d = this->serializer_->get();
+      Serializer::SerializedObj d = this->serializer_->get();
 
       // need entity type identifier?
       this->build_tile(std::stoi(d["pos_x"]), std::stoi(d["pos_y"]), d["texture"]);

@@ -11,7 +11,7 @@ public:
    TextSerializer();
    virtual ~TextSerializer();
 
-   virtual Serializer::data_t get();
+   virtual Serializer::SerializedObj get();
    virtual bool next();
    virtual bool prev();
 
@@ -19,10 +19,10 @@ public:
 
 protected:
    std::string line_;
-   data_t data_;
+   Serializer::SerializedObj data_;
 
    std::string remove_comments(std::string line);
-   Serializer::data_t tokenize(std::string line);
+   Serializer::SerializedObj tokenize(std::string line);
 };
 
 #endif
