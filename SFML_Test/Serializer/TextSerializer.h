@@ -28,6 +28,7 @@ protected:
    std::string line_;
    Serializer::SerializedObj data_;
 
+   void comment(std::string comment);
    std::string remove_comments(std::string line);
    Serializer::SerializedObj tokenize(std::string line);
 };

@@ -7,9 +7,10 @@
 #include "PhysicsPart.h"
 
 #include "Grid.h"
+#include "OrthographicGrid.h"
 
 Map::Map()
-: grid_(nullptr)
+: grid_(new OrthographicGrid("default grid", 10))
 {
 }
 
@@ -58,6 +59,7 @@ void Map::add(Entity* tile) {
 }
 
 void Map::add(Grid* grid) {
+   delete this->grid_;
    this->grid_ = grid;
 }
 

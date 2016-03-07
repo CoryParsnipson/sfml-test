@@ -22,10 +22,8 @@ public:
 
 protected:
    virtual void build_map() = 0;
-   virtual void build_tile(int x, int y, std::string texture) = 0;
-   virtual void build_grid(const std::string& id, int tile_size) = 0;
-   virtual void build_grid(const std::string& id, const sf::Vector2f& tile_size) = 0;
-   virtual void build_grid(const std::string& id, const sf::Vector2f& tile_size, const sf::Vector2f& origin) = 0;
+   virtual void build_tile(Entity* tile) = 0;
+   virtual void build_grid(Grid* grid) = 0;
 
    std::string id;
 

@@ -14,7 +14,7 @@ public:
    virtual ~Serializer() { this->close(); };
 
    virtual void open(std::string filename) {
-      this->file_.open(filename, std::fstream::in | std::fstream::out | std::fstream::app);
+      this->file_.open(filename, std::fstream::in | std::fstream::out);
    };
 
    virtual bool is_open() {

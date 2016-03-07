@@ -461,7 +461,7 @@ void BuilderScene::set_tiles(Texture& tile_texture) {
             tile_texture,
             sf::Vector2f(tile_col, tile_row),
             this->viewport_->layer("main"),
-            this->show_debug_info_
+            false
          );
 
          this->map_->add(tile);

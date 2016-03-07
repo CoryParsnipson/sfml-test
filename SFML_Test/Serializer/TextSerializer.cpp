@@ -89,11 +89,6 @@ void TextSerializer::deserialize(Serializer::SerializedObj& obj, Grid*& grid) {
    try {
       if (obj["type"] == "grid") {
          if (obj["class"] == "OrthographicGrid") {
-            Service::get_logger().msg("TextSerializer", Logger::INFO, "id: " + obj["id"]);
-            Service::get_logger().msg("TextSerializer", Logger::INFO, "class: " + obj["class"]);
-            Service::get_logger().msg("TextSerializer", Logger::INFO, "tile_width: " + obj["tile_width"]);
-            Service::get_logger().msg("TextSerializer", Logger::INFO, "tile_height: " + obj["tile_height"]);
-
             grid = new OrthographicGrid(obj["id"], sf::Vector2f(std::stoi(obj["tile_width"]), std::stoi(obj["tile_height"])));
             grid->origin(sf::Vector2f(std::stoi(obj["origin_x"]), std::stoi(obj["origin_y"])));
          }
@@ -109,6 +104,10 @@ void TextSerializer::deserialize(Serializer::SerializedObj& obj, Grid*& grid) {
    }
 }
 
+void TextSerializer::comment(std::string comment) {
+   this->file_ << "#" + comment;
+}
+
 std::string TextSerializer::remove_comments(std::string line) {
    std::string::size_type end_pos = line.find_first_of("#");
 
@@ -120,7 +119,6 @@ std::string TextSerializer::remove_comments(std::string line) {
 }
 
 Serializer::SerializedObj TextSerializer::tokenize(std::string line) {
-
    line = this->remove_comments(line);
    assert(line != "");
 
