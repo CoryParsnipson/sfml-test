@@ -5,7 +5,7 @@
 
 class Texture {
 public:
-   Texture(const std::string& id, const std::string& filename, sf::IntRect texture_area = sf::IntRect());
+   Texture(std::string id, std::string filename, sf::IntRect texture_area = sf::IntRect());
    ~Texture();
 
    const std::string& id();

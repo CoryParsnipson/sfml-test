@@ -197,7 +197,8 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
       this->remove_tiles();
    break;
    case sf::Keyboard::Key::S:
-      this->write_map_to_file();
+      Service::get_logger().msg(this->id_, Logger::INFO, "Writing map to file '" + this->map_filename_ + "'");
+      this->map_->serialize(*this->serializer_);
    break;
    default:
       // do nothing
@@ -493,13 +494,4 @@ void BuilderScene::remove_tiles() {
    for (it = tiles.begin(); it != tiles.end(); ++it) {
       this->map_->remove(*it);
    }
-}
-
-void BuilderScene::write_map_to_file() {
-   Service::get_logger().msg(this->id_, Logger::INFO, "Writing map to file '" + this->map_filename_ + "'");
-
-   Serializer::SerializedObj serialized_grid = this->serializer_->serialize(*this->map_->grid());
-
-   this->serializer_->comment("grid");
-   this->serializer_->set(serialized_grid);
 }

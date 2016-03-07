@@ -8,6 +8,7 @@
 #include "Entity.h"
 
 class Grid;
+class Serializer;
 
 class Map
 : public Draw
@@ -19,7 +20,7 @@ public:
    Map();
    virtual ~Map();
 
-   // draw interface 
+   // draw interface
    virtual void draw(Graphics& graphics);
    virtual void layer(Layer* layer);
 
@@ -35,11 +36,11 @@ public:
    virtual TileList intersects(sf::Vector2f point);
    virtual TileList intersects(sf::FloatRect rect);
 
-   const TileList& get_tiles();
    virtual std::string to_string();
 
    Grid* grid();
- 
+   virtual void serialize(Serializer& serializer);
+
 protected:
    Grid* grid_;
    TileList tiles_;

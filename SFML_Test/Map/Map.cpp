@@ -2,6 +2,7 @@
 
 #include "Scene.h"
 #include "Viewport.h"
+#include "Serializer.h"
 
 #include "Entity.h"
 #include "PhysicsPart.h"
@@ -107,14 +108,26 @@ Map::TileList Map::intersects(sf::FloatRect rect) {
    return tiles;
 }
 
-const Map::TileList& Map::get_tiles() {
-   return this->tiles_;
-}
-
 std::string Map::to_string() {
    return "[Map]";
 }
 
 Grid* Map::grid() {
    return this->grid_;
+}
+
+void Map::serialize(Serializer& serializer) {
+   // serialize the grid
+   Serializer::SerializedObj serialized_grid = serializer.serialize(*this->grid_);
+   serializer.comment("grid");
+   serializer.set(serialized_grid);
+
+   // serialize all tiles
+   serializer.comment("map tiles");
+
+   Map::TileList::const_iterator it;
+   for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
+      Serializer::SerializedObj serialized_tile = serializer.serialize(*(*it), "tile");
+      serializer.set(serialized_tile);
+   }
 }

@@ -1,6 +1,6 @@
 #include "Texture.h"
 
-Texture::Texture(const std::string& id, const std::string& filename, sf::IntRect texture_area)
+Texture::Texture(std::string id, std::string filename, sf::IntRect texture_area)
 : id_(id)
 , filename_(filename)
 {

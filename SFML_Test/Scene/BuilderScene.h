@@ -80,8 +80,6 @@ protected:
 
    void set_tiles(Texture& tile_texture);
    void remove_tiles();
-
-   void write_map_to_file();
 };
 
 #endif
