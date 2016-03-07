@@ -1,7 +1,7 @@
 #include "TextureManager.h"
 
 // initialize static members
-Texture* TextureManager::null_texture = new Texture("");
+Texture* TextureManager::null_texture = new Texture("null", "");
 
 Texture& TextureManager::get_texture(std::string id) {
    texture_map_t::iterator item = this->textures.find(id);
@@ -15,7 +15,7 @@ Texture& TextureManager::get_texture(std::string id) {
 
 Texture& TextureManager::create_texture(std::string id, std::string filename, sf::IntRect texture_area) {
    this->textures.erase(id); // delete texture if one already exists at key name
-   this->textures[id] = new Texture(filename, texture_area);
+   this->textures[id] = new Texture(id, filename, texture_area);
    return *this->textures[id];
 }
 

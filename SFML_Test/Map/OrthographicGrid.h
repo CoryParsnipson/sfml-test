@@ -17,6 +17,8 @@ public:
    OrthographicGrid(const std::string& id, const sf::Vector2f& tile_size);
    virtual ~OrthographicGrid();
 
+   virtual std::string get_class();
+
    virtual void origin(const sf::Vector2f& origin);
    virtual const sf::Vector2f& origin();
 
@@ -30,7 +32,7 @@ public:
    virtual sf::Vector2f round(const sf::Vector2f& pos);
    virtual sf::Vector2f ceil(const sf::Vector2f& pos);
 
-   // draw interface 
+   // draw interface
    virtual void draw(Graphics& graphics);
    virtual void layer(Layer* layer);
    virtual Layer* layer();
@@ -40,7 +42,7 @@ protected:
    GridlineList grid_cols_;
    GridlineList grid_rows_;
    TextMarkerList text_markers_;
-   
+
    void create_origin_dot();
 
    void create_gridlines();

@@ -8,6 +8,7 @@ class Texture;
 
 class Map;
 class MapBuilder;
+class Serializer;
 
 class BuilderScene
 : public Scene
@@ -46,6 +47,8 @@ protected:
    // scene fixtures
    Map* map_;
    sf::VertexArray backdrop_;
+   std::string map_filename_;
+   Serializer* serializer_;
 
    // entity pointers (no ownership)
    Entity* mouse_;
@@ -77,6 +80,8 @@ protected:
 
    void set_tiles(Texture& tile_texture);
    void remove_tiles();
+
+   void write_map_to_file();
 };
 
 #endif

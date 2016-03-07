@@ -1,22 +1,27 @@
 #include "Texture.h"
 
-Texture::Texture(std::string filename, sf::IntRect texture_area)
-: filename(filename)
+Texture::Texture(const std::string& id, const std::string& filename, sf::IntRect texture_area)
+: id_(id)
+, filename_(filename)
 {
-   this->texture_mask.loadFromFile(filename);
-   this->texture_mask.createMaskFromColor(sf::Color::Magenta);
+   this->texture_mask_.loadFromFile(filename);
+   this->texture_mask_.createMaskFromColor(sf::Color::Magenta);
 
-   this->texture.loadFromImage(this->texture_mask, texture_area);
+   this->texture_.loadFromImage(this->texture_mask_, texture_area);
+}
+
+const std::string& Texture::id() {
+   return this->id_;
 }
 
 sf::Vector2f Texture::get_size() {
-   return static_cast<sf::Vector2f>(this->texture.getSize());
+   return static_cast<sf::Vector2f>(this->texture_.getSize());
 }
 
 sf::Texture& Texture::get_texture() {
-   return this->texture;
+   return this->texture_;
 }
 
 std::string Texture::to_string() {
-   return "[Texture] filename = " + this->filename;
+   return "[Texture] filename = " + this->filename_;
 }

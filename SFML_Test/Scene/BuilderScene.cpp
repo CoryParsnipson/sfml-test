@@ -24,6 +24,7 @@ BuilderScene::BuilderScene()
 : Scene("BuilderScene")
 , map_(nullptr)
 , backdrop_(sf::TrianglesStrip, 4)
+, map_filename_("flat_map_test.txt")
 , mouse_(nullptr)
 , center_dot_(nullptr)
 , selection_rectangle_(nullptr)
@@ -38,6 +39,7 @@ BuilderScene::BuilderScene()
 BuilderScene::~BuilderScene() {
    delete this->map_;
    delete this->mouse_;
+   delete this->serializer_;
 
    this->remove_tile_cursor();
 }
@@ -61,11 +63,11 @@ void BuilderScene::enter(Game& game) {
    game.texture_manager.print();
 
    // build the map
-   TextSerializer* serializer = new TextSerializer(game);
-   serializer->open("flat_map_test.txt");
+   this->serializer_ = new TextSerializer(game);
+   this->serializer_->open_infile(this->map_filename_);
 
    MapBuilder* map_builder = new FlatMapBuilder(game.texture_manager);
-   map_builder->set_serializer(serializer);
+   map_builder->set_serializer(this->serializer_);
    map_builder->build();
 
    this->map_ = map_builder->get_map();
@@ -83,7 +85,6 @@ void BuilderScene::enter(Game& game) {
    this->backdrop_[2].color = sf::Color(50, 50, 50, 255);
    this->backdrop_[3].color = sf::Color(25, 25, 25, 255);
 
-   delete serializer;
    delete map_builder;
 
    // initialize entities
@@ -194,6 +195,9 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
    case sf::Keyboard::Key::Delete:
    case sf::Keyboard::Key::BackSpace:
       this->remove_tiles();
+   break;
+   case sf::Keyboard::Key::S:
+      this->write_map_to_file();
    break;
    default:
       // do nothing
@@ -489,4 +493,13 @@ void BuilderScene::remove_tiles() {
    for (it = tiles.begin(); it != tiles.end(); ++it) {
       this->map_->remove(*it);
    }
+}
+
+void BuilderScene::write_map_to_file() {
+   Service::get_logger().msg(this->id_, Logger::INFO, "Writing map to file '" + this->map_filename_ + "'");
+
+   Serializer::SerializedObj serialized_grid = this->serializer_->serialize(*this->map_->grid());
+
+   this->serializer_->comment("grid");
+   this->serializer_->set(serialized_grid);
 }

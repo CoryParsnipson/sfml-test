@@ -1,9 +1,11 @@
 #include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/join.hpp>
 #include <boost/tokenizer.hpp>
 
 #include "TextSerializer.h"
 
 #include "Game.h"
+#include "Graphic.h"
 #include "TileFactory.h"
 
 #include "OrthographicGrid.h"
@@ -19,46 +21,117 @@ Serializer::SerializedObj TextSerializer::get() {
    return this->data_;
 }
 
-void TextSerializer::set(Entity* entity) {
-   if (!this->is_open()) {
-      Service::get_logger().msg("TextSerializer", Logger::ERROR, "Cannot write to data file. File is not open.");
-      return;
+void TextSerializer::set(Serializer::SerializedObj& obj) {
+   if (!this->is_open_outfile()) {
+      if (this->filename_ == "") {
+         Service::get_logger().msg("TextSerializer", Logger::ERROR, "Cannot write to data file. File is not open.");
+         return;
+      }
+
+      this->open_outfile(this->filename_);
    }
 
-   // TODO: implement me
-   // 1. convert entity to Serializer::SerializedObj
-   // 2. write to file
+   std::vector<std::string> tokens;
+   std::string formatted_obj;
+
+   Serializer::SerializedObj::const_iterator it;
+   for (it = obj.begin(); it != obj.end(); ++it) {
+      tokens.push_back(it->first + ": " + it->second);
+   }
+
+   formatted_obj = boost::algorithm::join(tokens, ", ");
+   Service::get_logger().msg("TextSerializer", Logger::INFO, "Writing -> " + formatted_obj);
+
+   this->out_file_ << formatted_obj << std::endl;
+   this->out_file_.flush();
+}
+
+void TextSerializer::comment(const std::string& comment) {
+   if (!this->is_open_outfile()) {
+      if (this->filename_ == "") {
+         Service::get_logger().msg("TextSerializer", Logger::ERROR, "Cannot write to data file. File is not open.");
+         return;
+      }
+
+      this->open_outfile(this->filename_);
+   }
+
+   std::string formatted_comment = "# " + comment;
+   Service::get_logger().msg("TextSerializer", Logger::INFO, "Writing comment: " + formatted_comment);
+
+   this->out_file_ << std::endl << formatted_comment << std::endl;
+   this->out_file_.flush();
 }
 
 bool TextSerializer::next() {
-   if (!this->is_open()) {
-      Service::get_logger().msg("TextSerializer", Logger::WARNING, "Cannot get next. File is not open.");
-      return false;
+   if (!this->is_open_infile()) {
+      if (this->filename_ == "") {
+         Service::get_logger().msg("TextSerializer", Logger::ERROR, "Cannot read from data file. File is not open.");
+         return false;
+      }
+
+      this->open_infile(this->filename_);
    }
 
    bool has_next = true;
+   std::string raw_line = "";
    std::string uncommented_line = "";
 
    // skip commented lines
    while (has_next && uncommented_line == "") {
-      has_next = (bool) std::getline(this->file_, this->line_);
+      has_next = (bool) std::getline(this->in_file_, raw_line);
 
-      uncommented_line = boost::trim_copy(this->remove_comments(this->line_));
+      uncommented_line = boost::trim_copy(this->remove_comments(raw_line));
    }
 
    if (has_next) {
-      this->data_ = this->tokenize(this->line_);
+      this->data_ = this->tokenize(raw_line);
    }
    return has_next;
 }
 
 bool TextSerializer::prev() {
-   Service::get_logger().msg("TextSerializer", Logger::ERROR, "prev() is not implemented!");
+   Service::get_logger().msg("TextSerializer", Logger::ERROR, "Prev not implemented.");
    return false;
 }
 
-Serializer::SerializedObj TextSerializer::serialize(Entity& entity) {}
-Serializer::SerializedObj TextSerializer::serialize(Grid& grid) {}
+Serializer::SerializedObj TextSerializer::serialize(Entity& entity, const std::string& type_tag) {
+   Serializer::SerializedObj obj;
+   sf::Vector2f pos(0, 0);
+   Texture* t;
+
+   GraphicsPart* graphics = dynamic_cast<GraphicsPart*>(entity.get("graphics"));
+   if (graphics) {
+      t = graphics->get(0)->get_texture();
+   }
+
+   PhysicsPart* physics = dynamic_cast<PhysicsPart*>(entity.get("physics"));
+   if (physics) {
+      pos = physics->get_position();
+   }
+
+   obj["type"] = type_tag;
+   obj["pos_x"] = std::to_string(pos.x);
+   obj["pos_y"] = std::to_string(pos.y);
+   obj["texture"] = t->id();
+
+   return obj;
+}
+
+Serializer::SerializedObj TextSerializer::serialize(Grid& grid) {
+   Serializer::SerializedObj obj;
+   sf::Vector2f origin = grid.origin();
+
+   obj["type"] = "grid";
+   obj["class"] = grid.get_class();
+   obj["id"] = grid.id();
+   obj["tile_width"] = std::to_string(grid.tile_width());
+   obj["tile_height"] = std::to_string(grid.tile_height());
+   obj["origin_x"] = std::to_string((int)origin.x);
+   obj["origin_y"] = std::to_string((int)origin.y);
+
+   return obj;
+}
 
 void TextSerializer::deserialize(Serializer::SerializedObj& obj, Entity*& entity) {
    delete entity;
@@ -102,10 +175,6 @@ void TextSerializer::deserialize(Serializer::SerializedObj& obj, Grid*& grid) {
       Service::get_logger().msg("TextSerializer", Logger::ERROR, "Serializer has encountered malformed line (" + std::string(e.what()) + ")");
       return;
    }
-}
-
-void TextSerializer::comment(std::string comment) {
-   this->file_ << "#" + comment;
 }
 
 std::string TextSerializer::remove_comments(std::string line) {

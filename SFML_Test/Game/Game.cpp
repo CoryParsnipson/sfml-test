@@ -1,5 +1,4 @@
 #include "Game.h"
-
 #include "TextFactory.h"
 #include "InputController.h"
 #include "TextureManager.h"
@@ -18,6 +17,7 @@ Game::Game()
    this->full_logger_.get_logger("console")->set_tag("StartMenuScene", true);
    this->full_logger_.get_logger("console")->set_tag("BuilderScene", true);
    this->full_logger_.get_logger("console")->set_tag("OrthographicGrid", true);
+   this->full_logger_.get_logger("console")->set_tag("Serializer", true);
    this->full_logger_.get_logger("console")->set_tag("TextSerializer", true);
    this->full_logger_.get_logger("console")->set_tag("FlatMapBuilder", true);
 

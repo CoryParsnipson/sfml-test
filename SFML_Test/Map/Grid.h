@@ -40,6 +40,8 @@ public:
 
    virtual ~Grid() {};
 
+   virtual std::string get_class() = 0;
+   virtual const::std::string& id() { return this->id_; }
    virtual std::string to_string() { return "[Grid id: " + this->id_ + "]"; }
 
    virtual void origin(const sf::Vector2f& origin) {
@@ -58,7 +60,7 @@ public:
 
    void tile_height(int height) {
       this->tile_height_ = height;
-      
+
       // re-calculate origin mod
       this->origin_mod_.y = (int)this->origin_.y % this->tile_height_;
    }
@@ -77,7 +79,7 @@ public:
    virtual sf::Vector2f round(const sf::Vector2f& pos) = 0;
    virtual sf::Vector2f ceil(const sf::Vector2f& pos) = 0;
 
-   // draw interface 
+   // draw interface
    virtual void draw(Graphics& graphics) = 0;
 
 protected:
@@ -87,7 +89,7 @@ protected:
 
    int tile_width_;
    int tile_height_;
-   
+
    bool show_debug_info_;
    sf::Vector2f pan_delta_;
    float scale_factor_;

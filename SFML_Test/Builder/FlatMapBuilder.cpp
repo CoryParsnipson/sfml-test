@@ -51,9 +51,8 @@ void FlatMapBuilder::build_map() {
 }
 
 void FlatMapBuilder::build_tile(Entity* tile) {
-   if (!this->map_ || !this->map_->grid()) {
-      Service::get_logger().msg("FlatMapBuilder", Logger::ERROR, "Need to define a grid for map before creating tiles.");
-      return;
+   if (!this->map_) {
+      this->build_map();
    }
 
    if (!tile) {

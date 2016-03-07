@@ -37,10 +37,14 @@ OrthographicGrid::~OrthographicGrid() {
    this->clear_text_markers();
 }
 
+std::string OrthographicGrid::get_class() {
+   return "OrthographicGrid";
+}
+
 void OrthographicGrid::origin(const sf::Vector2f& origin) {
    this->origin_.x = origin.x;
    this->origin_.y = origin.y;
-   
+
    // update origin dot position
    this->origin_dot_->set_position(this->origin_);
 
@@ -62,7 +66,7 @@ sf::Vector2f OrthographicGrid::coord_to_screen(const sf::Vector2f& coord) {
 }
 
 void OrthographicGrid::move(const sf::Vector2f& delta) {
-   this->pan_delta_ += delta;   
+   this->pan_delta_ += delta;
 
    this->clear_gridlines();
    this->create_gridlines();
@@ -146,7 +150,7 @@ void OrthographicGrid::layer(Layer* layer) {
 
    TextMarkerList::const_iterator tm_it;
    for (tm_it = this->text_markers_.begin(); tm_it != this->text_markers_.end(); ++tm_it) {
-      (*tm_it)->layer(layer); 
+      (*tm_it)->layer(layer);
    }
 }
 
@@ -205,7 +209,7 @@ void OrthographicGrid::create_text_markers() {
    int cur_width = Settings::Instance()->cur_width() * this->scale_factor_;
    int cur_height = Settings::Instance()->cur_height() * this->scale_factor_;
    int text_interval = this->tile_width() * 8;
-   
+
    sf::Vector2f pos;
    sf::Vector2f center(Settings::Instance()->cur_width() / 2.f, Settings::Instance()->cur_height() / 2.f);
    sf::Vector2f screen_start = center - sf::Vector2f(cur_width / 2.f, cur_height / 2.f) + this->pan_delta_;
