@@ -1,9 +1,7 @@
 # grid
-# type,     id,                  tile_width,     tile_height,     origin_x,    origin_y
-type: grid, id: orthogonal_grid, tile_width: 40, tile_height: 40, origin_x: 0, origin_y: 0
+type: grid, class: OrthographicGrid, id: OrthoGrid, tile_width: 40, tile_height: 40, origin_x: 0, origin_y: 0
 
 # map tiles
-# type,     x,       y,         texture
 type: tile, pos_x:    0, pos_y:    0, texture: tile_clear
 type: tile, pos_x:   40, pos_y:    0, texture: tile_clear
 type: tile, pos_x:   80, pos_y:    0, texture: tile_clear

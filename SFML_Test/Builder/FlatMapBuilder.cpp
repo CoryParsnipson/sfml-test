@@ -28,25 +28,20 @@ void FlatMapBuilder::build() {
    while (this->serializer_->next()) {
       Serializer::SerializedObj d = this->serializer_->get();
 
-      try {
-         std::string type_token = d.at("type");
+      if (d["type"] == "grid") {
+         Grid* grid = nullptr;
+         this->serializer_->deserialize(d, grid);
+         this->build_grid(grid);
+      } else if (d["type"] == "layer") {
+         // TODO: do this later
+      } else {
+         // assume it's an Entity
+         Entity* entity = nullptr;
+         this->serializer_->deserialize(d, entity);
 
-         // figure out type of serialized object
-         if (type_token == "grid") {
-            sf::Vector2f tile_size(std::stoi(d["tile_width"]), std::stoi(d["tile_height"]));
-            sf::Vector2f origin(std::stoi(d["origin_x"]), std::stoi(d["origin_y"]));
-            this->build_grid(d["id"], tile_size, origin);
-         } else if (type_token == "tile") {
-            this->build_tile(std::stoi(d["pos_x"]), std::stoi(d["pos_y"]), d["texture"]);
-         } else {
-            throw std::invalid_argument("unknown type token '" + type_token + "'");
+         if (d["type"] == "tile") {
+            this->build_tile(entity);
          }
-      } catch (const std::out_of_range& e) {
-         Service::get_logger().msg("FlatMapBuilder", Logger::ERROR, "Serializer has encountered malformed line (type specifier token missing)");
-         return;
-      } catch (const std::invalid_argument& e) {
-         Service::get_logger().msg("FlatMapBuilder", Logger::ERROR, "Serializer has encountered malformed line (" + std::string(e.what()) + ")");
-         return;
       }
    }
 }
@@ -55,37 +50,29 @@ void FlatMapBuilder::build_map() {
    this->map_ = new Map();
 }
 
-void FlatMapBuilder::build_tile(int x, int y, std::string texture) {
+void FlatMapBuilder::build_tile(Entity* tile) {
    if (!this->map_ || !this->map_->grid()) {
       Service::get_logger().msg("FlatMapBuilder", Logger::ERROR, "Need to define a grid for map before creating tiles.");
       return;
    }
 
-   Entity* tile = TileFactory::inst()->create_tile(this->texture_manager_.get_texture(texture), sf::Vector2f(x, y));
+   if (!tile) {
+      Service::get_logger().msg("FlatMapBuilder", Logger::WARNING, "Received null tile pointer.");
+      return;
+   }
+
    this->map_->add(tile);
 }
 
-void FlatMapBuilder::build_grid(const std::string& id, int tile_size) {
+void FlatMapBuilder::build_grid(Grid* grid) {
    if (!this->map_) {
       this->build_map();
    }
 
-   this->map_->add(new OrthographicGrid(id, tile_size));
-}
-
-void FlatMapBuilder::build_grid(const std::string& id, const sf::Vector2f& tile_size) {
-   if (!this->map_) {
-      this->build_map();
+   if (!grid) {
+      Service::get_logger().msg("FlatMapBuilder", Logger::WARNING, "Received null grid pointer.");
+      return;
    }
 
-   this->map_->add(new OrthographicGrid(id, tile_size));
-}
-
-void FlatMapBuilder::build_grid(const std::string& id, const sf::Vector2f& tile_size, const sf::Vector2f& origin) {
-   if (!this->map_) {
-      this->build_map();
-   }
-
-   this->map_->add(new OrthographicGrid(id, tile_size));
-   this->map_->grid()->origin(origin);
+   this->map_->add(grid);
 }

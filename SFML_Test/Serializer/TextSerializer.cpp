@@ -3,15 +3,31 @@
 
 #include "TextSerializer.h"
 
+#include "Game.h"
+#include "TileFactory.h"
+
+#include "OrthographicGrid.h"
+
 #include "Entity.h"
 #include "PhysicsPart.h"
 #include "GraphicsPart.h"
 
-TextSerializer::TextSerializer() {}
+TextSerializer::TextSerializer(Game& game) : Serializer(game) {}
 TextSerializer::~TextSerializer() {}
 
 Serializer::SerializedObj TextSerializer::get() {
    return this->data_;
+}
+
+void TextSerializer::set(Entity* entity) {
+   if (!this->is_open()) {
+      Service::get_logger().msg("TextSerializer", Logger::ERROR, "Cannot write to data file. File is not open.");
+      return;
+   }
+
+   // TODO: implement me
+   // 1. convert entity to Serializer::SerializedObj
+   // 2. write to file
 }
 
 bool TextSerializer::next() {
@@ -41,15 +57,56 @@ bool TextSerializer::prev() {
    return false;
 }
 
-void TextSerializer::set(Entity* entity) {
-   if (!this->is_open()) {
-      Service::get_logger().msg("TextSerializer", Logger::ERROR, "Cannot write to data file. File is not open.");
+Serializer::SerializedObj TextSerializer::serialize(Entity& entity) {}
+Serializer::SerializedObj TextSerializer::serialize(Grid& grid) {}
+
+void TextSerializer::deserialize(Serializer::SerializedObj& obj, Entity*& entity) {
+   delete entity;
+   entity = nullptr;
+
+   try {
+      if (obj["type"] == "tile") {
+         entity = TileFactory::inst()->create_tile(
+            this->game_.texture_manager.get_texture(obj["texture"]),
+            sf::Vector2f(std::stoi(obj["pos_x"]), std::stoi(obj["pos_y"]))
+         );
+      } else {
+         throw std::invalid_argument("unknown type token '" + obj["type"] + "'");
+      }
+   } catch (const std::out_of_range& e) {
+      Service::get_logger().msg("TextSerializer", Logger::ERROR, "Serializer has encountered malformed line (type specifier token missing)");
+      return;
+   } catch (const std::invalid_argument& e) {
+      Service::get_logger().msg("TextSerializer", Logger::ERROR, "Serializer has encountered malformed line (" + std::string(e.what()) + ")");
       return;
    }
+}
 
-   // TODO: implement me
-   // 1. convert entity to data_t
-   // 2. write to file
+void TextSerializer::deserialize(Serializer::SerializedObj& obj, Grid*& grid) {
+   delete grid;
+   grid = nullptr;
+
+   try {
+      if (obj["type"] == "grid") {
+         if (obj["class"] == "OrthographicGrid") {
+            Service::get_logger().msg("TextSerializer", Logger::INFO, "id: " + obj["id"]);
+            Service::get_logger().msg("TextSerializer", Logger::INFO, "class: " + obj["class"]);
+            Service::get_logger().msg("TextSerializer", Logger::INFO, "tile_width: " + obj["tile_width"]);
+            Service::get_logger().msg("TextSerializer", Logger::INFO, "tile_height: " + obj["tile_height"]);
+
+            grid = new OrthographicGrid(obj["id"], sf::Vector2f(std::stoi(obj["tile_width"]), std::stoi(obj["tile_height"])));
+            grid->origin(sf::Vector2f(std::stoi(obj["origin_x"]), std::stoi(obj["origin_y"])));
+         }
+      } else {
+         throw std::invalid_argument("unknown type token '" + obj["type"] + "'");
+      }
+   } catch (const std::out_of_range& e) {
+      Service::get_logger().msg("TextSerializer", Logger::ERROR, "Serializer has encountered malformed line (type specifier token missing)");
+      return;
+   } catch (const std::invalid_argument& e) {
+      Service::get_logger().msg("TextSerializer", Logger::ERROR, "Serializer has encountered malformed line (" + std::string(e.what()) + ")");
+      return;
+   }
 }
 
 std::string TextSerializer::remove_comments(std::string line) {

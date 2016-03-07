@@ -15,12 +15,11 @@ Game::Game()
    this->full_logger_.get_logger("console")->disable_all_tags();
 
    this->full_logger_.get_logger("console")->set_tag("Game", true);
-   this->full_logger_.get_logger("console")->set_tag("TextFactory", true);
-   this->full_logger_.get_logger("console")->set_tag("GraphicsPart", true);
    this->full_logger_.get_logger("console")->set_tag("StartMenuScene", true);
    this->full_logger_.get_logger("console")->set_tag("BuilderScene", true);
-   this->full_logger_.get_logger("console")->set_tag("Layer", true);
    this->full_logger_.get_logger("console")->set_tag("OrthographicGrid", true);
+   this->full_logger_.get_logger("console")->set_tag("TextSerializer", true);
+   this->full_logger_.get_logger("console")->set_tag("FlatMapBuilder", true);
 
    //this->full_logger_.file_start("log.txt");
    //this->full_logger_.get_logger("file")->disable_all_tags();
@@ -33,11 +32,11 @@ Game::Game()
    //this->full_logger_.get_logger("file")->set_tag("Layer", true);
 
    Service::provide_logger(&this->full_logger_);
-   
+
    // set up input
    Service::provide_input(&this->input_);
    Service::get_input().registerInputListener(dynamic_cast<InputListener*>(this));
-   
+
    // load fonts
    TextFactory::inst()->load_font("retro", "retro.ttf");
 }
@@ -111,7 +110,7 @@ void Game::main_loop() {
    while (this->graphics.is_open()) {
       // clear graphics
       this->graphics.clear();
-   
+
       if (this->scenes_.empty() && !this->prev_scene_ && !this->next_scene_) {
          Service::get_logger().msg("Game", Logger::INFO, "Exiting game loop...");
          this->exit();

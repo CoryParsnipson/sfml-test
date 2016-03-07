@@ -44,7 +44,7 @@ BuilderScene::~BuilderScene() {
 
 void BuilderScene::enter(Game& game) {
    Service::get_logger().msg(this->id_, Logger::INFO, "Entering builder start menu state.");
-   
+
    // create viewport(s)
    this->viewport_ = new Viewport(sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height()));
 
@@ -61,7 +61,7 @@ void BuilderScene::enter(Game& game) {
    game.texture_manager.print();
 
    // build the map
-   TextSerializer* serializer = new TextSerializer();
+   TextSerializer* serializer = new TextSerializer(game);
    serializer->open("flat_map_test.txt");
 
    MapBuilder* map_builder = new FlatMapBuilder(game.texture_manager);
@@ -82,7 +82,7 @@ void BuilderScene::enter(Game& game) {
    this->backdrop_[1].color = sf::Color(25, 25, 25, 255);
    this->backdrop_[2].color = sf::Color(50, 50, 50, 255);
    this->backdrop_[3].color = sf::Color(25, 25, 25, 255);
-   
+
    delete serializer;
    delete map_builder;
 
@@ -94,7 +94,7 @@ void BuilderScene::enter(Game& game) {
 
    // let our mouse controller manipulate this scene
    dynamic_cast<MouseControlPart*>(this->mouse_->get("control"))->set_controllable(this);
-   
+
    // create fixed hud items
    Entity* t = TextFactory::inst()->create_text_entity("SFML_Test", "retro", this->viewport_->layer("hud"));
    this->entities_.push_back(t);
@@ -107,16 +107,16 @@ void BuilderScene::enter(Game& game) {
 
    t = TextFactory::inst()->create_text_entity("o: toggle entity hitboxes", "retro", this->viewport_->layer("hud"), sf::Vector2f(0, 45));
    this->entities_.push_back(t);
-   
+
    t = TextFactory::inst()->create_text_entity("1: add green tiles at selection", "retro", this->viewport_->layer("hud"), sf::Vector2f(0, 60));
    this->entities_.push_back(t);
-   
+
    t = TextFactory::inst()->create_text_entity("2: add blue tiles at selection", "retro", this->viewport_->layer("hud"), sf::Vector2f(0, 75));
    this->entities_.push_back(t);
-   
+
    t = TextFactory::inst()->create_text_entity("del: remove tiles at selection", "retro", this->viewport_->layer("hud"), sf::Vector2f(0, 90));
    this->entities_.push_back(t);
-   
+
    t = TextFactory::inst()->create_text_entity("right click: click and drag to pan", "retro", this->viewport_->layer("hud"), sf::Vector2f(0, 105));
    this->entities_.push_back(t);
 
@@ -151,7 +151,7 @@ void BuilderScene::update(Game& game, Scene* scene, Entity* entity) {
 
    this->map_->update(game, this);
    this->mouse_->update(game, this);
-   
+
    // calculate and show FPS
    if (!this->frame_count) {
       this->update_fps();
@@ -181,7 +181,7 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
       this->set_tiles(game.texture_manager.get_texture("tile_clear"));
    break;
    case sf::Keyboard::Key::O:
-      this->toggle_debug_info();      
+      this->toggle_debug_info();
    break;
    case sf::Keyboard::Key::G:
       // toggle map grid visibility
@@ -252,7 +252,7 @@ void BuilderScene::drag(MouseButtonCommand& c, sf::Vector2f delta) {
    } else if (c.button == MouseButtonCommand::RIGHT) {
       main_layer->drag(c, delta);
       grid_layer->drag(c, delta);
-      
+
       this->map_->grid()->move(delta);
    }
 }
@@ -349,7 +349,7 @@ void BuilderScene::deregister_selection_rect() {
    if (!this->selection_rectangle_) {
       return;
    }
-   
+
    // keep it in registered scene entities list, but remove it from screen
    this->selection_rectangle_->layer(nullptr);
 }
@@ -379,7 +379,7 @@ void BuilderScene::update_tile_cursor(sf::Vector2f& one, sf::Vector2f& two) {
    // compensate for main viewport layer zoom
    sf::Vector2f offset_one = this->viewport_->layer("main")->get_scale() * (one - this->viewport_->layer("hud")->get_center()) + this->viewport_->layer("hud")->get_center();
    sf::Vector2f offset_two = this->viewport_->layer("main")->get_scale() * (two - this->viewport_->layer("hud")->get_center()) + this->viewport_->layer("hud")->get_center();
-   
+
    // compensate for the panning of main viewport layer
    sf::Vector2f pan_delta = this->viewport_->layer("main")->get_pan_delta();
    offset_one -= pan_delta;
@@ -463,7 +463,7 @@ void BuilderScene::set_tiles(Texture& tile_texture) {
             this->viewport_->layer("main"),
             this->show_debug_info_
          );
-         
+
          this->map_->add(tile);
       }
    }
