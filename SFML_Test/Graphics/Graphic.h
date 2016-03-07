@@ -28,7 +28,7 @@ public:
    virtual void set_size(const sf::Vector2f& size) = 0;
 
    virtual void set_rotation(float angle) = 0;
-   
+
    virtual void set_scale(float factorX, float factorY) = 0;
    virtual void set_scale(const sf::Vector2f& factors) = 0;
 
@@ -36,15 +36,15 @@ public:
    virtual void set_origin(const sf::Vector2f& origin) = 0;
 
    virtual void set_color(const sf::Color& color) = 0;
-   
+
    virtual const sf::Vector2f& get_position() = 0;
 
    virtual sf::Vector2f get_size() const = 0;
 
    virtual float get_rotation() const = 0;
-   
+
    virtual const sf::Vector2f& get_scale() const = 0;
-   
+
    virtual const sf::Vector2f& get_origin() const = 0;
 
    virtual const sf::Color& get_color() const = 0;
@@ -64,7 +64,7 @@ public:
    virtual void set_outline_color(const sf::Color& color) {}
    virtual void set_outline_thickness(float thickness) {}
 
-   virtual Texture* get_texture() const { return nullptr;} 
+   virtual Texture* get_texture() const { return nullptr;}
    virtual const sf::Color& get_fill_color() const { return sf::Color::Transparent; }
    virtual const sf::Color& get_outline_color() const { return sf::Color::Transparent; }
    virtual float get_outline_thickness() const { return 0; }
@@ -123,7 +123,7 @@ public:
    virtual void set_size(const sf::Vector2f& size) {}
 
    virtual void set_rotation(float angle) { this->drawable_->setRotation(angle); }
-   
+
    virtual void set_scale(float factorX, float factorY) { this->drawable_->setScale(factorX, factorY); }
    virtual void set_scale(const sf::Vector2f& factors) { this->drawable_->setScale(factors); }
 
@@ -131,7 +131,7 @@ public:
    virtual void set_origin(const sf::Vector2f& origin) { this->drawable_->setOrigin(origin); }
 
    virtual void set_color(const sf::Color& color) { this->drawable_->setColor(color); }
-   
+
    virtual const sf::Vector2f& get_position() {
       sf::FloatRect bounds = this->get_global_bounds();
 
@@ -149,9 +149,9 @@ public:
    }
 
    virtual float get_rotation() const { return this->drawable_->getRotation(); }
-   
+
    virtual const sf::Vector2f& get_scale() const { return this->drawable_->getScale(); }
-   
+
    virtual const sf::Vector2f& get_origin() const { return this->drawable_->getOrigin(); }
 
    virtual const sf::Color& get_color() const { return this->drawable_->getColor(); }
@@ -196,7 +196,8 @@ public:
    }
 
    Sprite(Texture& t)
-   : drawable_(new sf::Sprite(t.get_texture()))
+   : texture_(&t)
+   , drawable_(new sf::Sprite(t.get_texture()))
    {
    }
 
@@ -228,7 +229,7 @@ public:
    }
 
    virtual void set_rotation(float angle) { this->drawable_->setRotation(angle); }
-   
+
    virtual void set_scale(float factorX, float factorY) { this->drawable_->setScale(factorX, factorY); }
    virtual void set_scale(const sf::Vector2f& factors) { this->drawable_->setScale(factors); }
 
@@ -236,7 +237,7 @@ public:
    virtual void set_origin(const sf::Vector2f& origin) { this->drawable_->setOrigin(origin); }
 
    virtual void set_color(const sf::Color& color) { this->drawable_->setColor(color); }
-   
+
    virtual const sf::Vector2f& get_position() { return this->drawable_->getPosition(); }
 
    virtual sf::Vector2f get_size() const {
@@ -247,9 +248,9 @@ public:
    }
 
    virtual float get_rotation() const { return this->drawable_->getRotation(); }
-   
+
    virtual const sf::Vector2f& get_scale() const { return this->drawable_->getScale(); }
-   
+
    virtual const sf::Vector2f& get_origin() const { return this->drawable_->getOrigin(); }
 
    virtual const sf::Color& get_color() const { return this->drawable_->getColor(); }
@@ -272,7 +273,7 @@ public:
       this->drawable_->setColor(color);
    }
 
-   virtual Texture* get_texture() const { return this->texture_;} 
+   virtual Texture* get_texture() const { return this->texture_;}
    virtual const sf::Color& get_fill_color() const { return this->drawable_->getColor(); }
 
 protected:
@@ -315,7 +316,7 @@ public:
    }
 
    virtual void set_rotation(float angle) { this->drawable_->setRotation(angle); }
-   
+
    virtual void set_scale(float factorX, float factorY) { this->drawable_->setScale(factorX, factorY); }
    virtual void set_scale(const sf::Vector2f& factors) { this->drawable_->setScale(factors); }
 
@@ -323,7 +324,7 @@ public:
    virtual void set_origin(const sf::Vector2f& origin) { this->drawable_->setOrigin(origin); }
 
    virtual void set_color(const sf::Color& color) { this->drawable_->setFillColor(color); }
-   
+
    virtual const sf::Vector2f& get_position() { return this->drawable_->getPosition(); }
 
    virtual sf::Vector2f get_size() const {
@@ -334,9 +335,9 @@ public:
    }
 
    virtual float get_rotation() const { return this->drawable_->getRotation(); }
-   
+
    virtual const sf::Vector2f& get_scale() const { return this->drawable_->getScale(); }
-   
+
    virtual const sf::Vector2f& get_origin() const { return this->drawable_->getOrigin(); }
 
    virtual const sf::Color& get_color() const { return this->drawable_->getFillColor(); }
@@ -354,7 +355,7 @@ public:
       this->texture_ = &texture;
       this->drawable_->setTexture(&texture.get_texture());
    }
-   
+
    virtual void set_texture_rect(const sf::IntRect& rect) { this->drawable_->setTextureRect(rect); }
    virtual void set_fill_color(const sf::Color& color) { this->drawable_->setFillColor(color); }
    virtual void set_outline_color(const sf::Color& color) { this->drawable_->setOutlineColor(color); }
@@ -363,7 +364,7 @@ public:
       this->drawable_->setOutlineThickness(-1 * thickness);
    }
 
-   virtual Texture* get_texture() const { return nullptr;} 
+   virtual Texture* get_texture() const { return nullptr;}
    virtual const sf::Color& get_fill_color() const { return sf::Color::Transparent; }
    virtual const sf::Color& get_outline_color() const { return sf::Color::Transparent; }
    virtual float get_outline_thickness() const { return 0; }
