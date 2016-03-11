@@ -57,6 +57,34 @@ const sf::Vector2f& OrthographicGrid::origin() {
    return Grid::origin();
 }
 
+void OrthographicGrid::tile_width(int width) {
+   Grid::tile_width(width);
+
+   this->clear_gridlines();
+   this->create_gridlines();
+
+   this->clear_text_markers();
+   this->create_text_markers();
+}
+
+int OrthographicGrid::tile_width() {
+   return this->tile_width_;
+}
+
+void OrthographicGrid::tile_height(int height) {
+   Grid::tile_height(height);
+
+   this->clear_gridlines();
+   this->create_gridlines();
+
+   this->clear_text_markers();
+   this->create_text_markers();
+}
+
+int OrthographicGrid::tile_height() {
+   return this->tile_height_;
+}
+
 sf::Vector2f OrthographicGrid::coord_to_screen(const sf::Vector2f& coord) {
    return sf::Vector2f(coord.x * this->tile_width(), coord.y * this->tile_height());
 }

@@ -71,11 +71,11 @@ Serialize::SerialObj PhysicsPart::serialize() {
    Serialize::SerialObj obj;
 
    // no need to include type tag in Part serialization
-   obj["pos_x"] = this->bounding_box_.left;
-   obj["pos_y"] = this->bounding_box_.top;
+   obj["pos_x"] = std::to_string(this->bounding_box_.left);
+   obj["pos_y"] = std::to_string(this->bounding_box_.top);
 
-   obj["bounds_width"] = this->bounding_box_.width;
-   obj["bounds_height"] = this->bounding_box_.height;
+   obj["bounds_width"] = std::to_string(this->bounding_box_.width);
+   obj["bounds_height"] = std::to_string(this->bounding_box_.height);
 
    return obj;
 }

@@ -51,21 +51,21 @@ public:
    }
    const sf::Vector2f& origin() { return this->origin_; }
 
-   void tile_width(int width) {
+   virtual void tile_width(int width) {
       this->tile_width_ = width;
 
       // re-calculate origin mod
       this->origin_mod_.x = (int)this->origin_.x % this->tile_width_;
    }
-   int tile_width() { return this->tile_width_; }
+   virtual int tile_width() { return this->tile_width_; }
 
-   void tile_height(int height) {
+   virtual void tile_height(int height) {
       this->tile_height_ = height;
 
       // re-calculate origin mod
       this->origin_mod_.y = (int)this->origin_.y % this->tile_height_;
    }
-   int tile_height() { return this->tile_height_; }
+   virtual int tile_height() { return this->tile_height_; }
 
    bool show_debug() { return this->show_debug_info_; }
    void show_debug(bool show_debug_info) { this->show_debug_info_ = show_debug_info; }

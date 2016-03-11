@@ -108,8 +108,8 @@ Serialize::SerialObj GraphicsPart::serialize() {
    }
 
    // don't need to specify type for Part serialization
-   obj["pos_x"] = pos.x;
-   obj["pos_y"] = pos.y;
+   obj["pos_x"] = std::to_string(pos.x);
+   obj["pos_y"] = std::to_string(pos.y);
 
    if (texture) {
       obj["texture"] = texture->id();

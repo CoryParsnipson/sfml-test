@@ -20,6 +20,12 @@ public:
    virtual void origin(const sf::Vector2f& origin);
    virtual const sf::Vector2f& origin();
 
+   virtual void tile_width(int width);
+   virtual int tile_width();
+
+   virtual void tile_height(int height);
+   virtual int tile_height();
+
    virtual sf::Vector2f coord_to_screen(const sf::Vector2f& coord);
 
    virtual void move(const sf::Vector2f& delta);
