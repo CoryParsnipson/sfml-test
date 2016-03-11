@@ -66,3 +66,30 @@ bool PhysicsPart::intersects(sf::FloatRect& other) {
 
 void PhysicsPart::update(Game& game, Scene* scene, Entity* entity) {
 }
+
+Serialize::SerialObj PhysicsPart::serialize() {
+   Serialize::SerialObj obj;
+
+   // no need to include type tag in Part serialization
+   obj["pos_x"] = this->bounding_box_.left;
+   obj["pos_y"] = this->bounding_box_.top;
+
+   obj["bounds_width"] = this->bounding_box_.width;
+   obj["bounds_height"] = this->bounding_box_.height;
+
+   return obj;
+}
+
+void PhysicsPart::deserialize(Serialize::SerialObj& obj) {
+   sf::Vector2f pos;
+   sf::Vector2f size;
+
+   pos.x = std::stod(obj["pos_x"]);
+   pos.y = std::stod(obj["pos_y"]);
+
+   size.x = std::stod(obj["bounds_width"]);
+   size.y = std::stod(obj["bounds_height"]);
+
+   this->set_position(pos);
+   this->set_size(size);
+}

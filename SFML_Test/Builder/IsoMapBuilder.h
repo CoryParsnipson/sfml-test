@@ -5,7 +5,7 @@
 
 class IsoMapBuilder : public MapBuilder {
 public:
-   IsoMapBuilder(TextureManager& tm);
+   IsoMapBuilder();
    virtual ~IsoMapBuilder();
 
    virtual void build();

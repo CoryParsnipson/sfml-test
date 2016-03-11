@@ -24,7 +24,7 @@ Entity::~Entity() {
 
 std::string Entity::to_string() {
    std::string description = "[Entity \"" + this->name_ + "\"";
-   
+
    PhysicsPart* physics = dynamic_cast<PhysicsPart*>(this->get("physics"));
    if (physics) {
       sf::Vector2f pos = physics->get_position();
@@ -86,7 +86,7 @@ bool Entity::intersects(sf::Vector2i& other) {
    for (it = this->parts_.begin(); it != this->parts_.end(); ++it) {
       does_intersect |= it->second->intersects(other);
    }
-   
+
    return does_intersect;
 }
 
@@ -97,7 +97,7 @@ bool Entity::intersects(sf::Vector2f& other) {
    for (it = this->parts_.begin(); it != this->parts_.end(); ++it) {
       does_intersect |= it->second->intersects(other);
    }
-   
+
    return does_intersect;
 }
 
@@ -108,7 +108,7 @@ bool Entity::intersects(sf::FloatRect& other) {
    for (it = this->parts_.begin(); it != this->parts_.end(); ++it) {
       does_intersect |= it->second->intersects(other);
    }
-   
+
    return does_intersect;
 }
 
@@ -153,4 +153,38 @@ void Entity::update(Game& game, Scene* scene, Entity* entity) {
    for (it = this->parts_.begin(); it != this->parts_.end(); it++) {
       it->second->update(game, scene, this);
    }
+}
+
+Serialize::SerialObj Entity::serialize() {
+   Serialize::SerialObj obj;
+
+   // set type tag
+   obj["type"] = "entity";
+
+   PartList::const_iterator it;
+   for (it = this->parts_.begin(); it != this->parts_.end(); it++) {
+      Serialize::SerialObj part_obj = it->second->serialize();
+      obj.insert(part_obj.begin(), part_obj.end());
+   }
+
+   return obj;
+}
+
+void Entity::deserialize(Serialize::SerialObj& obj) {
+   // create graphics part if needed
+   if (obj["texture"] != "") {
+      GraphicsPart* graphics_part = new GraphicsPart();
+      graphics_part->deserialize(obj);
+      this->add(graphics_part);
+   }
+
+   // create physics part if needed
+   if (obj["bounds_width"] != "" && obj["bounds_height"] != "") {
+      PhysicsPart* physics_part = new PhysicsPart();
+      physics_part->deserialize(obj);
+      this->add(physics_part);
+   }
+
+   // TODO: create debug part if needed
+   // TODO: create reference part if needed
 }

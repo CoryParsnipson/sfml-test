@@ -23,14 +23,18 @@ public:
    virtual void process(MouseMoveCommand& c);
    virtual void process(MouseButtonCommand& c);
    virtual void process(MouseWheelCommand& c);
-   
+
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
+
+   // serialize interface
+   virtual Serialize::SerialObj serialize();
+   virtual void deserialize(Serialize::SerialObj& obj);
 
 protected:
    bool is_panning;
    int zoom_delta;
-   
+
    MouseControllable* controllable_;
 
    MouseButtonCommand* mouse_buttons_;

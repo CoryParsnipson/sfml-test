@@ -3,6 +3,14 @@
 // initialize static members
 Texture* TextureManager::null_texture = new Texture("null", "");
 
+TextureManager* TextureManager::inst_ = new TextureManager();
+
+TextureManager* TextureManager::inst() {
+   return TextureManager::inst_;
+}
+
+TextureManager::TextureManager() {}
+
 Texture& TextureManager::get_texture(std::string id) {
    texture_map_t::iterator item = this->textures.find(id);
 

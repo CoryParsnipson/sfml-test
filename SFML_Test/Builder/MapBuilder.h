@@ -8,11 +8,10 @@
 // forward declarations
 class Entity;
 class Serializer;
-class TextureManager;
 
 class MapBuilder {
 public:
-   MapBuilder(TextureManager& tm) : serializer_(nullptr), texture_manager_(tm) {};
+   MapBuilder() : serializer_(nullptr) {}
    virtual ~MapBuilder() {};
 
    virtual void build() = 0; // call this to build the entire thing
@@ -28,8 +27,6 @@ protected:
    std::string id;
 
    Serializer* serializer_;
-   TextureManager& texture_manager_;
-
    Map* map_;
 };
 

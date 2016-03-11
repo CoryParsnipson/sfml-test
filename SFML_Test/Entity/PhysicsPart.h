@@ -15,11 +15,11 @@ public:
 
    virtual void set_size(float width, float height);
    virtual void set_size(const sf::Vector2f& size);
-   
+
    sf::Vector2f get_size();
 
    sf::FloatRect get_bounding_box();
-   
+
    void set_solid(bool solid);
    bool is_solid();
 
@@ -29,6 +29,10 @@ public:
 
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
+
+   // serialize interface
+   virtual Serialize::SerialObj serialize();
+   virtual void deserialize(Serialize::SerialObj& obj);
 
 protected:
    bool solid_; // let's try this...

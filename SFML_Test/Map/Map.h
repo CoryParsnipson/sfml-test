@@ -37,9 +37,9 @@ public:
    virtual TileList intersects(sf::FloatRect rect);
 
    virtual std::string to_string();
+   virtual void serialize(Serializer& serializer);
 
    Grid* grid();
-   virtual void serialize(Serializer& serializer);
 
 protected:
    Grid* grid_;

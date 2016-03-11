@@ -7,8 +7,8 @@
 
 #include "PhysicsPart.h"
 
-IsoMapBuilder::IsoMapBuilder(TextureManager& tm)
-: MapBuilder(tm)
+IsoMapBuilder::IsoMapBuilder()
+: MapBuilder()
 {
 }
 
@@ -24,7 +24,7 @@ void IsoMapBuilder::build() {
    }
 
    while (this->serializer_->next()) {
-      Serializer::SerializedObj d = this->serializer_->get();
+      Serialize::SerialObj d = this->serializer_->get();
 
       // need entity type identifier?
       //this->build_tile(std::stoi(d["pos_x"]), std::stoi(d["pos_y"]), d["texture"]);

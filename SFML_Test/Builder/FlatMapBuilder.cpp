@@ -1,16 +1,12 @@
 #include "FlatMapBuilder.h"
 
 #include "TextSerializer.h"
-
-#include "TileFactory.h"
-#include "TextureManager.h"
-
 #include "OrthographicGrid.h"
-
+#include "TileFactory.h"
 #include "PhysicsPart.h"
 
-FlatMapBuilder::FlatMapBuilder(TextureManager& tm)
-: MapBuilder(tm)
+FlatMapBuilder::FlatMapBuilder()
+: MapBuilder()
 {
 }
 
@@ -26,22 +22,29 @@ void FlatMapBuilder::build() {
    }
 
    while (this->serializer_->next()) {
-      Serializer::SerializedObj d = this->serializer_->get();
+      Serialize::SerialObj d = this->serializer_->get();
 
-      if (d["type"] == "grid") {
-         Grid* grid = nullptr;
-         this->serializer_->deserialize(d, grid);
-         this->build_grid(grid);
-      } else if (d["type"] == "layer") {
-         // TODO: do this later
-      } else {
-         // assume it's an Entity
-         Entity* entity = nullptr;
-         this->serializer_->deserialize(d, entity);
-
-         if (d["type"] == "tile") {
+      try {
+         if (d["type"] == "grid") {
+            Grid* grid;
+            if (d["class"] == "OrthographicGrid") {
+               grid = new OrthographicGrid("");
+               grid->deserialize(d);
+               this->build_grid(grid);
+            }
+         } else if (d["type"] == "layer") {
+            // TODO: do this later
+         } else if (d["type"] == "entity") {
+            Entity* entity = new Entity();
+            entity->deserialize(d);
             this->build_tile(entity);
+         } else {
+            Service::get_logger().msg("FlatMapBuilder", Logger::WARNING, "Received serialized object of unknown type '" + d["type"] + "'");
+            continue;
          }
+      } catch (const std::out_of_range& e) {
+         Service::get_logger().msg("FlatMapBuilder", Logger::WARNING, "Unable to de-serialize object: " + d["type"]);
+         continue;
       }
    }
 }

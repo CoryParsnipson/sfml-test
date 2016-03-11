@@ -73,7 +73,7 @@ void DebugPart::update(Game& game, Scene* scene, Entity* entity) {
    if (graphics) {
       while ((g = graphics->get(graphic_idx))) {
          if (graphic_idx >= this->sprites_.size()) {
-            Graphic* g_debug = new Shape(new sf::RectangleShape()); 
+            Graphic* g_debug = new Shape(new sf::RectangleShape());
 
             g_debug->set_fill_color(sf::Color::Transparent);
             g_debug->set_outline_color(sf::Color::Red);
@@ -81,7 +81,7 @@ void DebugPart::update(Game& game, Scene* scene, Entity* entity) {
             g_debug->layer(g->layer());
 
             this->sprites_.push_back(g_debug);
-         }         
+         }
 
          this->sprites_[graphic_idx]->set_position(g->get_position());
          this->sprites_[graphic_idx]->set_size(g->get_size());
@@ -99,4 +99,14 @@ void DebugPart::update(Game& game, Scene* scene, Entity* entity) {
       this->pos_text_->set_position(pos);
       this->pos_text_->layer(layer);
    }
+}
+
+Serialize::SerialObj DebugPart::serialize() {
+   Serialize::SerialObj obj;
+   // TODO: implement
+   return obj;
+}
+
+void DebugPart::deserialize(Serialize::SerialObj& obj) {
+   // TODO: implement
 }

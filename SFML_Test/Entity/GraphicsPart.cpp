@@ -1,6 +1,7 @@
 #include "GraphicsPart.h"
 
 #include "Graphics.h"
+#include "TextureManager.h"
 #include "Graphic.h"
 #include "Viewport.h"
 #include "Layer.h"
@@ -93,4 +94,39 @@ void GraphicsPart::update(Game& game, Scene* scene, Entity* entity) {
       Service::get_logger().msg("GraphicsPart", Logger::ERROR, "Entity null pointer received.");
       return;
    }
+}
+
+Serialize::SerialObj GraphicsPart::serialize() {
+   Serialize::SerialObj obj;
+
+   Graphic* sprite = this->get(0);
+   Texture* texture;
+   sf::Vector2f pos;
+   if (sprite) {
+      pos = sprite->get_position();
+      texture = sprite->get_texture();
+   }
+
+   // don't need to specify type for Part serialization
+   obj["pos_x"] = pos.x;
+   obj["pos_y"] = pos.y;
+
+   if (texture) {
+      obj["texture"] = texture->id();
+   }
+
+   return obj;
+}
+
+void GraphicsPart::deserialize(Serialize::SerialObj& obj) {
+   sf::Vector2f pos(0, 0);
+   pos.x = std::stod(obj["pos_x"]);
+   pos.y = std::stod(obj["pos_y"]);
+
+   Sprite* sprite = new Sprite(TextureManager::inst()->get_texture(obj["texture"]));
+   sprite->set_position(pos);
+
+   // TODO: set layer somehow
+
+   this->add(sprite);
 }

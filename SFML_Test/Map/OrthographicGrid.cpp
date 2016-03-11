@@ -37,10 +37,6 @@ OrthographicGrid::~OrthographicGrid() {
    this->clear_text_markers();
 }
 
-std::string OrthographicGrid::get_class() {
-   return "OrthographicGrid";
-}
-
 void OrthographicGrid::origin(const sf::Vector2f& origin) {
    this->origin_.x = origin.x;
    this->origin_.y = origin.y;
@@ -132,6 +128,40 @@ void OrthographicGrid::draw(Graphics& graphics) {
    for (tm_it = this->text_markers_.begin(); tm_it != this->text_markers_.end(); ++tm_it) {
       (*tm_it)->draw(graphics);
    }
+}
+
+Serialize::SerialObj OrthographicGrid::serialize() {
+   Serialize::SerialObj obj;
+   sf::Vector2f origin = this->origin();
+
+   obj["type"] = "grid";
+   obj["class"] = "OrthographicGrid";
+   obj["id"] = this->id();
+   obj["tile_width"] = std::to_string(this->tile_width());
+   obj["tile_height"] = std::to_string(this->tile_height());
+   obj["origin_x"] = std::to_string((int)origin.x);
+   obj["origin_y"] = std::to_string((int)origin.y);
+
+   return obj;
+}
+
+void OrthographicGrid::deserialize(Serialize::SerialObj& obj) {
+   if (obj["type"] != "grid") {
+      throw std::out_of_range("unknown type token '" + obj["type"] + "'");
+   }
+
+   if (obj["class"] != "OrthographicGrid") {
+      throw std::out_of_range("wrong class token '" + obj["class"] + "'");
+   }
+
+   sf::Vector2f origin(std::stod(obj["origin_x"]), std::stod(obj["origin_y"]));
+
+   this->id_ = obj["id"];
+   this->tile_width(std::stoi(obj["tile_width"]));
+   this->tile_height(std::stoi(obj["tile_height"]));
+   this->origin(origin);
+
+   Service::get_logger().msg(this->id_, Logger::INFO, "tile width: " + obj["tile_width"] + ", tile_height: " + obj["tile_height"]);
 }
 
 void OrthographicGrid::layer(Layer* layer) {

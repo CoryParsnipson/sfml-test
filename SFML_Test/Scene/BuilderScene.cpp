@@ -58,15 +58,15 @@ void BuilderScene::enter(Game& game) {
    this->viewport_->layer("grid")->hide(); // hide grid display layer by default
 
    // load textures
-   game.texture_manager.create_texture("tile_solid", "flatmap_test_texture.png", sf::IntRect(0, 0, 40, 40));
-   game.texture_manager.create_texture("tile_clear", "flatmap_test_texture.png", sf::IntRect(40, 0, 40, 40));
-   game.texture_manager.print();
+   TextureManager::inst()->create_texture("tile_solid", "flatmap_test_texture.png", sf::IntRect(0, 0, 40, 40));
+   TextureManager::inst()->create_texture("tile_clear", "flatmap_test_texture.png", sf::IntRect(40, 0, 40, 40));
+   TextureManager::inst()->print();
 
    // build the map
    this->serializer_ = new TextSerializer(game);
    this->serializer_->open_infile(this->map_filename_);
 
-   MapBuilder* map_builder = new FlatMapBuilder(game.texture_manager);
+   MapBuilder* map_builder = new FlatMapBuilder();
    map_builder->set_serializer(this->serializer_);
    map_builder->build();
 
@@ -175,11 +175,11 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
    break;
    case sf::Keyboard::Key::Num1:
    case sf::Keyboard::Key::Numpad1:
-      this->set_tiles(game.texture_manager.get_texture("tile_solid"));
+      this->set_tiles(TextureManager::inst()->get_texture("tile_solid"));
    break;
    case sf::Keyboard::Key::Num2:
    case sf::Keyboard::Key::Numpad2:
-      this->set_tiles(game.texture_manager.get_texture("tile_clear"));
+      this->set_tiles(TextureManager::inst()->get_texture("tile_clear"));
    break;
    case sf::Keyboard::Key::O:
       this->toggle_debug_info();

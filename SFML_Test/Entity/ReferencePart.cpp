@@ -39,7 +39,18 @@ void ReferencePart::remove(Entity* entity) {
    if (matching_entity_it != this->references_.end()) {
       this->references_.erase(matching_entity_it);
    }
-} 
+}
 
 void ReferencePart::update(Game& game, Scene* scene, Entity* entity) {
+}
+
+Serialize::SerialObj ReferencePart::serialize() {
+   Serialize::SerialObj obj;
+
+   // TODO: implement
+   return obj;
+}
+
+void ReferencePart::deserialize(Serialize::SerialObj& obj) {
+   // TODO: implement
 }

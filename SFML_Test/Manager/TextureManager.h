@@ -5,10 +5,12 @@
 
 #include "Texture.h"
 
-class TextureManager 
+class TextureManager
 {
 public:
    typedef std::map<std::string, Texture*> texture_map_t;
+
+   static TextureManager* inst();
 
    Texture& get_texture(std::string id);
    Texture& create_texture(std::string id, std::string filename, sf::IntRect texture_area = sf::IntRect());
@@ -17,9 +19,12 @@ public:
    void print();
 
 protected:
-   texture_map_t textures;
-
+   static TextureManager* inst_;
    static Texture* null_texture;
+
+   TextureManager();
+
+   texture_map_t textures;
 };
 
 #endif

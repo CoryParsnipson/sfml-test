@@ -78,7 +78,7 @@ void MouseControlPart::update(Game& game, Scene* scene, Entity* entity) {
       this->mouse_buttons_->y = this->last_mouse_pos.y;
 
       this->controllable_->drag(*this->mouse_buttons_, this->MOUSE_PAN_COEFFICIENT * panning_delta);
-      
+
       this->panning_anchor = this->last_mouse_pos;
    }
 
@@ -88,3 +88,10 @@ void MouseControlPart::update(Game& game, Scene* scene, Entity* entity) {
       this->zoom_delta = 0;
    }
 }
+
+Serialize::SerialObj MouseControlPart::serialize() {
+   Serialize::SerialObj obj;
+   return obj;
+}
+
+void MouseControlPart::deserialize(Serialize::SerialObj& obj) {}

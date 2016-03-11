@@ -23,6 +23,10 @@ public:
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr) = 0;
 
+   // serialize interface
+   virtual Serialize::SerialObj serialize() = 0;
+   virtual void deserialize(Serialize::SerialObj& obj) = 0;
+
 protected:
 };
 

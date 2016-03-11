@@ -5,7 +5,7 @@
 
 class FlatMapBuilder : public MapBuilder {
 public:
-   FlatMapBuilder(TextureManager& tm);
+   FlatMapBuilder();
    virtual ~FlatMapBuilder();
 
    virtual void build();

@@ -5,12 +5,14 @@
 
 #include "Draw.h"
 #include "Update.h"
+#include "Serialize.h"
 
 class Viewport;
 
 class Part
 : public Draw
 , public Update
+, public Serialize
 {
 public:
    Part(std::string id) : id(id) {};
@@ -28,14 +30,18 @@ public:
    virtual bool intersects(sf::Vector2f& other) { return false; }
    virtual bool intersects(sf::FloatRect& other) { return false; }
 
-   // send message
-   // receive message
+   // send message ???
+   // receive message ???
 
    // draw interface
    virtual void draw(Graphics& graphics) {}
 
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr) = 0;
+
+   // serialize interface
+   virtual Serialize::SerialObj serialize() = 0;
+   virtual void deserialize(Serialize::SerialObj& obj) = 0;
 
 protected:
    std::string id;

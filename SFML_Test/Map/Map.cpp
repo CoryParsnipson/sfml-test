@@ -2,13 +2,13 @@
 
 #include "Scene.h"
 #include "Viewport.h"
-#include "Serializer.h"
 
 #include "Entity.h"
 #include "PhysicsPart.h"
 
 #include "Grid.h"
 #include "OrthographicGrid.h"
+#include "Serializer.h"
 
 Map::Map()
 : grid_(new OrthographicGrid("default grid", 10))
@@ -112,22 +112,20 @@ std::string Map::to_string() {
    return "[Map]";
 }
 
-Grid* Map::grid() {
-   return this->grid_;
-}
-
 void Map::serialize(Serializer& serializer) {
    // serialize the grid
-   Serializer::SerializedObj serialized_grid = serializer.serialize(*this->grid_);
    serializer.comment("grid");
-   serializer.set(serialized_grid);
+   serializer.set(this->grid_->serialize());
 
    // serialize all tiles
    serializer.comment("map tiles");
 
    Map::TileList::const_iterator it;
    for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
-      Serializer::SerializedObj serialized_tile = serializer.serialize(*(*it), "tile");
-      serializer.set(serialized_tile);
+      serializer.set((*it)->serialize());
    }
+}
+
+Grid* Map::grid() {
+   return this->grid_;
 }

@@ -31,7 +31,7 @@ public:
    // game flow controls
    void start(); // run main loop
    void reset();
-   
+
    // scene api
    void load_scene(Scene* scene);     // load new scene on top of current scene (and switch to it)
    void unload_scene();               // unload current scene and resume previous scene
@@ -47,7 +47,6 @@ public:
 
    // functional units 
    Graphics graphics;
-   TextureManager texture_manager;
 
 protected:
 	// game flow control helpers

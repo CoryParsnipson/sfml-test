@@ -5,6 +5,7 @@
 
 #include "Draw.h"
 #include "Update.h"
+#include "Serialize.h"
 
 // forward declarations
 class Part;
@@ -12,6 +13,7 @@ class Part;
 class Entity
 : public Draw
 , public Update
+, public Serialize
 {
 public:
    typedef std::map<std::string, Part*> PartList;
@@ -32,7 +34,7 @@ public:
 
    void set_size(float width, float height);
    void set_size(const sf::Vector2f& size);
-   
+
    bool intersects(sf::Vector2i& other);
    bool intersects(sf::Vector2f& other);
    bool intersects(sf::FloatRect& other);
@@ -49,6 +51,10 @@ public:
 
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
+
+   // serialize interface
+   virtual Serialize::SerialObj serialize();
+   virtual void deserialize(Serialize::SerialObj& obj);
 
 protected:
    bool enable_debug_wireframe_;

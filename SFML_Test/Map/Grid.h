@@ -3,16 +3,18 @@
 
 #include "dependencies.h"
 #include "Draw.h"
+#include "Serialize.h"
 
 class Grid
 : public Draw
+, public Serialize
 {
 public:
    Grid(const std::string& id)
    : id_(id)
    , origin_(0, 0)
-   , tile_width_(0)
-   , tile_height_(0)
+   , tile_width_(10)
+   , tile_height_(10)
    , show_debug_info_(false)
    , scale_factor_(1.0)
    {
@@ -21,8 +23,8 @@ public:
    Grid(const std::string& id, int tile_size)
    : id_(id)
    , origin_(0, 0)
-   , tile_width_(tile_size)
-   , tile_height_(tile_size)
+   , tile_width_(tile_size > 0 ? tile_size : 10)
+   , tile_height_(tile_size > 0 ? tile_size : 10)
    , show_debug_info_(false)
    , scale_factor_(1.0)
    {
@@ -31,8 +33,8 @@ public:
    Grid(const std::string& id, const sf::Vector2f& tile_size)
    : id_(id)
    , origin_(0, 0)
-   , tile_width_(tile_size.x)
-   , tile_height_(tile_size.y)
+   , tile_width_(tile_size.x > 0 ? tile_size.x : 10)
+   , tile_height_(tile_size.y > 0 ? tile_size.y : 10)
    , show_debug_info_(false)
    , scale_factor_(1.0)
    {
@@ -40,7 +42,6 @@ public:
 
    virtual ~Grid() {};
 
-   virtual std::string get_class() = 0;
    virtual const::std::string& id() { return this->id_; }
    virtual std::string to_string() { return "[Grid id: " + this->id_ + "]"; }
 
@@ -81,6 +82,10 @@ public:
 
    // draw interface
    virtual void draw(Graphics& graphics) = 0;
+
+   // serialize interface
+   virtual Serialize::SerialObj serialize() = 0;
+   virtual void deserialize(Serialize::SerialObj& obj) = 0;
 
 protected:
    std::string id_;

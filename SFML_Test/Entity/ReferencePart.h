@@ -18,6 +18,10 @@ public:
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 
+   // serialize interface
+   virtual Serialize::SerialObj serialize();
+   virtual void deserialize(Serialize::SerialObj& obj);
+
 protected:
    entities_t references_;
 };

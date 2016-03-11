@@ -17,8 +17,6 @@ public:
    OrthographicGrid(const std::string& id, const sf::Vector2f& tile_size);
    virtual ~OrthographicGrid();
 
-   virtual std::string get_class();
-
    virtual void origin(const sf::Vector2f& origin);
    virtual const sf::Vector2f& origin();
 
@@ -36,6 +34,10 @@ public:
    virtual void draw(Graphics& graphics);
    virtual void layer(Layer* layer);
    virtual Layer* layer();
+
+   // serialize interface
+   virtual Serialize::SerialObj serialize();
+   virtual void deserialize(Serialize::SerialObj& obj);
 
 protected:
    Graphic* origin_dot_;
