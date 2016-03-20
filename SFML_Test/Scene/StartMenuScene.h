@@ -16,7 +16,7 @@ public:
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 
-   // command interface (TODO: refactor?)
+   // command interface
    virtual void process(Game& game, CloseCommand& c);
    virtual void process(Game& game, KeyPressCommand& c);
    virtual void process(Game& game, WindowResizeCommand& c);

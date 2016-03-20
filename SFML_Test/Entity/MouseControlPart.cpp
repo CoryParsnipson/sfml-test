@@ -45,7 +45,11 @@ void MouseControlPart::process(MouseButtonCommand& c) {
    this->is_panning = (c.state == MouseButtonCommand::PRESSED);
    this->panning_anchor = sf::Vector2f(c.x, c.y);
 
-   this->controllable_->click(c);
+   if (this->controllable_) {
+      this->controllable_->click(c);
+   } else {
+      Service::get_logger().msg("ControlPart", Logger::WARNING, "Controllable pointer is null.");
+   }
 }
 
 void MouseControlPart::process(MouseWheelCommand& c) {

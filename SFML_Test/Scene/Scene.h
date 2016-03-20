@@ -10,12 +10,11 @@
 #include "MouseButtonCommand.h"
 #include "MouseWheelCommand.h"
 
+#include "Game.h"
 #include "Draw.h"
 #include "Update.h"
 #include "Viewport.h"
 #include "Entity.h"
-
-class Game;
 
 class Scene
 : public Draw
@@ -26,7 +25,7 @@ public:
 
    Scene(std::string id)
    : id_(id)
-   , viewport_(nullptr)
+   , viewport_(new Viewport(sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height())))
    {
       Service::get_logger().msg(this->id(), Logger::INFO, "Creating new Scene.");
    }
@@ -62,13 +61,23 @@ public:
       }
    }
 
-   // command interface (TODO: get rid of this?)
-   virtual void process(Game& game, CloseCommand& c) = 0;
-   virtual void process(Game& game, KeyPressCommand& c) = 0;
-   virtual void process(Game& game, WindowResizeCommand& c) = 0;
-   virtual void process(Game& game, MouseMoveCommand& c) = 0;
-   virtual void process(Game& game, MouseButtonCommand& c) = 0;
-   virtual void process(Game& game, MouseWheelCommand& c) = 0;
+   // command interface default implementations
+   virtual void process(Game& game, CloseCommand& c) {
+      game.unload_scene();
+   }
+
+   virtual void process(Game& game, KeyPressCommand& c) {}
+   virtual void process(Game& game, WindowResizeCommand& c) {
+      sf::Vector2f new_size(c.width, c.height);
+      sf::Vector2f new_center(c.width / 2.f, c.height / 2.f);
+
+      // update viewport
+      this->viewport_->resize(new_size);
+      this->viewport_->recenter(new_center);
+   }
+   virtual void process(Game& game, MouseMoveCommand& c) {}
+   virtual void process(Game& game, MouseButtonCommand& c) {}
+   virtual void process(Game& game, MouseWheelCommand& c) {}
 
 protected:
    std::string id_;

@@ -4,6 +4,8 @@
 #include "TextureManager.h"
 #include "TextSerializer.h"
 
+#include "Scene.h"
+
 Game::Game()
 : next_scene_(nullptr)
 , prev_scene_(nullptr)
@@ -51,28 +53,6 @@ Game::Game()
          }
       }
    }
-
-   // initialize logging and register service (this should be done asap)
-   //this->full_logger_.console_start();
-   //this->full_logger_.get_logger("console")->disable_all_tags();
-
-   //this->full_logger_.get_logger("console")->set_tag("Game", true);
-   //this->full_logger_.get_logger("console")->set_tag("StartMenuScene", true);
-   //this->full_logger_.get_logger("console")->set_tag("BuilderScene", true);
-   //this->full_logger_.get_logger("console")->set_tag("OrthographicGrid", true);
-   //this->full_logger_.get_logger("console")->set_tag("Serializer", true);
-   //this->full_logger_.get_logger("console")->set_tag("TextSerializer", true);
-   //this->full_logger_.get_logger("console")->set_tag("FlatMapBuilder", true);
-
-   //this->full_logger_.file_start("log.txt");
-   //this->full_logger_.get_logger("file")->disable_all_tags();
-
-   //this->full_logger_.get_logger("file")->set_tag("Game", true);
-   //this->full_logger_.get_logger("file")->set_tag("TextFactory", true);
-   //this->full_logger_.get_logger("file")->set_tag("GraphicsPart", true);
-   //this->full_logger_.get_logger("file")->set_tag("StartMenuScene", true);
-   //this->full_logger_.get_logger("file")->set_tag("BuilderScene", true);
-   //this->full_logger_.get_logger("file")->set_tag("Layer", true);
 
    Service::provide_logger(&this->full_logger_);
 

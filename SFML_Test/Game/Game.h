@@ -3,8 +3,6 @@
 
 #include "dependencies.h"
 
-#include "Scene.h"
-
 #include "Viewport.h"
 #include "InputListener.h"
 #include "Graphics.h"
@@ -13,13 +11,14 @@
 #include "FullLogger.h"
 #include "TextureManager.h"
 
-// forward declarations
 class CloseCommand;
 class KeyPressCommand;
 class WindowResizeCommand;
 class MouseMoveCommand;
 class MouseButtonCommand;
 class MouseWheelCommand;
+
+class Scene;
 
 class Game
 : public InputListener
@@ -45,7 +44,7 @@ public:
    virtual void process(MouseButtonCommand& c);
    virtual void process(MouseWheelCommand& c);
 
-   // functional units 
+   // functional units
    Graphics graphics;
 
 protected:

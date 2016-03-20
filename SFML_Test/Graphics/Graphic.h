@@ -11,6 +11,8 @@ class Graphic
 : public Draw
 {
 public:
+   typedef std::vector<Graphic*> GraphicList;
+
    Graphic() {}
    virtual ~Graphic() {}
 
@@ -78,6 +80,219 @@ public:
    virtual std::string get_string() { return ""; }
    virtual const sf::Font* get_font() { return nullptr; }
    virtual sf::Vector2f find_character_pos(std::size_t index) const { return sf::Vector2f(0, 0); }
+};
+
+class CompositeGraphic : public Graphic {
+public:
+   CompositeGraphic(Graphic::GraphicList* graphics)
+   : local_bounds_(nullptr)
+   , global_bounds_(nullptr)
+   , default_color_(sf::Color::Transparent)
+   , default_scale_(1.0, 1.0)
+   {
+      this->children_ = graphics;
+
+      // calculate local and global bounds
+      Graphic::GraphicList::const_iterator it;
+      for (it = this->children_->begin(); it != this->children_->end(); ++it) {
+         sf::FloatRect child_local_bounds = (*it)->get_local_bounds();
+         sf::FloatRect child_global_bounds = (*it)->get_global_bounds();
+
+         if (!this->local_bounds_) {
+            *this->local_bounds_ = child_local_bounds;
+         } else {
+            this->local_bounds_->left = std::min(this->local_bounds_->left, child_local_bounds.left);
+            this->local_bounds_->top = std::min(this->local_bounds_->top, child_local_bounds.top);
+
+            if ((this->local_bounds_->left + this->local_bounds_->width) < (child_local_bounds.left + child_local_bounds.width)) {
+               this->local_bounds_->width = (child_local_bounds.left + child_local_bounds.width) - this->local_bounds_->left;
+            }
+
+            if ((this->local_bounds_->top + this->local_bounds_->height) < (child_local_bounds.top + child_local_bounds.height)) {
+               this->local_bounds_->width = (child_local_bounds.top + child_local_bounds.height) - this->local_bounds_->top;
+            }
+         }
+
+         if (!this->global_bounds_) {
+            *this->global_bounds_ = child_global_bounds;
+         } else {
+            this->global_bounds_->left = std::min(this->global_bounds_->left, child_global_bounds.left);
+            this->global_bounds_->top = std::min(this->global_bounds_->top, child_global_bounds.top);
+
+            if ((this->global_bounds_->left + this->global_bounds_->width) < (child_global_bounds.left + child_global_bounds.width)) {
+               this->global_bounds_->width = (child_global_bounds.left + child_global_bounds.width) - this->global_bounds_->left;
+            }
+
+            if ((this->global_bounds_->top + this->global_bounds_->height) < (child_global_bounds.top + child_global_bounds.height)) {
+               this->global_bounds_->width = (child_global_bounds.top + child_global_bounds.height) - this->global_bounds_->top;
+            }
+         }
+      }
+
+      this->pos_.x = this->global_bounds_->left;
+      this->pos_.y = this->global_bounds_->top;
+
+      this->size_.x = this->local_bounds_->width;
+      this->size_.y = this->local_bounds_->height;
+   }
+   virtual ~CompositeGraphic() {
+      Graphic::GraphicList::const_iterator it;
+      for (it = this->children_->begin(); it != this->children_->end(); ++it) {
+         delete (*it);
+      }
+      this->children_->clear();
+
+      delete this->local_bounds_;
+      delete this->global_bounds_;
+
+      delete this->children_;
+      this->children_ = nullptr;
+   }
+
+   // draw interface
+   virtual void draw(Graphics& graphics) {
+      Graphic::GraphicList::const_iterator it;
+      for (it = this->children_->begin(); it != this->children_->end(); ++it) {
+         (*it)->draw(graphics);
+      }
+   }
+
+   // common sfml drawable interface
+   virtual sf::FloatRect get_local_bounds() const {
+      return *this->local_bounds_;
+   }
+   virtual sf::FloatRect get_global_bounds() const {
+      return *this->global_bounds_;
+   }
+
+   virtual void set_position(float x, float y) {
+      this->pos_.x = x;
+      this->pos_.y = y;
+
+      Graphic::GraphicList::const_iterator it;
+      for (it = this->children_->begin(); it != this->children_->end(); ++it) {
+         (*it)->set_position(x, y);
+      }
+   }
+   virtual void set_position(const sf::Vector2f& pos) { this->set_position(pos.x, pos.y); }
+
+   virtual void set_size(float x, float y) {}
+   virtual void set_size(const sf::Vector2f& size) {}
+
+   virtual void set_rotation(float angle) {
+      Graphic::GraphicList::const_iterator it;
+      for (it = this->children_->begin(); it != this->children_->end(); ++it) {
+         (*it)->set_rotation(angle);
+      }
+   }
+
+   virtual void set_scale(float factorX, float factorY) {
+      Graphic::GraphicList::const_iterator it;
+      for (it = this->children_->begin(); it != this->children_->end(); ++it) {
+         (*it)->set_scale(factorX, factorY);
+      }
+   }
+   virtual void set_scale(const sf::Vector2f& factors) { this->set_scale(factors.x, factors.y); }
+
+   virtual void set_origin(float x, float y) {}
+   virtual void set_origin(const sf::Vector2f& origin) {}
+
+   virtual void set_color(const sf::Color& color) {
+      Graphic::GraphicList::const_iterator it;
+      for (it = this->children_->begin(); it != this->children_->end(); ++it) {
+         (*it)->set_color(color);
+      }
+   }
+
+   virtual const sf::Vector2f& get_position() {
+      return this->pos_;
+   }
+
+   virtual sf::Vector2f get_size() const {
+      return this->size_;
+   }
+
+   virtual float get_rotation() const {
+      float rotation = 0;
+      if (this->children_->size() > 0) {
+         rotation = this->children_->front()->get_rotation();
+      }
+      return rotation;
+   }
+
+   virtual const sf::Vector2f& get_scale() const {
+      if (this->children_->size() > 0) {
+         return this->children_->front()->get_scale();
+      }
+      return this->default_scale_;
+   }
+
+   virtual const sf::Vector2f& get_origin() const {
+      return this->pos_;
+   }
+
+   virtual const sf::Color& get_color() const {
+      if (this->children_->size() > 0) {
+         return this->children_->front()->get_color();
+      }
+      return this->default_color_;
+   }
+
+   virtual void move(float offsetX, float offsetY) {
+      Graphic::GraphicList::const_iterator it;
+      for (it = this->children_->begin(); it != this->children_->end(); ++it) {
+         (*it)->move(offsetX, offsetY);
+      }
+   }
+   virtual void move(const sf::Vector2f& offset) { return this->move(offset.x, offset.y); }
+
+   virtual void rotate(float angle) {
+      Graphic::GraphicList::const_iterator it;
+      for (it = this->children_->begin(); it != this->children_->end(); ++it) {
+         (*it)->rotate(angle);
+      }
+   }
+
+   virtual void scale(float factorX, float factorY) {
+      Graphic::GraphicList::const_iterator it;
+      for (it = this->children_->begin(); it != this->children_->end(); ++it) {
+         (*it)->scale(factorX, factorY);
+      }
+   }
+   virtual void scale(const sf::Vector2f& factor) { this->scale(factor.x, factor.y); }
+
+   // sprite/shape interface
+   virtual void set_texture(Texture& texture) {}
+   virtual void set_texture_rect(const sf::IntRect& rect) {}
+   virtual void set_fill_color(const sf::Color& color) {}
+   virtual void set_outline_color(const sf::Color& color) {}
+   virtual void set_outline_thickness(float thickness) {}
+
+   virtual Texture* get_texture() const { return nullptr;}
+   virtual const sf::Color& get_fill_color() const { return sf::Color::Transparent; }
+   virtual const sf::Color& get_outline_color() const { return sf::Color::Transparent; }
+   virtual float get_outline_thickness() const { return 0; }
+
+   // sf::Text interface
+   virtual void set_string(const std::string& s) {}
+   virtual void set_font(sf::Font* font) {}
+   virtual void set_character_size(unsigned int size) {}
+   virtual void set_style(sf::Text::Style style) {}
+
+   virtual std::string get_string() { return ""; }
+   virtual const sf::Font* get_font() { return nullptr; }
+   virtual sf::Vector2f find_character_pos(std::size_t index) const { return sf::Vector2f(0, 0); }
+
+protected:
+   sf::Vector2f pos_;
+   sf::Vector2f size_;
+   sf::FloatRect* local_bounds_;
+   sf::FloatRect* global_bounds_;
+
+   sf::Color default_color_;
+   sf::Vector2f default_scale_;
+
+   Graphic::GraphicList* children_;
 };
 
 class Text : public Graphic

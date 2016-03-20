@@ -47,9 +47,6 @@ BuilderScene::~BuilderScene() {
 void BuilderScene::enter(Game& game) {
    Service::get_logger().msg(this->id_, Logger::INFO, "Entering builder start menu state.");
 
-   // create viewport(s)
-   this->viewport_ = new Viewport(sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height()));
-
    // fixed layer above map and sprites
    this->viewport_->add("grid");
    this->viewport_->add("overlay");
@@ -207,12 +204,10 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
 }
 
 void BuilderScene::process(Game& game, WindowResizeCommand& c) {
+   Scene::process(game, c);
+
    sf::Vector2f new_size(c.width, c.height);
    sf::Vector2f new_center(c.width / 2.f, c.height / 2.f);
-
-   // update viewport
-   this->viewport_->resize(new_size);
-   this->viewport_->recenter(new_center);
 
    // reposition center dot
    this->center_dot_->set_position(new_center);
