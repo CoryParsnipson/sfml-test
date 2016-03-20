@@ -2,6 +2,7 @@
 #include "TextFactory.h"
 #include "InputController.h"
 #include "TextureManager.h"
+#include "TextSerializer.h"
 
 Game::Game()
 : next_scene_(nullptr)
@@ -9,17 +10,59 @@ Game::Game()
 {
    Service::init(); // initialize service locator
 
-   // initialize logging and register service (this should be done asap)
-   this->full_logger_.console_start();
-   this->full_logger_.get_logger("console")->disable_all_tags();
+   // TODO: probably need to move this into a config class or something
+   Serialize::SerialObj config_line;
+   Serializer* config_reader = new TextSerializer(*this);
+   config_reader->open_infile("config.txt");
 
-   this->full_logger_.get_logger("console")->set_tag("Game", true);
-   this->full_logger_.get_logger("console")->set_tag("StartMenuScene", true);
-   this->full_logger_.get_logger("console")->set_tag("BuilderScene", true);
-   this->full_logger_.get_logger("console")->set_tag("OrthographicGrid", true);
-   this->full_logger_.get_logger("console")->set_tag("Serializer", true);
-   this->full_logger_.get_logger("console")->set_tag("TextSerializer", true);
-   this->full_logger_.get_logger("console")->set_tag("FlatMapBuilder", true);
+   while(config_reader->next()) {
+      config_line = config_reader->get();
+
+      // initialize logger service
+      if (config_line["type"] == "logger") {
+         if (config_line["stream"] == "console") {
+            if (config_line["enable"] == "true") {
+               this->full_logger_.console_start();
+            }
+
+            if (config_line["disable_all_tags"] == "true") {
+               this->full_logger_.get_logger("console")->disable_all_tags();
+            }
+
+            if (config_line["set_tag"] != "") {
+               bool setting = (config_line["tag_value"] == "true");
+               this->full_logger_.get_logger("console")->set_tag(config_line["set_tag"], setting);
+            }
+
+         } else if (config_line["stream"] == "file") {
+            if (config_line["enable"] == "true") {
+               this->full_logger_.file_start("log.txt");
+            }
+
+            if (config_line["disable_all_tags"] == "true") {
+               this->full_logger_.get_logger("file")->disable_all_tags();
+            }
+
+            if (config_line["set_tag"] != "") {
+               bool setting = (config_line["tag_value"] == "true");
+               this->full_logger_.get_logger("file")->set_tag(config_line["set_tag"], setting);
+            }
+
+         }
+      }
+   }
+
+   // initialize logging and register service (this should be done asap)
+   //this->full_logger_.console_start();
+   //this->full_logger_.get_logger("console")->disable_all_tags();
+
+   //this->full_logger_.get_logger("console")->set_tag("Game", true);
+   //this->full_logger_.get_logger("console")->set_tag("StartMenuScene", true);
+   //this->full_logger_.get_logger("console")->set_tag("BuilderScene", true);
+   //this->full_logger_.get_logger("console")->set_tag("OrthographicGrid", true);
+   //this->full_logger_.get_logger("console")->set_tag("Serializer", true);
+   //this->full_logger_.get_logger("console")->set_tag("TextSerializer", true);
+   //this->full_logger_.get_logger("console")->set_tag("FlatMapBuilder", true);
 
    //this->full_logger_.file_start("log.txt");
    //this->full_logger_.get_logger("file")->disable_all_tags();
@@ -39,6 +82,9 @@ Game::Game()
 
    // load fonts
    TextFactory::inst()->load_font("retro", "retro.ttf");
+
+   delete config_reader;
+   config_reader = nullptr;
 }
 
 Game::~Game() {
