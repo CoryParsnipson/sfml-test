@@ -6,7 +6,7 @@
 
 class TextSerializer : public Serializer {
 public:
-   TextSerializer(Game& game);
+   TextSerializer();
    virtual ~TextSerializer();
 
    virtual Serialize::SerialObj get();

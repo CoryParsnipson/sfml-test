@@ -14,7 +14,7 @@ Game::Game()
 
    // TODO: probably need to move this into a config class or something
    Serialize::SerialObj config_line;
-   Serializer* config_reader = new TextSerializer(*this);
+   Serializer* config_reader = new TextSerializer();
    config_reader->open_infile("config.txt");
 
    while(config_reader->next()) {

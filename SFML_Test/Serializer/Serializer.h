@@ -10,7 +10,7 @@ class Entity;
 class Serializer {
 public:
 
-   Serializer(Game& game) : game_(game) {};
+   Serializer() {}
    virtual ~Serializer() {
       this->close_infile();
       this->close_outfile();
@@ -67,8 +67,6 @@ public:
    virtual bool prev() = 0;
 
 protected:
-   Game& game_;
-
    std::string filename_;
 
    std::ifstream in_file_;

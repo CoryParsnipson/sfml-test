@@ -3,9 +3,8 @@
 #include <boost/tokenizer.hpp>
 
 #include "TextSerializer.h"
-#include "Game.h"
 
-TextSerializer::TextSerializer(Game& game) : Serializer(game) {}
+TextSerializer::TextSerializer() : Serializer() {}
 TextSerializer::~TextSerializer() {}
 
 Serialize::SerialObj TextSerializer::get() {

@@ -35,19 +35,6 @@ BuilderScene::BuilderScene()
 , frame_count(0)
 , show_debug_info_(false)
 {
-}
-
-BuilderScene::~BuilderScene() {
-   delete this->map_;
-   delete this->mouse_;
-   delete this->serializer_;
-
-   this->remove_tile_cursor();
-}
-
-void BuilderScene::enter(Game& game) {
-   Service::get_logger().msg(this->id_, Logger::INFO, "Entering builder start menu state.");
-
    // fixed layer above map and sprites
    this->viewport_->add("grid");
    this->viewport_->add("overlay");
@@ -61,7 +48,7 @@ void BuilderScene::enter(Game& game) {
    TextureManager::inst()->print();
 
    // build the map
-   this->serializer_ = new TextSerializer(game);
+   this->serializer_ = new TextSerializer();
    this->serializer_->open_infile(this->map_filename_);
 
    MapBuilder* map_builder = new FlatMapBuilder();
@@ -87,9 +74,6 @@ void BuilderScene::enter(Game& game) {
 
    // initialize entities
    this->mouse_ = UtilFactory::inst()->create_mouse(this->viewport_->layer("hud"));
-
-   // hook up mouse controller to user input
-   Service::get_input().registerInputListener(dynamic_cast<InputListener*>(this->mouse_->get("control")));
 
    // let our mouse controller manipulate this scene
    dynamic_cast<MouseControlPart*>(this->mouse_->get("control"))->set_controllable(this);
@@ -135,6 +119,21 @@ void BuilderScene::enter(Game& game) {
    this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", "retro", this->viewport_->layer("hud"));
    this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
    this->entities_.push_back(this->fps_display_);
+}
+
+BuilderScene::~BuilderScene() {
+   delete this->map_;
+   delete this->mouse_;
+   delete this->serializer_;
+
+   this->remove_tile_cursor();
+}
+
+void BuilderScene::enter(Game& game) {
+   Service::get_logger().msg(this->id_, Logger::INFO, "Entering builder start menu state.");
+
+   // hook up mouse controller to user input
+   Service::get_input().registerInputListener(dynamic_cast<InputListener*>(this->mouse_->get("control")));
 }
 
 void BuilderScene::exit(Game& game) {

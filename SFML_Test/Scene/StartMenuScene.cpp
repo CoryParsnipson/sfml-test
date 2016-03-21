@@ -17,14 +17,6 @@ StartMenuScene::StartMenuScene()
 : Scene("StartMenuScene")
 , show_debug_info_(false)
 {
-}
-
-StartMenuScene::~StartMenuScene() {
-}
-
-void StartMenuScene::enter(Game& game) {
-   Service::get_logger().msg(this->id_, Logger::INFO, "Entering game start menu state.");
-
    // create viewport layers
    this->viewport_->add("debug");
 
@@ -63,6 +55,13 @@ void StartMenuScene::enter(Game& game) {
    ));
 }
 
+StartMenuScene::~StartMenuScene() {
+}
+
+void StartMenuScene::enter(Game& game) {
+   Service::get_logger().msg(this->id_, Logger::INFO, "Entering game start menu state.");
+}
+
 void StartMenuScene::exit(Game& game) {
    Service::get_logger().msg(this->id_, Logger::INFO, "Exiting game start menu state.");
 }
@@ -88,7 +87,7 @@ void StartMenuScene::process(Game& game, KeyPressCommand& c) {
 
 void StartMenuScene::process(Game& game, WindowResizeCommand& c) {
    Scene::process(game, c);
-   
+
    sf::Vector2f offset;
    sf::Vector2f new_size(c.width, c.height);
    sf::Vector2f new_center(c.width / 2.f, c.height / 2.f);
