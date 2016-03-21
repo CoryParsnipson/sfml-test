@@ -1,4 +1,5 @@
 #include "BuilderScene.h"
+#include "TestUIScene.h"
 
 #include "Game.h"
 #include "Layer.h"
@@ -137,6 +138,8 @@ void BuilderScene::enter(Game& game) {
 }
 
 void BuilderScene::exit(Game& game) {
+   // unregister mouse control from input listener
+   Service::get_input().unregisterInputListener(dynamic_cast<InputListener*>(this->mouse_->get("control")));
 }
 
 void BuilderScene::draw(Graphics& graphics) {
@@ -196,6 +199,10 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
    case sf::Keyboard::Key::S:
       Service::get_logger().msg(this->id_, Logger::INFO, "Writing map to file '" + this->map_filename_ + "'");
       this->map_->serialize(*this->serializer_);
+   break;
+   case sf::Keyboard::Key::Escape:
+      // load super secret test ui scene
+      game.switch_scene(new TestUIScene());
    break;
    default:
       // do nothing

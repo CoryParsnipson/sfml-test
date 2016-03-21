@@ -12,13 +12,16 @@ class Game;
 // input handler class and command hierarchy
 class InputController {
 public:
+   typedef std::vector<InputListener*> InputListenerList;
+
    InputController();
 
    virtual void registerInputListener(InputListener* listener);
+   virtual void unregisterInputListener(InputListener* listener);
    virtual void pollEvents(Game& game);
 
 private:
-   std::vector<InputListener*> listeners;
+   InputListenerList listeners_;
 };
 
 #endif

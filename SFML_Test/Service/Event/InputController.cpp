@@ -13,7 +13,19 @@ InputController::InputController() {
 }
 
 void InputController::registerInputListener(InputListener* listener) {
-   this->listeners.push_back(listener);
+   this->listeners_.push_back(listener);
+}
+
+void InputController::unregisterInputListener(InputListener* listener) {
+   InputController::InputListenerList::iterator it;
+   for (it = this->listeners_.begin(); it != this->listeners_.end(); ++it) {
+      if (*it != listener) {
+         continue;
+      }
+
+      this->listeners_.erase(it);
+      return;
+   }
 }
 
 void InputController::pollEvents(Game& game) {
@@ -54,15 +66,21 @@ void InputController::pollEvents(Game& game) {
          // just drop event
          return;
       }
-   
+
       if (!c) {
          Service::get_logger().msg("InputController", Logger::WARNING, "pollEvents: command object not instantiated.");
          return;
       }
-      
+
       // dispatch event to game entities
-      std::vector<InputListener*>::iterator it = this->listeners.begin();
-      for (it = this->listeners.begin(); it != this->listeners.end(); ++it) {
+      std::vector<InputListener*>::iterator it;
+      for (it = this->listeners_.begin(); it != this->listeners_.end(); ++it) {
+         // Note: this check does not catch dangling pointers, you should use smart pointers to prevent that
+         if (!(*it)) {
+            Service::get_logger().msg("InputController", Logger::WARNING, "Removing delete InputListener from registered listeners.");
+            continue;
+         }
+
          c->execute(*(*it));
       }
    }

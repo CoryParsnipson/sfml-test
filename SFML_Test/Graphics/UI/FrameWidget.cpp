@@ -19,7 +19,6 @@ FrameWidget::~FrameWidget() {
 }
 
 void FrameWidget::draw(Graphics& graphics) {
-
    // draw children on top of this widget
    Widget::draw(graphics);
 }
