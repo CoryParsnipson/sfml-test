@@ -3,6 +3,8 @@
 
 #include "Scene.h"
 
+class Widget;
+
 class TestUIScene
 : public Scene
 {
@@ -18,6 +20,8 @@ public:
 
 protected:
    Entity* mouse_;
+
+   Widget* widget_;
 };
 
 #endif
