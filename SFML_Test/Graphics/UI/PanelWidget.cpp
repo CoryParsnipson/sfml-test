@@ -1,19 +1,41 @@
 #include "PanelWidget.h"
+#include "TextureManager.h"
 
 PanelWidget::PanelWidget(const sf::Vector2f& pos, const sf::Vector2f& size, Widget* parent)
 : Widget(parent)
 , box_(new Shape(new sf::RectangleShape()))
 {
-   // load/create border
-   //Graphic* tr_one = new Shape(new sf::RectangleShape());
-   //tr_one->set_size()
+   this->border_["top_left"] = new Sprite(TextureManager::inst()->get_texture("ui_panel_test_tl"));
+   this->border_["top_left"]->set_position(pos);
 
-   //this->border_["top_right"] = ;
-   this->box_->set_position(pos);
-   this->box_->set_size(size);
-   this->box_->set_fill_color(sf::Color(70, 69, 88, 255));
-   this->box_->set_outline_thickness(1.0);
-   this->box_->set_outline_color(sf::Color(120, 121, 137, 255));
+   this->border_["top_right"] = new Sprite(TextureManager::inst()->get_texture("ui_panel_test_tr"));
+   this->border_["top_right"]->set_position(pos + sf::Vector2f(size.x - 40, 0));
+
+   this->border_["top_middle"] = new Sprite(TextureManager::inst()->get_texture("ui_panel_test_tm"));
+   this->border_["top_middle"]->set_texture_rect(sf::IntRect(0, 0, size.x - 80, 40));
+   this->border_["top_middle"]->set_position(pos + sf::Vector2f(40, 0));
+
+   this->border_["left_middle"] = new Sprite(TextureManager::inst()->get_texture("ui_panel_test_lm"));
+   this->border_["left_middle"]->set_texture_rect(sf::IntRect(0, 0, 40, size.y - 80));
+   this->border_["left_middle"]->set_position(pos + sf::Vector2f(0, 40));
+
+   this->border_["right_middle"] = new Sprite(TextureManager::inst()->get_texture("ui_panel_test_rm"));
+   this->border_["right_middle"]->set_texture_rect(sf::IntRect(0, 0, 40, size.y - 80));
+   this->border_["right_middle"]->set_position(pos + sf::Vector2f(size.x - 40, 40));
+
+   this->border_["bottom_left"] = new Sprite(TextureManager::inst()->get_texture("ui_panel_test_bl"));
+   this->border_["bottom_left"]->set_position(pos + sf::Vector2f(0, size.y - 40));
+
+   this->border_["bottom_right"] = new Sprite(TextureManager::inst()->get_texture("ui_panel_test_br"));
+   this->border_["bottom_right"]->set_position(pos + sf::Vector2f(size.x - 40, size.y - 40));
+
+   this->border_["bottom_middle"] = new Sprite(TextureManager::inst()->get_texture("ui_panel_test_bm"));
+   this->border_["bottom_middle"]->set_texture_rect(sf::IntRect(40, size.y - 40, size.x - 80, 40));
+   this->border_["bottom_middle"]->set_position(pos + sf::Vector2f(40, size.y - 40));
+
+   this->box_->set_position(pos + sf::Vector2f(10, 10));
+   this->box_->set_size(size - sf::Vector2f(20, 20));
+   this->box_->set_fill_color(sf::Color(192, 192, 192, 255));
 }
 
 PanelWidget::~PanelWidget() {
@@ -30,6 +52,17 @@ PanelWidget::~PanelWidget() {
 void PanelWidget::draw(Graphics& graphics) {
    this->box_->draw(graphics);
 
+   this->border_["top_middle"]->draw(graphics);
+   this->border_["top_left"]->draw(graphics);
+   this->border_["top_right"]->draw(graphics);
+
+   this->border_["left_middle"]->draw(graphics);
+   this->border_["right_middle"]->draw(graphics);
+
+   this->border_["bottom_middle"]->draw(graphics);
+   this->border_["bottom_left"]->draw(graphics);
+   this->border_["bottom_right"]->draw(graphics);
+
    // draw children on top of this widget
    Widget::draw(graphics);
 }
@@ -41,6 +74,17 @@ void PanelWidget::update(Game& game, Scene* scene, Entity* entity) {
 void PanelWidget::drag(MouseButtonCommand& c, sf::Vector2f delta) {
    sf::Vector2f mouse_pos(c.x, c.y);
    if (this->clicked_) {
+      this->border_["top_middle"]->move(-1.0f * delta);
+      this->border_["top_left"]->move(-1.0f * delta);
+      this->border_["top_right"]->move(-1.0f * delta);
+
+      this->border_["left_middle"]->move(-1.0f * delta);
+      this->border_["right_middle"]->move(-1.0f * delta);
+
+      this->border_["bottom_middle"]->move(-1.0f * delta);
+      this->border_["bottom_left"]->move(-1.0f * delta);
+      this->border_["bottom_right"]->move(-1.0f * delta);
+
       this->box_->move(-1.0f * delta);
    }
 }

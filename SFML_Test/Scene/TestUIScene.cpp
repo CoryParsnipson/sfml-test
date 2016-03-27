@@ -1,6 +1,7 @@
 #include "TestUIScene.h"
 #include "UtilFactory.h"
 #include "TextFactory.h"
+#include "TextureManager.h"
 
 #include "Game.h"
 #include "MouseControlPart.h"
@@ -12,6 +13,51 @@ TestUIScene::TestUIScene()
    // create viewport layers
    this->viewport_->add("main");
    this->viewport_->add("hud");
+
+   // load textures
+   TextureManager::inst()->create_texture("ui_panel_test_tm",
+      "pokemon_rby_ui_panel_border.png",
+      sf::IntRect(40, 0, 5, 40)
+   );
+   TextureManager::inst()->get_texture("ui_panel_test_tm").get_texture().setRepeated(true);
+
+   TextureManager::inst()->create_texture("ui_panel_test_tl",
+      "pokemon_rby_ui_panel_border.png",
+      sf::IntRect(0, 0, 40, 40)
+   );
+
+   TextureManager::inst()->create_texture("ui_panel_test_tr",
+      "pokemon_rby_ui_panel_border.png",
+      sf::IntRect(45, 0, 40, 40)
+   );
+
+   TextureManager::inst()->create_texture("ui_panel_test_lm",
+      "pokemon_rby_ui_panel_border.png",
+      sf::IntRect(0, 40, 40, 5)
+   );
+   TextureManager::inst()->get_texture("ui_panel_test_bm").get_texture().setRepeated(true);
+
+   TextureManager::inst()->create_texture("ui_panel_test_rm",
+      "pokemon_rby_ui_panel_border.png",
+      sf::IntRect(45, 40, 40, 5)
+   );
+   TextureManager::inst()->get_texture("ui_panel_test_bm").get_texture().setRepeated(true);
+
+   TextureManager::inst()->create_texture("ui_panel_test_bm",
+      "pokemon_rby_ui_panel_border.png",
+      sf::IntRect(40, 45, 5, 40)
+   );
+   TextureManager::inst()->get_texture("ui_panel_test_bm").get_texture().setRepeated(true);
+
+   TextureManager::inst()->create_texture("ui_panel_test_br",
+      "pokemon_rby_ui_panel_border.png",
+      sf::IntRect(45, 45, 40, 40)
+   );
+
+   TextureManager::inst()->create_texture("ui_panel_test_bl",
+      "pokemon_rby_ui_panel_border.png",
+      sf::IntRect(0, 45, 40, 40)
+   );
 
    // populate entities
    this->entities_.push_back(TextFactory::inst()->create_text_entity(

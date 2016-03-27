@@ -67,6 +67,7 @@ public:
    virtual void set_outline_thickness(float thickness) {}
 
    virtual Texture* get_texture() const { return nullptr;}
+   virtual const sf::IntRect& get_texture_rect() const { return this->null_rect_; }
    virtual const sf::Color& get_fill_color() const { return sf::Color::Transparent; }
    virtual const sf::Color& get_outline_color() const { return sf::Color::Transparent; }
    virtual float get_outline_thickness() const { return 0; }
@@ -80,6 +81,9 @@ public:
    virtual std::string get_string() { return ""; }
    virtual const sf::Font* get_font() { return nullptr; }
    virtual sf::Vector2f find_character_pos(std::size_t index) const { return sf::Vector2f(0, 0); }
+
+protected:
+   sf::IntRect null_rect_;
 };
 
 class CompositeGraphic : public Graphic {
@@ -479,6 +483,10 @@ public:
    virtual void scale(const sf::Vector2f& factor) { this->drawable_->scale(factor); }
 
    // sprite/shape interface
+   virtual void set_texture_rect(const sf::IntRect& rect) {
+      this->drawable_->setTextureRect(rect);
+   }
+
    virtual void set_texture(Texture& texture) {
       this->texture_ = &texture;
       this->drawable_->setTexture(texture.get_texture());
@@ -489,6 +497,7 @@ public:
    }
 
    virtual Texture* get_texture() const { return this->texture_;}
+   virtual const sf::IntRect& get_texture_rect() const { return this->drawable_->getTextureRect(); }
    virtual const sf::Color& get_fill_color() const { return this->drawable_->getColor(); }
 
 protected:
