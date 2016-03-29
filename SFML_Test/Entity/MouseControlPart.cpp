@@ -75,7 +75,7 @@ void MouseControlPart::update(Game& game, Scene* scene, Entity* entity) {
 
    // if we are in panning state, move the viewport
    if (this->is_panning) {
-      sf::Vector2f panning_delta = (this->panning_anchor - this->last_mouse_pos) * this->controllable_->get_scale();
+      sf::Vector2f panning_delta = (this->last_mouse_pos - this->panning_anchor) * this->controllable_->get_scale();
 
       // TODO: update mouse button command (note, you should refactor this entire thing...)
       this->mouse_buttons_->x = this->last_mouse_pos.x;

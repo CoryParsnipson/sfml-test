@@ -12,7 +12,7 @@ class PanelWidget
 public:
    typedef std::map<std::string, Graphic*> BorderList;
 
-   PanelWidget(const sf::Vector2f& pos, const sf::Vector2f& size, Widget* parent = nullptr);
+   PanelWidget(const sf::Vector2f& pos, const sf::Vector2f& size, Widget* parent = nullptr, bool draggable = false, bool resizable = false);
    virtual ~PanelWidget();
 
    // draw interface
@@ -31,9 +31,13 @@ public:
 
 protected:
    bool clicked_;
-   
-   BorderList border_;
-   Graphic* box_;
+   bool resized_;
+
+   bool draggable_;
+   bool resizable_;
+
+   Graphic* panel_;
+   Graphic* resize_handle_;
 };
 
 #endif

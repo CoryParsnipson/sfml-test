@@ -18,10 +18,22 @@ public:
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 
+   // command interface
+   virtual void process(Game& game, WindowResizeCommand& c);
+
 protected:
    Entity* mouse_;
+   Entity* fps_display_;
 
    Widget* widget_;
+
+   sf::Clock clock;
+   int last_frame_time;
+   int frame_measurement_interval;
+   int frame_count;
+
+   // helper methods
+   void update_fps();
 };
 
 #endif
