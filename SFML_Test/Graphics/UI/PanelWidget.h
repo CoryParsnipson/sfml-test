@@ -10,6 +10,8 @@ class PanelWidget
 , public MouseControllable
 {
 public:
+   const float MIN_PANEL_WIDTH = 90.f;
+   const float MIN_PANEL_HEIGHT = 90.f;
    typedef std::map<std::string, Graphic*> BorderList;
 
    PanelWidget(const sf::Vector2f& pos, const sf::Vector2f& size, Widget* parent = nullptr, bool draggable = false, bool resizable = false);

@@ -19,6 +19,10 @@ TestUIScene::TestUIScene()
    this->viewport_->add("main");
    this->viewport_->add("hud");
 
+   // load textures
+   TextureManager::inst()->create_texture("ui_resize_handle", "ui_panel_test.png", sf::IntRect(30, 0, 10, 10));
+   TextureManager::inst()->print();
+
    // populate entities
    this->entities_.push_back(TextFactory::inst()->create_text_entity(
       "Test UI Scene",

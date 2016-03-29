@@ -89,8 +89,8 @@ protected:
 class CompositeGraphic : public Graphic {
 public:
    CompositeGraphic(Graphic::GraphicList* graphics)
-   : local_bounds_(nullptr)
-   , global_bounds_(nullptr)
+   : local_bounds_(new sf::FloatRect())
+   , global_bounds_(new sf::FloatRect())
    , default_color_(sf::Color::Transparent)
    , default_scale_(1.0, 1.0)
    {
@@ -103,7 +103,10 @@ public:
          sf::FloatRect child_global_bounds = (*it)->get_global_bounds();
 
          if (!this->local_bounds_) {
-            *this->local_bounds_ = child_local_bounds;
+            this->local_bounds_->left = child_local_bounds.left;
+            this->local_bounds_->top = child_local_bounds.top;
+            this->local_bounds_->width = child_local_bounds.width;
+            this->local_bounds_->height = child_local_bounds.height;
          } else {
             this->local_bounds_->left = std::min(this->local_bounds_->left, child_local_bounds.left);
             this->local_bounds_->top = std::min(this->local_bounds_->top, child_local_bounds.top);
@@ -118,7 +121,10 @@ public:
          }
 
          if (!this->global_bounds_) {
-            *this->global_bounds_ = child_global_bounds;
+            this->global_bounds_->left = child_global_bounds.left;
+            this->global_bounds_->top = child_global_bounds.top;
+            this->global_bounds_->width = child_global_bounds.width;
+            this->global_bounds_->height = child_global_bounds.height;
          } else {
             this->global_bounds_->left = std::min(this->global_bounds_->left, child_global_bounds.left);
             this->global_bounds_->top = std::min(this->global_bounds_->top, child_global_bounds.top);
@@ -128,7 +134,7 @@ public:
             }
 
             if ((this->global_bounds_->top + this->global_bounds_->height) < (child_global_bounds.top + child_global_bounds.height)) {
-               this->global_bounds_->width = (child_global_bounds.top + child_global_bounds.height) - this->global_bounds_->top;
+               this->global_bounds_->height = (child_global_bounds.top + child_global_bounds.height) - this->global_bounds_->top;
             }
          }
       }
@@ -136,8 +142,11 @@ public:
       this->pos_.x = this->global_bounds_->left;
       this->pos_.y = this->global_bounds_->top;
 
-      this->size_.x = this->local_bounds_->width;
-      this->size_.y = this->local_bounds_->height;
+      this->size_.x = this->global_bounds_->width;
+      this->size_.y = this->global_bounds_->height;
+
+      Service::get_logger().msg("CompositeGraphic", Logger::INFO, "pos (" + std::to_string((int)this->pos_.x) + ", " + std::to_string((int)this->pos_.y) + ")");
+      Service::get_logger().msg("CompositeGraphic", Logger::INFO, "size (" + std::to_string((int)this->size_.x) + ", " + std::to_string((int)this->size_.y) + ")");
    }
    virtual ~CompositeGraphic() {
       Graphic::GraphicList::const_iterator it;
@@ -172,6 +181,9 @@ public:
    virtual void set_position(float x, float y) {
       this->pos_.x = x;
       this->pos_.y = y;
+
+      this->global_bounds_->left = x;
+      this->global_bounds_->top = y;
 
       Graphic::GraphicList::const_iterator it;
       for (it = this->children_->begin(); it != this->children_->end(); ++it) {
@@ -247,6 +259,9 @@ public:
       for (it = this->children_->begin(); it != this->children_->end(); ++it) {
          (*it)->move(offsetX, offsetY);
       }
+
+      this->global_bounds_->left += offsetX;
+      this->global_bounds_->top += offsetY;
    }
    virtual void move(const sf::Vector2f& offset) { return this->move(offset.x, offset.y); }
 

@@ -8,52 +8,62 @@ PanelWidget::PanelWidget(const sf::Vector2f& pos, const sf::Vector2f& size, Widg
 , draggable_(draggable)
 , resizable_(resizable)
 , panel_(new Shape(new sf::RectangleShape()))
+, resize_handle_(nullptr)
 {
    this->panel_->set_position(pos);
    this->panel_->set_size(size);
    this->panel_->set_fill_color(sf::Color(192, 192, 192, 255));
 
-   sf::Vector2f resize_handle_size(40, 40);
-   sf::Vector2f resize_handle_pos = pos + size - resize_handle_size;
+   if (this->resizable_) {
+      Graphic::GraphicList* rh_gl = new Graphic::GraphicList();
+      rh_gl->push_back(new Sprite(TextureManager::inst()->get_texture("ui_resize_handle")));
+      (*rh_gl)[0]->scale(2.0f, 2.0f);
+      rh_gl->push_back(new Shape(new sf::RectangleShape()));
+      (*rh_gl)[1]->set_size(2.0f * (*rh_gl)[0]->get_size());
+      (*rh_gl)[1]->set_fill_color(sf::Color::Transparent);
+      (*rh_gl)[1]->set_outline_color(sf::Color::Red);
+      (*rh_gl)[1]->set_outline_thickness(1.0f);
 
-   this->resize_handle_ = new Shape(new sf::RectangleShape());
-   this->resize_handle_->set_position(resize_handle_pos);
-   this->resize_handle_->set_size(resize_handle_size);
-   this->resize_handle_->set_fill_color(sf::Color::Transparent);
-   this->resize_handle_->set_outline_color(sf::Color::Red);
-   this->resize_handle_->set_outline_thickness(1.0f);
+      this->resize_handle_ = new CompositeGraphic(rh_gl);
+      this->resize_handle_->set_position(pos + size - this->resize_handle_->get_size());
+   }
 }
 
 PanelWidget::~PanelWidget() {
    delete this->panel_;
-   this->panel_ = nullptr;
+   delete this->resize_handle_;
 }
 
 void PanelWidget::draw(Graphics& graphics) {
    this->panel_->draw(graphics);
-   this->resize_handle_->draw(graphics);
+
+   if (this->resize_handle_) {
+      this->resize_handle_->draw(graphics);
+   }
 
    // draw children on top of this widget
    Widget::draw(graphics);
 }
 
 void PanelWidget::update(Game& game, Scene* scene, Entity* entity) {
-
 }
 
 void PanelWidget::drag(MouseButtonCommand& c, sf::Vector2f delta) {
    sf::Vector2f mouse_pos(c.x, c.y);
 
    if (this->draggable_ && this->clicked_) {
-      this->resize_handle_->move(delta);
+      if (this->resize_handle_) {
+         this->resize_handle_->move(delta);
+      }
+
       this->panel_->move(delta);
    } else if (this->resizable_ && this->resized_) {
       sf::Vector2f size = this->panel_->get_size();
-      size.x = std::max(size.x + delta.x, 90.0f);
-      size.y = std::max(size.y + delta.y, 90.0f);
+      size.x = std::max(size.x + delta.x, this->MIN_PANEL_WIDTH);
+      size.y = std::max(size.y + delta.y, this->MIN_PANEL_HEIGHT);
 
       this->panel_->set_size(size);
-      this->resize_handle_->move(delta);
+      this->resize_handle_->set_position(this->panel_->get_position() + size - this->resize_handle_->get_size());
    }
 }
 
@@ -64,7 +74,7 @@ void PanelWidget::click(MouseButtonCommand& c) {
    sf::Vector2f mouse_pos(c.x, c.y);
    if (c.button == MouseButtonCommand::MOUSE_BUTTON::LEFT &&
        c.state == MouseButtonCommand::STATE::PRESSED) {
-      this->resized_ = this->resize_handle_->get_global_bounds().contains(mouse_pos);
+      this->resized_ = this->resize_handle_ && this->resize_handle_->get_global_bounds().contains(mouse_pos);
       this->clicked_ = !this->resized_ && this->panel_->get_global_bounds().contains(mouse_pos);
    } else {
       this->clicked_ = false;
