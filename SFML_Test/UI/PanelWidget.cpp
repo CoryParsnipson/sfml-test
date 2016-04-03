@@ -10,8 +10,9 @@ PanelWidget::PanelWidget(const sf::Vector2f& pos, const sf::Vector2f& size, Widg
 , panel_(new Shape(new sf::RectangleShape()))
 , resize_handle_(nullptr)
 {
+   this->set_size(size);
+
    this->panel_->set_position(pos);
-   this->panel_->set_size(size);
    this->panel_->set_fill_color(sf::Color(192, 192, 192, 255));
 
    if (this->resizable_) {
@@ -54,6 +55,14 @@ void PanelWidget::move(const sf::Vector2f& delta) {
    }
 
    Widget::move(delta);
+}
+
+sf::Vector2f PanelWidget::get_size() {
+   return this->panel_->get_size();
+}
+
+void PanelWidget::set_size(const sf::Vector2f& size) {
+   this->panel_->set_size(size);
 }
 
 void PanelWidget::draw(Graphics& graphics) {

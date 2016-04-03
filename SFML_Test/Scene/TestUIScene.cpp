@@ -37,7 +37,8 @@ TestUIScene::TestUIScene()
    this->widget_ = new PanelWidget(sf::Vector2f(100, 100), sf::Vector2f(300, 200), nullptr, true, true);
    this->widget_->layer(this->viewport_->layer("main"));
 
-   Widget* tw = new TextWidget("PENIS");
+   Widget* tw = new TextWidget("PENIS PENIS PENIS PENIS PENIS PENIS PENIS PENIS PENIS");
+   tw->set_size(sf::Vector2f(300, 200));
    tw->layer(this->viewport_->layer("main"));
    this->widget_->add(tw);
 

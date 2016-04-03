@@ -26,6 +26,14 @@ void TextWidget::move(const sf::Vector2f& delta) {
    Widget::move(delta);
 }
 
+sf::Vector2f TextWidget::get_size() {
+   return this->text_->get_size();
+}
+
+void TextWidget::set_size(const sf::Vector2f& size) {
+   this->text_->set_size(size);
+}
+
 void TextWidget::draw(Graphics& graphics) {
    this->text_->draw(graphics);
    Widget::draw(graphics);

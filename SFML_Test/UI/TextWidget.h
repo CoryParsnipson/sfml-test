@@ -17,6 +17,9 @@ public:
    virtual const sf::Vector2f& get_position();
    virtual void move(const sf::Vector2f& delta);
 
+   virtual sf::Vector2f get_size();
+   virtual void set_size(const sf::Vector2f& size);
+
    // draw interface
    virtual void draw(Graphics& graphics);
 
