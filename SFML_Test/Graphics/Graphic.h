@@ -81,6 +81,7 @@ public:
    virtual std::string get_string() { return ""; }
    virtual const sf::Font* get_font() { return nullptr; }
    virtual unsigned int get_character_size() const { return 0; }
+   virtual unsigned int get_em_width() const { return 0; }
    virtual sf::Vector2f find_character_pos(std::size_t index) const { return sf::Vector2f(0, 0); }
 
 protected:
@@ -430,7 +431,8 @@ public:
 
    virtual std::string get_string() { return this->drawable_->getString(); }
    virtual const sf::Font* get_font() { return this->drawable_->getFont(); }
-   virtual unsigned int get_character_size() const { return this->em_->getLocalBounds().width; }
+   virtual unsigned int get_character_size() const { return this->drawable_->getCharacterSize(); }
+   virtual unsigned int get_em_width() const { return this->em_->getLocalBounds().width; }
    virtual sf::Vector2f find_character_pos(std::size_t index) const { return this->drawable_->findCharacterPos(index); }
 
 protected:

@@ -56,7 +56,7 @@ void TextWidget::draw(Graphics& graphics) {
 void TextWidget::word_wrap() {
    std::string text;
    unsigned int line_length = 0;
-   unsigned int chars_per_line = this->get_size().x / this->text_->get_character_size();
+   unsigned int chars_per_line = this->get_size().x / this->text_->get_em_width();
 
    boost::char_separator<char> whitespace(" \n\r\t");
    boost::tokenizer<boost::char_separator<char> > tokenizer(this->raw_text_, whitespace);
