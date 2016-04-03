@@ -2,7 +2,7 @@
 #include "TextureManager.h"
 
 PanelWidget::PanelWidget(const sf::Vector2f& pos, const sf::Vector2f& size, Widget* parent, bool draggable, bool resizable)
-: Widget(parent)
+: Widget()
 , clicked_(false)
 , resized_(false)
 , draggable_(draggable)
@@ -34,6 +34,28 @@ PanelWidget::~PanelWidget() {
    delete this->resize_handle_;
 }
 
+const sf::Vector2f& PanelWidget::get_position() {
+   return this->panel_->get_position();
+}
+
+void PanelWidget::set_position(const sf::Vector2f& pos) {
+   this->panel_->set_position(pos);
+   if (this->resize_handle_) {
+      this->resize_handle_->set_position(this->panel_->get_position() + this->panel_->get_size() - this->resize_handle_->get_size());
+   }
+
+   Widget::set_position(pos);
+}
+
+void PanelWidget::move(const sf::Vector2f& delta) {
+   this->panel_->move(delta);
+   if (this->resize_handle_) {
+      this->resize_handle_->move(delta);
+   }
+
+   Widget::move(delta);
+}
+
 void PanelWidget::draw(Graphics& graphics) {
    this->panel_->draw(graphics);
 
@@ -45,18 +67,11 @@ void PanelWidget::draw(Graphics& graphics) {
    Widget::draw(graphics);
 }
 
-void PanelWidget::update(Game& game, Scene* scene, Entity* entity) {
-}
-
 void PanelWidget::drag(MouseButtonCommand& c, sf::Vector2f delta) {
    sf::Vector2f mouse_pos(c.x, c.y);
 
    if (this->draggable_ && this->clicked_) {
-      if (this->resize_handle_) {
-         this->resize_handle_->move(delta);
-      }
-
-      this->panel_->move(delta);
+      this->move(delta);
    } else if (this->resizable_ && this->resized_) {
       sf::Vector2f size = this->panel_->get_size();
       size.x = std::max(size.x + delta.x, this->MIN_PANEL_WIDTH);

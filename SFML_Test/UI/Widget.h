@@ -13,26 +13,30 @@ class Widget
 {
 public:
    typedef std::vector<Widget*> WidgetList;
+   enum Position {
+      ABSOLUTE,
+      RELATIVE,
+      FIXED
+   };
 
-   Widget() {}
-   virtual ~Widget() {
-      WidgetList::const_iterator it;
-      for (it = this->children_.begin(); it != this->children_.end(); ++it) {
-         delete *it;
-      }
-      this->children_.clear();
-   }
+   Widget();
+   virtual ~Widget();
 
    // widget interface
+   void set_positioning(Widget::Position position) { this->position_ = position; }
+   Widget::Position get_positioning() { return this->position_; }
+
    virtual const sf::Vector2f& get_position() = 0;
    virtual void set_position(const sf::Vector2f& pos) {
       sf::Vector2f delta = pos - this->get_position();
-
       this->move(delta);
    }
    virtual void move(const sf::Vector2f& delta) {
       WidgetList::const_iterator it;
       for (it = this->children_.begin(); it != this->children_.end(); ++it) {
+         if ((*it)->get_positioning() == Widget::Position::FIXED) {
+            continue;
+         }
          (*it)->move(delta);
       }
    }
@@ -40,6 +44,10 @@ public:
    void add(Widget* widget) {
       if (!widget) {
          return;
+      }
+
+      if (widget->get_positioning() == Widget::Position::RELATIVE) {
+         widget->move(this->get_position());
       }
 
       this->children_.push_back(widget);
@@ -89,6 +97,7 @@ public:
    }
 
 protected:
+   Position position_;
    WidgetList children_;
 };
 

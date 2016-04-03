@@ -330,7 +330,7 @@ public:
       this->set_character_size(size);
    }
 
-   Text(std::string& s, sf::Font* font = nullptr, unsigned int size = 12)
+   Text(const std::string& s, sf::Font* font = nullptr, unsigned int size = 12)
    : drawable_(new sf::Text())
    {
       this->set_string(s);

@@ -5,9 +5,10 @@
 
 #include "Game.h"
 #include "MouseControlPart.h"
-#include "PanelWidget.h"
-
 #include "GraphicsPart.h"
+
+#include "PanelWidget.h"
+#include "TextWidget.h"
 
 TestUIScene::TestUIScene()
 : Scene("TestUIScene")
@@ -35,6 +36,10 @@ TestUIScene::TestUIScene()
    // test widget
    this->widget_ = new PanelWidget(sf::Vector2f(100, 100), sf::Vector2f(300, 200), nullptr, true, true);
    this->widget_->layer(this->viewport_->layer("main"));
+
+   Widget* tw = new TextWidget("PENIS");
+   tw->layer(this->viewport_->layer("main"));
+   this->widget_->add(tw);
 
    // set up mouse
    this->mouse_ = UtilFactory::inst()->create_mouse(this->viewport_->layer("hud"));

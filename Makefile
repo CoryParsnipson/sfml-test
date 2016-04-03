@@ -31,7 +31,6 @@ INCLUDE_PATHS += SFML_Test/Service/Logger
 INCLUDE_PATHS += SFML_Test/Service/Event
 INCLUDE_PATHS += SFML_Test/Service
 INCLUDE_PATHS += SFML_Test/Command
-INCLUDE_PATHS += SFML_Test/Graphics/UI
 INCLUDE_PATHS += SFML_Test/Graphics
 INCLUDE_PATHS += SFML_Test/Scene
 INCLUDE_PATHS += SFML_Test/Entity
@@ -40,6 +39,7 @@ INCLUDE_PATHS += SFML_Test/Serializer
 INCLUDE_PATHS += SFML_Test/Map
 INCLUDE_PATHS += SFML_Test/Manager
 INCLUDE_PATHS += SFML_Test/Factory
+INCLUDE_PATHS += SFML_Test/UI
 
 CXX_FILES = 
 CXX_FILES += $(PROJECT_DIR)/*.cpp
@@ -48,7 +48,6 @@ CXX_FILES += $(PROJECT_DIR)/Service/Event/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Service/Logger/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Service/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Command/*.cpp
-CXX_FILES += $(PROJECT_DIR)/Graphics/UI/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Graphics/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Scene/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Entity/*.cpp
@@ -57,6 +56,7 @@ CXX_FILES += $(PROJECT_DIR)/Serializer/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Map/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Manager/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Factory/*.cpp
+CXX_FILES += $(PROJECT_DIR)/UI/*.cpp
 
 .PHONY: for_debug for_release
 .DEFAULT_GOAL := for_debug

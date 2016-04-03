@@ -17,11 +17,14 @@ public:
    PanelWidget(const sf::Vector2f& pos, const sf::Vector2f& size, Widget* parent = nullptr, bool draggable = false, bool resizable = false);
    virtual ~PanelWidget();
 
+   // widget interface
+   virtual const sf::Vector2f& get_position();
+   void set_position(const sf::Vector2f& pos);
+
+   virtual void move(const sf::Vector2f& move);
+
    // draw interface
    virtual void draw(Graphics& graphics);
-
-   // update interface
-   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 
    // mouse control interface
    virtual void drag(MouseButtonCommand& c, sf::Vector2f delta);
