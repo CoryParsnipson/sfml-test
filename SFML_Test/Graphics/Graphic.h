@@ -80,6 +80,7 @@ public:
 
    virtual std::string get_string() { return ""; }
    virtual const sf::Font* get_font() { return nullptr; }
+   virtual unsigned int get_character_size() const { return 0; }
    virtual sf::Vector2f find_character_pos(std::size_t index) const { return sf::Vector2f(0, 0); }
 
 protected:
@@ -318,27 +319,35 @@ class Text : public Graphic
 {
 public:
    Text()
-   : drawable_(new sf::Text())
+   : em_(new sf::Text())
+   , drawable_(new sf::Text())
    {
    }
 
    Text(const char* s, sf::Font* font = nullptr, unsigned int size = 12)
-   : drawable_(new sf::Text())
+   : em_(new sf::Text())
+   , drawable_(new sf::Text())
    {
+      this->em_->setString("m");
+
       this->set_string(s);
       this->set_font(font);
       this->set_character_size(size);
    }
 
    Text(const std::string& s, sf::Font* font = nullptr, unsigned int size = 12)
-   : drawable_(new sf::Text())
+   : em_(new sf::Text())
+   , drawable_(new sf::Text())
    {
+      this->em_->setString("m");
+
       this->set_string(s);
       this->set_font(font);
       this->set_character_size(size);
    }
 
    virtual ~Text() {
+      delete this->em_;
       delete this->drawable_;
    }
 
@@ -407,17 +416,26 @@ public:
       if (!font) {
          return;
       }
+      this->em_->setFont(*font);
       this->drawable_->setFont(*font);
    }
-   virtual void set_character_size(unsigned int size) { this->drawable_->setCharacterSize(size); }
-   virtual void set_style(sf::Text::Style style) { this->drawable_->setStyle(style); }
+   virtual void set_character_size(unsigned int size) {
+      this->em_->setCharacterSize(size);
+      this->drawable_->setCharacterSize(size);
+   }
+   virtual void set_style(sf::Text::Style style) {
+      this->em_->setStyle(style);
+      this->drawable_->setStyle(style);
+   }
 
    virtual std::string get_string() { return this->drawable_->getString(); }
    virtual const sf::Font* get_font() { return this->drawable_->getFont(); }
+   virtual unsigned int get_character_size() const { return this->em_->getLocalBounds().width; }
    virtual sf::Vector2f find_character_pos(std::size_t index) const { return this->drawable_->findCharacterPos(index); }
 
 protected:
    sf::Vector2f bounds_pos_;
+   sf::Text* em_;
    sf::Text* drawable_;
 };
 

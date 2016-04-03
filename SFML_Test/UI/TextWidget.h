@@ -24,7 +24,12 @@ public:
    virtual void draw(Graphics& graphics);
 
 protected:
+   std::string raw_text_;
+
+   sf::Vector2f text_size_;
    Graphic* text_;
+
+   void word_wrap();
 };
 
 #endif

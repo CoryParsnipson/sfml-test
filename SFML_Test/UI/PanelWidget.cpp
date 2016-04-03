@@ -63,6 +63,11 @@ sf::Vector2f PanelWidget::get_size() {
 
 void PanelWidget::set_size(const sf::Vector2f& size) {
    this->panel_->set_size(size);
+
+   WidgetList::const_iterator it;
+   for (it = this->children_.begin(); it != this->children_.end(); ++it) {
+      (*it)->set_size(size);
+   }
 }
 
 void PanelWidget::draw(Graphics& graphics) {
@@ -86,7 +91,7 @@ void PanelWidget::drag(MouseButtonCommand& c, sf::Vector2f delta) {
       size.x = std::max(size.x + delta.x, this->MIN_PANEL_WIDTH);
       size.y = std::max(size.y + delta.y, this->MIN_PANEL_HEIGHT);
 
-      this->panel_->set_size(size);
+      this->set_size(size);
       this->resize_handle_->set_position(this->panel_->get_position() + size - this->resize_handle_->get_size());
    }
 }

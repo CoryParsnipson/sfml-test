@@ -3,11 +3,11 @@
 type: logger, stream: console, enable: true
 type: logger, stream: console, disable_all_tags: true
 type: logger, stream: console, set_tag: Game, tag_value: true
-type: logger, stream: console, set_tag: CompositeGraphic, tag_value: true
 type: logger, stream: console, set_tag: TextureManager, tag_value: true
 type: logger, stream: console, set_tag: StartMenuScene, tag_value: true
 type: logger, stream: console, set_tag: BuilderScene, tag_value: true
 type: logger, stream: console, set_tag: TestUIScene, tag_value: true
+type: logger, stream: console, set_tag: TextWidget, tag_value: true
 #type: logger, stream: console, set_tag: OrthographicGrid, tag_value: true
 #type: logger, stream: console, set_tag: Serializer, tag_value: true
 #type: logger, stream: console, set_tag: TextSerializer, tag_value: true
