@@ -2,9 +2,8 @@
 #define DRAW_H
 
 #include "dependencies.h"
+#include "RenderTarget.h"
 #include "Layer.h"
-
-class Graphics;
 
 class Draw {
 public:
@@ -14,13 +13,13 @@ public:
       this->layer(nullptr);
    }
 
-   virtual void draw(Graphics& graphics) = 0;
+   virtual void draw(RenderTarget& surface) = 0;
 
    virtual void layer(Layer* layer) {
       if (this->layer_) {
          this->layer_->remove(this);
       }
-      
+
       this->layer_ = layer;
 
       if (this->layer_) {

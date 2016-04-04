@@ -6,7 +6,6 @@
 #include "TextFactory.h"
 
 #include "Game.h"
-#include "Graphics.h"
 #include "Layer.h"
 
 #include "Graphic.h"

@@ -22,7 +22,7 @@ public:
    virtual void exit(Game& game);
 
    // draw interface
-   virtual void draw(Graphics& graphics);
+   virtual void draw(RenderTarget& surface);
 
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);

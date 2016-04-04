@@ -49,8 +49,8 @@ public:
    virtual void exit(Game& game) {}
 
    // draw interface
-   virtual void draw(Graphics& graphics) {
-      this->viewport_->draw(graphics);
+   virtual void draw(RenderTarget& surface) {
+      this->viewport_->draw(surface);
    }
 
    // update interface

@@ -1,7 +1,5 @@
 #include "Layer.h"
-
 #include "Draw.h"
-#include "Graphics.h"
 
 // initialize static member variables
 const float Layer::ZOOM_FACTOR_MIN = 0.125;
@@ -42,10 +40,10 @@ void Layer::set_size(sf::Vector2f size) {
 
 void Layer::set_center(sf::Vector2f center) {
    sf::Vector2f pan_delta = this->original_center_ - this->get_center();
-   
+
    // recenter view
    this->view_->setCenter(center);
-   
+
    // re-apply panning
    this->view_->move(-pan_delta);
 
@@ -112,7 +110,7 @@ bool Layer::visible() {
    return this->visible_;
 }
 
-void Layer::draw(Graphics& graphics) {
+void Layer::draw(RenderTarget& surface) {
    if (!this->visible_) {
       return;
    }
@@ -125,7 +123,7 @@ void Layer::draw(Graphics& graphics) {
          continue;
       }
 
-      (*it)->draw(graphics);
+      (*it)->draw(surface);
       ++it;
    }
 }

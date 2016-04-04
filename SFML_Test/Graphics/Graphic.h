@@ -3,7 +3,6 @@
 
 #include "dependencies.h"
 #include "Draw.h"
-#include "Graphics.h"
 #include "TextFactory.h"
 #include "Texture.h"
 
@@ -17,7 +16,7 @@ public:
    virtual ~Graphic() {}
 
    // draw interface
-   virtual void draw(Graphics& graphics) = 0;
+   virtual void draw(RenderTarget& surface) = 0;
 
    // common sfml drawable interface
    virtual sf::FloatRect get_local_bounds() const = 0;
@@ -165,10 +164,10 @@ public:
    }
 
    // draw interface
-   virtual void draw(Graphics& graphics) {
+   virtual void draw(RenderTarget& surface) {
       Graphic::GraphicList::const_iterator it;
       for (it = this->children_->begin(); it != this->children_->end(); ++it) {
-         (*it)->draw(graphics);
+         (*it)->draw(surface);
       }
    }
 
@@ -351,8 +350,8 @@ public:
       delete this->drawable_;
    }
 
-   virtual void draw(Graphics& graphics) {
-      graphics.draw(*this->drawable_);
+   virtual void draw(RenderTarget& surface) {
+      surface.draw(*this->drawable_);
    }
 
    // common sfml drawable interface
@@ -459,8 +458,8 @@ public:
    }
 
    // draw interface
-   virtual void draw(Graphics& graphics) {
-      graphics.draw(*this->drawable_);
+   virtual void draw(RenderTarget& surface) {
+      surface.draw(*this->drawable_);
    }
 
    // common sfml drawable interface
@@ -553,8 +552,8 @@ public:
    }
 
    // draw interface
-   virtual void draw(Graphics& graphics) {
-      graphics.draw(*this->drawable_);
+   virtual void draw(RenderTarget& surface) {
+      surface.draw(*this->drawable_);
    }
 
    // common sfml drawable interface

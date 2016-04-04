@@ -32,7 +32,7 @@ void InputController::pollEvents(Game& game) {
    sf::Event event;
    Command* c = 0;
 
-   while (game.graphics.get_window().pollEvent(event)) {
+   while (game.get_window().poll_event(event)) {
       switch (event.type) {
       case sf::Event::Closed:
          Service::get_logger().msg("InputController", Logger::INFO, "pollEvents: close event received");

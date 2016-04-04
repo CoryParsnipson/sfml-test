@@ -2,12 +2,10 @@
 #define GAME_H
 
 #include "dependencies.h"
-
+#include "RenderWindow.h"
 #include "Viewport.h"
 #include "InputListener.h"
-#include "Graphics.h"
 #include "Service.h"
-
 #include "FullLogger.h"
 #include "TextureManager.h"
 
@@ -36,6 +34,9 @@ public:
    void unload_scene();               // unload current scene and resume previous scene
    Scene* switch_scene(Scene* scene); // unload current scene and load new scene
 
+   // game graphics
+   RenderWindow& get_window();
+
    // command interface
    virtual void process(CloseCommand& c);
    virtual void process(KeyPressCommand& c);
@@ -44,13 +45,9 @@ public:
    virtual void process(MouseButtonCommand& c);
    virtual void process(MouseWheelCommand& c);
 
-   // functional units
-   Graphics graphics;
-
 protected:
-	// game flow control helpers
+	// game flow control
 	void main_loop();
-   void exit();
 
    Scene* next_scene_;  // if this is not null, it will be placed on the top of scenes_ in the next update
    Scene* prev_scene_;  // a state that is to be unloaded in the next update, should be popped off scenes_
@@ -59,6 +56,9 @@ protected:
    // services
    FullLogger full_logger_;
    InputController input_;
+
+   // graphics
+   RenderWindow window_;
 };
 
 #endif

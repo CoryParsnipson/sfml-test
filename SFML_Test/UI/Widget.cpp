@@ -66,14 +66,14 @@ void Widget::remove(Widget* child) {
    }
 }
 
-void Widget::draw(Graphics& graphics) {
+void Widget::draw(RenderTarget& surface) {
    WidgetList::const_iterator it;
    for (it = this->children_.begin(); it != this->children_.end(); ++it) {
       if (!*it) {
          this->children_.erase(it);
          continue;
       }
-      (*it)->draw(graphics);
+      (*it)->draw(surface);
    }
 }
 

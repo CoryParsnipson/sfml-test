@@ -1,6 +1,6 @@
-#include "Viewport.h"
-#include "Graphics.h"
+#include "RenderTarget.h"
 #include "Layer.h"
+#include "Viewport.h"
 
 Viewport::Viewport(sf::Vector2f size)
 : size_(size)
@@ -93,13 +93,13 @@ void Viewport::reset() {
    for (it = this->layers_.begin(); it != this->layers_.end(); ++it) {
       (*it)->reset_pan();
       (*it)->reset_zoom();
-   } 
+   }
 }
 
-void Viewport::draw(Graphics& graphics) {
+void Viewport::draw(RenderTarget& surface) {
    LayerList::const_iterator it;
    for (it = this->layers_.begin(); it != this->layers_.end(); ++it) {
-      graphics.set_active_layer(*(*it));
-      (*it)->draw(graphics);
+      surface.set_active_layer(*(*it));
+      (*it)->draw(surface);
    }
 }

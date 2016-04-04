@@ -26,7 +26,7 @@ public:
    virtual void set_size(const sf::Vector2f& size);
 
    // draw interface
-   virtual void draw(Graphics& graphics);
+   virtual void draw(RenderTarget& surface);
 
    // mouse control interface
    virtual void drag(MouseButtonCommand& c, sf::Vector2f delta);

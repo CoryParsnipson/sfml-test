@@ -1,6 +1,6 @@
 #include "DebugPart.h"
 
-#include "Graphics.h"
+#include "RenderTarget.h"
 #include "Graphic.h"
 
 #include "TextFactory.h"
@@ -37,14 +37,14 @@ bool DebugPart::show_text() {
    return this->show_text_;
 }
 
-void DebugPart::draw(Graphics& graphics) {
+void DebugPart::draw(RenderTarget& surface) {
    SpriteList::const_iterator sprite_it;
    for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
-      (*sprite_it)->draw(graphics);
+      (*sprite_it)->draw(surface);
    }
 
    if (this->show_text()) {
-      this->pos_text_->draw(graphics);
+      this->pos_text_->draw(surface);
    }
 }
 

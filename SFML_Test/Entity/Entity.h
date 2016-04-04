@@ -46,7 +46,7 @@ public:
    Part* get(const std::string& part_name);
 
    // draw interface
-   virtual void draw(Graphics& graphics);
+   virtual void draw(RenderTarget& surface);
    virtual void layer(Layer* layer);
 
    // update interface

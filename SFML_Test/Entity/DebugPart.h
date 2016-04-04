@@ -3,7 +3,7 @@
 
 #include "Part.h"
 
-class Graphics;
+class RenderTarget;
 class Graphic;
 
 class DebugPart
@@ -19,7 +19,7 @@ public:
    bool show_text();
 
    // draw interface
-   virtual void draw(Graphics& graphics);
+   virtual void draw(RenderTarget& surface);
    virtual void layer(Layer* layer);
 
    // update interface

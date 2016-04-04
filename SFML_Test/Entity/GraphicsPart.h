@@ -3,8 +3,8 @@
 
 #include "Part.h"
 
-class Graphics;
 class Layer;
+class RenderTarget;
 class Graphic;
 
 class GraphicsPart
@@ -27,7 +27,7 @@ public:
    virtual void set_size(const sf::Vector2f& size);
 
    // draw interface
-   virtual void draw(Graphics& graphics);
+   virtual void draw(RenderTarget& surface);
    virtual void layer(Layer* layer);
 
    // update interface

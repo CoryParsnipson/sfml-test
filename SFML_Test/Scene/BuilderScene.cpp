@@ -141,9 +141,9 @@ void BuilderScene::exit(Game& game) {
    Service::get_input().unregisterInputListener(dynamic_cast<InputListener*>(this->mouse_->get("control")));
 }
 
-void BuilderScene::draw(Graphics& graphics) {
-   graphics.draw(this->backdrop_);
-   Scene::draw(graphics);
+void BuilderScene::draw(RenderTarget& surface) {
+   surface.draw(this->backdrop_);
+   Scene::draw(surface);
 }
 
 void BuilderScene::update(Game& game, Scene* scene, Entity* entity) {

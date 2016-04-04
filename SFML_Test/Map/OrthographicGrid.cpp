@@ -140,21 +140,21 @@ sf::Vector2f OrthographicGrid::ceil(const sf::Vector2f& pos) {
    );
 }
 
-void OrthographicGrid::draw(Graphics& graphics) {
+void OrthographicGrid::draw(RenderTarget& surface) {
    GridlineList::const_iterator it;
    for (it = this->grid_cols_.begin(); it != this->grid_cols_.end(); ++it) {
-      (*it)->draw(graphics);
+      (*it)->draw(surface);
    }
 
    for (it = this->grid_rows_.begin(); it != this->grid_rows_.end(); ++it) {
-      (*it)->draw(graphics);
+      (*it)->draw(surface);
    }
 
-   this->origin_dot_->draw(graphics);
+   this->origin_dot_->draw(surface);
 
    TextMarkerList::const_iterator tm_it;
    for (tm_it = this->text_markers_.begin(); tm_it != this->text_markers_.end(); ++tm_it) {
-      (*tm_it)->draw(graphics);
+      (*tm_it)->draw(surface);
    }
 }
 

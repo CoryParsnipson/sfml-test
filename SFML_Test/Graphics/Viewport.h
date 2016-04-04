@@ -2,7 +2,6 @@
 #define VIEWPORT_H
 
 #include "dependencies.h"
-
 #include "Draw.h"
 
 class Layer;
@@ -12,7 +11,7 @@ class Viewport
 {
 public:
    typedef std::vector<Layer*> LayerList;
-   
+
    Viewport(sf::Vector2f size);
    virtual ~Viewport();
 
@@ -35,7 +34,7 @@ public:
    void reset();
 
    // draw interface
-   virtual void draw(Graphics& graphics);
+   virtual void draw(RenderTarget& surface);
 
 protected:
    LayerList layers_;

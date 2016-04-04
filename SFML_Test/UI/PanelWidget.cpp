@@ -62,15 +62,15 @@ void PanelWidget::set_size(const sf::Vector2f& size) {
    }
 }
 
-void PanelWidget::draw(Graphics& graphics) {
-   this->panel_->draw(graphics);
+void PanelWidget::draw(RenderTarget& surface) {
+   this->panel_->draw(surface);
 
    if (this->resize_handle_) {
-      this->resize_handle_->draw(graphics);
+      this->resize_handle_->draw(surface);
    }
 
    // draw children on top of this widget
-   Widget::draw(graphics);
+   Widget::draw(surface);
 }
 
 void PanelWidget::drag(MouseButtonCommand& c, sf::Vector2f delta) {

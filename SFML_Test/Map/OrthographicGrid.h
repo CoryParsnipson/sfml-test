@@ -37,7 +37,7 @@ public:
    virtual sf::Vector2f ceil(const sf::Vector2f& pos);
 
    // draw interface
-   virtual void draw(Graphics& graphics);
+   virtual void draw(RenderTarget& surface);
    virtual void layer(Layer* layer);
    virtual Layer* layer();
 

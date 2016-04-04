@@ -5,7 +5,7 @@
 
 #include "MouseUtil.h"
 
-class Graphics;
+class RenderTarget;
 class Draw;
 
 class Layer
@@ -14,7 +14,7 @@ class Layer
 public:
    static const float ZOOM_FACTOR_MIN;
    static const float ZOOM_FACTOR_MAX;
-   
+
    typedef std::vector<Draw*> DrawableList;
 
    Layer(std::string id, sf::Vector2f size);
@@ -34,7 +34,7 @@ public:
    sf::Vector2f get_center();
    sf::FloatRect get_viewport();
    sf::Transform get_transform();
-   
+
    void reset_pan();
    void reset_zoom();
 
@@ -48,7 +48,7 @@ public:
    void show();
    bool visible();
 
-   virtual void draw(Graphics& graphics);
+   virtual void draw(RenderTarget& surface);
 
    // mouse control interface
    virtual void drag(MouseButtonCommand& c, sf::Vector2f delta);

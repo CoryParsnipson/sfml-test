@@ -9,6 +9,7 @@
 Game::Game()
 : next_scene_(nullptr)
 , prev_scene_(nullptr)
+, window_("SFML Test", sf::Vector2f(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT))
 {
    Service::init(); // initialize service locator
 
@@ -104,6 +105,10 @@ Scene* Game::switch_scene(Scene* scene) {
    return this->prev_scene_;
 }
 
+RenderWindow& Game::get_window() {
+   return this->window_;
+}
+
 void Game::process(CloseCommand& c) {
    this->scenes_.top()->process(*this, c);
 }
@@ -133,13 +138,12 @@ void Game::process(MouseWheelCommand& c) {
 }
 
 void Game::main_loop() {
-   while (this->graphics.is_open()) {
-      // clear graphics
-      this->graphics.clear();
+   while (true) {
+      // clear previously drawn frame
+      this->window_.clear();
 
       if (this->scenes_.empty() && !this->prev_scene_ && !this->next_scene_) {
          Service::get_logger().msg("Game", Logger::INFO, "Exiting game loop...");
-         this->exit();
          return;
       }
 
@@ -168,14 +172,9 @@ void Game::main_loop() {
       this->scenes_.top()->update(*this);
 
       // draw
-      this->scenes_.top()->draw(graphics);
+      this->scenes_.top()->draw(this->window_);
 
       // render scene
-      this->graphics.update(*this);
+      this->window_.update(*this);
    }
-}
-
-void Game::exit() {
-   this->graphics.close();
-   this->reset();
 }

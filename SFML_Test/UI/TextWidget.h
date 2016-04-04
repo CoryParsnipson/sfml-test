@@ -21,7 +21,7 @@ public:
    virtual void set_size(const sf::Vector2f& size);
 
    // draw interface
-   virtual void draw(Graphics& graphics);
+   virtual void draw(RenderTarget& surface);
 
 protected:
    std::string raw_text_;

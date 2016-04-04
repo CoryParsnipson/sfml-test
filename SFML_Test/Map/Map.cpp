@@ -25,10 +25,10 @@ Map::~Map() {
    this->grid_ = nullptr;
 }
 
-void Map::draw(Graphics& graphics) {
+void Map::draw(RenderTarget& surface) {
    Map::TileList::const_iterator it;
    for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
-      (*it)->draw(graphics);
+      (*it)->draw(surface);
    }
 }
 

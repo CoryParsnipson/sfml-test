@@ -30,11 +30,8 @@ public:
    virtual bool intersects(sf::Vector2f& other) { return false; }
    virtual bool intersects(sf::FloatRect& other) { return false; }
 
-   // send message ???
-   // receive message ???
-
    // draw interface
-   virtual void draw(Graphics& graphics) {}
+   virtual void draw(RenderTarget& surface) {}
 
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr) = 0;
