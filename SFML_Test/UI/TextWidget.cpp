@@ -44,8 +44,6 @@ sf::Vector2f TextWidget::get_size() {
 void TextWidget::set_size(const sf::Vector2f& size) {
    this->text_size_ = size;
    this->word_wrap();
-
-   Service::get_logger().msg("TextWidget", Logger::INFO, "setting size");
 }
 
 void TextWidget::draw(Graphics& graphics) {

@@ -229,7 +229,6 @@ public:
    virtual sf::Vector2f get_size() const {
       return this->size_;
    }
-
    virtual float get_rotation() const {
       float rotation = 0;
       if (this->children_->size() > 0) {
@@ -496,7 +495,8 @@ public:
 
    virtual sf::Vector2f get_size() const {
       sf::FloatRect bounds = this->get_local_bounds();
-      sf::Vector2f size(bounds.width, bounds.height);
+      sf::Vector2f scale = this->get_scale();
+      sf::Vector2f size(scale.x * bounds.width, scale.y * bounds.height);
 
       return size;
    }

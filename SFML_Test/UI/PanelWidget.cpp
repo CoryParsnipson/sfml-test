@@ -16,16 +16,8 @@ PanelWidget::PanelWidget(const sf::Vector2f& pos, const sf::Vector2f& size, Widg
    this->panel_->set_fill_color(sf::Color(192, 192, 192, 255));
 
    if (this->resizable_) {
-      Graphic::GraphicList* rh_gl = new Graphic::GraphicList();
-      rh_gl->push_back(new Sprite(TextureManager::inst()->get_texture("ui_resize_handle")));
-      (*rh_gl)[0]->scale(2.0f, 2.0f);
-      rh_gl->push_back(new Shape(new sf::RectangleShape()));
-      (*rh_gl)[1]->set_size(2.0f * (*rh_gl)[0]->get_size());
-      (*rh_gl)[1]->set_fill_color(sf::Color::Transparent);
-      (*rh_gl)[1]->set_outline_color(sf::Color::Red);
-      (*rh_gl)[1]->set_outline_thickness(1.0f);
-
-      this->resize_handle_ = new CompositeGraphic(rh_gl);
+      this->resize_handle_ = new Sprite(TextureManager::inst()->get_texture("ui_resize_handle"));
+      this->resize_handle_->scale(2.0f, 2.0f);
       this->resize_handle_->set_position(pos + size - this->resize_handle_->get_size());
    }
 }
