@@ -1,17 +1,17 @@
-#ifndef RENDER_WINDOW_H
-#define RENDER_WINDOW_H
+#ifndef RENDER_TEXTURE_H
+#define RENDER_TEXTURE_H
 
 #include "RenderTarget.h"
 
-class RenderWindow
+class RenderTexture
 : public RenderTarget
 {
 public:
-   RenderWindow(const std::string& title, const sf::Vector2f& size);
-   virtual ~RenderWindow();
+   RenderTexture();
+   virtual ~RenderTexture();
 
-   // render window interface
-   bool poll_event(sf::Event& event);
+   // render texture interface
+   const sf::Texture& get_texture() const;
 
    // render target interface
    void set_active_layer(Layer& layer);
@@ -29,7 +29,7 @@ public:
    void clear(const sf::Color& color);
 
 protected:
-   sf::RenderWindow surface_;
+   sf::RenderTexture surface_;
 };
 
 #endif

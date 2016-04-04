@@ -4,6 +4,7 @@
 #include "Widget.h"
 #include "Graphic.h"
 #include "MouseUtil.h"
+#include "RenderTexture.h"
 
 class PanelWidget
 : public Widget
@@ -27,6 +28,7 @@ public:
 
    // draw interface
    virtual void draw(RenderTarget& surface);
+   virtual void layer(Layer* layer);
 
    // mouse control interface
    virtual void drag(MouseButtonCommand& c, sf::Vector2f delta);
@@ -45,6 +47,8 @@ protected:
 
    Graphic* panel_;
    Graphic* resize_handle_;
+
+   RenderTexture surface_; // intermediate drawing surface to clip children
 };
 
 #endif

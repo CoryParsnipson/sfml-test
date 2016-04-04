@@ -48,7 +48,6 @@ void TextWidget::set_size(const sf::Vector2f& size) {
 
 void TextWidget::draw(RenderTarget& surface) {
    this->text_->draw(surface);
-   Widget::draw(surface);
 }
 
 void TextWidget::word_wrap() {

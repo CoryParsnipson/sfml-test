@@ -175,6 +175,6 @@ void Game::main_loop() {
       this->scenes_.top()->draw(this->window_);
 
       // render scene
-      this->window_.update(*this);
+      this->window_.update();
    }
 }

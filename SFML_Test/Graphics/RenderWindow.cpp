@@ -40,7 +40,7 @@ void RenderWindow::draw(sf::Drawable& d, Layer& layer) {
    this->surface_.setView(original_view);
 }
 
-void RenderWindow::update(Game& game, Scene* scene, Entity* entity) {
+void RenderWindow::update() {
    this->surface_.display();
 }
 

@@ -63,14 +63,32 @@ void PanelWidget::set_size(const sf::Vector2f& size) {
 }
 
 void PanelWidget::draw(RenderTarget& surface) {
-   this->panel_->draw(surface);
+   this->panel_->draw(this->surface_);
 
    if (this->resize_handle_) {
-      this->resize_handle_->draw(surface);
+      this->resize_handle_->draw(this->surface_);
    }
 
    // draw children on top of this widget
-   Widget::draw(surface);
+   Widget::draw(this->surface_);
+
+   // finalize intermediate surface
+   this->surface_.update();
+
+   // take intermediate surface and draw it to the provided surface
+   sf::IntRect panel_area(this->panel_->get_global_bounds());
+   sf::Sprite panel_sprite(this->surface_.get_texture());
+   surface.draw(panel_sprite);
+}
+
+void PanelWidget::layer(Layer* layer) {
+   // add components to the layer too
+   this->panel_->layer(layer);
+   if (this->resize_handle_) {
+      this->resize_handle_->layer(layer);
+   }
+
+   Draw::layer(layer);
 }
 
 void PanelWidget::drag(MouseButtonCommand& c, sf::Vector2f delta) {

@@ -24,7 +24,7 @@ public:
    virtual void draw(sf::Drawable& d, Layer& layer) = 0; // sets the current layer to provided layer
 
    // update interface
-   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr) = 0;
+   virtual void update() = 0;
    virtual void clear() = 0;
    virtual void clear(const sf::Color& color) = 0;
 };
