@@ -14,14 +14,13 @@ public:
    const sf::Texture& get_texture() const;
 
    // render target interface
-   void set_active_layer(Layer& layer);
+   void set_camera(Camera& camera);
 
-   sf::Vector2f get_world_coord(const sf::Vector2i& point, Layer* layer = nullptr);
-   sf::Vector2i get_screen_coord(const sf::Vector2f& point, Layer* layer = nullptr);
+   sf::Vector2f get_world_coord(const sf::Vector2i& point, Camera* camera = nullptr);
+   sf::Vector2i get_screen_coord(const sf::Vector2f& point, Camera* camera = nullptr);
 
    // draw interface
-   void draw(sf::Drawable& d);
-   void draw(sf::Drawable& d, Layer& layer);
+   void draw(sf::Drawable& d, int layer = 0);
 
    // update interface
    virtual void update();

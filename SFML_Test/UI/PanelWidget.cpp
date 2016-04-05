@@ -81,16 +81,6 @@ void PanelWidget::draw(RenderTarget& surface) {
    surface.draw(panel_sprite);
 }
 
-void PanelWidget::layer(Layer* layer) {
-   // add components to the layer too
-   this->panel_->layer(layer);
-   if (this->resize_handle_) {
-      this->resize_handle_->layer(layer);
-   }
-
-   Draw::layer(layer);
-}
-
 void PanelWidget::drag(MouseButtonCommand& c, sf::Vector2f delta) {
    sf::Vector2f mouse_pos(c.x, c.y);
 

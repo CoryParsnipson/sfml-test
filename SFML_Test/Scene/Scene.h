@@ -12,8 +12,8 @@
 
 #include "Game.h"
 #include "Draw.h"
+#include "Camera.h"
 #include "Update.h"
-#include "Viewport.h"
 #include "Entity.h"
 
 class Scene
@@ -25,7 +25,7 @@ public:
 
    Scene(std::string id)
    : id_(id)
-   , viewport_(new Viewport(sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height())))
+   , camera_(new Camera("Camera", sf::Vector2f(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT)))
    {
       Service::get_logger().msg(this->id(), Logger::INFO, "Creating new Scene.");
    }
@@ -33,7 +33,7 @@ public:
    virtual ~Scene() {
       Service::get_logger().msg(this->id(), Logger::INFO, "Destroying Scene.");
 
-      delete this->viewport_;
+      delete this->camera_;
 
       EntityList::iterator it;
       for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
@@ -50,7 +50,12 @@ public:
 
    // draw interface
    virtual void draw(RenderTarget& surface) {
-      this->viewport_->draw(surface);
+      this->camera_->draw(surface);
+
+      EntityList::iterator it;
+      for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
+         (*it)->draw(surface);
+      }
    }
 
    // update interface
@@ -67,14 +72,13 @@ public:
    }
 
    virtual void process(Game& game, KeyPressCommand& c) {}
-   virtual void process(Game& game, WindowResizeCommand& c) {
-      sf::Vector2f new_size(c.width, c.height);
-      sf::Vector2f new_center(c.width / 2.f, c.height / 2.f);
 
-      // update viewport
-      this->viewport_->resize(new_size);
-      this->viewport_->recenter(new_center);
+   virtual void process(Game& game, WindowResizeCommand& c) {
+      // update main camera
+      this->camera_->set_size(sf::Vector2f(c.width, c.height));
+      this->camera_->set_center(sf::Vector2f(c.width / 2.f, c.height / 2.f));
    }
+
    virtual void process(Game& game, MouseMoveCommand& c) {}
    virtual void process(Game& game, MouseButtonCommand& c) {}
    virtual void process(Game& game, MouseWheelCommand& c) {}
@@ -82,7 +86,7 @@ public:
 protected:
    std::string id_;
 
-   Viewport* viewport_;
+   Camera* camera_;
    EntityList entities_;
 };
 

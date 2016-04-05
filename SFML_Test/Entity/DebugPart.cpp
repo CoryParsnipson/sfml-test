@@ -48,21 +48,11 @@ void DebugPart::draw(RenderTarget& surface) {
    }
 }
 
-void DebugPart::layer(Layer* layer) {
-   SpriteList::const_iterator sprite_it;
-   for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
-      (*sprite_it)->layer(layer);
-   }
-
-   this->pos_text_->layer(layer);
-}
-
 void DebugPart::update(Game& game, Scene* scene, Entity* entity) {
    unsigned int graphic_idx = 0;
    Graphic* g = nullptr;
    GraphicsPart* graphics = dynamic_cast<GraphicsPart*>(entity->get("graphics"));
    PhysicsPart* physics = dynamic_cast<PhysicsPart*>(entity->get("physics"));
-   Layer* layer = nullptr;
 
    // get entity's debug enable
    if (entity) {
@@ -78,15 +68,12 @@ void DebugPart::update(Game& game, Scene* scene, Entity* entity) {
             g_debug->set_fill_color(sf::Color::Transparent);
             g_debug->set_outline_color(sf::Color::Red);
             g_debug->set_outline_thickness(1.0);
-            g_debug->layer(g->layer());
 
             this->sprites_.push_back(g_debug);
          }
 
          this->sprites_[graphic_idx]->set_position(g->get_position());
          this->sprites_[graphic_idx]->set_size(g->get_size());
-
-         layer = g->layer();
 
          ++graphic_idx;
       }
@@ -97,7 +84,6 @@ void DebugPart::update(Game& game, Scene* scene, Entity* entity) {
       sf::Vector2f pos = physics->get_position();
       this->pos_text_->set_string(std::to_string((int)pos.x) + ", " + std::to_string((int)pos.y));
       this->pos_text_->set_position(pos);
-      this->pos_text_->layer(layer);
    }
 }
 

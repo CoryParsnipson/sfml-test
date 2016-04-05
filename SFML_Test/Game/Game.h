@@ -2,11 +2,9 @@
 #define GAME_H
 
 #include "dependencies.h"
-#include "RenderWindow.h"
-#include "Viewport.h"
-#include "InputListener.h"
-#include "Service.h"
 #include "FullLogger.h"
+#include "InputListener.h"
+#include "RenderWindow.h"
 #include "TextureManager.h"
 
 class CloseCommand;

@@ -2,7 +2,6 @@
 #include "TestUIScene.h"
 
 #include "Game.h"
-#include "Layer.h"
 
 #include "Texture.h"
 #include "Graphic.h"
@@ -35,12 +34,8 @@ BuilderScene::BuilderScene()
 , frame_count(0)
 , show_debug_info_(false)
 {
-   // fixed layer above map and sprites
-   this->viewport_->add("grid");
-   this->viewport_->add("overlay");
-   this->viewport_->add("hud");
-
-   this->viewport_->layer("grid")->hide(); // hide grid display layer by default
+   // TODO: work out layers...
+   int hud_layer = 2;
 
    // load textures
    TextureManager::inst()->create_texture("tile_solid", "flatmap_test_texture.png", sf::IntRect(0, 0, 40, 40));
@@ -56,9 +51,6 @@ BuilderScene::BuilderScene()
    map_builder->build();
 
    this->map_ = map_builder->get_map();
-   // TODO: need to change this so that individual tiles can specify which layer they are on
-   this->map_->layer(this->viewport_->layer("main"));
-   this->map_->grid()->layer(this->viewport_->layer("grid"));
 
    this->backdrop_[0].position = sf::Vector2f(0, 0);
    this->backdrop_[1].position = sf::Vector2f(0, Settings::Instance()->cur_height());
@@ -73,41 +65,40 @@ BuilderScene::BuilderScene()
    delete map_builder;
 
    // initialize entities
-   this->mouse_ = UtilFactory::inst()->create_mouse(this->viewport_->layer("hud"));
+   this->mouse_ = UtilFactory::inst()->create_mouse(hud_layer);
 
    // let our mouse controller manipulate this scene
    dynamic_cast<MouseControlPart*>(this->mouse_->get("control"))->set_controllable(this);
 
    // create fixed hud items
-   Entity* t = TextFactory::inst()->create_text_entity("SFML_Test", "retro", this->viewport_->layer("hud"));
+   Entity* t = TextFactory::inst()->create_text_entity("SFML_Test", "retro");
    this->entities_.push_back(t);
 
-   t = TextFactory::inst()->create_text_entity("r: reset pan position", "retro", this->viewport_->layer("hud"), sf::Vector2f(0, 15));
+   t = TextFactory::inst()->create_text_entity("r: reset pan position", "retro", sf::Vector2f(0, 15));
    this->entities_.push_back(t);
 
-   t = TextFactory::inst()->create_text_entity("g: toggle grid visibility", "retro", this->viewport_->layer("hud"), sf::Vector2f(0, 30));
+   t = TextFactory::inst()->create_text_entity("g: toggle grid visibility", "retro", sf::Vector2f(0, 30));
    this->entities_.push_back(t);
 
-   t = TextFactory::inst()->create_text_entity("o: toggle entity hitboxes", "retro", this->viewport_->layer("hud"), sf::Vector2f(0, 45));
+   t = TextFactory::inst()->create_text_entity("o: toggle entity hitboxes", "retro", sf::Vector2f(0, 45));
    this->entities_.push_back(t);
 
-   t = TextFactory::inst()->create_text_entity("1: add green tiles at selection", "retro", this->viewport_->layer("hud"), sf::Vector2f(0, 60));
+   t = TextFactory::inst()->create_text_entity("1: add green tiles at selection", "retro", sf::Vector2f(0, 60));
    this->entities_.push_back(t);
 
-   t = TextFactory::inst()->create_text_entity("2: add blue tiles at selection", "retro", this->viewport_->layer("hud"), sf::Vector2f(0, 75));
+   t = TextFactory::inst()->create_text_entity("2: add blue tiles at selection", "retro", sf::Vector2f(0, 75));
    this->entities_.push_back(t);
 
-   t = TextFactory::inst()->create_text_entity("del: remove tiles at selection", "retro", this->viewport_->layer("hud"), sf::Vector2f(0, 90));
+   t = TextFactory::inst()->create_text_entity("del: remove tiles at selection", "retro", sf::Vector2f(0, 90));
    this->entities_.push_back(t);
 
-   t = TextFactory::inst()->create_text_entity("right click: click and drag to pan", "retro", this->viewport_->layer("hud"), sf::Vector2f(0, 105));
+   t = TextFactory::inst()->create_text_entity("right click: click and drag to pan", "retro", sf::Vector2f(0, 105));
    this->entities_.push_back(t);
 
    Shape* center_dot_graphic = new Shape(new sf::RectangleShape());
    center_dot_graphic->set_size(3, 3);
    center_dot_graphic->set_fill_color(sf::Color(255, 104, 2));
    center_dot_graphic->set_position(Settings::Instance()->cur_width() / 2, Settings::Instance()->cur_height() / 2);
-   center_dot_graphic->layer(this->viewport_->layer("hud"));
 
    this->center_dot_ = UtilFactory::inst()->create_graphic(
       center_dot_graphic,
@@ -116,7 +107,7 @@ BuilderScene::BuilderScene()
    );
    this->entities_.push_back(this->center_dot_);
 
-   this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", "retro", this->viewport_->layer("hud"));
+   this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", "retro");
    this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
    this->entities_.push_back(this->fps_display_);
 }
@@ -166,7 +157,8 @@ void BuilderScene::process(Game& game, CloseCommand& c) {
 void BuilderScene::process(Game& game, KeyPressCommand& c) {
    switch (c.event.code) {
    case sf::Keyboard::Key::R:
-      this->viewport_->reset();
+      this->camera_->reset_pan();
+      this->camera_->reset_zoom();
 
       // reset grid too
       this->map_->grid()->set_position(sf::Vector2f(0, 0));
@@ -185,11 +177,12 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
    break;
    case sf::Keyboard::Key::G:
       // toggle map grid visibility
-      if (this->viewport_->layer("grid")->visible()) {
-         this->viewport_->layer("grid")->hide();
-      } else {
-         this->viewport_->layer("grid")->show();
-      }
+      // TODO: fix this
+      // if (this->viewport_->layer("grid")->visible()) {
+      //    this->viewport_->layer("grid")->hide();
+      // } else {
+      //    this->viewport_->layer("grid")->show();
+      // }
    break;
    case sf::Keyboard::Key::Delete:
    case sf::Keyboard::Key::BackSpace:
@@ -222,7 +215,7 @@ void BuilderScene::process(Game& game, WindowResizeCommand& c) {
    this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
 
    // update grid
-   sf::Vector2f inverse_pan_delta = this->viewport_->layer("main")->get_pan_delta();
+   sf::Vector2f inverse_pan_delta = this->camera_->get_pan_delta();
    inverse_pan_delta.x *= -1;
    inverse_pan_delta.y *= -1;
 
@@ -240,54 +233,24 @@ void BuilderScene::process(Game& game, MouseMoveCommand& c) {}
 void BuilderScene::process(Game& game, MouseWheelCommand& c) {}
 
 void BuilderScene::drag(MouseButtonCommand& c, sf::Vector2f delta) {
-   Layer* main_layer = this->viewport_->layer("main");
-   if (!main_layer) {
-      Service::get_logger().msg(this->id_, Logger::WARNING, "Main viewport cannot be found...");
-      return;
-   }
-
-   Layer* grid_layer = this->viewport_->layer("grid");
-   if (!grid_layer) {
-      Service::get_logger().msg(this->id_, Logger::WARNING, "Grid viewport cannot be found...");
-      return;
-   }
+   delta = -1.f * delta;
 
    if (c.button == MouseButtonCommand::LEFT) {
       sf::Vector2f mouse_pos(c.x, c.y);
       this->update_selection_rect(this->click_press_pos_, mouse_pos);
    } else if (c.button == MouseButtonCommand::RIGHT) {
-      main_layer->drag(c, delta);
-      grid_layer->drag(c, delta);
-
+      this->camera_->drag(c, delta);
       this->map_->grid()->move(delta);
    }
 }
 
 float BuilderScene::get_scale() {
-   Layer* main_layer = this->viewport_->layer("main");
-   if (main_layer) {
-      return main_layer->get_scale();
-   }
-
-   Service::get_logger().msg(this->id_, Logger::WARNING, "Main viewport cannot be found...");
-   return 1.0;
+   return this->camera_->get_scale();
 }
 
 void BuilderScene::set_scale(float factor) {
-   Layer* main_layer = this->viewport_->layer("main");
-   if (main_layer) {
-      main_layer->set_scale(factor);
-      this->map_->grid()->set_scale(main_layer->get_scale());
-   } else {
-      Service::get_logger().msg(this->id_, Logger::WARNING, "Main viewport cannot be found...");
-   }
-
-   Layer* grid_layer = this->viewport_->layer("grid");
-   if (grid_layer) {
-      grid_layer->set_scale(factor);
-   } else {
-      Service::get_logger().msg(this->id_, Logger::WARNING, "Grid viewport cannot be found...");
-   }
+   this->camera_->set_scale(factor);
+   this->map_->grid()->set_scale(factor);
 }
 
 void BuilderScene::click(MouseButtonCommand& c) {
@@ -341,13 +304,13 @@ void BuilderScene::register_selection_rect() {
    if (!this->selection_rectangle_) {
       this->selection_rectangle_ = TileFactory::inst()->create_selection_rectangle(
          nullptr,
-         this->viewport_->layer("overlay"),
+         1,
          this->show_debug_info_
       );
 
       this->entities_.push_back(this->selection_rectangle_);
    } else {
-      this->selection_rectangle_->layer(this->viewport_->layer("overlay"));
+      //this->selection_rectangle_->layer(1);
    }
 }
 
@@ -357,20 +320,20 @@ void BuilderScene::deregister_selection_rect() {
    }
 
    // keep it in registered scene entities list, but remove it from screen
-   this->selection_rectangle_->layer(nullptr);
+   //this->selection_rectangle_->layer(nullptr);
 }
 
 void BuilderScene::update_selection_rect(sf::Vector2f& origin_click, sf::Vector2f& mouse_pos) {
    if (!this->selection_rectangle_) {
       this->selection_rectangle_ = TileFactory::inst()->create_selection_rectangle(
          nullptr,
-         this->viewport_->layer("overlay"),
+         1,
          this->show_debug_info_
       );
 
       this->entities_.push_back(this->selection_rectangle_);
    } else {
-      this->selection_rectangle_->layer(this->viewport_->layer("overlay"));
+      //this->selection_rectangle_->layer(1);
    }
 
    sf::FloatRect* new_rect = UtilFactory::inst()->create_float_rect(origin_click, mouse_pos);
@@ -383,54 +346,55 @@ void BuilderScene::update_selection_rect(sf::Vector2f& origin_click, sf::Vector2
 
 void BuilderScene::update_tile_cursor(sf::Vector2f& one, sf::Vector2f& two) {
    // compensate for main viewport layer zoom
-   sf::Vector2f offset_one = this->viewport_->layer("main")->get_scale() * (one - this->viewport_->layer("hud")->get_center()) + this->viewport_->layer("hud")->get_center();
-   sf::Vector2f offset_two = this->viewport_->layer("main")->get_scale() * (two - this->viewport_->layer("hud")->get_center()) + this->viewport_->layer("hud")->get_center();
+   // TODO: fix this
+   //sf::Vector2f offset_one = this->viewport_->layer("main")->get_scale() * (one - this->viewport_->layer("hud")->get_center()) + this->viewport_->layer("hud")->get_center();
+   //sf::Vector2f offset_two = this->viewport_->layer("main")->get_scale() * (two - this->viewport_->layer("hud")->get_center()) + this->viewport_->layer("hud")->get_center();
 
    // compensate for the panning of main viewport layer
-   sf::Vector2f pan_delta = this->viewport_->layer("main")->get_pan_delta();
-   offset_one -= pan_delta;
-   offset_two -= pan_delta;
-
-   sf::FloatRect* new_rect = UtilFactory::inst()->create_float_rect(offset_one, offset_two);
-
-   bool is_drag_gesture = (new_rect->width >= this->map_->grid()->tile_width() / 3.f ||
-                           new_rect->height >= this->map_->grid()->tile_height() / 3.f);
-
-   if (!is_drag_gesture && this->tile_cursor_ && this->tile_cursor_->intersects(offset_one)) {
-      this->remove_tile_cursor();
-      delete new_rect;
-      return;
-   }
-
-   if (!this->tile_cursor_) {
-      this->tile_cursor_ = TileFactory::inst()->create_tile_cursor(
-         one,
-         two,
-         this->viewport_->layer("main"),
-         this->show_debug_info_
-      );
-
-      this->entities_.push_back(this->tile_cursor_);
-   }
-
-   // round to nearest map grid point
-   sf::Vector2f start_point(new_rect->left, new_rect->top);
-   sf::Vector2f end_point(new_rect->left + new_rect->width, new_rect->top + new_rect->height);
-
-   start_point = this->map_->grid()->floor(start_point);
-   end_point = this->map_->grid()->ceil(end_point);
-
-   // update new_rect
-   new_rect->left = start_point.x;
-   new_rect->top = start_point.y;
-
-   new_rect->width = std::max(end_point.x - new_rect->left, (float)this->map_->grid()->tile_width());
-   new_rect->height = std::max(end_point.y - new_rect->top, (float)this->map_->grid()->tile_height());
-
-   this->tile_cursor_->set_position(new_rect->left, new_rect->top);
-   this->tile_cursor_->set_size(new_rect->width, new_rect->height);
-
-   delete new_rect;
+   // sf::Vector2f pan_delta = this->camera_->get_pan_delta();
+   // offset_one -= pan_delta;
+   // offset_two -= pan_delta;
+   //
+   // sf::FloatRect* new_rect = UtilFactory::inst()->create_float_rect(offset_one, offset_two);
+   //
+   // bool is_drag_gesture = (new_rect->width >= this->map_->grid()->tile_width() / 3.f ||
+   //                         new_rect->height >= this->map_->grid()->tile_height() / 3.f);
+   //
+   // if (!is_drag_gesture && this->tile_cursor_ && this->tile_cursor_->intersects(offset_one)) {
+   //    this->remove_tile_cursor();
+   //    delete new_rect;
+   //    return;
+   // }
+   //
+   // if (!this->tile_cursor_) {
+   //    this->tile_cursor_ = TileFactory::inst()->create_tile_cursor(
+   //       one,
+   //       two,
+   //       this->viewport_->layer("main"),
+   //       this->show_debug_info_
+   //    );
+   //
+   //    this->entities_.push_back(this->tile_cursor_);
+   // }
+   //
+   // // round to nearest map grid point
+   // sf::Vector2f start_point(new_rect->left, new_rect->top);
+   // sf::Vector2f end_point(new_rect->left + new_rect->width, new_rect->top + new_rect->height);
+   //
+   // start_point = this->map_->grid()->floor(start_point);
+   // end_point = this->map_->grid()->ceil(end_point);
+   //
+   // // update new_rect
+   // new_rect->left = start_point.x;
+   // new_rect->top = start_point.y;
+   //
+   // new_rect->width = std::max(end_point.x - new_rect->left, (float)this->map_->grid()->tile_width());
+   // new_rect->height = std::max(end_point.y - new_rect->top, (float)this->map_->grid()->tile_height());
+   //
+   // this->tile_cursor_->set_position(new_rect->left, new_rect->top);
+   // this->tile_cursor_->set_size(new_rect->width, new_rect->height);
+   //
+   // delete new_rect;
 }
 
 void BuilderScene::remove_tile_cursor() {
@@ -466,7 +430,7 @@ void BuilderScene::set_tiles(Texture& tile_texture) {
          Entity* tile = TileFactory::inst()->create_tile(
             tile_texture,
             sf::Vector2f(tile_col, tile_row),
-            this->viewport_->layer("main"),
+            0,
             false
          );
 

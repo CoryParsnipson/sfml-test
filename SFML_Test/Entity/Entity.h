@@ -47,7 +47,6 @@ public:
 
    // draw interface
    virtual void draw(RenderTarget& surface);
-   virtual void layer(Layer* layer);
 
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);

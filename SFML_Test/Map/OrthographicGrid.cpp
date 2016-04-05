@@ -192,35 +192,10 @@ void OrthographicGrid::deserialize(Serialize::SerialObj& obj) {
    Service::get_logger().msg(this->id_, Logger::INFO, "tile width: " + obj["tile_width"] + ", tile_height: " + obj["tile_height"]);
 }
 
-void OrthographicGrid::layer(Layer* layer) {
-   Draw::layer(layer);
-
-   this->origin_dot_->layer(layer);
-
-   GridlineList::const_iterator it;
-   for (it = this->grid_cols_.begin(); it != this->grid_cols_.end(); ++it) {
-      (*it)->layer(layer);
-   }
-
-   for (it = this->grid_rows_.begin(); it != this->grid_rows_.end(); ++it) {
-      (*it)->layer(layer);
-   }
-
-   TextMarkerList::const_iterator tm_it;
-   for (tm_it = this->text_markers_.begin(); tm_it != this->text_markers_.end(); ++tm_it) {
-      (*tm_it)->layer(layer);
-   }
-}
-
-Layer* OrthographicGrid::layer() {
-   return Draw::layer();
-}
-
 void OrthographicGrid::create_origin_dot() {
    this->origin_dot_ = new Shape(new sf::RectangleShape(sf::Vector2f(3, 3)));
    this->origin_dot_->set_fill_color(sf::Color(255, 157, 75, 255));
    this->origin_dot_->set_position(this->origin_);
-   this->origin_dot_->layer(this->layer());
 }
 
 void OrthographicGrid::create_gridlines() {
@@ -235,7 +210,6 @@ void OrthographicGrid::create_gridlines() {
       Graphic* col = new Shape(new sf::RectangleShape(sf::Vector2f(1, cur_height)));
       col->set_position(col_pos + start_pos.x, screen_start.y);
       col->set_fill_color(sf::Color(230, 230, 230, 90));
-      col->layer(this->layer());
 
       this->grid_cols_.push_back(col);
    }
@@ -244,7 +218,6 @@ void OrthographicGrid::create_gridlines() {
       Graphic* row = new Shape(new sf::RectangleShape(sf::Vector2f(cur_width, 1)));
       row->set_position(screen_start.x, row_pos + start_pos.y);
       row->set_fill_color(sf::Color(230, 230, 230, 90));
-      row->layer(this->layer());
 
       this->grid_rows_.push_back(row);
    }
@@ -283,7 +256,6 @@ void OrthographicGrid::create_text_markers() {
          text_markers_.push_back(TextFactory::inst()->create_text(
             std::to_string((int)pos.x) + ", " + std::to_string((int)pos.y),
             "retro",
-            this->layer(),
             pos + sf::Vector2f(4, 4),
             8,
             TextFactory::ALIGN::LEFT,

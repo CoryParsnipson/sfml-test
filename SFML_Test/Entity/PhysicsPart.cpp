@@ -1,7 +1,5 @@
 #include "PhysicsPart.h"
 
-#include "Viewport.h"
-
 PhysicsPart::PhysicsPart(std::string id, sf::FloatRect bounding_box)
 : Part(id)
 , solid_(false)

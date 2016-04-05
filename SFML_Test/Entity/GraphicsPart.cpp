@@ -1,10 +1,7 @@
 #include "GraphicsPart.h"
-
-#include "RenderTarget.h"
 #include "TextureManager.h"
+#include "RenderTarget.h"
 #include "Graphic.h"
-#include "Viewport.h"
-#include "Layer.h"
 #include "Entity.h"
 #include "PhysicsPart.h"
 
@@ -79,13 +76,6 @@ void GraphicsPart::draw(RenderTarget& surface) {
    SpriteList::const_iterator sprite_it;
    for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
       (*sprite_it)->draw(surface);
-   }
-}
-
-void GraphicsPart::layer(Layer* layer) {
-   SpriteList::const_iterator sprite_it;
-   for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
-      (*sprite_it)->layer(layer);
    }
 }
 

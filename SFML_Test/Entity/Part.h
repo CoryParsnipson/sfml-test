@@ -7,8 +7,6 @@
 #include "Update.h"
 #include "Serialize.h"
 
-class Viewport;
-
 class Part
 : public Draw
 , public Update

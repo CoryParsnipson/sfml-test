@@ -6,7 +6,6 @@
 #include "TextFactory.h"
 
 #include "Game.h"
-#include "Layer.h"
 
 #include "Graphic.h"
 #include "GraphicsPart.h"
@@ -16,15 +15,11 @@ StartMenuScene::StartMenuScene()
 : Scene("StartMenuScene")
 , show_debug_info_(false)
 {
-   // create viewport layers
-   this->viewport_->add("debug");
-
    // populate entities
    this->entities_.push_back(TextFactory::inst()->create_text_entity(
       "SFML TEST",
       "retro",
-      this->viewport_->layer("main"),
-      this->viewport_->layer("main")->get_center(),
+      this->camera_->get_center(),
       36,
       TextFactory::ALIGN::CENTER,
       sf::Color::White,
@@ -34,8 +29,7 @@ StartMenuScene::StartMenuScene()
    this->entities_.push_back(TextFactory::inst()->create_text_entity(
       "main menu",
       "retro",
-      this->viewport_->layer("main"),
-      this->viewport_->layer("main")->get_center() + sf::Vector2f(0, 45),
+      this->camera_->get_center() + sf::Vector2f(0, 45),
       12,
       TextFactory::ALIGN::CENTER,
       sf::Color::White,
@@ -45,11 +39,11 @@ StartMenuScene::StartMenuScene()
    this->entities_.push_back(TextFactory::inst()->create_text_entity(
       "(Press SPACE or ENTER)",
       "retro",
-      this->viewport_->layer("main"),
-      this->viewport_->layer("main")->get_center() + sf::Vector2f(0, 60),
+      this->camera_->get_center() + sf::Vector2f(0, 60),
       12,
       TextFactory::ALIGN::CENTER,
       sf::Color::White,
+      0, 
       this->show_debug_info_
    ));
 }

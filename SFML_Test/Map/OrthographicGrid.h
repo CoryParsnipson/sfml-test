@@ -38,8 +38,6 @@ public:
 
    // draw interface
    virtual void draw(RenderTarget& surface);
-   virtual void layer(Layer* layer);
-   virtual Layer* layer();
 
    // serialize interface
    virtual Serialize::SerialObj serialize();

@@ -1,7 +1,6 @@
 #include "Map.h"
 
 #include "Scene.h"
-#include "Viewport.h"
 
 #include "Entity.h"
 #include "PhysicsPart.h"
@@ -29,13 +28,6 @@ void Map::draw(RenderTarget& surface) {
    Map::TileList::const_iterator it;
    for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
       (*it)->draw(surface);
-   }
-}
-
-void Map::layer(Layer* layer) {
-   Map::TileList::const_iterator it;
-   for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
-      (*it)->layer(layer);
    }
 }
 

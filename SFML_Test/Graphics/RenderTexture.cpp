@@ -1,5 +1,5 @@
 #include "RenderTexture.h"
-#include "Layer.h"
+#include "Camera.h"
 
 RenderTexture::RenderTexture() {
 }
@@ -11,29 +11,21 @@ const sf::Texture& RenderTexture::get_texture() const {
    return this->surface_.getTexture();
 }
 
-void RenderTexture::set_active_layer(Layer& layer) {
-   this->surface_.setView(layer.get_view());
+void RenderTexture::set_camera(Camera& camera) {
+   this->surface_.setView(camera.get_view());
 }
 
-sf::Vector2f RenderTexture::get_world_coord(const sf::Vector2i& point, Layer* layer) {
-   return (layer ? this->surface_.mapPixelToCoords(point, layer->get_view()) : this->surface_.mapPixelToCoords(point));
+sf::Vector2f RenderTexture::get_world_coord(const sf::Vector2i& point, Camera* camera) {
+   return (camera ? this->surface_.mapPixelToCoords(point, camera->get_view()) : this->surface_.mapPixelToCoords(point));
 }
 
-sf::Vector2i RenderTexture::get_screen_coord(const sf::Vector2f& point, Layer* layer) {
-   return (layer ? this->surface_.mapCoordsToPixel(point, layer->get_view()) : this->surface_.mapCoordsToPixel(point));
+sf::Vector2i RenderTexture::get_screen_coord(const sf::Vector2f& point, Camera* camera) {
+   return (camera ? this->surface_.mapCoordsToPixel(point, camera->get_view()) : this->surface_.mapCoordsToPixel(point));
 }
 
-void RenderTexture::draw(sf::Drawable& d) {
+void RenderTexture::draw(sf::Drawable& d, int layer) {
+   // TODO: handle layers
    this->surface_.draw(d);
-}
-
-void RenderTexture::draw(sf::Drawable& d, Layer& layer) {
-   sf::View original_view = this->surface_.getView();
-
-   this->set_active_layer(layer);
-   this->draw(d);
-
-   this->surface_.setView(original_view);
 }
 
 void RenderTexture::update() {

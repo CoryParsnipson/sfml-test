@@ -16,10 +16,6 @@ TestUIScene::TestUIScene()
 , frame_measurement_interval(6)
 , frame_count(0)
 {
-   // create viewport layers
-   this->viewport_->add("main");
-   this->viewport_->add("hud");
-
    // load textures
    TextureManager::inst()->create_texture("ui_resize_handle", "ui_panel_test.png", sf::IntRect(30, 0, 10, 10));
    TextureManager::inst()->print();
@@ -28,25 +24,22 @@ TestUIScene::TestUIScene()
    this->entities_.push_back(TextFactory::inst()->create_text_entity(
       "Test UI Scene",
       "retro",
-      this->viewport_->layer("hud"),
       sf::Vector2f(0, 0),
       12
    ));
 
    // test widget
    this->widget_ = new PanelWidget(sf::Vector2f(100, 100), sf::Vector2f(300, 200), nullptr, true, true);
-   this->widget_->layer(this->viewport_->layer("main"));
 
    Widget* tw = new TextWidget("PENIS PENIS PENIS PENIS PENIS PENIS PENIS PENIS PENIS");
    tw->set_size(sf::Vector2f(300, 200));
-   tw->layer(this->viewport_->layer("main"));
    this->widget_->add(tw);
 
    // set up mouse
-   this->mouse_ = UtilFactory::inst()->create_mouse(this->viewport_->layer("hud"));
+   this->mouse_ = UtilFactory::inst()->create_mouse(0);
    dynamic_cast<MouseControlPart*>(this->mouse_->get("control"))->set_controllable(dynamic_cast<PanelWidget*>(this->widget_));
 
-   this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", "retro", this->viewport_->layer("hud"));
+   this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", "retro");
    this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
    this->entities_.push_back(this->fps_display_);
 }

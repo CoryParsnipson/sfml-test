@@ -28,7 +28,6 @@ public:
 
    // draw interface
    virtual void draw(RenderTarget& surface);
-   virtual void layer(Layer* layer);
 
    // mouse control interface
    virtual void drag(MouseButtonCommand& c, sf::Vector2f delta);

@@ -7,7 +7,7 @@
 #include "MouseControlPart.h"
 #include "DebugPart.h"
 
-// initialize static members 
+// initialize static members
 UtilFactory* UtilFactory::inst_ = new UtilFactory();
 
 UtilFactory* UtilFactory::inst() {
@@ -20,21 +20,18 @@ UtilFactory::UtilFactory() {
 UtilFactory::~UtilFactory() {
 }
 
-Entity* UtilFactory::create_mouse(Layer* layer) {
+Entity* UtilFactory::create_mouse(int layer) {
    Entity* mouse = new Entity();
    DebugPart* debug_part = new DebugPart();
    GraphicsPart* graphics_part = new GraphicsPart();
    PhysicsPart* physics_part = new PhysicsPart();
    MouseControlPart* control_part = new MouseControlPart("control");
-   
+
    Shape* cursor = new Shape(new sf::RectangleShape());
    cursor->set_size(6, 6);
    cursor->set_fill_color(sf::Color::Red);
-   cursor->layer(layer);
 
    graphics_part->add(cursor);
-
-   debug_part->layer(layer);
 
    mouse->add(graphics_part);
    mouse->add(physics_part);
@@ -57,10 +54,7 @@ Entity* UtilFactory::create_graphic(Graphic* g, sf::FloatRect bounding_box, bool
    e->add(physics_part);
 
    if (debug) {
-      DebugPart* debug_part = new DebugPart();
-      debug_part->layer(g->layer());
-
-      e->add(debug_part);
+      e->add(new DebugPart());
    }
 
    e->set_position(bounding_box.left, bounding_box.top);

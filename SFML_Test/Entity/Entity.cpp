@@ -140,13 +140,6 @@ void Entity::draw(RenderTarget& surface) {
    }
 }
 
-void Entity::layer(Layer* layer) {
-   PartList::const_iterator it;
-   for (it = this->parts_.begin(); it != this->parts_.end(); it++) {
-      it->second->layer(layer);
-   }
-}
-
 void Entity::update(Game& game, Scene* scene, Entity* entity) {
    PartList::const_iterator it;
    for (it = this->parts_.begin(); it != this->parts_.end(); it++) {

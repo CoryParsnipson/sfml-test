@@ -5,7 +5,6 @@
 
 class Text;
 class Entity;
-class Layer;
 
 class TextFactory {
 public:
@@ -29,31 +28,31 @@ public:
    virtual Text* create_text(
       std::string msg,
       sf::Font* font,
-      Layer* layer = nullptr,
       sf::Vector2f pos = sf::Vector2f(0, 0),
       int size = 12,
       ALIGN alignment = ALIGN::LEFT,
-      sf::Color color = sf::Color::White
+      sf::Color color = sf::Color::White,
+      int layer = 0
    );
 
    virtual Text* create_text(
       std::string msg,
       std::string font,
-      Layer* layer = nullptr,
-      sf::Vector2f pos = sf::Vector2f(0, 0),
-      int size = 12,
-      ALIGN alignment = ALIGN::LEFT,
-      sf::Color color = sf::Color::White
-   );
-   
-   virtual Entity* create_text_entity(
-      std::string msg,
-      std::string font,
-      Layer* layer = nullptr,
       sf::Vector2f pos = sf::Vector2f(0, 0),
       int size = 12,
       ALIGN alignment = ALIGN::LEFT,
       sf::Color color = sf::Color::White,
+      int layer = 0
+   );
+
+   virtual Entity* create_text_entity(
+      std::string msg,
+      std::string font,
+      sf::Vector2f pos = sf::Vector2f(0, 0),
+      int size = 12,
+      ALIGN alignment = ALIGN::LEFT,
+      sf::Color color = sf::Color::White,
+      int layer = 0,
       bool debug = false
    );
 
@@ -64,7 +63,7 @@ protected:
    TextFactory();
    TextFactory(TextFactory& f);
 
-   sf::Vector2f get_origin_from_alignment(sf::FloatRect& bounds, ALIGN alignment);
+   sf::Vector2f get_origin_from_alignment(const sf::FloatRect& bounds, ALIGN alignment);
 
    FontList fonts_;
 };
