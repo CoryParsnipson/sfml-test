@@ -21,7 +21,8 @@ class Scene
 , public Update
 {
 public:
-   typedef std::vector<Entity*> EntityList;
+   using EntityList = std::vector<Entity*>;
+   //using SceneGraphLayers = std::map<int,
 
    Scene(std::string id)
    : id_(id)

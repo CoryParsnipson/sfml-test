@@ -352,7 +352,7 @@ public:
    }
 
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {
-      surface.draw(*this->drawable_, render_states, this->layer());
+      surface.draw(*this->drawable_, render_states);
    }
 
    // common sfml drawable interface
@@ -460,7 +460,7 @@ public:
 
    // draw interface
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {
-      surface.draw(*this->drawable_, render_states, this->layer());
+      surface.draw(*this->drawable_, render_states);
    }
 
    // common sfml drawable interface
@@ -554,7 +554,7 @@ public:
 
    // draw interface
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {
-      surface.draw(*this->drawable_, render_states, this->layer());
+      surface.draw(*this->drawable_, render_states);
    }
 
    // common sfml drawable interface

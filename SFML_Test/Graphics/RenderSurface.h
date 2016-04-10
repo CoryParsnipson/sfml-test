@@ -11,25 +11,18 @@ class Camera;
 
 class RenderSurface {
 public:
-   using LayerList = std::map<int, std::vector<std::tuple<sf::Drawable*, sf::RenderStates> > >;
-
    RenderSurface() {}
-   virtual ~RenderSurface() {
-      this->layers_.clear();
-   }
+   virtual ~RenderSurface() {}
 
    // set the current camera
    virtual void set_camera(Camera& camera) = 0;
 
    // draw interface
-   virtual void draw(sf::Drawable& drawable, sf::RenderStates render_states = sf::RenderStates::Default, int layer = 0) = 0;
+   virtual void draw(sf::Drawable& drawable, sf::RenderStates render_states = sf::RenderStates::Default) = 0;
 
    // update interface
    virtual void update() = 0;
-   virtual void clear(const sf::Color* color = nullptr) = 0;
-
-protected:
-   LayerList layers_;
+   virtual void clear(const sf::Color& color = sf::Color::Black) = 0;
 };
 
 #endif

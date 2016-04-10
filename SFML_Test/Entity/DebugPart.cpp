@@ -74,7 +74,6 @@ void DebugPart::update(Game& game, Scene* scene, Entity* entity) {
 
          this->sprites_[graphic_idx]->set_position(g->get_position());
          this->sprites_[graphic_idx]->set_size(g->get_size());
-         this->sprites_[graphic_idx]->layer(this->layer());
 
          ++graphic_idx;
       }
@@ -85,7 +84,6 @@ void DebugPart::update(Game& game, Scene* scene, Entity* entity) {
       sf::Vector2f pos = physics->get_position();
       this->pos_text_->set_string(std::to_string((int)pos.x) + ", " + std::to_string((int)pos.y));
       this->pos_text_->set_position(pos);
-      this->pos_text_->layer(this->layer());
    }
 }
 

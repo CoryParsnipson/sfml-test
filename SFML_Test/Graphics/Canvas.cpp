@@ -16,36 +16,17 @@ void Canvas::set_camera(Camera& camera) {
    this->surface_.setView(*camera.view_);
 }
 
-void Canvas::draw(sf::Drawable& drawable, sf::RenderStates render_states /* = sf::RenderStates::Default */, int layer /* = 0 */) {
-   // delay drawing until update, add to layers here
-   this->layers_[layer].push_back(std::make_tuple(&drawable, render_states));
+void Canvas::draw(sf::Drawable& drawable, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
+   this->surface_.draw(drawable, render_states);
 }
 
 void Canvas::update() {
-   // iterate through layers and draw to surface
-   RenderSurface::LayerList::const_iterator current_layer;
-   for (current_layer = this->layers_.begin(); current_layer != this->layers_.end(); ++current_layer) {
-      decltype(current_layer->second)::const_iterator draw_item;
-
-      for (draw_item = current_layer->second.begin(); draw_item != current_layer->second.end(); ++draw_item) {
-         this->surface_.draw(*static_cast<sf::Drawable*>(std::get<0>(*draw_item)), static_cast<sf::RenderStates>(std::get<1>(*draw_item)));
-      }
-   }
-
-   // clear the layer lists
-   this->layers_.clear();
-
    // flush to screen
    this->surface_.display();
 }
 
-void Canvas::clear(const sf::Color* color /* = nullptr */) {
-   if (!color) {
-      this->surface_.clear();
-      return;
-   }
-
-   this->surface_.clear(*color);
+void Canvas::clear(const sf::Color& color /* = sf::Color::Black */) {
+   this->surface_.clear(color);
 }
 
 void Canvas::set_framerate_limit(int limit) {

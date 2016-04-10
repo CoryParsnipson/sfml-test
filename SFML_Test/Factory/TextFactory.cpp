@@ -65,7 +65,6 @@ Text* TextFactory::create_text(std::string msg, sf::Font* font, sf::Vector2f pos
    t->set_color(color);
    t->set_origin(this->get_origin_from_alignment(t->get_local_bounds(), alignment));
    t->set_position(pos);
-   t->layer(layer);
 
    return t;
 }

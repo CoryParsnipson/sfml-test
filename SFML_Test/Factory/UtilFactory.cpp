@@ -27,10 +27,7 @@ Entity* UtilFactory::create_mouse(int layer) {
    Shape* cursor = new Shape(new sf::RectangleShape());
    cursor->set_size(6, 6);
    cursor->set_fill_color(sf::Color::Red);
-   cursor->layer(layer);
    graphics_part->add(cursor);
-
-   debug_part->layer(layer);
 
    mouse->add(graphics_part);
    mouse->add(physics_part);
