@@ -11,7 +11,7 @@ class Camera;
 
 class RenderSurface {
 public:
-   using LayerList = std::map<int, std::vector<std::tuple<Draw*, sf::RenderStates> > >;
+   using LayerList = std::map<int, std::vector<std::tuple<sf::Drawable*, sf::RenderStates> > >;
 
    RenderSurface() {}
    virtual ~RenderSurface() {
@@ -22,8 +22,7 @@ public:
    virtual void set_camera(Camera& camera) = 0;
 
    // draw interface
-   virtual void draw(Draw& drawable, sf::RenderStates render_states = sf::RenderStates::Default) = 0;
-   virtual void draw(sf::Drawable& drawable, sf::RenderStates render_states = sf::RenderStates::Default) = 0;
+   virtual void draw(sf::Drawable& drawable, sf::RenderStates render_states = sf::RenderStates::Default, int layer = 0) = 0;
 
    // update interface
    virtual void update() = 0;

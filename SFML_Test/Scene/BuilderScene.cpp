@@ -63,7 +63,7 @@ BuilderScene::BuilderScene()
    delete map_builder;
 
    // initialize entities
-   this->mouse_ = UtilFactory::inst()->create_mouse(this->hud_layer);
+   this->mouse_ = UtilFactory::inst()->create_mouse(this->mouse_layer);
    this->entities_.push_back(this->mouse_);
 
    // let our mouse controller manipulate this scene
@@ -71,33 +71,42 @@ BuilderScene::BuilderScene()
 
    // create fixed hud items
    Entity* t = TextFactory::inst()->create_text_entity("SFML_Test", "retro");
+   static_cast<GraphicsPart*>(t->get("graphics"))->get(0)->layer(this->hud_layer);
    this->entities_.push_back(t);
 
    t = TextFactory::inst()->create_text_entity("r: reset pan position", "retro", sf::Vector2f(0, 15));
+   static_cast<GraphicsPart*>(t->get("graphics"))->get(0)->layer(this->hud_layer);
    this->entities_.push_back(t);
 
    t = TextFactory::inst()->create_text_entity("g: toggle grid visibility", "retro", sf::Vector2f(0, 30));
+   static_cast<GraphicsPart*>(t->get("graphics"))->get(0)->layer(this->hud_layer);
    this->entities_.push_back(t);
 
    t = TextFactory::inst()->create_text_entity("o: toggle entity hitboxes", "retro", sf::Vector2f(0, 45));
+   static_cast<GraphicsPart*>(t->get("graphics"))->get(0)->layer(this->hud_layer);
    this->entities_.push_back(t);
 
    t = TextFactory::inst()->create_text_entity("1: add green tiles at selection", "retro", sf::Vector2f(0, 60));
+   static_cast<GraphicsPart*>(t->get("graphics"))->get(0)->layer(this->hud_layer);
    this->entities_.push_back(t);
 
    t = TextFactory::inst()->create_text_entity("2: add blue tiles at selection", "retro", sf::Vector2f(0, 75));
+   static_cast<GraphicsPart*>(t->get("graphics"))->get(0)->layer(this->hud_layer);
    this->entities_.push_back(t);
 
    t = TextFactory::inst()->create_text_entity("del: remove tiles at selection", "retro", sf::Vector2f(0, 90));
+   static_cast<GraphicsPart*>(t->get("graphics"))->get(0)->layer(this->hud_layer);
    this->entities_.push_back(t);
 
    t = TextFactory::inst()->create_text_entity("right click: click and drag to pan", "retro", sf::Vector2f(0, 105));
+   static_cast<GraphicsPart*>(t->get("graphics"))->get(0)->layer(this->hud_layer);
    this->entities_.push_back(t);
 
    Shape* center_dot_graphic = new Shape(new sf::RectangleShape());
    center_dot_graphic->set_size(3, 3);
    center_dot_graphic->set_fill_color(sf::Color(255, 104, 2));
    center_dot_graphic->set_position(Settings::Instance()->cur_width() / 2, Settings::Instance()->cur_height() / 2);
+   center_dot_graphic->layer(1);
 
    this->center_dot_ = UtilFactory::inst()->create_graphic(
       center_dot_graphic,
@@ -108,6 +117,7 @@ BuilderScene::BuilderScene()
 
    this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", "retro");
    this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
+   static_cast<GraphicsPart*>(this->fps_display_->get("graphics"))->get(0)->layer(this->hud_layer);
    this->entities_.push_back(this->fps_display_);
 }
 
@@ -131,9 +141,9 @@ void BuilderScene::exit(Game& game) {
 }
 
 void BuilderScene::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
-   Scene::draw(surface, render_states);
+   surface.draw(this->backdrop_, render_states, this->backdrop_layer);
 
-   surface.draw(this->backdrop_, render_states);
+   Scene::draw(surface, render_states);
    this->map_->draw(surface, render_states);
 }
 

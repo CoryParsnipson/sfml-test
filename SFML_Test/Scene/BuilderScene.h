@@ -45,7 +45,11 @@ public:
 
 protected:
    // scene defines
+   const int mouse_layer = 3;
    const int hud_layer = 2;
+   const int overlay_layer = 1;
+   const int default_layer = 0;
+   const int backdrop_layer = -1;
 
    // scene fixtures
    Map* map_;

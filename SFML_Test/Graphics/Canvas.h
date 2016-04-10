@@ -15,8 +15,7 @@ public:
    // render surface interface
    virtual void set_camera(Camera& camera);
 
-   virtual void draw(Draw& drawable, sf::RenderStates render_states = sf::RenderStates::Default);
-   virtual void draw(sf::Drawable& drawable, sf::RenderStates render_states = sf::RenderStates::Default);
+   virtual void draw(sf::Drawable& drawable, sf::RenderStates render_states = sf::RenderStates::Default, int layer = 0);
 
    virtual void update();
    virtual void clear(const sf::Color* color = nullptr);

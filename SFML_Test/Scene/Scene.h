@@ -50,11 +50,11 @@ public:
 
    // draw interface
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {
-      surface.draw(*this->camera_, render_states);
+      this->camera_->draw(surface, render_states);
 
       EntityList::iterator it;
       for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
-         surface.draw(*(*it), render_states);
+         (*it)->draw(surface, render_states);
       }
    }
 
