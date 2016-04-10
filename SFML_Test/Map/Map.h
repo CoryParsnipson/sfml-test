@@ -21,7 +21,7 @@ public:
    virtual ~Map();
 
    // draw interface
-   virtual void draw(RenderTarget& surface);
+   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);

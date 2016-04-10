@@ -1,6 +1,6 @@
 #include "GraphicsPart.h"
 #include "TextureManager.h"
-#include "RenderTarget.h"
+#include "RenderSurface.h"
 #include "Graphic.h"
 #include "Entity.h"
 #include "PhysicsPart.h"
@@ -72,10 +72,10 @@ void GraphicsPart::set_size(const sf::Vector2f& size) {
    }
 }
 
-void GraphicsPart::draw(RenderTarget& surface) {
+void GraphicsPart::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    SpriteList::const_iterator sprite_it;
    for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
-      (*sprite_it)->draw(surface);
+      (*sprite_it)->draw(surface, render_states);
    }
 }
 

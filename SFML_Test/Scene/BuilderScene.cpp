@@ -3,6 +3,7 @@
 
 #include "Game.h"
 
+#include "RenderSurface.h"
 #include "Texture.h"
 #include "Graphic.h"
 
@@ -34,9 +35,6 @@ BuilderScene::BuilderScene()
 , frame_count(0)
 , show_debug_info_(false)
 {
-   // TODO: work out layers...
-   int hud_layer = 2;
-
    // load textures
    TextureManager::inst()->create_texture("tile_solid", "flatmap_test_texture.png", sf::IntRect(0, 0, 40, 40));
    TextureManager::inst()->create_texture("tile_clear", "flatmap_test_texture.png", sf::IntRect(40, 0, 40, 40));
@@ -65,7 +63,8 @@ BuilderScene::BuilderScene()
    delete map_builder;
 
    // initialize entities
-   this->mouse_ = UtilFactory::inst()->create_mouse(hud_layer);
+   this->mouse_ = UtilFactory::inst()->create_mouse(this->hud_layer);
+   this->entities_.push_back(this->mouse_);
 
    // let our mouse controller manipulate this scene
    dynamic_cast<MouseControlPart*>(this->mouse_->get("control"))->set_controllable(this);
@@ -114,7 +113,6 @@ BuilderScene::BuilderScene()
 
 BuilderScene::~BuilderScene() {
    delete this->map_;
-   delete this->mouse_;
    delete this->serializer_;
 
    this->remove_tile_cursor();
@@ -132,9 +130,11 @@ void BuilderScene::exit(Game& game) {
    Service::get_input().unregisterInputListener(dynamic_cast<InputListener*>(this->mouse_->get("control")));
 }
 
-void BuilderScene::draw(RenderTarget& surface) {
-   surface.draw(this->backdrop_);
-   Scene::draw(surface);
+void BuilderScene::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
+   Scene::draw(surface, render_states);
+
+   surface.draw(this->backdrop_, render_states);
+   this->map_->draw(surface, render_states);
 }
 
 void BuilderScene::update(Game& game, Scene* scene, Entity* entity) {
@@ -239,7 +239,7 @@ void BuilderScene::drag(MouseButtonCommand& c, sf::Vector2f delta) {
       sf::Vector2f mouse_pos(c.x, c.y);
       this->update_selection_rect(this->click_press_pos_, mouse_pos);
    } else if (c.button == MouseButtonCommand::RIGHT) {
-      this->camera_->drag(c, delta);
+      // TODO: drag everything in the tile map layer entity group
       this->map_->grid()->move(delta);
    }
 }

@@ -49,12 +49,12 @@ public:
    virtual void exit(Game& game) {}
 
    // draw interface
-   virtual void draw(RenderTarget& surface) {
-      this->camera_->draw(surface);
+   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {
+      surface.draw(*this->camera_, render_states);
 
       EntityList::iterator it;
       for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
-         (*it)->draw(surface);
+         surface.draw(*(*it), render_states);
       }
    }
 

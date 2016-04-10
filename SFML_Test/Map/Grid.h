@@ -81,7 +81,7 @@ public:
    virtual sf::Vector2f ceil(const sf::Vector2f& pos) = 0;
 
    // draw interface
-   virtual void draw(RenderTarget& surface) = 0;
+   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) = 0;
 
    // serialize interface
    virtual Serialize::SerialObj serialize() = 0;

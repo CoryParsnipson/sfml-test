@@ -12,6 +12,9 @@ public:
    static const float ZOOM_FACTOR_MIN;
    static const float ZOOM_FACTOR_MAX;
 
+   friend class RenderSurface;
+   friend class Canvas;
+
    Camera(const std::string& id, const sf::Vector2f& size);
    virtual ~Camera();
 
@@ -23,10 +26,8 @@ public:
 
    sf::Vector2f get_pan_delta();
 
-   sf::View& get_view(); // TODO: get rid of this if possible
-
    // draw interface
-   virtual void draw(RenderTarget& surface);
+   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 
    // view interface
    sf::Vector2f get_size();

@@ -2,6 +2,7 @@
 #include <boost/algorithm/string/join.hpp>
 #include <boost/tokenizer.hpp>
 
+#include "RenderSurface.h"
 #include "TextWidget.h"
 #include "TextFactory.h"
 
@@ -46,8 +47,8 @@ void TextWidget::set_size(const sf::Vector2f& size) {
    this->word_wrap();
 }
 
-void TextWidget::draw(RenderTarget& surface) {
-   this->text_->draw(surface);
+void TextWidget::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
+   this->text_->draw(surface, render_states);
 }
 
 void TextWidget::word_wrap() {

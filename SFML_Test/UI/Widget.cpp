@@ -66,14 +66,14 @@ void Widget::remove(Widget* child) {
    }
 }
 
-void Widget::draw(RenderTarget& surface) {
+void Widget::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    WidgetList::const_iterator it;
    for (it = this->children_.begin(); it != this->children_.end(); ++it) {
       if (!*it) {
          this->children_.erase(it);
          continue;
       }
-      (*it)->draw(surface);
+      (*it)->draw(surface, render_states);
    }
 }
 

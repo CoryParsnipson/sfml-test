@@ -20,7 +20,8 @@ public:
 protected:
    // seal off constructors
    UtilFactory();
-   UtilFactory(UtilFactory& f);
+   UtilFactory(const UtilFactory& f) = delete;
+   UtilFactory& operator=(UtilFactory other) = delete;
 
    static UtilFactory* inst_;
 };

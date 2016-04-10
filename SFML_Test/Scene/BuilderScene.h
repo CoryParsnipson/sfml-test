@@ -22,7 +22,7 @@ public:
    virtual void exit(Game& game);
 
    // draw interface
-   virtual void draw(RenderTarget& surface);
+   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
@@ -44,6 +44,9 @@ public:
    virtual void click(MouseButtonCommand& c);
 
 protected:
+   // scene defines
+   const int hud_layer = 2;
+
    // scene fixtures
    Map* map_;
    sf::VertexArray backdrop_;

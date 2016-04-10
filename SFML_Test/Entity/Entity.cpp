@@ -1,5 +1,4 @@
 #include "Entity.h"
-#include "RenderTarget.h"
 #include "Scene.h"
 #include "Part.h"
 #include "PhysicsPart.h"
@@ -133,10 +132,10 @@ Part* Entity::get(const std::string& part_name) {
    return it->second;
 }
 
-void Entity::draw(RenderTarget& surface) {
+void Entity::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    PartList::const_iterator it;
    for (it = this->parts_.begin(); it != this->parts_.end(); it++) {
-      it->second->draw(surface);
+      it->second->draw(surface, render_states);
    }
 }
 

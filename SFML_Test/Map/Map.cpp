@@ -1,10 +1,8 @@
 #include "Map.h"
-
+#include "RenderSurface.h"
 #include "Scene.h"
-
 #include "Entity.h"
 #include "PhysicsPart.h"
-
 #include "Grid.h"
 #include "OrthographicGrid.h"
 #include "Serializer.h"
@@ -24,10 +22,10 @@ Map::~Map() {
    this->grid_ = nullptr;
 }
 
-void Map::draw(RenderTarget& surface) {
+void Map::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    Map::TileList::const_iterator it;
    for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
-      (*it)->draw(surface);
+      (*it)->draw(surface, render_states);
    }
 }
 

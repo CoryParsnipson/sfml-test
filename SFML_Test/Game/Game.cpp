@@ -9,7 +9,7 @@
 Game::Game()
 : next_scene_(nullptr)
 , prev_scene_(nullptr)
-, window_("SFML Test", sf::Vector2f(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT))
+, window_("SFML Test", sf::Vector2f(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT), Settings::Instance()->FRAMERATE_LIMIT)
 {
    Service::init(); // initialize service locator
 
@@ -105,10 +105,6 @@ Scene* Game::switch_scene(Scene* scene) {
    return this->prev_scene_;
 }
 
-RenderWindow& Game::get_window() {
-   return this->window_;
-}
-
 void Game::process(CloseCommand& c) {
    this->scenes_.top()->process(*this, c);
 }
@@ -135,6 +131,10 @@ void Game::process(MouseButtonCommand& c) {
 
 void Game::process(MouseWheelCommand& c) {
    this->scenes_.top()->process(*this, c);
+}
+
+bool Game::poll_event(sf::Event& event) {
+   return this->window_.poll_event(event);
 }
 
 void Game::main_loop() {

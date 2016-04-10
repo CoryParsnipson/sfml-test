@@ -3,6 +3,7 @@
 
 #include "dependencies.h"
 #include "Draw.h"
+#include "RenderSurface.h"
 #include "TextFactory.h"
 #include "Texture.h"
 
@@ -16,7 +17,7 @@ public:
    virtual ~Graphic() {}
 
    // draw interface
-   virtual void draw(RenderTarget& surface) = 0;
+   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) = 0;
 
    // common sfml drawable interface
    virtual sf::FloatRect get_local_bounds() const = 0;
@@ -164,10 +165,10 @@ public:
    }
 
    // draw interface
-   virtual void draw(RenderTarget& surface) {
+   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {
       Graphic::GraphicList::const_iterator it;
       for (it = this->children_->begin(); it != this->children_->end(); ++it) {
-         (*it)->draw(surface);
+         (*it)->draw(surface, render_states);
       }
    }
 
@@ -350,8 +351,8 @@ public:
       delete this->drawable_;
    }
 
-   virtual void draw(RenderTarget& surface) {
-      surface.draw(*this->drawable_);
+   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {
+      surface.draw(*this->drawable_, render_states);
    }
 
    // common sfml drawable interface
@@ -458,8 +459,8 @@ public:
    }
 
    // draw interface
-   virtual void draw(RenderTarget& surface) {
-      surface.draw(*this->drawable_);
+   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {
+      surface.draw(*this->drawable_, render_states);
    }
 
    // common sfml drawable interface
@@ -552,8 +553,8 @@ public:
    }
 
    // draw interface
-   virtual void draw(RenderTarget& surface) {
-      surface.draw(*this->drawable_);
+   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {
+      surface.draw(*this->drawable_, render_states);
    }
 
    // common sfml drawable interface

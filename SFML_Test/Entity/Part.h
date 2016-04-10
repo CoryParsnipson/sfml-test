@@ -29,7 +29,7 @@ public:
    virtual bool intersects(sf::FloatRect& other) { return false; }
 
    // draw interface
-   virtual void draw(RenderTarget& surface) {}
+   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {}
 
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr) = 0;

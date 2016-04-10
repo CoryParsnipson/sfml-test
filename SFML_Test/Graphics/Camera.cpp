@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "RenderSurface.h"
 
 // initialize static member variables
 const float Camera::ZOOM_FACTOR_MIN = 0.125;
@@ -38,11 +39,7 @@ sf::Vector2f Camera::get_pan_delta() {
    return (this->original_center_ - this->get_center());
 }
 
-sf::View& Camera::get_view() {
-   return *this->view_;
-}
-
-void Camera::draw(RenderTarget& surface) {
+void Camera::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    surface.set_camera(*this);
 }
 
@@ -81,7 +78,7 @@ const sf::FloatRect& Camera::get_viewport() {
 
 void Camera::drag(MouseButtonCommand& c, sf::Vector2f delta) {
    // invert the delta to make it behave like a pan instead of a scroll
-   this->view_->move(-1.f * delta);
+   this->view_->move(delta);
 }
 
 float Camera::get_scale() {

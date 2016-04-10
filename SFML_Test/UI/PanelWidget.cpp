@@ -1,4 +1,5 @@
 #include "PanelWidget.h"
+#include "RenderSurface.h"
 #include "TextureManager.h"
 
 PanelWidget::PanelWidget(const sf::Vector2f& pos, const sf::Vector2f& size, Widget* parent, bool draggable, bool resizable)
@@ -62,23 +63,26 @@ void PanelWidget::set_size(const sf::Vector2f& size) {
    }
 }
 
-void PanelWidget::draw(RenderTarget& surface) {
-   this->panel_->draw(this->surface_);
+void PanelWidget::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
+   //this->panel_->draw(this->surface_, render_states);
+   this->panel_->draw(surface, render_states);
 
    if (this->resize_handle_) {
-      this->resize_handle_->draw(this->surface_);
+      //this->resize_handle_->draw(this->surface_, render_states);
+      this->resize_handle_->draw(surface, render_states);
    }
 
    // draw children on top of this widget
-   Widget::draw(this->surface_);
+   //Widget::draw(this->surface_, render_states);
+   Widget::draw(surface, render_states);
 
    // finalize intermediate surface
-   this->surface_.update();
+   //this->surface_.update();
 
    // take intermediate surface and draw it to the provided surface
-   sf::IntRect panel_area(this->panel_->get_global_bounds());
-   sf::Sprite panel_sprite(this->surface_.get_texture());
-   surface.draw(panel_sprite);
+   //sf::IntRect panel_area(this->panel_->get_global_bounds());
+   //sf::Sprite panel_sprite(this->surface_.get_texture());
+   //surface.draw(panel_sprite, render_states);
 }
 
 void PanelWidget::drag(MouseButtonCommand& c, sf::Vector2f delta) {

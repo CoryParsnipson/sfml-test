@@ -4,8 +4,8 @@
 #include "dependencies.h"
 #include "FullLogger.h"
 #include "InputListener.h"
-#include "RenderWindow.h"
 #include "TextureManager.h"
+#include "Canvas.h"
 
 class CloseCommand;
 class KeyPressCommand;
@@ -32,9 +32,6 @@ public:
    void unload_scene();               // unload current scene and resume previous scene
    Scene* switch_scene(Scene* scene); // unload current scene and load new scene
 
-   // game graphics
-   RenderWindow& get_window();
-
    // command interface
    virtual void process(CloseCommand& c);
    virtual void process(KeyPressCommand& c);
@@ -42,6 +39,8 @@ public:
    virtual void process(MouseMoveCommand& c);
    virtual void process(MouseButtonCommand& c);
    virtual void process(MouseWheelCommand& c);
+
+   bool poll_event(sf::Event& event);
 
 protected:
 	// game flow control
@@ -56,7 +55,7 @@ protected:
    InputController input_;
 
    // graphics
-   RenderWindow window_;
+   Canvas window_;
 };
 
 #endif

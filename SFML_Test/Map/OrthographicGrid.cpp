@@ -1,5 +1,5 @@
 #include "OrthographicGrid.h"
-
+#include "RenderSurface.h"
 #include "Graphic.h"
 #include "UtilFactory.h"
 #include "TextFactory.h"
@@ -140,21 +140,21 @@ sf::Vector2f OrthographicGrid::ceil(const sf::Vector2f& pos) {
    );
 }
 
-void OrthographicGrid::draw(RenderTarget& surface) {
+void OrthographicGrid::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    GridlineList::const_iterator it;
    for (it = this->grid_cols_.begin(); it != this->grid_cols_.end(); ++it) {
-      (*it)->draw(surface);
+      (*it)->draw(surface, render_states);
    }
 
    for (it = this->grid_rows_.begin(); it != this->grid_rows_.end(); ++it) {
-      (*it)->draw(surface);
+      (*it)->draw(surface, render_states);
    }
 
-   this->origin_dot_->draw(surface);
+   this->origin_dot_->draw(surface, render_states);
 
    TextMarkerList::const_iterator tm_it;
    for (tm_it = this->text_markers_.begin(); tm_it != this->text_markers_.end(); ++tm_it) {
-      (*tm_it)->draw(surface);
+      (*tm_it)->draw(surface, render_states);
    }
 }
 

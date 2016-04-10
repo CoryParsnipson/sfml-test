@@ -1,6 +1,6 @@
 #include "DebugPart.h"
 
-#include "RenderTarget.h"
+#include "RenderSurface.h"
 #include "Graphic.h"
 
 #include "TextFactory.h"
@@ -37,14 +37,14 @@ bool DebugPart::show_text() {
    return this->show_text_;
 }
 
-void DebugPart::draw(RenderTarget& surface) {
+void DebugPart::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    SpriteList::const_iterator sprite_it;
    for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
-      (*sprite_it)->draw(surface);
+      (*sprite_it)->draw(surface, render_states);
    }
 
    if (this->show_text()) {
-      this->pos_text_->draw(surface);
+      this->pos_text_->draw(surface, render_states);
    }
 }
 
@@ -74,6 +74,7 @@ void DebugPart::update(Game& game, Scene* scene, Entity* entity) {
 
          this->sprites_[graphic_idx]->set_position(g->get_position());
          this->sprites_[graphic_idx]->set_size(g->get_size());
+         this->sprites_[graphic_idx]->layer(this->layer());
 
          ++graphic_idx;
       }
@@ -84,6 +85,7 @@ void DebugPart::update(Game& game, Scene* scene, Entity* entity) {
       sf::Vector2f pos = physics->get_position();
       this->pos_text_->set_string(std::to_string((int)pos.x) + ", " + std::to_string((int)pos.y));
       this->pos_text_->set_position(pos);
+      this->pos_text_->layer(this->layer());
    }
 }
 
