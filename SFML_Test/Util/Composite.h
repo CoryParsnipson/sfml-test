@@ -1,26 +1,27 @@
 #ifndef COMPOSITE_H
 #define COMPOSITE_H
 
-class Composite;
+#include "dependencies.h"
 
+template <class T>
 class Composite
 {
 public:
-   using CompositeList = std::vector<Composite*>;
+   using CompositeList = std::vector<T*>;
 
    Composite() {}
    virtual ~Composite() {}
 
    // composite interface
-   virtual void add(Composite* child) {
+   virtual void add(T* child) {
       if (!child) {
          Service::get_logger().msg("Composite", Logger::WARNING, "Adding null child to composite.");
          return;
       }
-      this->children_->push_back(child);
+      this->children_.push_back(child);
    }
 
-   virtual Composite* get(int idx) {
+   virtual T* get(int idx) {
       if (idx < 0 || idx >= this->get_num_children()) {
          return nullptr;
       }
@@ -28,8 +29,8 @@ public:
       return this->children_[idx];
    };
 
-   virtual void remove(Composite* child) {
-      CompositeList::iterator it;
+   virtual void remove(T* child) {
+      Iterator<CompositeList> it;
       for (it = this->children_.begin(); it != this->children_.end(); ++it) {
          if (*it == child) {
             delete *it;
@@ -46,18 +47,19 @@ public:
       this->children_.erase(this->children_.begin() + idx);
    }
 
-   int get_num_children() { return this->children_->size(); };
+   int get_num_children() { return this->children_.size(); };
 
 protected:
    CompositeList children_;
 };
 
-class Leaf : public Composite {
+template<class T>
+class Leaf : public Composite<T> {
 public:
    // composite interface
-   virtual void add(Composite* child) {}
-   virtual Composite* get(int idx) { return nullptr; }
-   virtual void remove(Composite* child) {}
+   virtual void add(T* child) {}
+   virtual T* get(int idx) { return nullptr; }
+   virtual void remove(T* child) {}
    virtual void remove(int idx) {}
 };
 #endif

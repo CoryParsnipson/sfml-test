@@ -13,6 +13,9 @@ public:
    virtual void enter(Game& game);
    virtual void exit(Game& game);
 
+   // draw interface
+   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
+      
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 

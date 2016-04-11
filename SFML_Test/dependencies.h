@@ -32,4 +32,11 @@
 #include "Settings.h"
 #include "Service.h"
 
+// useful things
+template<typename C>
+using Iterator = typename C::iterator;
+
+template<typename C>
+using ConstIterator = typename C::const_iterator;
+
 #endif

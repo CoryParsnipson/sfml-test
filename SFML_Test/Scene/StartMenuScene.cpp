@@ -43,12 +43,30 @@ StartMenuScene::StartMenuScene()
       12,
       TextFactory::ALIGN::CENTER,
       sf::Color::White,
-      0, 
+      0,
       this->show_debug_info_
    ));
 }
 
 StartMenuScene::~StartMenuScene() {
+}
+
+void StartMenuScene::draw(RenderSurface& surface, sf::RenderStates render_states) {
+   TextureManager::inst()->create_texture("1", "flatmap_test_texture.png", sf::IntRect(0, 0, 40, 40));
+
+   Graphic2* g2 = new SpriteGraphic(TextureManager::inst()->get_texture("1"));
+   g2->set_size(40, 40);
+   g2->set_position(300, 50);
+
+   Graphic2* g = new SpriteGraphic(TextureManager::inst()->get_texture("1"));
+   g->set_size(40, 40);
+   g->set_color(sf::Color::Red);
+   g->set_position(100, 100);
+
+   g->add(g2);
+   g->draw(surface, render_states);
+
+   Scene::draw(surface, render_states);
 }
 
 void StartMenuScene::enter(Game& game) {
