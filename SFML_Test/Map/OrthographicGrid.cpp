@@ -1,6 +1,6 @@
+#include "Draw.h"
 #include "OrthographicGrid.h"
 #include "RenderSurface.h"
-#include "Graphic.h"
 #include "UtilFactory.h"
 #include "TextFactory.h"
 
@@ -193,8 +193,9 @@ void OrthographicGrid::deserialize(Serialize::SerialObj& obj) {
 }
 
 void OrthographicGrid::create_origin_dot() {
-   this->origin_dot_ = new Shape(new sf::RectangleShape(sf::Vector2f(3, 3)));
-   this->origin_dot_->set_fill_color(sf::Color(255, 157, 75, 255));
+   this->origin_dot_ = new SpriteGraphic();
+   this->origin_dot_->set_size(3, 3);
+   this->origin_dot_->set_color(sf::Color(255, 157, 75, 255));
    this->origin_dot_->set_position(this->origin_);
 }
 
@@ -207,17 +208,19 @@ void OrthographicGrid::create_gridlines() {
    sf::Vector2f start_pos = this->round(screen_start);
 
    for (int col_pos = 0; col_pos <= cur_width; col_pos += this->tile_width()) {
-      Graphic* col = new Shape(new sf::RectangleShape(sf::Vector2f(1, cur_height)));
+      Graphic* col = new SpriteGraphic();
+      col->set_size(1, cur_height);
       col->set_position(col_pos + start_pos.x, screen_start.y);
-      col->set_fill_color(sf::Color(230, 230, 230, 90));
+      col->set_color(sf::Color(230, 230, 230, 90));
 
       this->grid_cols_.push_back(col);
    }
 
    for (int row_pos = 0; row_pos <= cur_height; row_pos += this->tile_height()) {
-      Graphic* row = new Shape(new sf::RectangleShape(sf::Vector2f(cur_width, 1)));
+      Graphic* row = new SpriteGraphic();
+      row->set_size(cur_width, 1);
       row->set_position(screen_start.x, row_pos + start_pos.y);
-      row->set_fill_color(sf::Color(230, 230, 230, 90));
+      row->set_color(sf::Color(230, 230, 230, 90));
 
       this->grid_rows_.push_back(row);
    }

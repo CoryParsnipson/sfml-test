@@ -3,8 +3,6 @@
 
 #include "Part.h"
 
-class Graphic;
-
 class DebugPart
 : public Part
 {

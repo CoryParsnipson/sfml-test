@@ -5,6 +5,7 @@
 
 class Text;
 class Entity;
+class TextGraphic;
 
 class TextFactory {
 public:
@@ -25,7 +26,7 @@ public:
    sf::Font* get_font(std::string font_name);
 
    // factory methods
-   virtual Text* create_text(
+   virtual TextGraphic* create_text(
       std::string msg,
       sf::Font* font,
       sf::Vector2f pos = sf::Vector2f(0, 0),
@@ -35,7 +36,7 @@ public:
       int layer = 0
    );
 
-   virtual Text* create_text(
+   virtual TextGraphic* create_text(
       std::string msg,
       std::string font,
       sf::Vector2f pos = sf::Vector2f(0, 0),

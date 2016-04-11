@@ -2,8 +2,7 @@
 
 #include "UtilFactory.h"
 
-#include "Graphic.h"
-
+#include "Draw.h"
 #include "GraphicsPart.h"
 #include "PhysicsPart.h"
 #include "DebugPart.h"
@@ -30,7 +29,7 @@ Entity* TileFactory::create_tile(Texture& t, sf::Vector2f pos, int layer, bool d
    GraphicsPart* graphics_part = new GraphicsPart();
    PhysicsPart* physics_part = new PhysicsPart();
 
-   Sprite* tile_sprite = new Sprite(t);
+   SpriteGraphic* tile_sprite = new SpriteGraphic(t);
 
    graphics_part->add(tile_sprite);
    physics_part->set_size(t.get_size());
@@ -54,9 +53,9 @@ Entity* TileFactory::create_tile_cursor(sf::Vector2f& one, sf::Vector2f& two, in
 
    sf::FloatRect* rect = UtilFactory::inst()->create_float_rect(one, two);
 
-   Shape* cursor_graphic = new Shape(new sf::RectangleShape());
+   Graphic* cursor_graphic = new SpriteGraphic();
    cursor_graphic->set_size(rect->width, rect->height);
-   cursor_graphic->set_fill_color(sf::Color(225, 225, 225, 128));
+   cursor_graphic->set_color(sf::Color(225, 225, 225, 128));
    cursor_graphic->set_outline_color(sf::Color(255, 255, 255, 192));
    cursor_graphic->set_outline_thickness(2.0);
 
@@ -84,8 +83,8 @@ Entity* TileFactory::create_selection_rectangle(sf::FloatRect* bounds, int layer
    GraphicsPart* graphics_part = new GraphicsPart();
    PhysicsPart* physics_part = new PhysicsPart();
 
-   Graphic* sr_graphic = new Shape(new sf::RectangleShape());
-   sr_graphic->set_fill_color(sf::Color(66, 108, 167, 175));
+   Graphic* sr_graphic = new SpriteGraphic();
+   sr_graphic->set_color(sf::Color(66, 108, 167, 175));
    sr_graphic->set_outline_color(sf::Color(124, 160, 210, 192));
    sr_graphic->set_outline_thickness(1.0);
 

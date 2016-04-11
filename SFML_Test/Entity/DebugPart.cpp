@@ -1,7 +1,7 @@
 #include "DebugPart.h"
 
+#include "Draw.h"
 #include "RenderSurface.h"
-#include "Graphic.h"
 
 #include "TextFactory.h"
 
@@ -12,7 +12,7 @@
 DebugPart::DebugPart(std::string id)
 : Part(id)
 , show_text_(false)
-, pos_text_(new Text("", TextFactory::inst()->get_font("retro")))
+, pos_text_(new TextGraphic("", TextFactory::inst()->get_font("retro")))
 {
    Service::get_logger().msg("DebugPart", Logger::INFO, "Creating DebugPart");
 }
@@ -22,7 +22,7 @@ DebugPart::~DebugPart() {
 
    delete pos_text_;
 
-   SpriteList::const_iterator sprite_it;
+   ConstIterator<SpriteList> sprite_it;
    for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
       delete *sprite_it;
    }
@@ -38,7 +38,7 @@ bool DebugPart::show_text() {
 }
 
 void DebugPart::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
-   SpriteList::const_iterator sprite_it;
+   ConstIterator<SpriteList> sprite_it;
    for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
       (*sprite_it)->draw(surface, render_states);
    }
@@ -63,9 +63,9 @@ void DebugPart::update(Game& game, Scene* scene, Entity* entity) {
    if (graphics) {
       while ((g = graphics->get(graphic_idx))) {
          if (graphic_idx >= this->sprites_.size()) {
-            Graphic* g_debug = new Shape(new sf::RectangleShape());
+            Graphic* g_debug = new SpriteGraphic();
 
-            g_debug->set_fill_color(sf::Color::Transparent);
+            g_debug->set_color(sf::Color::Transparent);
             g_debug->set_outline_color(sf::Color::Red);
             g_debug->set_outline_thickness(1.0);
 

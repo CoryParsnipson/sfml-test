@@ -3,13 +3,11 @@
 
 #include "Part.h"
 
-class Graphic;
-
 class GraphicsPart
 : public Part
 {
 public:
-   typedef std::vector<Graphic*> SpriteList;
+   using SpriteList = std::vector<Graphic*>;
 
    GraphicsPart(std::string id = "graphics");
    virtual ~GraphicsPart();

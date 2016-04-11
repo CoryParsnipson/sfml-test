@@ -1,7 +1,6 @@
 #include "UtilFactory.h"
 
-#include "Graphic.h"
-
+#include "Draw.h"
 #include "GraphicsPart.h"
 #include "PhysicsPart.h"
 #include "MouseControlPart.h"
@@ -24,9 +23,9 @@ Entity* UtilFactory::create_mouse(int layer) {
    PhysicsPart* physics_part = new PhysicsPart();
    MouseControlPart* control_part = new MouseControlPart("control");
 
-   Shape* cursor = new Shape(new sf::RectangleShape());
+   Graphic* cursor = new SpriteGraphic();
    cursor->set_size(6, 6);
-   cursor->set_fill_color(sf::Color::Red);
+   cursor->set_color(sf::Color::Red);
    graphics_part->add(cursor);
 
    mouse->add(graphics_part);

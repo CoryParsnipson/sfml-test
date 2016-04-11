@@ -11,7 +11,7 @@ Camera::Camera(const std::string& id, const sf::Vector2f& size)
 , original_center_(size.x / 2.f, size.y / 2.f)
 , view_(nullptr)
 {
-   this->view_ = new sf::View(original_center_, size);
+   this->view_ = new sf::View(this->original_center_, size);
 }
 
 Camera::~Camera() {
@@ -77,7 +77,6 @@ const sf::FloatRect& Camera::get_viewport() {
 }
 
 void Camera::drag(MouseButtonCommand& c, sf::Vector2f delta) {
-   // invert the delta to make it behave like a pan instead of a scroll
    this->view_->move(delta);
 }
 

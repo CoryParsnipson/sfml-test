@@ -3,9 +3,9 @@
 
 #include "Game.h"
 
+#include "Draw.h"
 #include "RenderSurface.h"
 #include "Texture.h"
-#include "Graphic.h"
 
 #include "Entity.h"
 #include "DebugPart.h"
@@ -94,9 +94,9 @@ BuilderScene::BuilderScene()
    t = TextFactory::inst()->create_text_entity("right click: click and drag to pan", "retro", sf::Vector2f(0, 105));
    this->entities_.push_back(t);
 
-   Shape* center_dot_graphic = new Shape(new sf::RectangleShape());
+   Graphic* center_dot_graphic = new SpriteGraphic();
    center_dot_graphic->set_size(3, 3);
-   center_dot_graphic->set_fill_color(sf::Color(255, 104, 2));
+   center_dot_graphic->set_color(sf::Color(255, 104, 2));
    center_dot_graphic->set_position(Settings::Instance()->cur_width() / 2, Settings::Instance()->cur_height() / 2);
 
    this->center_dot_ = UtilFactory::inst()->create_graphic(

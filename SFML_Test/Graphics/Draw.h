@@ -4,7 +4,7 @@
 #include "dependencies.h"
 #include "Composite.h"
 
-class Graphic2;
+class Graphic;
 class Texture;
 class RenderSurface;
 
@@ -13,14 +13,14 @@ public:
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) = 0;
 };
 
-class Graphic2
-: public Composite<Graphic2>
+class Graphic
+: public Composite<Graphic>
 , public Draw
 {
 public:
    // drawable interface
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {
-      Iterator<Composite<Graphic2>::CompositeList> it;
+      Iterator<Composite<Graphic>::CompositeList> it;
       for (it = this->children_.begin(); it != this->children_.end(); ++it) {
          (*it)->draw(surface, render_states);
       }
@@ -85,7 +85,7 @@ public:
    virtual sf::Vector2f find_character_pos(std::size_t index) const = 0;
 };
 
-class SpriteGraphic : public Graphic2 {
+class SpriteGraphic : public Graphic {
 public:
    SpriteGraphic();
    SpriteGraphic(Texture& texture);
@@ -157,7 +157,7 @@ protected:
    sf::RectangleShape* drawable_;
 };
 
-class TextGraphic : public Graphic2 {
+class TextGraphic : public Graphic {
 public:
    TextGraphic();
    TextGraphic(const char* text, sf::Font* font = nullptr, unsigned int size = 12);

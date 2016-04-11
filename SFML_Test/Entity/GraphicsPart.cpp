@@ -1,7 +1,6 @@
 #include "GraphicsPart.h"
 #include "TextureManager.h"
 #include "RenderSurface.h"
-#include "Graphic.h"
 #include "Entity.h"
 #include "PhysicsPart.h"
 
@@ -14,7 +13,7 @@ GraphicsPart::GraphicsPart(std::string id)
 GraphicsPart::~GraphicsPart() {
    Service::get_logger().msg("GraphicsPart", Logger::INFO, "Destroying GraphicsPart");
 
-   SpriteList::const_iterator sprite_it;
+   ConstIterator<SpriteList> sprite_it;
    for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
       delete *sprite_it;
    }
@@ -32,7 +31,7 @@ Graphic* GraphicsPart::get(int idx) {
       return sprite;
    }
 
-   SpriteList::const_iterator sprite_it;
+   ConstIterator<SpriteList> sprite_it;
    for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
       if (idx == 0) {
          sprite = *sprite_it;
@@ -45,35 +44,35 @@ Graphic* GraphicsPart::get(int idx) {
 }
 
 void GraphicsPart::set_position(float x, float y) {
-   SpriteList::const_iterator sprite_it;
+   ConstIterator<SpriteList> sprite_it;
    for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
       (*sprite_it)->set_position(x, y);
    }
 }
 
 void GraphicsPart::set_position(const sf::Vector2f& pos) {
-   SpriteList::const_iterator sprite_it;
+   ConstIterator<SpriteList> sprite_it;
    for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
       (*sprite_it)->set_position(pos);
    }
 }
 
 void GraphicsPart::set_size(float width, float height) {
-   SpriteList::const_iterator sprite_it;
+   ConstIterator<SpriteList> sprite_it;
    for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
       (*sprite_it)->set_size(width, height);
    }
 }
 
 void GraphicsPart::set_size(const sf::Vector2f& size) {
-   SpriteList::const_iterator sprite_it;
+   ConstIterator<SpriteList> sprite_it;
    for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
       (*sprite_it)->set_size(size);
    }
 }
 
 void GraphicsPart::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
-   SpriteList::const_iterator sprite_it;
+   ConstIterator<SpriteList> sprite_it;
    for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
       (*sprite_it)->draw(surface, render_states);
    }
@@ -113,10 +112,8 @@ void GraphicsPart::deserialize(Serialize::SerialObj& obj) {
    pos.x = std::stod(obj["pos_x"]);
    pos.y = std::stod(obj["pos_y"]);
 
-   Sprite* sprite = new Sprite(TextureManager::inst()->get_texture(obj["texture"]));
+   Graphic* sprite = new SpriteGraphic(TextureManager::inst()->get_texture(obj["texture"]));
    sprite->set_position(pos);
-
-   // TODO: set layer somehow
-
+   
    this->add(sprite);
 }

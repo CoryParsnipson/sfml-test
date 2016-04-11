@@ -2,7 +2,6 @@
 #define PANEL_WIDGET_H
 
 #include "Widget.h"
-#include "Graphic.h"
 #include "MouseUtil.h"
 
 class PanelWidget

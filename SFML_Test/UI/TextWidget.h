@@ -2,7 +2,6 @@
 #define TEXT_WIDGET_H
 
 #include "Widget.h"
-#include "Graphic.h"
 
 class TextWidget
 : public Widget

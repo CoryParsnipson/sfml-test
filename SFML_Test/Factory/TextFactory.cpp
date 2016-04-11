@@ -1,7 +1,6 @@
 #include "TextFactory.h"
 
-#include "Graphic.h"
-
+#include "Draw.h"
 #include "Entity.h"
 #include "GraphicsPart.h"
 #include "DebugPart.h"
@@ -56,12 +55,9 @@ sf::Font* TextFactory::get_font(std::string font_name) {
    return it->second;
 }
 
-Text* TextFactory::create_text(std::string msg, sf::Font* font, sf::Vector2f pos, int size, ALIGN alignment, sf::Color color, int layer) {
-   Text* t = new Text();
+TextGraphic* TextFactory::create_text(std::string msg, sf::Font* font, sf::Vector2f pos, int size, ALIGN alignment, sf::Color color, int layer) {
+   TextGraphic* t = new TextGraphic(msg, font, size);
 
-   t->set_font(font);
-   t->set_string(msg);
-   t->set_character_size(size);
    t->set_color(color);
    t->set_origin(this->get_origin_from_alignment(t->get_local_bounds(), alignment));
    t->set_position(pos);
@@ -69,7 +65,7 @@ Text* TextFactory::create_text(std::string msg, sf::Font* font, sf::Vector2f pos
    return t;
 }
 
-Text* TextFactory::create_text(std::string msg, std::string font, sf::Vector2f pos, int size, ALIGN alignment, sf::Color color, int layer) {
+TextGraphic* TextFactory::create_text(std::string msg, std::string font, sf::Vector2f pos, int size, ALIGN alignment, sf::Color color, int layer) {
    return this->create_text(msg, this->get_font(font), pos, size, alignment, color, layer);
 }
 

@@ -22,7 +22,6 @@ class Scene
 {
 public:
    using EntityList = std::vector<Entity*>;
-   //using SceneGraphLayers = std::map<int,
 
    Scene(std::string id)
    : id_(id)

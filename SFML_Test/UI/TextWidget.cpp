@@ -9,7 +9,7 @@
 TextWidget::TextWidget(const std::string& text)
 : Widget()
 , raw_text_(text)
-, text_(new Text(text, TextFactory::inst()->get_font("retro")))
+, text_(new TextGraphic(text, TextFactory::inst()->get_font("retro")))
 {
    this->text_->set_color(sf::Color::Blue);
 

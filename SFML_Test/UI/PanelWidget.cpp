@@ -8,16 +8,16 @@ PanelWidget::PanelWidget(const sf::Vector2f& pos, const sf::Vector2f& size, Widg
 , resized_(false)
 , draggable_(draggable)
 , resizable_(resizable)
-, panel_(new Shape(new sf::RectangleShape()))
+, panel_(new SpriteGraphic())
 , resize_handle_(nullptr)
 {
    this->set_size(size);
 
    this->panel_->set_position(pos);
-   this->panel_->set_fill_color(sf::Color(192, 192, 192, 255));
+   this->panel_->set_color(sf::Color(192, 192, 192, 255));
 
    if (this->resizable_) {
-      this->resize_handle_ = new Sprite(TextureManager::inst()->get_texture("ui_resize_handle"));
+      this->resize_handle_ = new SpriteGraphic(TextureManager::inst()->get_texture("ui_resize_handle"));
       this->resize_handle_->scale(2.0f, 2.0f);
       this->resize_handle_->set_position(pos + size - this->resize_handle_->get_size());
    }
