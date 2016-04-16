@@ -34,9 +34,9 @@
 
 // useful things
 template<typename C>
-using Iterator = typename C::iterator;
+using iterator = typename C::iterator;
 
 template<typename C>
-using ConstIterator = typename C::const_iterator;
+using const_iterator = typename C::const_iterator;
 
 #endif

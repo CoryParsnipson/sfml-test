@@ -16,24 +16,31 @@
 #include "Update.h"
 #include "Entity.h"
 
+#include "SceneGraphNode.h"
+
 class Scene
 : public Draw
 , public Update
 {
 public:
    using EntityList = std::vector<Entity*>;
+   using SceneGraph = std::map<int, SceneGraphNode*>;
 
    Scene(std::string id)
    : id_(id)
    , camera_(new Camera("Camera", sf::Vector2f(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT)))
    {
       Service::get_logger().msg(this->id(), Logger::INFO, "Creating new Scene.");
+      this->scene_graph_[0] = new SceneGraphNode(this->camera_);
    }
 
    virtual ~Scene() {
       Service::get_logger().msg(this->id(), Logger::INFO, "Destroying Scene.");
 
-      delete this->camera_;
+      SceneGraph::iterator sg_it;
+      for (sg_it = this->scene_graph_.begin(); sg_it != this->scene_graph_.end(); ++sg_it) {
+         delete sg_it->second;
+      }
 
       EntityList::iterator it;
       for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
@@ -50,11 +57,17 @@ public:
 
    // draw interface
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {
-      this->camera_->draw(surface, render_states);
+      // TODO: merge camera into scene graph iteration
+      //this->camera_->draw(surface, render_states);
 
-      EntityList::iterator it;
-      for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
-         (*it)->draw(surface, render_states);
+      // EntityList::iterator it;
+      // for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
+      //    (*it)->draw(surface, render_states);
+      // }
+
+      SceneGraph::iterator it;
+      for (it = this->scene_graph_.begin(); it != this->scene_graph_.end(); ++it) {
+         it->second->draw(surface, render_states);
       }
    }
 
@@ -88,6 +101,8 @@ protected:
 
    Camera* camera_;
    EntityList entities_;
+
+   SceneGraph scene_graph_;
 };
 
 #endif

@@ -22,7 +22,7 @@ DebugPart::~DebugPart() {
 
    delete pos_text_;
 
-   ConstIterator<SpriteList> sprite_it;
+   SpriteList::const_iterator sprite_it;
    for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
       delete *sprite_it;
    }
@@ -38,7 +38,7 @@ bool DebugPart::show_text() {
 }
 
 void DebugPart::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
-   ConstIterator<SpriteList> sprite_it;
+   SpriteList::const_iterator sprite_it;
    for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {
       (*sprite_it)->draw(surface, render_states);
    }

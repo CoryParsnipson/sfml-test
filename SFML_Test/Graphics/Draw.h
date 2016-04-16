@@ -20,7 +20,7 @@ class Graphic
 public:
    // drawable interface
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {
-      Iterator<Composite<Graphic>::CompositeList> it;
+      iterator<Composite<Graphic>::CompositeList> it;
       for (it = this->children_.begin(); it != this->children_.end(); ++it) {
          (*it)->draw(surface, render_states);
       }

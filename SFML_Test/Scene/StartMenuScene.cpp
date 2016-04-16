@@ -15,37 +15,48 @@ StartMenuScene::StartMenuScene()
 : Scene("StartMenuScene")
 , show_debug_info_(false)
 {
+   sf::RenderStates s;
+   s.transform = sf::Transform::Identity;
+   s.transform.translate(this->camera_->get_center());
+   this->scene_graph_[0]->set_render_state(s);
+
    // populate entities
-   this->entities_.push_back(TextFactory::inst()->create_text_entity(
-      "SFML TEST",
-      "retro",
-      this->camera_->get_center(),
-      36,
-      TextFactory::ALIGN::CENTER,
-      sf::Color::White,
-      this->show_debug_info_
+   SceneGraphNode* node = new SceneGraphNode(
+      TextFactory::inst()->create_text_entity(
+         "SFML TEST",
+         "retro",
+         sf::Vector2f(0, 0),
+         36,
+         TextFactory::ALIGN::CENTER,
+         sf::Color::White,
+         this->show_debug_info_
    ));
+   this->scene_graph_[0]->add(node);
 
-   this->entities_.push_back(TextFactory::inst()->create_text_entity(
-      "main menu",
-      "retro",
-      this->camera_->get_center() + sf::Vector2f(0, 45),
-      12,
-      TextFactory::ALIGN::CENTER,
-      sf::Color::White,
-      this->show_debug_info_
+   node = new SceneGraphNode(
+      TextFactory::inst()->create_text_entity(
+         "main menu",
+         "retro",
+         sf::Vector2f(0, 45),
+         12,
+         TextFactory::ALIGN::CENTER,
+         sf::Color::White,
+         this->show_debug_info_
    ));
+   this->scene_graph_[0]->add(node);
 
-   this->entities_.push_back(TextFactory::inst()->create_text_entity(
-      "(Press SPACE or ENTER)",
-      "retro",
-      this->camera_->get_center() + sf::Vector2f(0, 60),
-      12,
-      TextFactory::ALIGN::CENTER,
-      sf::Color::White,
-      0,
-      this->show_debug_info_
+   node = new SceneGraphNode(
+      TextFactory::inst()->create_text_entity(
+         "(Press SPACE or ENTER)",
+         "retro",
+         sf::Vector2f(0, 60),
+         12,
+         TextFactory::ALIGN::CENTER,
+         sf::Color::White,
+         0,
+         this->show_debug_info_
    ));
+   this->scene_graph_[0]->add(node);
 }
 
 StartMenuScene::~StartMenuScene() {
@@ -79,20 +90,17 @@ void StartMenuScene::process(Game& game, KeyPressCommand& c) {
 }
 
 void StartMenuScene::process(Game& game, WindowResizeCommand& c) {
+   sf::Vector2f original_offset = this->camera_->get_center();
+
    Scene::process(game, c);
 
-   sf::Vector2f offset;
    sf::Vector2f new_size(c.width, c.height);
    sf::Vector2f new_center(c.width / 2.f, c.height / 2.f);
 
-   // readjust all entities
-   EntityList::const_iterator it;
-   for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
-      (*it)->set_position(new_center + offset);
-
-      GraphicsPart* graphics = dynamic_cast<GraphicsPart*>((*it)->get("graphics"));
-      offset.y += (2 + graphics->get(0)->get_size().y);
-   }
+   // adjust scene graph
+   sf::RenderStates s(this->scene_graph_[0]->get_render_state());
+   s.transform.translate(new_center - original_offset);
+   this->scene_graph_[0]->set_render_state(s);
 }
 
 void StartMenuScene::process(Game& game, MouseMoveCommand& c) {}
@@ -100,6 +108,16 @@ void StartMenuScene::process(Game& game, MouseButtonCommand& c) {}
 void StartMenuScene::process(Game& game, MouseWheelCommand& c) {}
 
 void StartMenuScene::toggle_debug_info() {
+   // this->show_debug_info = !this->show_debug_info_;
+   //
+   // SceneGraph::const_iterator it;
+   // for (it = this->scene_graph_.begin(); it != this->scene_graph_.end(); ++it) {
+   //
+   // }
+
+   SceneGraph::iterator test;
+
+
    EntityList::const_iterator it;
 
    this->show_debug_info_ = !this->show_debug_info_;
