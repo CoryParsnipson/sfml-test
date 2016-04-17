@@ -2,7 +2,7 @@
 #define COMPOSITE_H
 
 #include "dependencies.h"
-#include "Iterator.h"
+#include <iterator>
 
 // ----------------------------------------------------------------------------
 // Composite abstract base
@@ -14,19 +14,20 @@
 // section of the class definition.
 // ----------------------------------------------------------------------------
 template <class T>
-class Composite {
+class Composite
+{
 public:
    using CompositeList = std::vector<T*>;
 
    // iterators
    class prefix_iterator;
-   class infix_iterator;
-   class postfix_iterator;
-   class breadth_iterator;
-   class depth_iterator;
+   // class infix_iterator;
+   // class postfix_iterator;
+   // class breadth_iterator;
+   // class depth_iterator;
 
    Composite();
-   virtual ~Composite();
+   virtual ~Composite() = 0;
 
    // client interface
    void add(T* child);
@@ -35,6 +36,10 @@ public:
    void remove(int idx);
 
    int get_num_children();
+
+   // iterator interface
+   virtual prefix_iterator begin() { return prefix_iterator(static_cast<T*>(this)); }
+   virtual prefix_iterator end() { return prefix_iterator(); }
 
 protected:
    CompositeList children_;
@@ -127,41 +132,91 @@ int Composite<T>::get_num_children() {
 // ----------------------------------------------------------------------------
 template <class T>
 class Composite<T>::prefix_iterator
-: public Iterator<Composite<T> >
+: public std::iterator<std::bidirectional_iterator_tag, T>
 {
 public:
-   prefix_iterator(Composite<T>& iterable);
-   virtual ~prefix_iterator();
+   prefix_iterator() {}
+   prefix_iterator(T* itr) {
+      this->idx_.push_back(0);
+      this->nodes_.push_back(itr);
+   }
 
-   virtual void begin();
-   virtual void end();
+   virtual Composite<T>::prefix_iterator& operator++() {
+      if (this->nodes_.empty()) {
+         return *this;
+      }
 
-   Iterator<Composite<T> >& operator++(); // prefix
-   Iterator<Composite<T> >& operator++(int); // postfix
+      while (this->idx_.back() == this->nodes_.back()->get_num_children()) {
+         // reached a leaf node or finished traversing all children of current node...
+         this->idx_.pop_back();
+         this->nodes_.pop_back();
+
+         if (this->nodes_.empty()) {
+            break;
+         }
+
+         ++this->idx_.back();
+         if (this->idx_.back() < this->nodes_.back()->get_num_children()) {
+            this->nodes_.push_back(this->nodes_.back()->get(this->idx_.back()));
+            this->idx_.push_back(0);
+            break;
+         }
+      }
+
+      if (this->nodes_.empty()) {
+         return *this;
+      }
+
+      if (this->idx_.back() < this->nodes_.back()->get_num_children()) {
+         // descend to to next child
+         this->nodes_.push_back(this->nodes_.back()->get(this->idx_.back()));
+         this->idx_.push_back(0);
+      }
+
+      return *this;
+   }
+   virtual Composite<T>::prefix_iterator operator++(int) {
+      Composite<T>::prefix_iterator tmp(*this);
+
+      ++(*this);
+      return tmp;
+   }
+
+   virtual bool operator!=(const Composite<T>::prefix_iterator& itr) {
+      bool this_empty = this->nodes_.empty();
+      bool other_empty = itr.nodes_.empty();
+
+      return (this_empty != other_empty) || (!this_empty && !other_empty && (this->nodes_.back() != itr.nodes_.back()));
+   }
+
+   virtual bool operator==(const Composite<T>::prefix_iterator& itr) {
+      bool this_empty = this->nodes_.empty();
+      bool other_empty = itr.nodes_.empty();
+
+      return (this_empty && other_empty) || (this->nodes_.back() == itr.nodes_.back());
+   }
+
+   virtual T* operator*() {
+      if (this->nodes_.empty()) {
+         // should throw an exception instead?
+         return nullptr;
+      }
+
+      return this->nodes_.back();
+   }
+
+   virtual T* operator->() {
+      if (this->nodes_.empty()) {
+         // should throw an exception instead?
+         return nullptr;
+      }
+
+      return this->nodes_.back();
+   }
 
 protected:
-   Composite<T>* iterable_;
-
-   T* begin_;
-   T* end_;
+   std::vector<int> idx_;
+   std::vector<T*> nodes_;
 };
-
-template <class T>
-Composite<T>::prefix_iterator::prefix_iterator(Composite<T>& iterable)
-: Iterator<T>(iterable)
-{
-}
-
-template <class T>
-Composite<T>::prefix_iterator::~prefix_iterator() {
-}
-
-template <class T>
-void Composite<T>::prefix_iterator::begin() {
-}
-
-template <class T>
-void Composite<T>::prefix_iterator::end() {
-}
 
 #endif

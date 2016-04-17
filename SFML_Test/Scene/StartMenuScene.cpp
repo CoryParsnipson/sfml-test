@@ -108,29 +108,23 @@ void StartMenuScene::process(Game& game, MouseButtonCommand& c) {}
 void StartMenuScene::process(Game& game, MouseWheelCommand& c) {}
 
 void StartMenuScene::toggle_debug_info() {
-   // this->show_debug_info = !this->show_debug_info_;
-   //
-   // SceneGraph::const_iterator it;
-   // for (it = this->scene_graph_.begin(); it != this->scene_graph_.end(); ++it) {
-   //
-   // }
-
-   SceneGraph::iterator test;
-
-
-   EntityList::const_iterator it;
-
    this->show_debug_info_ = !this->show_debug_info_;
+   Service::get_logger().msg(this->id(), Logger::INFO, "Debug info: " + std::string(this->show_debug_info_ ? "SHOW" : "HIDE"));
 
-   if (this->show_debug_info_) {
-      // turned debug info on, add debug components to all entities
-      for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
-         (*it)->add(new DebugPart());
-      }
-   } else {
-      // turned debug info off, remove debug components from all entities
-      for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
-         (*it)->remove("debug");
+   SceneGraph::iterator it;
+   for (it = this->scene_graph_.begin(); it != this->scene_graph_.end(); ++it) {
+      SceneGraphNode::prefix_iterator node_it;
+      for (node_it = it->second->begin(); node_it != it->second->end(); ++node_it) {
+         Entity* e = dynamic_cast<Entity*>(node_it->get_drawable());
+         if (!e) {
+            continue;
+         }
+
+         if (this->show_debug_info_) {
+            e->add(new DebugPart());
+         } else {
+            e->remove("debug");
+         }
       }
    }
 }

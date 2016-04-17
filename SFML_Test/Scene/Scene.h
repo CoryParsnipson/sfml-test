@@ -57,14 +57,6 @@ public:
 
    // draw interface
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {
-      // TODO: merge camera into scene graph iteration
-      //this->camera_->draw(surface, render_states);
-
-      // EntityList::iterator it;
-      // for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
-      //    (*it)->draw(surface, render_states);
-      // }
-
       SceneGraph::iterator it;
       for (it = this->scene_graph_.begin(); it != this->scene_graph_.end(); ++it) {
          it->second->draw(surface, render_states);

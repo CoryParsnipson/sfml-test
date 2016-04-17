@@ -26,11 +26,15 @@ void SceneGraphNode::draw(RenderSurface& surface, sf::RenderStates render_states
    render_states.transform *= this->state_.transform;
 
    if (this->drawable_) {
-      this->drawable_->draw(surface, render_states);
+       this->drawable_->draw(surface, render_states);
    }
 
    const_iterator<CompositeList> it;
    for (it = this->children_.begin(); it != this->children_.end(); ++it) {
       (*it)->draw(surface, render_states);
    }
+}
+
+Draw* SceneGraphNode::get_drawable() {
+   return this->drawable_;
 }

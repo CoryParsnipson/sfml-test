@@ -20,6 +20,8 @@ public:
    // draw interface
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 
+   Draw* get_drawable();
+
 protected:
    sf::RenderStates state_;
    Draw* drawable_;
