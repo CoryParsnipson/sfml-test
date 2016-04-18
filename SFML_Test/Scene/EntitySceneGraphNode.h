@@ -11,14 +11,11 @@ public:
 
    Entity* get_entity();
 
-   // draw interface
-   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
-
-   // update interface
-   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
-
 protected:
    Entity* entity_;
+
+   virtual void pre_draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
+   virtual void post_update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 };
 
 #endif
