@@ -17,7 +17,7 @@ public:
 
    // scene graph interface
    void set_render_state(const sf::RenderStates& state_);
-   const sf::RenderStates& get_render_state();
+   sf::RenderStates get_render_state();
 
    bool visible() const;
    void visible(bool visible);

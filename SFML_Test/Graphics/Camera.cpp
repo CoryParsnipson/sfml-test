@@ -77,7 +77,7 @@ const sf::FloatRect& Camera::get_viewport() {
 }
 
 void Camera::drag(MouseButtonCommand& c, sf::Vector2f delta) {
-   this->view_->move(delta);
+   this->view_->move(-1.f * delta); // invert delta to make it act like a pan
 }
 
 float Camera::get_scale() {

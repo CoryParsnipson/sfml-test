@@ -17,7 +17,7 @@ void SceneGraphNode::set_render_state(const sf::RenderStates& state) {
    this->state_ = state;
 }
 
-const sf::RenderStates& SceneGraphNode::get_render_state() {
+sf::RenderStates SceneGraphNode::get_render_state() {
    return this->state_;
 }
 
