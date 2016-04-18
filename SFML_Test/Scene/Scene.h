@@ -23,7 +23,6 @@ class Scene
 , public Update
 {
 public:
-   using EntityList = std::vector<Entity*>;
    using SceneGraph = std::map<int, SceneGraphNode*>;
 
    Scene(std::string id)
@@ -37,17 +36,15 @@ public:
    virtual ~Scene() {
       Service::get_logger().msg(this->id(), Logger::INFO, "Destroying Scene.");
 
-      SceneGraph::iterator sg_it;
-      for (sg_it = this->scene_graph_.begin(); sg_it != this->scene_graph_.end(); ++sg_it) {
-         delete sg_it->second;
-      }
+      delete this->camera_;
+      this->camera_ = nullptr;
 
-      EntityList::iterator it;
-      for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
-         delete *it;
-         *it = nullptr;
+      SceneGraph::iterator it;
+      for (it = this->scene_graph_.begin(); it != this->scene_graph_.end(); ++it) {
+         delete it->second;
+         this->scene_graph_.erase(it);
       }
-      this->entities_.clear();
+      this->scene_graph_.clear();
    }
 
    virtual std::string id() { return this->id_; }
@@ -65,9 +62,18 @@ public:
 
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr) {
-      EntityList::const_iterator it;
-      for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
-         (*it)->update(game, this);
+      SceneGraph::iterator it;
+      for (it = this->scene_graph_.begin(); it != this->scene_graph_.end(); ++it) {
+         SceneGraphNode::prefix_iterator node_it;
+         for (node_it = it->second->begin(); node_it != it->second->end(); ++node_it) {
+            // TODO: figure something out for this
+            //(*node_it)->update(game, this);
+
+            Entity* e = dynamic_cast<Entity*>(*node_it);
+            if (e) {
+               e->update(game, this);
+            }
+         }
       }
    }
 
@@ -90,10 +96,7 @@ public:
 
 protected:
    std::string id_;
-
    Camera* camera_;
-   EntityList entities_;
-
    SceneGraph scene_graph_;
 };
 

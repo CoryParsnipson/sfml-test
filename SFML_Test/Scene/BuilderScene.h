@@ -21,9 +21,6 @@ public:
    virtual void enter(Game& game);
    virtual void exit(Game& game);
 
-   // draw interface
-   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
-
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 
@@ -61,8 +58,8 @@ protected:
    Entity* mouse_;
    Entity* center_dot_;
    Entity* selection_rectangle_;
-   Entity* tile_cursor_;
    Entity* fps_display_;
+   SceneGraphNode* tile_cursor_;
 
    // mouse controllable state
    sf::Vector2f click_press_pos_;

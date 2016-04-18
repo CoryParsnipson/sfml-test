@@ -115,6 +115,7 @@ void StartMenuScene::toggle_debug_info() {
    for (it = this->scene_graph_.begin(); it != this->scene_graph_.end(); ++it) {
       SceneGraphNode::prefix_iterator node_it;
       for (node_it = it->second->begin(); node_it != it->second->end(); ++node_it) {
+         // TODO: clunky
          Entity* e = dynamic_cast<Entity*>(node_it->get_drawable());
          if (!e) {
             continue;

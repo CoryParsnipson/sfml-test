@@ -59,40 +59,41 @@ BuilderScene::BuilderScene()
    this->backdrop_[1].color = sf::Color(25, 25, 25, 255);
    this->backdrop_[2].color = sf::Color(50, 50, 50, 255);
    this->backdrop_[3].color = sf::Color(25, 25, 25, 255);
+   //this->scene_graph_[0]->add(new SceneGraphNode(&this->backdrop_));
 
    delete map_builder;
 
    // initialize entities
    this->mouse_ = UtilFactory::inst()->create_mouse(this->mouse_layer);
-   this->entities_.push_back(this->mouse_);
+   this->scene_graph_[0]->add(new SceneGraphNode(this->mouse_));
 
    // let our mouse controller manipulate this scene
    dynamic_cast<MouseControlPart*>(this->mouse_->get("control"))->set_controllable(this);
 
    // create fixed hud items
    Entity* t = TextFactory::inst()->create_text_entity("SFML_Test", "retro");
-   this->entities_.push_back(t);
+   this->scene_graph_[0]->add(new SceneGraphNode(t));
 
    t = TextFactory::inst()->create_text_entity("r: reset pan position", "retro", sf::Vector2f(0, 15));
-   this->entities_.push_back(t);
+   this->scene_graph_[0]->add(new SceneGraphNode(t));
 
    t = TextFactory::inst()->create_text_entity("g: toggle grid visibility", "retro", sf::Vector2f(0, 30));
-   this->entities_.push_back(t);
+   this->scene_graph_[0]->add(new SceneGraphNode(t));
 
    t = TextFactory::inst()->create_text_entity("o: toggle entity hitboxes", "retro", sf::Vector2f(0, 45));
-   this->entities_.push_back(t);
+   this->scene_graph_[0]->add(new SceneGraphNode(t));
 
    t = TextFactory::inst()->create_text_entity("1: add green tiles at selection", "retro", sf::Vector2f(0, 60));
-   this->entities_.push_back(t);
+   this->scene_graph_[0]->add(new SceneGraphNode(t));
 
    t = TextFactory::inst()->create_text_entity("2: add blue tiles at selection", "retro", sf::Vector2f(0, 75));
-   this->entities_.push_back(t);
+   this->scene_graph_[0]->add(new SceneGraphNode(t));
 
    t = TextFactory::inst()->create_text_entity("del: remove tiles at selection", "retro", sf::Vector2f(0, 90));
-   this->entities_.push_back(t);
+   this->scene_graph_[0]->add(new SceneGraphNode(t));
 
    t = TextFactory::inst()->create_text_entity("right click: click and drag to pan", "retro", sf::Vector2f(0, 105));
-   this->entities_.push_back(t);
+   this->scene_graph_[0]->add(new SceneGraphNode(t));
 
    Graphic* center_dot_graphic = new SpriteGraphic();
    center_dot_graphic->set_size(3, 3);
@@ -104,11 +105,13 @@ BuilderScene::BuilderScene()
       center_dot_graphic->get_global_bounds(),
       this->show_debug_info_
    );
-   this->entities_.push_back(this->center_dot_);
+   this->scene_graph_[0]->add(new SceneGraphNode(this->center_dot_));
 
    this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", "retro");
    this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
-   this->entities_.push_back(this->fps_display_);
+   this->scene_graph_[0]->add(new SceneGraphNode(this->fps_display_));
+
+   this->scene_graph_[0]->add(new SceneGraphNode(this->map_));
 }
 
 BuilderScene::~BuilderScene() {
@@ -128,13 +131,6 @@ void BuilderScene::enter(Game& game) {
 void BuilderScene::exit(Game& game) {
    // unregister mouse control from input listener
    Service::get_input().unregisterInputListener(dynamic_cast<InputListener*>(this->mouse_->get("control")));
-}
-
-void BuilderScene::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
-   surface.draw(this->backdrop_, render_states);
-
-   Scene::draw(surface, render_states);
-   this->map_->draw(surface, render_states);
 }
 
 void BuilderScene::update(Game& game, Scene* scene, Entity* entity) {
@@ -283,19 +279,24 @@ void BuilderScene::update_fps() {
 }
 
 void BuilderScene::toggle_debug_info() {
-   EntityList::const_iterator it;
-
    this->show_debug_info_ = !this->show_debug_info_;
+   Service::get_logger().msg(this->id(), Logger::INFO, "Debug info: " + std::string(this->show_debug_info_ ? "SHOW" : "HIDE"));
 
-   if (this->show_debug_info_) {
-      // turned debug info on, add debug components to all entities
-      for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
-         (*it)->add(new DebugPart());
-      }
-   } else {
-      // turned debug info off, remove debug components from all entities
-      for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
-         (*it)->remove("debug");
+   SceneGraph::iterator it;
+   for (it = this->scene_graph_.begin(); it != this->scene_graph_.end(); ++it) {
+      SceneGraphNode::prefix_iterator node_it;
+      for (node_it = it->second->begin(); node_it != it->second->end(); ++node_it) {
+         // TODO: clunky
+         Entity* e = dynamic_cast<Entity*>(node_it->get_drawable());
+         if (!e) {
+            continue;
+         }
+
+         if (this->show_debug_info_) {
+            e->add(new DebugPart());
+         } else {
+            e->remove("debug");
+         }
       }
    }
 }
@@ -308,7 +309,7 @@ void BuilderScene::register_selection_rect() {
          this->show_debug_info_
       );
 
-      this->entities_.push_back(this->selection_rectangle_);
+      //this->entities_.push_back(this->selection_rectangle_);
    } else {
       //this->selection_rectangle_->layer(1);
    }
@@ -331,7 +332,7 @@ void BuilderScene::update_selection_rect(sf::Vector2f& origin_click, sf::Vector2
          this->show_debug_info_
       );
 
-      this->entities_.push_back(this->selection_rectangle_);
+      //this->entities_.push_back(this->selection_rectangle_);
    } else {
       //this->selection_rectangle_->layer(1);
    }
@@ -398,16 +399,7 @@ void BuilderScene::update_tile_cursor(sf::Vector2f& one, sf::Vector2f& two) {
 }
 
 void BuilderScene::remove_tile_cursor() {
-   EntityList::const_iterator it;
-   for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
-      if (*it == this->tile_cursor_) {
-         this->entities_.erase(it);
-         break;
-      }
-   }
-
-   delete this->tile_cursor_;
-   this->tile_cursor_ = nullptr;
+   this->scene_graph_[0]->remove(this->tile_cursor_);
 }
 
 void BuilderScene::set_tiles(Texture& tile_texture) {
@@ -418,7 +410,8 @@ void BuilderScene::set_tiles(Texture& tile_texture) {
    Service::get_logger().msg(this->id_, Logger::INFO, "Adding new tiles.");
 
    // get bounds of tile cursor
-   PhysicsPart* tc_physics = dynamic_cast<PhysicsPart*>(this->tile_cursor_->get("physics"));
+   Entity* tc_entity = static_cast<Entity*>(this->tile_cursor_->get_drawable());
+   PhysicsPart* tc_physics = dynamic_cast<PhysicsPart*>(tc_entity->get("physics"));
    if (!tc_physics) {
       Service::get_logger().msg(this->id_, Logger::ERROR, "Tile cursor does not have physics part!");
       return;
@@ -447,7 +440,8 @@ void BuilderScene::remove_tiles() {
    Service::get_logger().msg(this->id_, Logger::INFO, "Removing tiles.");
 
    // get bounds of tile cursor
-   PhysicsPart* tc_physics = dynamic_cast<PhysicsPart*>(this->tile_cursor_->get("physics"));
+   Entity* tc_entity = static_cast<Entity*>(this->tile_cursor_->get_drawable());
+   PhysicsPart* tc_physics = dynamic_cast<PhysicsPart*>(tc_entity->get("physics"));
    if (!tc_physics) {
       Service::get_logger().msg(this->id_, Logger::ERROR, "Tile cursor does not have physics part!");
       return;
