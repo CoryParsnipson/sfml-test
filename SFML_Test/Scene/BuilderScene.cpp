@@ -51,13 +51,6 @@ BuilderScene::BuilderScene()
    this->scene_graph_[3] = new CameraSceneGraphNode(*this->camera_); // layer for hud
    this->scene_graph_[4] = new CameraSceneGraphNode(*this->camera_); // layer for mouse
 
-   // create transform nodes for easy movement
-   this->scene_graph_[0]->add(new TransformSceneGraphNode());
-   this->scene_graph_[1]->add(new TransformSceneGraphNode());
-   this->scene_graph_[2]->add(new TransformSceneGraphNode());
-   this->scene_graph_[3]->add(new TransformSceneGraphNode());
-   this->scene_graph_[4]->add(new TransformSceneGraphNode());
-
    // build the map
    this->serializer_ = new TextSerializer();
    this->serializer_->open_infile(this->map_filename_);
@@ -67,11 +60,11 @@ BuilderScene::BuilderScene()
    map_builder->build();
 
    this->map_ = map_builder->get_map();
-   this->scene_graph_[1]->get(0)->add(new DrawableSceneGraphNode(*this->map_));
+   this->scene_graph_[1]->add(new DrawableSceneGraphNode(*this->map_));
 
    this->map_grid_ = new DrawableSceneGraphNode(*this->map_->grid());
    this->map_grid_->visible(false);
-   this->scene_graph_[2]->get(0)->add(this->map_grid_);
+   this->scene_graph_[2]->add(this->map_grid_);
 
    sf::VertexArray* backdrop = new sf::VertexArray(sf::TrianglesStrip, 4);
    (*backdrop)[0].position = sf::Vector2f(0, 0);
@@ -84,41 +77,41 @@ BuilderScene::BuilderScene()
    (*backdrop)[2].color = sf::Color(50, 50, 50, 255);
    (*backdrop)[3].color = sf::Color(25, 25, 25, 255);
    this->backdrop_ = new VertexGraphic(backdrop);
-   this->scene_graph_[0]->get(0)->add(new DrawableSceneGraphNode(*this->backdrop_));
+   this->scene_graph_[0]->add(new DrawableSceneGraphNode(*this->backdrop_));
 
    delete map_builder;
 
    // initialize entities
    this->mouse_ = UtilFactory::inst()->create_mouse(0);
-   this->scene_graph_[4]->get(0)->add(new EntitySceneGraphNode(*this->mouse_));
+   this->scene_graph_[4]->add(new EntitySceneGraphNode(*this->mouse_));
 
    // let our mouse controller manipulate this scene
    dynamic_cast<MouseControlPart*>(this->mouse_->get("control"))->set_controllable(this);
 
    // create fixed hud items
    Entity* t = TextFactory::inst()->create_text_entity("SFML_Test", "retro");
-   this->scene_graph_[3]->get(0)->add(new EntitySceneGraphNode(*t));
+   this->scene_graph_[3]->add(new EntitySceneGraphNode(*t));
 
    t = TextFactory::inst()->create_text_entity("r: reset pan position", "retro", sf::Vector2f(0, 15));
-   this->scene_graph_[3]->get(0)->add(new EntitySceneGraphNode(*t));
+   this->scene_graph_[3]->add(new EntitySceneGraphNode(*t));
 
    t = TextFactory::inst()->create_text_entity("g: toggle grid visibility", "retro", sf::Vector2f(0, 30));
-   this->scene_graph_[3]->get(0)->add(new EntitySceneGraphNode(*t));
+   this->scene_graph_[3]->add(new EntitySceneGraphNode(*t));
 
    t = TextFactory::inst()->create_text_entity("o: toggle entity hitboxes", "retro", sf::Vector2f(0, 45));
-   this->scene_graph_[3]->get(0)->add(new EntitySceneGraphNode(*t));
+   this->scene_graph_[3]->add(new EntitySceneGraphNode(*t));
 
    t = TextFactory::inst()->create_text_entity("1: add green tiles at selection", "retro", sf::Vector2f(0, 60));
-   this->scene_graph_[3]->get(0)->add(new EntitySceneGraphNode(*t));
+   this->scene_graph_[3]->add(new EntitySceneGraphNode(*t));
 
    t = TextFactory::inst()->create_text_entity("2: add blue tiles at selection", "retro", sf::Vector2f(0, 75));
-   this->scene_graph_[3]->get(0)->add(new EntitySceneGraphNode(*t));
+   this->scene_graph_[3]->add(new EntitySceneGraphNode(*t));
 
    t = TextFactory::inst()->create_text_entity("del: remove tiles at selection", "retro", sf::Vector2f(0, 90));
-   this->scene_graph_[3]->get(0)->add(new EntitySceneGraphNode(*t));
+   this->scene_graph_[3]->add(new EntitySceneGraphNode(*t));
 
    t = TextFactory::inst()->create_text_entity("right click: click and drag to pan", "retro", sf::Vector2f(0, 105));
-   this->scene_graph_[3]->get(0)->add(new EntitySceneGraphNode(*t));
+   this->scene_graph_[3]->add(new EntitySceneGraphNode(*t));
 
    Graphic* center_dot_graphic = new SpriteGraphic();
    center_dot_graphic->set_size(3, 3);
@@ -130,17 +123,27 @@ BuilderScene::BuilderScene()
       center_dot_graphic->get_global_bounds(),
       this->show_debug_info_
    );
-   this->scene_graph_[3]->get(0)->add(new DrawableSceneGraphNode(*this->center_dot_));
+   this->scene_graph_[3]->add(new DrawableSceneGraphNode(*this->center_dot_));
 
    this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", "retro");
    this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
-   this->scene_graph_[3]->get(0)->add(new EntitySceneGraphNode(*this->fps_display_));
+   this->scene_graph_[3]->add(new EntitySceneGraphNode(*this->fps_display_));
+
+   // create a selection rectangle entity and add it to the scene initally invisible
+   this->selection_rectangle_ = new EntitySceneGraphNode(
+      *TileFactory::inst()->create_selection_rectangle(),
+      sf::RenderStates::Default,
+      false
+   );
+   this->scene_graph_[2]->add(this->selection_rectangle_);
 }
 
 BuilderScene::~BuilderScene() {
    delete this->map_;
    delete this->serializer_;
    delete this->map_camera_;
+
+   delete this->selection_rectangle_->get_entity();
 
    this->remove_tile_cursor();
 }
@@ -247,6 +250,11 @@ void BuilderScene::process(Game& game, MouseWheelCommand& c) {}
 void BuilderScene::drag(MouseButtonCommand& c, sf::Vector2f delta) {
    if (c.button == MouseButtonCommand::LEFT) {
       sf::Vector2f mouse_pos(c.x, c.y);
+
+      // since our Mouse layer is on the fixed camera, and we want the rectangle selector to follow the mouse,
+      // we need to compensate for the selection rect's camera pan
+      mouse_pos -= this->map_camera_->get_pan_delta();
+
       this->update_selection_rect(this->click_press_pos_, mouse_pos);
    } else if (c.button == MouseButtonCommand::RIGHT) {
       this->map_camera_->drag(c, delta); // pan only the map layers
@@ -267,10 +275,14 @@ void BuilderScene::click(MouseButtonCommand& c) {
          this->click_press_pos_.x = c.x;
          this->click_press_pos_.y = c.y;
 
-         this->register_selection_rect();
+         // since our Mouse layer is on the fixed camera, and we want the rectangle selector to follow the mouse,
+         // we need to compensate for the selection rect's camera pan
+         this->click_press_pos_ -= this->map_camera_->get_pan_delta();
+
+         this->selection_rectangle_->visible(true);
          this->update_selection_rect(this->click_press_pos_, this->click_press_pos_);
       } else if (c.state == MouseButtonCommand::RELEASED) {
-         this->deregister_selection_rect();
+         this->selection_rectangle_->visible(false);
 
          sf::Vector2f click_release_pos(c.x, c.y);
          this->update_tile_cursor(this->click_press_pos_, click_release_pos);
@@ -312,46 +324,11 @@ void BuilderScene::toggle_debug_info() {
    }
 }
 
-void BuilderScene::register_selection_rect() {
-   if (!this->selection_rectangle_) {
-      this->selection_rectangle_ = TileFactory::inst()->create_selection_rectangle(
-         nullptr,
-         1,
-         this->show_debug_info_
-      );
-
-      //this->entities_.push_back(this->selection_rectangle_);
-   } else {
-      //this->selection_rectangle_->layer(1);
-   }
-}
-
-void BuilderScene::deregister_selection_rect() {
-   if (!this->selection_rectangle_) {
-      return;
-   }
-
-   // keep it in registered scene entities list, but remove it from screen
-   //this->selection_rectangle_->layer(nullptr);
-}
-
 void BuilderScene::update_selection_rect(sf::Vector2f& origin_click, sf::Vector2f& mouse_pos) {
-   if (!this->selection_rectangle_) {
-      this->selection_rectangle_ = TileFactory::inst()->create_selection_rectangle(
-         nullptr,
-         1,
-         this->show_debug_info_
-      );
-
-      //this->entities_.push_back(this->selection_rectangle_);
-   } else {
-      //this->selection_rectangle_->layer(1);
-   }
-
    sf::FloatRect* new_rect = UtilFactory::inst()->create_float_rect(origin_click, mouse_pos);
 
-   this->selection_rectangle_->set_position(new_rect->left, new_rect->top);
-   this->selection_rectangle_->set_size(new_rect->width, new_rect->height);
+   this->selection_rectangle_->get_entity()->set_position(new_rect->left, new_rect->top);
+   this->selection_rectangle_->get_entity()->set_size(new_rect->width, new_rect->height);
 
    delete new_rect;
 }
@@ -410,7 +387,7 @@ void BuilderScene::update_tile_cursor(sf::Vector2f& one, sf::Vector2f& two) {
 }
 
 void BuilderScene::remove_tile_cursor() {
-   this->scene_graph_[0]->get(0)->remove(this->tile_cursor_);
+   this->scene_graph_[0]->remove(this->tile_cursor_);
 }
 
 void BuilderScene::set_tiles(Texture& tile_texture) {
