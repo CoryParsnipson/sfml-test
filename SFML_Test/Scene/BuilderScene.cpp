@@ -7,9 +7,6 @@
 #include "RenderSurface.h"
 #include "Texture.h"
 
-#include "EntitySceneGraphNode.h"
-#include "DrawableSceneGraphNode.h"
-
 #include "Entity.h"
 #include "DebugPart.h"
 #include "GraphicsPart.h"
@@ -58,6 +55,10 @@ BuilderScene::BuilderScene()
 
    this->map_ = map_builder->get_map();
    this->scene_graph_[1]->add(new DrawableSceneGraphNode(*this->map_));
+
+   this->map_grid_ = new DrawableSceneGraphNode(*this->map_->grid());
+   this->map_grid_->visible(false);
+   this->scene_graph_[1]->add(this->map_grid_);
 
    sf::VertexArray* backdrop = new sf::VertexArray(sf::TrianglesStrip, 4);
    (*backdrop)[0].position = sf::Vector2f(0, 0);
@@ -182,12 +183,7 @@ void BuilderScene::process(Game& game, KeyPressCommand& c) {
    break;
    case sf::Keyboard::Key::G:
       // toggle map grid visibility
-      // TODO: fix this
-      // if (this->viewport_->layer("grid")->visible()) {
-      //    this->viewport_->layer("grid")->hide();
-      // } else {
-      //    this->viewport_->layer("grid")->show();
-      // }
+      this->map_grid_->visible(!this->map_grid_->visible());
    break;
    case sf::Keyboard::Key::Delete:
    case sf::Keyboard::Key::BackSpace:

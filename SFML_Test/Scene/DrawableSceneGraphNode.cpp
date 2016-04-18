@@ -1,7 +1,7 @@
 #include "DrawableSceneGraphNode.h"
 
-DrawableSceneGraphNode::DrawableSceneGraphNode(Draw& d, sf::RenderStates state /* = sf::RenderStates::Default */)
-: SceneGraphNode(state)
+DrawableSceneGraphNode::DrawableSceneGraphNode(Draw& d, sf::RenderStates state /* = sf::RenderStates::Default */, bool visible /* = true */)
+: SceneGraphNode(state, visible)
 , drawable_(&d)
 {
 }
