@@ -24,7 +24,6 @@
 BuilderScene::BuilderScene()
 : Scene("BuilderScene")
 , map_(nullptr)
-, backdrop_(sf::TrianglesStrip, 4)
 , map_filename_("flat_map_test.txt")
 , mouse_(nullptr)
 , center_dot_(nullptr)
@@ -50,16 +49,18 @@ BuilderScene::BuilderScene()
 
    this->map_ = map_builder->get_map();
 
-   this->backdrop_[0].position = sf::Vector2f(0, 0);
-   this->backdrop_[1].position = sf::Vector2f(0, Settings::Instance()->cur_height());
-   this->backdrop_[2].position = sf::Vector2f(Settings::Instance()->cur_width(), 0);
-   this->backdrop_[3].position = sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height());
+   sf::VertexArray* backdrop = new sf::VertexArray(sf::TrianglesStrip, 4);
+   (*backdrop)[0].position = sf::Vector2f(0, 0);
+   (*backdrop)[1].position = sf::Vector2f(0, Settings::Instance()->cur_height());
+   (*backdrop)[2].position = sf::Vector2f(Settings::Instance()->cur_width(), 0);
+   (*backdrop)[3].position = sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height());
 
-   this->backdrop_[0].color = sf::Color(50, 50, 50, 255);
-   this->backdrop_[1].color = sf::Color(25, 25, 25, 255);
-   this->backdrop_[2].color = sf::Color(50, 50, 50, 255);
-   this->backdrop_[3].color = sf::Color(25, 25, 25, 255);
-   //this->scene_graph_[0]->add(new SceneGraphNode(&this->backdrop_));
+   (*backdrop)[0].color = sf::Color(50, 50, 50, 255);
+   (*backdrop)[1].color = sf::Color(25, 25, 25, 255);
+   (*backdrop)[2].color = sf::Color(50, 50, 50, 255);
+   (*backdrop)[3].color = sf::Color(25, 25, 25, 255);
+   this->backdrop_ = new VertexGraphic(backdrop);
+   this->scene_graph_[0]->add(new SceneGraphNode(this->backdrop_));
 
    delete map_builder;
 
@@ -218,10 +219,7 @@ void BuilderScene::process(Game& game, WindowResizeCommand& c) {
    this->map_->grid()->set_position(inverse_pan_delta);
 
    // update backsplash
-   this->backdrop_[0].position = sf::Vector2f(0, 0);
-   this->backdrop_[1].position = sf::Vector2f(0, Settings::Instance()->cur_height());
-   this->backdrop_[2].position = sf::Vector2f(Settings::Instance()->cur_width(), 0);
-   this->backdrop_[3].position = sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height());
+   this->backdrop_->set_size(Settings::Instance()->cur_width(), Settings::Instance()->cur_height());
 }
 
 void BuilderScene::process(Game& game, MouseButtonCommand& c) {}

@@ -18,6 +18,8 @@ class Graphic
 , public Draw
 {
 public:
+   virtual ~Graphic() {}
+
    // drawable interface
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {
       iterator<Composite<Graphic>::CompositeList> it;
@@ -232,6 +234,82 @@ protected:
 
    sf::Text* em_;
    sf::Text* drawable_;
+};
+
+// TODO: if there is a way to refactor graphics hierarchy so that this disappears, please do it
+class VertexGraphic : public Graphic {
+public:
+   VertexGraphic(sf::VertexArray* arr);
+   virtual ~VertexGraphic();
+
+   // drawable interface
+   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
+
+   // common sfml drawable interface
+   virtual sf::FloatRect get_local_bounds() const;
+   virtual sf::FloatRect get_global_bounds() const;
+
+   virtual void set_position(float x, float y) {}
+   virtual void set_position(const sf::Vector2f& pos) {}
+
+   virtual void set_size(float x, float y);
+   virtual void set_size(const sf::Vector2f& size);
+
+   virtual void set_rotation(float angle) {}
+
+   virtual void set_scale(float factorX, float factorY) {}
+   virtual void set_scale(const sf::Vector2f& factors) {}
+
+   virtual void set_origin(float x, float y) {}
+   virtual void set_origin(const sf::Vector2f& origin) {}
+
+   virtual void set_color(const sf::Color& color) {}
+
+   virtual const sf::Vector2f& get_position();
+   virtual const sf::Vector2f& get_size() const;
+   virtual const sf::Vector2f& get_scale() const;
+   virtual const sf::Vector2f& get_origin() const;
+   virtual const sf::Color& get_color() const;
+   virtual float get_rotation() const;
+
+   virtual void move(float offsetX, float offsetY);
+   virtual void move(const sf::Vector2f& offset);
+
+   virtual void rotate(float angle);
+
+   virtual void scale(float factorX, float factorY);
+   virtual void scale(const sf::Vector2f& factor);
+
+   // sprite/shape interface
+   virtual void set_texture(Texture& texture) {}
+   virtual void set_texture_rect(const sf::IntRect& rect) {}
+   virtual void set_outline_color(const sf::Color& color) {}
+   virtual void set_outline_thickness(float thickness) {}
+
+   virtual Texture* get_texture() const;
+   virtual const sf::IntRect& get_texture_rect() const;
+   virtual const sf::Color& get_outline_color() const;
+   virtual float get_outline_thickness() const;
+
+   // sf::Text interface
+   virtual void set_string(const std::string& s) {}
+   virtual void set_font(sf::Font* font) {}
+   virtual void set_character_size(unsigned int size) {}
+   virtual void set_style(sf::Text::Style style) {}
+
+   virtual std::string get_string();
+   virtual const sf::Font* get_font();
+   virtual unsigned int get_character_size() const;
+   virtual unsigned int get_em_width() const;
+   virtual sf::Vector2f find_character_pos(std::size_t index) const;
+
+protected:
+   sf::RenderStates state_;
+   sf::Vector2f pos_;
+   sf::Vector2f size_;
+   sf::Vector2f scale_;
+   sf::IntRect nullrect_;
+   sf::VertexArray* drawable_;
 };
 
 #endif

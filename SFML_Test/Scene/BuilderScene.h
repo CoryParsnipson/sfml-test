@@ -50,7 +50,7 @@ protected:
 
    // scene fixtures
    Map* map_;
-   sf::VertexArray backdrop_;
+   Graphic* backdrop_;
    std::string map_filename_;
    Serializer* serializer_;
 

@@ -363,3 +363,136 @@ unsigned int TextGraphic::get_em_width() const {
 sf::Vector2f TextGraphic::find_character_pos(std::size_t index) const {
    return this->drawable_->findCharacterPos(index);
 }
+
+VertexGraphic::VertexGraphic(sf::VertexArray* arr)
+: state_(sf::RenderStates::Default)
+, nullrect_(0, 0, 0, 0)
+, drawable_(arr)
+{
+   this->size_.x = this->drawable_->getBounds().width;
+   this->size_.y = this->drawable_->getBounds().height;
+}
+
+VertexGraphic::~VertexGraphic() {
+   delete this->drawable_;
+}
+
+void VertexGraphic::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
+   // combine supplied render states with current render states
+   render_states.transform = render_states.transform * this->state_.transform;
+   surface.draw(*this->drawable_, render_states);
+   Graphic::draw(surface, render_states);
+}
+
+sf::FloatRect VertexGraphic::get_local_bounds() const {
+   return this->drawable_->getBounds();
+}
+
+sf::FloatRect VertexGraphic::get_global_bounds() const {
+   return this->drawable_->getBounds();
+}
+
+void VertexGraphic::set_size(float x, float y) {
+   (*this->drawable_)[1].position = sf::Vector2f(0, y);
+   (*this->drawable_)[2].position = sf::Vector2f(x, 0);
+   (*this->drawable_)[3].position = sf::Vector2f(x, y);
+}
+
+void VertexGraphic::set_size(const sf::Vector2f& size) {
+}
+
+const sf::Vector2f& VertexGraphic::get_position() {
+   this->pos_.x = this->drawable_->getBounds().left;
+   this->pos_.y = this->drawable_->getBounds().top;
+
+   this->pos_ = this->state_.transform.transformPoint(this->pos_);
+   return this->pos_;
+}
+
+const sf::Vector2f& VertexGraphic::get_size() const {
+   return this->size_;
+}
+
+const sf::Vector2f& VertexGraphic::get_scale() const {
+   return this->scale_;
+}
+
+const sf::Vector2f& VertexGraphic::get_origin() const {
+   return this->pos_;
+}
+
+const sf::Color& VertexGraphic::get_color() const {
+   return sf::Color::Transparent;
+}
+
+float VertexGraphic::get_rotation() const {
+   return 0.0;
+}
+
+void VertexGraphic::move(float offsetX, float offsetY) {
+   this->move(sf::Vector2f(offsetX, offsetY));
+}
+
+void VertexGraphic::move(const sf::Vector2f& offset) {
+   this->state_.transform.translate(offset);
+}
+
+void VertexGraphic::rotate(float angle) {
+   this->state_.transform.rotate(angle);
+}
+
+void VertexGraphic::scale(float factorX, float factorY) {
+   this->scale_.x *= factorX;
+   this->scale_.y *= factorY;
+
+   this->size_.x = this->drawable_->getBounds().width;
+   this->size_.y = this->drawable_->getBounds().height;
+
+   this->state_.transform.scale(factorX, factorY);
+}
+
+void VertexGraphic::scale(const sf::Vector2f& factor) {
+   this->scale_.x *= factor.x;
+   this->scale_.y *= factor.y;
+
+   this->size_.x = this->drawable_->getBounds().width;
+   this->size_.y = this->drawable_->getBounds().height;
+
+   this->state_.transform.scale(factor);
+}
+
+Texture* VertexGraphic::get_texture() const {
+   return nullptr;
+}
+
+const sf::IntRect& VertexGraphic::get_texture_rect() const {
+   return this->nullrect_;
+}
+
+const sf::Color& VertexGraphic::get_outline_color() const {
+   return sf::Color::Transparent;
+}
+
+float VertexGraphic::get_outline_thickness() const {
+   return 0.f;
+}
+
+std::string VertexGraphic::get_string() {
+   return "";
+}
+
+const sf::Font* VertexGraphic::get_font() {
+   return nullptr;
+}
+
+unsigned int VertexGraphic::get_character_size() const {
+   return 0;
+}
+
+unsigned int VertexGraphic::get_em_width() const {
+   return 0;
+}
+
+sf::Vector2f VertexGraphic::find_character_pos(std::size_t index) const {
+   return sf::Vector2f(0, 0);
+}
