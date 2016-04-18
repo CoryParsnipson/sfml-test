@@ -4,6 +4,8 @@
 #include "Scene.h"
 #include "MouseUtil.h"
 
+#include "EntitySceneGraphNode.h"
+
 class Texture;
 
 class Map;
@@ -59,7 +61,7 @@ protected:
    Entity* center_dot_;
    Entity* selection_rectangle_;
    Entity* fps_display_;
-   SceneGraphNode* tile_cursor_;
+   EntitySceneGraphNode* tile_cursor_;
 
    // mouse controllable state
    sf::Vector2f click_press_pos_;

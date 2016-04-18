@@ -4,13 +4,15 @@
 #include "dependencies.h"
 #include "Composite.h"
 #include "Draw.h"
+#include "Update.h"
 
 class SceneGraphNode
 : public Composite<SceneGraphNode>
 , public Draw
+, public Update
 {
 public:
-   SceneGraphNode(Draw* drawable = nullptr, sf::RenderStates state = sf::RenderStates::Default);
+   SceneGraphNode(sf::RenderStates state = sf::RenderStates::Default);
    virtual ~SceneGraphNode();
 
    // scene graph interface
@@ -18,13 +20,13 @@ public:
    const sf::RenderStates& get_render_state();
 
    // draw interface
-   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
+   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) = 0;
 
-   Draw* get_drawable();
+   // update interface
+   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr) = 0;
 
 protected:
    sf::RenderStates state_;
-   Draw* drawable_;
 };
 
 #endif

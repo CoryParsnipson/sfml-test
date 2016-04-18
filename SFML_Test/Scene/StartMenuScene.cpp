@@ -11,6 +11,8 @@
 #include "GraphicsPart.h"
 #include "DebugPart.h"
 
+#include "EntitySceneGraphNode.h"
+
 StartMenuScene::StartMenuScene()
 : Scene("StartMenuScene")
 , show_debug_info_(false)
@@ -21,8 +23,8 @@ StartMenuScene::StartMenuScene()
    this->scene_graph_[0]->set_render_state(s);
 
    // populate entities
-   SceneGraphNode* node = new SceneGraphNode(
-      TextFactory::inst()->create_text_entity(
+   SceneGraphNode* node = new EntitySceneGraphNode(
+      *TextFactory::inst()->create_text_entity(
          "SFML TEST",
          "retro",
          sf::Vector2f(0, 0),
@@ -33,8 +35,8 @@ StartMenuScene::StartMenuScene()
    ));
    this->scene_graph_[0]->add(node);
 
-   node = new SceneGraphNode(
-      TextFactory::inst()->create_text_entity(
+   node = new EntitySceneGraphNode(
+      *TextFactory::inst()->create_text_entity(
          "main menu",
          "retro",
          sf::Vector2f(0, 45),
@@ -45,8 +47,8 @@ StartMenuScene::StartMenuScene()
    ));
    this->scene_graph_[0]->add(node);
 
-   node = new SceneGraphNode(
-      TextFactory::inst()->create_text_entity(
+   node = new EntitySceneGraphNode(
+      *TextFactory::inst()->create_text_entity(
          "(Press SPACE or ENTER)",
          "retro",
          sf::Vector2f(0, 60),
@@ -115,16 +117,15 @@ void StartMenuScene::toggle_debug_info() {
    for (it = this->scene_graph_.begin(); it != this->scene_graph_.end(); ++it) {
       SceneGraphNode::prefix_iterator node_it;
       for (node_it = it->second->begin(); node_it != it->second->end(); ++node_it) {
-         // TODO: clunky
-         Entity* e = dynamic_cast<Entity*>(node_it->get_drawable());
+         auto e = dynamic_cast<EntitySceneGraphNode*>(*node_it);
          if (!e) {
             continue;
          }
 
          if (this->show_debug_info_) {
-            e->add(new DebugPart());
+            e->get_entity()->add(new DebugPart());
          } else {
-            e->remove("debug");
+            e->get_entity()->remove("debug");
          }
       }
    }

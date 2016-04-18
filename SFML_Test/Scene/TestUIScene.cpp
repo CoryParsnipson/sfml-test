@@ -10,6 +10,9 @@
 #include "PanelWidget.h"
 #include "TextWidget.h"
 
+#include "DrawableSceneGraphNode.h"
+#include "EntitySceneGraphNode.h"
+
 TestUIScene::TestUIScene()
 : Scene("TestUIScene")
 , last_frame_time(0)
@@ -21,8 +24,8 @@ TestUIScene::TestUIScene()
    TextureManager::inst()->print();
 
    // populate entities
-   this->scene_graph_[0]->add(new SceneGraphNode(
-      TextFactory::inst()->create_text_entity(
+   this->scene_graph_[0]->add(new EntitySceneGraphNode(
+      *TextFactory::inst()->create_text_entity(
          "Test UI Scene",
          "retro",
          sf::Vector2f(0, 0),
@@ -35,16 +38,16 @@ TestUIScene::TestUIScene()
    Widget* tw = new TextWidget("PENIS PENIS PENIS PENIS PENIS PENIS PENIS PENIS PENIS");
    tw->set_size(sf::Vector2f(300, 200));
    this->widget_->add(tw);
-   this->scene_graph_[0]->add(new SceneGraphNode(this->widget_));
+   this->scene_graph_[0]->add(new DrawableSceneGraphNode(*this->widget_));
 
    // set up mouse
    this->mouse_ = UtilFactory::inst()->create_mouse(0);
    dynamic_cast<MouseControlPart*>(this->mouse_->get("control"))->set_controllable(dynamic_cast<PanelWidget*>(this->widget_));
-   this->scene_graph_[0]->add(new SceneGraphNode(this->mouse_));
+   this->scene_graph_[0]->add(new EntitySceneGraphNode(*this->mouse_));
 
    this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", "retro");
    this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
-   this->scene_graph_[0]->add(new SceneGraphNode(this->fps_display_));
+   this->scene_graph_[0]->add(new EntitySceneGraphNode(*this->fps_display_));
 }
 
 TestUIScene::~TestUIScene() {

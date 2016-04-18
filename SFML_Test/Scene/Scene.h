@@ -16,7 +16,7 @@
 #include "Update.h"
 #include "Entity.h"
 
-#include "SceneGraphNode.h"
+#include "CameraSceneGraphNode.h"
 
 class Scene
 : public Draw
@@ -30,7 +30,7 @@ public:
    , camera_(new Camera("Camera", sf::Vector2f(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT)))
    {
       Service::get_logger().msg(this->id(), Logger::INFO, "Creating new Scene.");
-      this->scene_graph_[0] = new SceneGraphNode(this->camera_);
+      this->scene_graph_[0] = new CameraSceneGraphNode(*this->camera_);
    }
 
    virtual ~Scene() {
@@ -66,13 +66,7 @@ public:
       for (it = this->scene_graph_.begin(); it != this->scene_graph_.end(); ++it) {
          SceneGraphNode::prefix_iterator node_it;
          for (node_it = it->second->begin(); node_it != it->second->end(); ++node_it) {
-            // TODO: figure something out for this
-            //(*node_it)->update(game, this);
-
-            Entity* e = dynamic_cast<Entity*>(*node_it);
-            if (e) {
-               e->update(game, this);
-            }
+            node_it->update(game, this);
          }
       }
    }
