@@ -12,6 +12,7 @@ public:
    static const float ZOOM_FACTOR_MIN;
    static const float ZOOM_FACTOR_MAX;
 
+   // TODO: is there a way to access view without having to explicitly declare every friend?
    friend class RenderSurface;
    friend class Canvas;
 
@@ -36,6 +37,8 @@ public:
    const sf::Vector2f& get_center();
    void set_center(const sf::Vector2f& center);
 
+   const sf::Transform& get_transform() const;
+
    // viewport management
    void set_viewport(const sf::FloatRect& viewport);
    const sf::FloatRect& get_viewport();
@@ -53,6 +56,7 @@ protected:
    float zoom_factor_;
 
    sf::Vector2f original_center_;
+   sf::Transform state_; // sf::Transform that is modified alongside sf::View
    sf::View* view_;
 };
 #endif

@@ -46,7 +46,7 @@ BuilderScene::BuilderScene()
 
    // create "map layers" using a new camera
    this->scene_graph_[1] = new CameraSceneGraphNode(*this->map_camera_); // layer for map
-   this->scene_graph_[2] = new CameraSceneGraphNode(*this->map_camera_); // layer for rectangle selection
+   this->scene_graph_[2] = new CameraSceneGraphNode(*this->map_camera_); // layer for tile cursor
 
    this->scene_graph_[3] = new CameraSceneGraphNode(*this->camera_); // layer for hud
    this->scene_graph_[4] = new CameraSceneGraphNode(*this->camera_); // layer for mouse
@@ -88,6 +88,14 @@ BuilderScene::BuilderScene()
    // let our mouse controller manipulate this scene
    dynamic_cast<MouseControlPart*>(this->mouse_->get("control"))->set_controllable(this);
 
+   // create a selection rectangle entity and add it to the scene initally invisible
+   this->selection_rectangle_ = new EntitySceneGraphNode(
+      *TileFactory::inst()->create_selection_rectangle(),
+      sf::RenderStates::Default,
+      false
+   );
+   this->scene_graph_[3]->add(this->selection_rectangle_);
+
    // create fixed hud items
    Entity* t = TextFactory::inst()->create_text_entity("SFML_Test", "retro");
    this->scene_graph_[3]->add(new EntitySceneGraphNode(*t));
@@ -128,14 +136,6 @@ BuilderScene::BuilderScene()
    this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", "retro");
    this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
    this->scene_graph_[3]->add(new EntitySceneGraphNode(*this->fps_display_));
-
-   // create a selection rectangle entity and add it to the scene initally invisible
-   this->selection_rectangle_ = new EntitySceneGraphNode(
-      *TileFactory::inst()->create_selection_rectangle(),
-      sf::RenderStates::Default,
-      false
-   );
-   this->scene_graph_[2]->add(this->selection_rectangle_);
 }
 
 BuilderScene::~BuilderScene() {
@@ -251,10 +251,6 @@ void BuilderScene::drag(MouseButtonCommand& c, sf::Vector2f delta) {
    if (c.button == MouseButtonCommand::LEFT) {
       sf::Vector2f mouse_pos(c.x, c.y);
 
-      // since our Mouse layer is on the fixed camera, and we want the rectangle selector to follow the mouse,
-      // we need to compensate for the selection rect's camera pan
-      mouse_pos -= this->map_camera_->get_pan_delta();
-
       this->update_selection_rect(this->click_press_pos_, mouse_pos);
    } else if (c.button == MouseButtonCommand::RIGHT) {
       this->map_camera_->drag(c, delta); // pan only the map layers
@@ -274,10 +270,6 @@ void BuilderScene::click(MouseButtonCommand& c) {
       if (c.state == MouseButtonCommand::PRESSED) {
          this->click_press_pos_.x = c.x;
          this->click_press_pos_.y = c.y;
-
-         // since our Mouse layer is on the fixed camera, and we want the rectangle selector to follow the mouse,
-         // we need to compensate for the selection rect's camera pan
-         this->click_press_pos_ -= this->map_camera_->get_pan_delta();
 
          this->selection_rectangle_->visible(true);
          this->update_selection_rect(this->click_press_pos_, this->click_press_pos_);

@@ -27,7 +27,7 @@ public:
 
    Scene(std::string id)
    : id_(id)
-   , camera_(new Camera("Camera", sf::Vector2f(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT)))
+   , camera_(new Camera("Camera", sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height())))
    {
       Service::get_logger().msg(this->id(), Logger::INFO, "Creating new Scene.");
       this->scene_graph_[0] = new CameraSceneGraphNode(*this->camera_);

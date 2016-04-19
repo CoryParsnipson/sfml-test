@@ -9,6 +9,7 @@ Camera::Camera(const std::string& id, const sf::Vector2f& size)
 : id_(id)
 , zoom_factor_(1.0)
 , original_center_(size.x / 2.f, size.y / 2.f)
+, state_(sf::Transform::Identity)
 , view_(nullptr)
 {
    this->view_ = new sf::View(this->original_center_, size);
@@ -29,10 +30,12 @@ const std::string& Camera::to_string() {
 void Camera::reset_pan() {
    sf::Vector2f pan_delta = this->original_center_ - this->get_center();
    this->view_->move(pan_delta);
+   this->state_.translate(pan_delta);
 }
 
 void Camera::reset_zoom() {
    this->set_scale(1.0);
+   this->state_.scale(1 / this->zoom_factor_, 1 / this->zoom_factor_);
 }
 
 sf::Vector2f Camera::get_pan_delta() {
@@ -68,6 +71,10 @@ void Camera::set_center(const sf::Vector2f& center) {
    this->original_center_ = center;
 }
 
+const sf::Transform& Camera::get_transform() const {
+   return this->state_;
+}
+
 void Camera::set_viewport(const sf::FloatRect& viewport) {
    this->view_->setViewport(viewport);
 }
@@ -77,7 +84,8 @@ const sf::FloatRect& Camera::get_viewport() {
 }
 
 void Camera::drag(MouseButtonCommand& c, sf::Vector2f delta) {
-   this->view_->move(-1.f * delta); // invert delta to make it act like a pan
+   this->view_->move(-delta); // invert delta to make it act like a pan
+   this->state_.translate(-delta);
 }
 
 float Camera::get_scale() {
@@ -87,10 +95,12 @@ float Camera::get_scale() {
 void Camera::set_scale(float factor) {
    factor = std::max(factor, Camera::ZOOM_FACTOR_MIN);
    factor = std::min(factor, Camera::ZOOM_FACTOR_MAX);
-   Service::get_logger().msg(this->id(), Logger::INFO, "Zoom factor: " + std::to_string(this->zoom_factor_));
+   Service::get_logger().msg(this->id(), Logger::INFO, "Zoom factor: " + std::to_string(factor));
 
    // update viewport size
    this->view_->zoom(factor / this->zoom_factor_);
+   this->state_.scale(factor / this->zoom_factor_, factor / this->zoom_factor_);
+
    this->zoom_factor_ = factor;
 }
 
