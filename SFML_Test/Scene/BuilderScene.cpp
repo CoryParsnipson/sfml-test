@@ -96,6 +96,18 @@ BuilderScene::BuilderScene()
    );
    this->scene_graph_[3]->add(this->selection_rectangle_);
 
+   // create a tile cursor
+   sf::Vector2f nullvect(0, 0);
+   this->tile_cursor_ = new EntitySceneGraphNode(
+      *TileFactory::inst()->create_tile_cursor(
+         nullvect,
+         nullvect
+      ),
+      sf::RenderStates::Default,
+      false
+   );
+   this->scene_graph_[2]->add(this->tile_cursor_);
+
    // create fixed hud items
    Entity* t = TextFactory::inst()->create_text_entity("SFML_Test", "retro");
    this->scene_graph_[3]->add(new EntitySceneGraphNode(*t));
@@ -142,10 +154,8 @@ BuilderScene::~BuilderScene() {
    delete this->map_;
    delete this->serializer_;
    delete this->map_camera_;
-
    delete this->selection_rectangle_->get_entity();
-
-   this->remove_tile_cursor();
+   delete this->tile_cursor_->get_entity();
 }
 
 void BuilderScene::enter(Game& game) {
@@ -332,66 +342,47 @@ void BuilderScene::update_selection_rect(sf::Vector2f& origin_click, sf::Vector2
 
 void BuilderScene::update_tile_cursor(sf::Vector2f& one, sf::Vector2f& two) {
    // compensate for main viewport layer zoom
-   // TODO: fix this
-   //sf::Vector2f offset_one = this->viewport_->layer("main")->get_scale() * (one - this->viewport_->layer("hud")->get_center()) + this->viewport_->layer("hud")->get_center();
-   //sf::Vector2f offset_two = this->viewport_->layer("main")->get_scale() * (two - this->viewport_->layer("hud")->get_center()) + this->viewport_->layer("hud")->get_center();
+   sf::Vector2f offset_one = this->map_camera_->get_scale() * (one - this->camera_->get_center()) + this->camera_->get_center();
+   sf::Vector2f offset_two = this->map_camera_->get_scale() * (two - this->camera_->get_center()) + this->camera_->get_center();
 
    // compensate for the panning of main viewport layer
-   // sf::Vector2f pan_delta = this->camera_->get_pan_delta();
-   // offset_one -= pan_delta;
-   // offset_two -= pan_delta;
-   //
-   // sf::FloatRect* new_rect = UtilFactory::inst()->create_float_rect(offset_one, offset_two);
-   //
-   // bool is_drag_gesture = (new_rect->width >= this->map_->grid()->tile_width() / 3.f ||
-   //                         new_rect->height >= this->map_->grid()->tile_height() / 3.f);
-   //
-   // if (!is_drag_gesture && this->tile_cursor_ && this->tile_cursor_->intersects(offset_one)) {
-   //    this->remove_tile_cursor();
-   //    delete new_rect;
-   //    return;
-   // }
-   //
-   // if (!this->tile_cursor_) {
-   //    this->tile_cursor_ = TileFactory::inst()->create_tile_cursor(
-   //       one,
-   //       two,
-   //       this->viewport_->layer("main"),
-   //       this->show_debug_info_
-   //    );
-   //
-   //    this->entities_.push_back(this->tile_cursor_);
-   // }
-   //
-   // // round to nearest map grid point
-   // sf::Vector2f start_point(new_rect->left, new_rect->top);
-   // sf::Vector2f end_point(new_rect->left + new_rect->width, new_rect->top + new_rect->height);
-   //
-   // start_point = this->map_->grid()->floor(start_point);
-   // end_point = this->map_->grid()->ceil(end_point);
-   //
-   // // update new_rect
-   // new_rect->left = start_point.x;
-   // new_rect->top = start_point.y;
-   //
-   // new_rect->width = std::max(end_point.x - new_rect->left, (float)this->map_->grid()->tile_width());
-   // new_rect->height = std::max(end_point.y - new_rect->top, (float)this->map_->grid()->tile_height());
-   //
-   // this->tile_cursor_->set_position(new_rect->left, new_rect->top);
-   // this->tile_cursor_->set_size(new_rect->width, new_rect->height);
-   //
-   // delete new_rect;
-}
+   sf::Vector2f pan_delta = this->map_camera_->get_pan_delta();
+   offset_one -= pan_delta;
+   offset_two -= pan_delta;
 
-void BuilderScene::remove_tile_cursor() {
-   this->scene_graph_[0]->remove(this->tile_cursor_);
-}
+   sf::FloatRect* new_rect = UtilFactory::inst()->create_float_rect(offset_one, offset_two);
 
-void BuilderScene::set_tiles(Texture& tile_texture) {
-   if (!this->tile_cursor_) {
+   bool is_drag_gesture = (new_rect->width >= this->map_->grid()->tile_width() / 3.f ||
+                           new_rect->height >= this->map_->grid()->tile_height() / 3.f);
+
+   if (!is_drag_gesture && this->tile_cursor_->visible() && this->tile_cursor_->get_entity()->intersects(offset_one)) {
+      this->tile_cursor_->visible(false);
+      delete new_rect;
       return;
    }
 
+   // round to nearest map grid point
+   sf::Vector2f start_point(new_rect->left, new_rect->top);
+   sf::Vector2f end_point(new_rect->left + new_rect->width, new_rect->top + new_rect->height);
+
+   start_point = this->map_->grid()->floor(start_point);
+   end_point = this->map_->grid()->ceil(end_point);
+
+   // update new_rect
+   new_rect->left = start_point.x;
+   new_rect->top = start_point.y;
+
+   new_rect->width = std::max(end_point.x - new_rect->left, (float)this->map_->grid()->tile_width());
+   new_rect->height = std::max(end_point.y - new_rect->top, (float)this->map_->grid()->tile_height());
+
+   this->tile_cursor_->get_entity()->set_position(new_rect->left, new_rect->top);
+   this->tile_cursor_->get_entity()->set_size(new_rect->width, new_rect->height);
+   this->tile_cursor_->visible(true);
+
+   delete new_rect;
+}
+
+void BuilderScene::set_tiles(Texture& tile_texture) {
    Service::get_logger().msg(this->id_, Logger::INFO, "Adding new tiles.");
 
    // get bounds of tile cursor
@@ -418,10 +409,6 @@ void BuilderScene::set_tiles(Texture& tile_texture) {
 }
 
 void BuilderScene::remove_tiles() {
-   if (!this->tile_cursor_) {
-      return;
-   }
-
    Service::get_logger().msg(this->id_, Logger::INFO, "Removing tiles.");
 
    // get bounds of tile cursor
