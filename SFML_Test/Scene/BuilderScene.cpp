@@ -180,6 +180,10 @@ void BuilderScene::process(Game& game, CloseCommand& c) {
 void BuilderScene::process(Game& game, KeyPressCommand& c) {
    switch (c.event.code) {
    case sf::Keyboard::Key::R:
+      // reset grid too (encapsulate this in grid class?)
+      this->map_->grid()->set_scale(1.f);
+      this->map_->grid()->move(this->map_camera_->get_pan_delta()); // move the grid back too
+
       this->map_camera_->reset_pan();
       this->map_camera_->reset_zoom();
    break;
@@ -225,15 +229,11 @@ void BuilderScene::process(Game& game, WindowResizeCommand& c) {
    // reposition center dot
    this->center_dot_->set_position(new_center);
 
+   // update grid
+   this->map_->grid()->set_position(-1.f * this->map_camera_->get_pan_delta());
+
    // reposition fps display
    this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
-
-   // update grid
-   sf::Vector2f inverse_pan_delta = this->camera_->get_pan_delta();
-   inverse_pan_delta.x *= -1;
-   inverse_pan_delta.y *= -1;
-
-   this->map_->grid()->set_position(inverse_pan_delta);
 
    // update backsplash
    this->backdrop_->set_size(Settings::Instance()->cur_width(), Settings::Instance()->cur_height());
@@ -254,6 +254,7 @@ void BuilderScene::drag(MouseButtonCommand& c, sf::Vector2f delta) {
       this->update_selection_rect(this->click_press_pos_, mouse_pos);
    } else if (c.button == MouseButtonCommand::RIGHT) {
       this->map_camera_->drag(c, delta); // pan only the map layers
+      this->map_->grid()->move(-delta); // reverse pan the grid so it stays in place
    }
 }
 
@@ -263,6 +264,10 @@ float BuilderScene::get_scale() {
 
 void BuilderScene::set_scale(float factor) {
    this->map_camera_->set_scale(factor);
+
+   factor = std::max(factor, Camera::ZOOM_FACTOR_MIN);
+   factor = std::min(factor, Camera::ZOOM_FACTOR_MAX);
+   this->map_->grid()->set_scale(factor);
 }
 
 void BuilderScene::click(MouseButtonCommand& c) {
