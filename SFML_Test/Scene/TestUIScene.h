@@ -22,6 +22,8 @@ public:
    virtual void process(Game& game, WindowResizeCommand& c);
 
 protected:
+   Camera* hud_camera_;
+   
    Entity* mouse_;
    Entity* fps_display_;
 

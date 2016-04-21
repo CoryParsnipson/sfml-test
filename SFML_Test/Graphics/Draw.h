@@ -49,7 +49,7 @@ public:
    virtual void set_color(const sf::Color& color) = 0;
 
    virtual const sf::Vector2f& get_position() = 0;
-   virtual const sf::Vector2f& get_size() const = 0;
+   virtual sf::Vector2f get_size() const = 0;
    virtual const sf::Vector2f& get_scale() const = 0;
    virtual const sf::Vector2f& get_origin() const = 0;
    virtual const sf::Color& get_color() const = 0;
@@ -117,7 +117,7 @@ public:
    virtual void set_color(const sf::Color& color);
 
    virtual const sf::Vector2f& get_position();
-   virtual const sf::Vector2f& get_size() const;
+   virtual sf::Vector2f get_size() const;
    virtual const sf::Vector2f& get_scale() const;
    virtual const sf::Vector2f& get_origin() const;
    virtual const sf::Color& get_color() const;
@@ -190,7 +190,7 @@ public:
    virtual void set_color(const sf::Color& color);
 
    virtual const sf::Vector2f& get_position();
-   virtual const sf::Vector2f& get_size() const;
+   virtual sf::Vector2f get_size() const;
    virtual const sf::Vector2f& get_scale() const;
    virtual const sf::Vector2f& get_origin() const;
    virtual const sf::Color& get_color() const;
@@ -266,7 +266,7 @@ public:
    virtual void set_color(const sf::Color& color) {}
 
    virtual const sf::Vector2f& get_position();
-   virtual const sf::Vector2f& get_size() const;
+   virtual sf::Vector2f get_size() const;
    virtual const sf::Vector2f& get_scale() const;
    virtual const sf::Vector2f& get_origin() const;
    virtual const sf::Color& get_color() const;

@@ -10,6 +10,7 @@
 #include "PanelWidget.h"
 #include "TextWidget.h"
 
+#include "CameraSceneGraphNode.h"
 #include "DrawableSceneGraphNode.h"
 #include "EntitySceneGraphNode.h"
 
@@ -23,8 +24,14 @@ TestUIScene::TestUIScene()
    TextureManager::inst()->create_texture("ui_resize_handle", "ui_panel_test.png", sf::IntRect(30, 0, 10, 10));
    TextureManager::inst()->print();
 
+   this->hud_camera_ = new Camera("Hud Camera", sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height()));
+
+   // create layers
+   this->scene_graph_[1] = new CameraSceneGraphNode(*this->hud_camera_); // hud layer
+   this->scene_graph_[2] = new CameraSceneGraphNode(*this->hud_camera_); // mouse layer
+
    // populate entities
-   this->scene_graph_[0]->add(new EntitySceneGraphNode(
+   this->scene_graph_[1]->add(new EntitySceneGraphNode(
       *TextFactory::inst()->create_text_entity(
          "Test UI Scene",
          "retro",
@@ -43,11 +50,11 @@ TestUIScene::TestUIScene()
    // set up mouse
    this->mouse_ = UtilFactory::inst()->create_mouse(0);
    dynamic_cast<MouseControlPart*>(this->mouse_->get("control"))->set_controllable(dynamic_cast<PanelWidget*>(this->widget_));
-   this->scene_graph_[0]->add(new EntitySceneGraphNode(*this->mouse_));
+   this->scene_graph_[2]->add(new EntitySceneGraphNode(*this->mouse_));
 
    this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", "retro");
    this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
-   this->scene_graph_[0]->add(new EntitySceneGraphNode(*this->fps_display_));
+   this->scene_graph_[1]->add(new EntitySceneGraphNode(*this->fps_display_));
 }
 
 TestUIScene::~TestUIScene() {
@@ -66,8 +73,6 @@ void TestUIScene::exit(Game& game) {
 void TestUIScene::update(Game& game, Scene* scene, Entity* entity) {
    Scene::update(game, scene, entity);
 
-   this->mouse_->update(game, this);
-
    // calculate and show FPS
    if (!this->frame_count) {
       this->update_fps();
@@ -83,6 +88,10 @@ void TestUIScene::process(Game& game, WindowResizeCommand& c) {
 
    // reposition fps display
    this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
+
+   // adjust hud camera
+   this->hud_camera_->set_size(sf::Vector2f(c.width, c.height));
+   this->hud_camera_->set_center(sf::Vector2f(c.width / 2.f, c.height / 2.f));
 }
 
 void TestUIScene::update_fps() {

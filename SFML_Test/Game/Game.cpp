@@ -139,9 +139,6 @@ bool Game::poll_event(sf::Event& event) {
 
 void Game::main_loop() {
    while (true) {
-      // clear previously drawn frame
-      this->window_.clear();
-
       if (this->scenes_.empty() && !this->prev_scene_ && !this->next_scene_) {
          Service::get_logger().msg("Game", Logger::INFO, "Exiting game loop...");
          return;
@@ -172,6 +169,7 @@ void Game::main_loop() {
       this->scenes_.top()->update(*this);
 
       // draw
+      this->window_.clear(); // clear previous frame contents
       this->scenes_.top()->draw(this->window_);
 
       // render scene

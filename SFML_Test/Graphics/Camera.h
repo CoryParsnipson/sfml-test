@@ -15,6 +15,7 @@ public:
    // TODO: is there a way to access view without having to explicitly declare every friend?
    friend class RenderSurface;
    friend class Canvas;
+   friend class SubCanvas;
 
    Camera(const std::string& id, const sf::Vector2f& size);
    virtual ~Camera();

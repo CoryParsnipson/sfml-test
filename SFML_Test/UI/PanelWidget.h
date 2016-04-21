@@ -3,6 +3,7 @@
 
 #include "Widget.h"
 #include "MouseUtil.h"
+#include "SubCanvas.h"
 
 class PanelWidget
 : public Widget
@@ -45,7 +46,7 @@ protected:
    Graphic* panel_;
    Graphic* resize_handle_;
 
-   //RenderTexture surface_; // intermediate drawing surface to clip children
+   SubCanvas surface_; // intermediate drawing surface to clip contents
 };
 
 #endif

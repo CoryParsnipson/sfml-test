@@ -77,8 +77,14 @@ const sf::Vector2f& SpriteGraphic::get_position() {
    return this->drawable_->getPosition();
 }
 
-const sf::Vector2f& SpriteGraphic::get_size() const {
-   return this->drawable_->getSize();
+sf::Vector2f SpriteGraphic::get_size() const {
+   sf::Vector2f effective_size = this->drawable_->getSize();
+   sf::Vector2f scale = this->get_scale();
+
+   effective_size.x *= scale.x;
+   effective_size.y *= scale.y;
+
+   return effective_size;
 }
 
 const sf::Vector2f& SpriteGraphic::get_scale() const {
@@ -252,7 +258,7 @@ const sf::Vector2f& TextGraphic::get_position() {
    return this->bounds_pos_;
 }
 
-const sf::Vector2f& TextGraphic::get_size() const {
+sf::Vector2f TextGraphic::get_size() const {
    return this->size_;
 }
 
@@ -409,7 +415,7 @@ const sf::Vector2f& VertexGraphic::get_position() {
    return this->pos_;
 }
 
-const sf::Vector2f& VertexGraphic::get_size() const {
+sf::Vector2f VertexGraphic::get_size() const {
    return this->size_;
 }
 
