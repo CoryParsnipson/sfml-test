@@ -10,7 +10,7 @@ PanelWidget::PanelWidget(const sf::Vector2f& pos, const sf::Vector2f& size, Widg
 , resizable_(resizable)
 , panel_(new SpriteGraphic())
 , resize_handle_(nullptr)
-, surface_(size)
+, surface_(pos + size)
 {
    this->set_size(size);
 
@@ -43,6 +43,9 @@ void PanelWidget::set_position(const sf::Vector2f& pos) {
 }
 
 void PanelWidget::move(const sf::Vector2f& delta) {
+   // make sure the render texture is big enough
+   this->surface_.set_size(this->get_position() + this->panel_->get_size() + delta);
+
    this->panel_->move(delta);
    if (this->resize_handle_) {
       this->resize_handle_->move(delta);
@@ -95,6 +98,9 @@ void PanelWidget::drag(MouseButtonCommand& c, sf::Vector2f delta) {
       sf::Vector2f size = this->panel_->get_size();
       size.x = std::max(size.x + delta.x, this->MIN_PANEL_WIDTH);
       size.y = std::max(size.y + delta.y, this->MIN_PANEL_HEIGHT);
+
+      // make sure the render texture is big enough
+      this->surface_.set_size(this->get_position() + size);
 
       this->set_size(size);
       this->resize_handle_->set_position(this->panel_->get_position() + size - this->resize_handle_->get_size());

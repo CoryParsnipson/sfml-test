@@ -3,7 +3,7 @@
 
 SubCanvas::SubCanvas(const sf::Vector2f& size)
 {
-   this->surface_.create(Settings::Instance()->cur_width(), Settings::Instance()->cur_height());
+   this->set_size(size);
 }
 
 SubCanvas::~SubCanvas() {
@@ -28,4 +28,13 @@ void SubCanvas::clear(const sf::Color& color /* = sf::Color::Black */) {
 
 const sf::Texture& SubCanvas::get_texture() {
    return this->surface_.getTexture();
+}
+
+void SubCanvas::set_size(const sf::Vector2f& size) {
+   this->set_size(size.x, size.y);
+}
+
+void SubCanvas::set_size(int size_x, int size_y) {
+   this->surface_.create(size_x, size_y);
+   this->surface_.clear();
 }

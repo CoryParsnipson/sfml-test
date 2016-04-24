@@ -22,6 +22,8 @@ public:
 
    // sub canvas interface
    const sf::Texture& get_texture();
+   void set_size(const sf::Vector2f& size);
+   void set_size(int size_x, int size_y);
 
 protected:
    sf::RenderTexture surface_;
