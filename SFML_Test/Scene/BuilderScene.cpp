@@ -258,13 +258,18 @@ void BuilderScene::process(Game& game, MouseMoveCommand& c) {}
 void BuilderScene::process(Game& game, MouseWheelCommand& c) {}
 
 void BuilderScene::drag(MouseButtonCommand& c, sf::Vector2f delta) {
-   if (c.button == MouseButtonCommand::LEFT) {
-      sf::Vector2f mouse_pos(c.x, c.y);
+   sf::Vector2f mouse_pos(c.x, c.y);
 
+   if (c.button == MouseButtonCommand::LEFT) {
       this->update_selection_rect(this->click_press_pos_, mouse_pos);
    } else if (c.button == MouseButtonCommand::RIGHT) {
       this->map_camera_->drag(c, delta); // pan only the map layers
       this->map_->grid()->move(-delta); // reverse pan the grid so it stays in place
+
+      // if the selection rectangle is visible, update it
+      if (this->selection_rectangle_->visible()) {
+         this->update_selection_rect(this->click_press_pos_, mouse_pos);
+      }
    }
 }
 
