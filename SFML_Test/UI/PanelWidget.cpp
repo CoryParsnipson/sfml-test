@@ -61,7 +61,7 @@ sf::Vector2f PanelWidget::get_size() {
 void PanelWidget::set_size(const sf::Vector2f& size) {
    this->panel_->set_size(size);
 
-   WidgetList::const_iterator it;
+   const_iterator<CompositeList> it;
    for (it = this->children_.begin(); it != this->children_.end(); ++it) {
       (*it)->set_size(size);
    }

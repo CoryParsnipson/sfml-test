@@ -4,19 +4,18 @@
 #include "dependencies.h"
 #include "Draw.h"
 #include "Update.h"
-
-class Widget;
+#include "Composite.h"
 
 class Widget
 : public Draw
 , public Update
+, public Composite<Widget>
 {
 public:
-   typedef std::vector<Widget*> WidgetList;
    enum Position {
       ABSOLUTE,
       RELATIVE,
-      FIXED
+      STATIC
    };
 
    Widget();
@@ -33,11 +32,6 @@ public:
    virtual sf::Vector2f get_size() = 0;
    virtual void set_size(const sf::Vector2f& size) = 0;
 
-   void add(Widget* widget);
-
-   Widget* get(unsigned int idx);
-   void remove(Widget* child);
-
    // draw interface
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 
@@ -46,7 +40,6 @@ public:
 
 protected:
    Position position_;
-   WidgetList children_;
 };
 
 #endif
