@@ -1,59 +1,48 @@
-#include "MouseControlPart.h"
-
 #include "Game.h"
+#include "MouseControlPart.h"
 
 #include "Entity.h"
 #include "PhysicsPart.h"
-
-#include "MouseMoveCommand.h"
-#include "MouseWheelCommand.h"
-#include "MouseButtonCommand.h"
 
 MouseControlPart::MouseControlPart(std::string id)
 : ControlPart(id)
 , is_panning(false)
 , zoom_delta(0)
 , controllable_(nullptr)
-, mouse_buttons_(nullptr)
 {
    Service::get_logger().msg("ControlPart", Logger::INFO, "Creating MouseControlPart '" + id + "'");
 }
 
 MouseControlPart::~MouseControlPart() {
    this->controllable_ = nullptr; // don't delete controllable, no ownership of this
-
-   delete this->mouse_buttons_;
-   this->mouse_buttons_ = nullptr;
 }
 
-void MouseControlPart::process(CloseCommand& c) {}
-void MouseControlPart::process(KeyPressCommand& c) {}
-void MouseControlPart::process(WindowResizeCommand& c) {}
+void MouseControlPart::process(CloseInputEvent& e) {}
+void MouseControlPart::process(ResizeInputEvent& e) {}
+void MouseControlPart::process(KeyPressInputEvent& e) {}
 
-void MouseControlPart::process(MouseMoveCommand& c) {
+void MouseControlPart::process(MouseMoveInputEvent& e) {
    // update the last seen mouse position
-   this->last_mouse_pos.x = c.x;
-   this->last_mouse_pos.y = c.y;
+   this->last_mouse_pos.x = e.x;
+   this->last_mouse_pos.y = e.y;
 }
 
-void MouseControlPart::process(MouseButtonCommand& c) {
-   Service::get_logger().msg("ControlPart", Logger::INFO, c.to_string());
+void MouseControlPart::process(MouseWheelInputEvent& e) {
+   this->zoom_delta = e.delta;
+}
 
-   delete this->mouse_buttons_;
-   this->mouse_buttons_ = new MouseButtonCommand(c);
-
-   this->is_panning = (c.state == MouseButtonCommand::PRESSED);
-   this->panning_anchor = sf::Vector2f(c.x, c.y);
+void MouseControlPart::process(MouseButtonInputEvent& e) {
+   Service::get_logger().msg("ControlPart", Logger::INFO, e);
+   
+   this->button_ = e.button;
+   this->is_panning = (e.state == MouseButtonState::Pressed);
+   this->panning_anchor = sf::Vector2f(e.x, e.y);
 
    if (this->controllable_) {
-      this->controllable_->click(c);
+      this->controllable_->click(e.button, e.state, this->panning_anchor);
    } else {
       Service::get_logger().msg("ControlPart", Logger::WARNING, "Controllable pointer is null.");
    }
-}
-
-void MouseControlPart::process(MouseWheelCommand& c) {
-   this->zoom_delta = c.delta;
 }
 
 void MouseControlPart::set_controllable(MouseControllable* c) {
@@ -77,13 +66,8 @@ void MouseControlPart::update(Game& game, Scene* scene, Entity* entity) {
    if (this->is_panning) {
       sf::Vector2f panning_delta = (this->last_mouse_pos - this->panning_anchor) * this->controllable_->get_scale();
 
-      // TODO: update mouse button command (note, you should refactor this entire thing...)
-      this->mouse_buttons_->x = this->last_mouse_pos.x;
-      this->mouse_buttons_->y = this->last_mouse_pos.y;
-
-      this->controllable_->drag(*this->mouse_buttons_, this->MOUSE_PAN_COEFFICIENT * panning_delta);
-
       this->panning_anchor = this->last_mouse_pos;
+      this->controllable_->drag(this->button_, this->last_mouse_pos, this->MOUSE_PAN_COEFFICIENT * panning_delta);
    }
 
    // respond to mouse wheel events

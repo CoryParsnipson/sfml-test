@@ -3,12 +3,12 @@
 
 #include "dependencies.h"
 
-#include "CloseCommand.h"
-#include "KeyPressCommand.h"
-#include "WindowResizeCommand.h"
-#include "MouseMoveCommand.h"
-#include "MouseButtonCommand.h"
-#include "MouseWheelCommand.h"
+#include "CloseInputEvent.h"
+#include "ResizeInputEvent.h"
+#include "KeyPressInputEvent.h"
+#include "MouseMoveInputEvent.h"
+#include "MouseWheelInputEvent.h"
+#include "MouseButtonInputEvent.h"
 
 #include "Game.h"
 #include "Draw.h"
@@ -71,22 +71,19 @@ public:
       }
    }
 
-   // command interface default implementations
-   virtual void process(Game& game, CloseCommand& c) {
+   // input event processing default implementations
+   virtual void process(Game& game, CloseInputEvent& e) {
       game.unload_scene();
    }
-
-   virtual void process(Game& game, KeyPressCommand& c) {}
-
-   virtual void process(Game& game, WindowResizeCommand& c) {
+   virtual void process(Game& game, KeyPressInputEvent& e) {}
+   virtual void process(Game& game, ResizeInputEvent& e) {
       // update main camera
-      this->camera_->set_size(sf::Vector2f(c.width, c.height));
-      this->camera_->set_center(sf::Vector2f(c.width / 2.f, c.height / 2.f));
+      this->camera_->set_size(sf::Vector2f(e.width, e.height));
+      this->camera_->set_center(sf::Vector2f(e.width / 2.f, e.height / 2.f));
    }
-
-   virtual void process(Game& game, MouseMoveCommand& c) {}
-   virtual void process(Game& game, MouseButtonCommand& c) {}
-   virtual void process(Game& game, MouseWheelCommand& c) {}
+   virtual void process(Game& game, MouseMoveInputEvent& e) {}
+   virtual void process(Game& game, MouseWheelInputEvent& e) {}
+   virtual void process(Game& game, MouseButtonInputEvent& e) {}
 
 protected:
    std::string id_;

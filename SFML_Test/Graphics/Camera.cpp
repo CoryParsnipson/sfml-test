@@ -83,7 +83,7 @@ const sf::FloatRect& Camera::get_viewport() {
    return this->view_->getViewport();
 }
 
-void Camera::drag(MouseButtonCommand& c, sf::Vector2f delta) {
+void Camera::drag(MouseButton button, sf::Vector2f pos, sf::Vector2f delta) {
    this->view_->move(-delta); // invert delta to make it act like a pan
    this->state_.translate(-delta);
 }
@@ -104,4 +104,4 @@ void Camera::set_scale(float factor) {
    this->zoom_factor_ = factor;
 }
 
-void Camera::click(MouseButtonCommand& c) {}
+void Camera::click(MouseButton button, MouseButtonState state, sf::Vector2f pos) {}

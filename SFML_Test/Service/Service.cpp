@@ -1,10 +1,8 @@
 #include "Service.h"
 
 NullLogger Service::null_logger_ = NullLogger();
-NullBroadcaster Service::null_events_ = NullBroadcaster();
-NullInputController Service::null_input_ = NullInputController();
+NullInput Service::null_input_ = NullInput();
 
 // initialize static services
-Logger* Service::logger_ = nullptr;
-Broadcaster* Service::global_events_ = nullptr;
-InputController* Service::input_ = nullptr;
+Logger* Service::logger_ = &Service::null_logger_;
+Input* Service::input_ = &Service::null_input_;

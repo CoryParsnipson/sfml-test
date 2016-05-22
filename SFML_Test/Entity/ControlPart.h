@@ -9,16 +9,20 @@ class ControlPart
 , public InputListener
 {
 public:
-   ControlPart(std::string id = "control") : Part(id) {};
+   ControlPart(std::string id = "control")
+   : Part(id)
+   , InputListener(id)
+   {};
+
    virtual ~ControlPart() {};
 
-   // command interface
-   virtual void process(CloseCommand& c) = 0;
-   virtual void process(KeyPressCommand& c) = 0;
-   virtual void process(WindowResizeCommand& c) = 0;
-   virtual void process(MouseMoveCommand& c) = 0;
-   virtual void process(MouseButtonCommand& c) = 0;
-   virtual void process(MouseWheelCommand& c) = 0;
+   // input event processing
+   virtual void process(CloseInputEvent& e) = 0;
+   virtual void process(ResizeInputEvent& e) = 0;
+   virtual void process(KeyPressInputEvent& e) = 0;
+   virtual void process(MouseMoveInputEvent& e) = 0;
+   virtual void process(MouseWheelInputEvent& e) = 0;
+   virtual void process(MouseButtonInputEvent& e) = 0;
 
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr) = 0;
