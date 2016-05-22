@@ -175,6 +175,7 @@ public:
 
       return *this;
    }
+
    virtual Composite<T>::prefix_iterator operator++(int) {
       Composite<T>::prefix_iterator tmp(*this);
 
