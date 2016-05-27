@@ -160,14 +160,11 @@ BuilderScene::~BuilderScene() {
 
 void BuilderScene::enter(Game& game) {
    Service::get_logger().msg(this->id_, Logger::INFO, "Entering builder start menu state.");
-
-   // hook up mouse controller to user input
-   Service::get_input().registerInputListener(dynamic_cast<InputListener*>(this->mouse_->get("control")));
+   Service::get_input().attach(*dynamic_cast<InputListener*>(this->mouse_->get("control")));
 }
 
 void BuilderScene::exit(Game& game) {
-   // unregister mouse control from input listener
-   Service::get_input().unregisterInputListener(dynamic_cast<InputListener*>(this->mouse_->get("control")));
+   Service::get_input().detach(*dynamic_cast<InputListener*>(this->mouse_->get("control")));
 }
 
 void BuilderScene::update(Game& game, Scene* scene, Entity* entity) {
@@ -183,58 +180,15 @@ void BuilderScene::update(Game& game, Scene* scene, Entity* entity) {
    this->frame_count = (this->frame_count + 1) % this->frame_measurement_interval;
 }
 
-void BuilderScene::process(Game& game, CloseCommand& c) {
+void BuilderScene::process(Game& game, CloseInputEvent& e) {
    game.unload_scene();
 }
 
-void BuilderScene::process(Game& game, KeyPressCommand& c) {
-   switch (c.event.code) {
-   case sf::Keyboard::Key::R:
-      // reset grid too (encapsulate this in grid class?)
-      this->map_->grid()->set_scale(1.f);
-      this->map_->grid()->move(this->map_camera_->get_pan_delta()); // move the grid back too
+void BuilderScene::process(Game& game, ResizeInputEvent& e) {
+   Scene::process(game, e);
 
-      this->map_camera_->reset_pan();
-      this->map_camera_->reset_zoom();
-   break;
-   case sf::Keyboard::Key::Num1:
-   case sf::Keyboard::Key::Numpad1:
-      this->set_tiles(TextureManager::inst()->get_texture("tile_solid"));
-   break;
-   case sf::Keyboard::Key::Num2:
-   case sf::Keyboard::Key::Numpad2:
-      this->set_tiles(TextureManager::inst()->get_texture("tile_clear"));
-   break;
-   case sf::Keyboard::Key::O:
-      this->toggle_debug_info();
-   break;
-   case sf::Keyboard::Key::G:
-      // toggle map grid visibility
-      this->map_grid_->visible(!this->map_grid_->visible());
-   break;
-   case sf::Keyboard::Key::Delete:
-   case sf::Keyboard::Key::BackSpace:
-      this->remove_tiles();
-   break;
-   case sf::Keyboard::Key::S:
-      Service::get_logger().msg(this->id_, Logger::INFO, "Writing map to file '" + this->map_filename_ + "'");
-      this->map_->serialize(*this->serializer_);
-   break;
-   case sf::Keyboard::Key::Escape:
-      // load super secret test ui scene
-      game.switch_scene(new TestUIScene());
-   break;
-   default:
-      // do nothing
-   break;
-   }
-}
-
-void BuilderScene::process(Game& game, WindowResizeCommand& c) {
-   Scene::process(game, c);
-
-   sf::Vector2f new_size(c.width, c.height);
-   sf::Vector2f new_center(c.width / 2.f, c.height / 2.f);
+   sf::Vector2f new_size(e.width, e.height);
+   sf::Vector2f new_center(e.width / 2.f, e.height / 2.f);
 
    // reposition center dot
    this->center_dot_->set_position(new_center);
@@ -249,26 +203,67 @@ void BuilderScene::process(Game& game, WindowResizeCommand& c) {
    this->backdrop_->set_size(Settings::Instance()->cur_width(), Settings::Instance()->cur_height());
 
    // update map camera
-   this->map_camera_->set_size(sf::Vector2f(c.width, c.height));
-   this->map_camera_->set_center(sf::Vector2f(c.width / 2.f, c.height / 2.f));
+   this->map_camera_->set_size(sf::Vector2f(e.width, e.height));
+   this->map_camera_->set_center(sf::Vector2f(e.width / 2.f, e.height / 2.f));
 }
 
-void BuilderScene::process(Game& game, MouseButtonCommand& c) {}
-void BuilderScene::process(Game& game, MouseMoveCommand& c) {}
-void BuilderScene::process(Game& game, MouseWheelCommand& c) {}
+void BuilderScene::process(Game& game, KeyPressInputEvent& e) {
+   switch (e.key) {
+   case Key::R:
+      // reset grid too (encapsulate this in grid class?)
+      this->map_->grid()->set_scale(1.f);
+      this->map_->grid()->move(this->map_camera_->get_pan_delta()); // move the grid back too
 
-void BuilderScene::drag(MouseButtonCommand& c, sf::Vector2f delta) {
-   sf::Vector2f mouse_pos(c.x, c.y);
+      this->map_camera_->reset_pan();
+      this->map_camera_->reset_zoom();
+   break;
+   case Key::Num1:
+   case Key::Numpad1:
+      this->set_tiles(TextureManager::inst()->get_texture("tile_solid"));
+   break;
+   case Key::Num2:
+   case Key::Numpad2:
+      this->set_tiles(TextureManager::inst()->get_texture("tile_clear"));
+   break;
+   case Key::O:
+      this->toggle_debug_info();
+   break;
+   case Key::G:
+      // toggle map grid visibility
+      this->map_grid_->visible(!this->map_grid_->visible());
+   break;
+   case Key::Delete:
+   case Key::Backspace:
+      this->remove_tiles();
+   break;
+   case Key::S:
+      Service::get_logger().msg(this->id_, Logger::INFO, "Writing map to file '" + this->map_filename_ + "'");
+      this->map_->serialize(*this->serializer_);
+   break;
+   case Key::Escape:
+      // load super secret test ui scene
+      game.switch_scene(new TestUIScene());
+   break;
+   default:
+      // do nothing
+   break;
+   }
+}
 
-   if (c.button == MouseButtonCommand::LEFT) {
-      this->update_selection_rect(this->click_press_pos_, mouse_pos);
-   } else if (c.button == MouseButtonCommand::RIGHT) {
-      this->map_camera_->drag(c, delta); // pan only the map layers
+void BuilderScene::process(Game& game, MouseMoveInputEvent& c) {}
+void BuilderScene::process(Game& game, MouseWheelInputEvent& c) {}
+void BuilderScene::process(Game& game, MouseButtonInputEvent& c) {}
+
+void BuilderScene::drag(MouseButton button, sf::Vector2f pos, sf::Vector2f delta) {
+   if (button == MouseButton::Left) {
+      this->update_selection_rect(this->click_press_pos_, pos);
+   } else if (button == MouseButton::Right) {
+      this->map_camera_->drag(button, pos, delta); // pan only the map layers
       this->map_->grid()->move(-delta); // reverse pan the grid so it stays in place
 
       // if the selection rectangle is visible, update it
       if (this->selection_rectangle_->visible()) {
-         this->update_selection_rect(this->click_press_pos_, mouse_pos);
+         this->update_selection_rect(this->click_press_pos_, pos);
       }
    }
 }
@@ -285,19 +280,16 @@ void BuilderScene::set_scale(float factor) {
    this->map_->grid()->set_scale(factor);
 }
 
-void BuilderScene::click(MouseButtonCommand& c) {
-   if (c.button == MouseButtonCommand::LEFT) {
-      if (c.state == MouseButtonCommand::PRESSED) {
-         this->click_press_pos_.x = c.x;
-         this->click_press_pos_.y = c.y;
+void BuilderScene::click(MouseButton button, MouseButtonState state, sf::Vector2f pos) {
+   if (button == MouseButton::Left) {
+      if (state == MouseButtonState::Pressed) {
+         this->click_press_pos_ = pos;
 
          this->selection_rectangle_->visible(true);
          this->update_selection_rect(this->click_press_pos_, this->click_press_pos_);
-      } else if (c.state == MouseButtonCommand::RELEASED) {
+      } else if (state == MouseButtonState::Released) {
          this->selection_rectangle_->visible(false);
-
-         sf::Vector2f click_release_pos(c.x, c.y);
-         this->update_tile_cursor(this->click_press_pos_, click_release_pos);
+         this->update_tile_cursor(this->click_press_pos_, pos);
       }
    }
 }

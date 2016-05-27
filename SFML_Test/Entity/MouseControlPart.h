@@ -2,8 +2,14 @@
 #define MOUSE_CONTROL_PART_H
 
 #include "ControlPart.h"
-#include "MouseUtil.h"
-#include "MouseButtonCommand.h"
+#include "MouseControllable.h"
+
+#include "CloseInputEvent.h"
+#include "ResizeInputEvent.h"
+#include "KeyPressInputEvent.h"
+#include "MouseMoveInputEvent.h"
+#include "MouseWheelInputEvent.h"
+#include "MouseButtonInputEvent.h"
 
 class MouseControlPart : public ControlPart {
 public:
@@ -16,13 +22,13 @@ public:
    // mouse util interface
    virtual void set_controllable(MouseControllable* c = nullptr);
 
-   // command interface
-   virtual void process(CloseCommand& c);
-   virtual void process(KeyPressCommand& c);
-   virtual void process(WindowResizeCommand& c);
-   virtual void process(MouseMoveCommand& c);
-   virtual void process(MouseButtonCommand& c);
-   virtual void process(MouseWheelCommand& c);
+   // input event processing
+   virtual void process(CloseInputEvent& e);
+   virtual void process(ResizeInputEvent& e);
+   virtual void process(KeyPressInputEvent& e);
+   virtual void process(MouseMoveInputEvent& e);
+   virtual void process(MouseWheelInputEvent& e);
+   virtual void process(MouseButtonInputEvent& e);
 
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
@@ -37,7 +43,7 @@ protected:
 
    MouseControllable* controllable_;
 
-   MouseButtonCommand* mouse_buttons_;
+   MouseButton button_;
    sf::Vector2f panning_anchor;
    sf::Vector2f last_mouse_pos;
 };

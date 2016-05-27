@@ -2,7 +2,7 @@
 #define CAMERA_H
 
 #include "Draw.h"
-#include "MouseUtil.h"
+#include "MouseControllable.h"
 
 class Camera
 : public Draw
@@ -45,12 +45,12 @@ public:
    const sf::FloatRect& get_viewport();
 
    // mouse control interface
-   virtual void drag(MouseButtonCommand& c, sf::Vector2f delta);
+   virtual void drag(MouseButton button, sf::Vector2f pos, sf::Vector2f delta);
 
    virtual float get_scale();
    virtual void set_scale(float factor);
 
-   virtual void click(MouseButtonCommand& c);
+   virtual void click(MouseButton button, MouseButtonState state, sf::Vector2f pos);
 
 protected:
    std::string id_;

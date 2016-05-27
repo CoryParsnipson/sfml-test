@@ -19,7 +19,7 @@ public:
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 
    // command interface
-   virtual void process(Game& game, WindowResizeCommand& c);
+   virtual void process(Game& game, ResizeInputEvent& e);
 
 protected:
    Camera* hud_camera_;

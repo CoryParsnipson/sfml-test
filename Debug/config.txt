@@ -1,5 +1,5 @@
 # config
 
 type: logger, stream: console, enable: true
-type: logger, stream: console, set_tag: InputController, tag_value: false
+type: logger, stream: console, set_tag: Input, tag_value: false
 type: logger, stream: console, set_tag: ControlPart, tag_value: false

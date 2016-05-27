@@ -16,13 +16,13 @@ public:
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 
-   // command interface
-   virtual void process(Game& game, CloseCommand& c);
-   virtual void process(Game& game, KeyPressCommand& c);
-   virtual void process(Game& game, WindowResizeCommand& c);
-   virtual void process(Game& game, MouseMoveCommand& c);
-   virtual void process(Game& game, MouseButtonCommand& c);
-   virtual void process(Game& game, MouseWheelCommand& c);
+   // input event processing
+   virtual void process(Game& game, CloseInputEvent& e);
+   virtual void process(Game& game, ResizeInputEvent& e);
+   virtual void process(Game& game, KeyPressInputEvent& e);
+   virtual void process(Game& game, MouseMoveInputEvent& e);
+   virtual void process(Game& game, MouseWheelInputEvent& e);
+   virtual void process(Game& game, MouseButtonInputEvent& e);
 
 protected:
    bool show_debug_info_;

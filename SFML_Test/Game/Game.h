@@ -2,17 +2,11 @@
 #define GAME_H
 
 #include "dependencies.h"
+#include "Input.h"
 #include "FullLogger.h"
 #include "InputListener.h"
 #include "TextureManager.h"
 #include "Canvas.h"
-
-class CloseCommand;
-class KeyPressCommand;
-class WindowResizeCommand;
-class MouseMoveCommand;
-class MouseButtonCommand;
-class MouseWheelCommand;
 
 class Scene;
 
@@ -32,13 +26,13 @@ public:
    void unload_scene();               // unload current scene and resume previous scene
    Scene* switch_scene(Scene* scene); // unload current scene and load new scene
 
-   // command interface
-   virtual void process(CloseCommand& c);
-   virtual void process(KeyPressCommand& c);
-   virtual void process(WindowResizeCommand& c);
-   virtual void process(MouseMoveCommand& c);
-   virtual void process(MouseButtonCommand& c);
-   virtual void process(MouseWheelCommand& c);
+   // input event processing
+   virtual void process(CloseInputEvent& e);
+   virtual void process(ResizeInputEvent& e);
+   virtual void process(KeyPressInputEvent& e);
+   virtual void process(MouseMoveInputEvent& e);
+   virtual void process(MouseWheelInputEvent& e);
+   virtual void process(MouseButtonInputEvent& e);
 
    bool poll_event(sf::Event& event);
 
@@ -52,7 +46,7 @@ protected:
 
    // services
    FullLogger full_logger_;
-   InputController input_;
+   Input input_;
 
    // graphics
    Canvas window_;

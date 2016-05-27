@@ -62,12 +62,12 @@ TestUIScene::~TestUIScene() {
 
 void TestUIScene::enter(Game& game) {
    Service::get_logger().msg(this->id_, Logger::INFO, "Entering test UI menu state.");
-   Service::get_input().registerInputListener(dynamic_cast<InputListener*>(this->mouse_->get("control")));
+   Service::get_input().attach(*dynamic_cast<InputListener*>(this->mouse_->get("control")));
 }
 
 void TestUIScene::exit(Game& game) {
    Service::get_logger().msg(this->id_, Logger::INFO, "Exiting test UI menu state.");
-   Service::get_input().unregisterInputListener(dynamic_cast<InputListener*>(this->mouse_->get("control")));
+   Service::get_input().detach(*dynamic_cast<InputListener*>(this->mouse_->get("control")));
 }
 
 void TestUIScene::update(Game& game, Scene* scene, Entity* entity) {
@@ -80,18 +80,18 @@ void TestUIScene::update(Game& game, Scene* scene, Entity* entity) {
    this->frame_count = (this->frame_count + 1) % this->frame_measurement_interval;
 }
 
-void TestUIScene::process(Game& game, WindowResizeCommand& c) {
-   Scene::process(game, c);
+void TestUIScene::process(Game& game, ResizeInputEvent& e) {
+   Scene::process(game, e);
 
-   sf::Vector2f new_size(c.width, c.height);
-   sf::Vector2f new_center(c.width / 2.f, c.height / 2.f);
+   sf::Vector2f new_size(e.width, e.height);
+   sf::Vector2f new_center(e.width / 2.f, e.height / 2.f);
 
    // reposition fps display
    this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
 
    // adjust hud camera
-   this->hud_camera_->set_size(sf::Vector2f(c.width, c.height));
-   this->hud_camera_->set_center(sf::Vector2f(c.width / 2.f, c.height / 2.f));
+   this->hud_camera_->set_size(sf::Vector2f(e.width, e.height));
+   this->hud_camera_->set_center(sf::Vector2f(e.width / 2.f, e.height / 2.f));
 }
 
 void TestUIScene::update_fps() {

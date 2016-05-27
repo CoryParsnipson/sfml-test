@@ -89,9 +89,7 @@ void PanelWidget::draw(RenderSurface& surface, sf::RenderStates render_states /*
    surface.draw(widget_sprite, render_states);
 }
 
-void PanelWidget::drag(MouseButtonCommand& c, sf::Vector2f delta) {
-   sf::Vector2f mouse_pos(c.x, c.y);
-
+void PanelWidget::drag(MouseButton button, sf::Vector2f pos, sf::Vector2f delta) {
    if (this->draggable_ && this->clicked_) {
       this->move(delta);
    } else if (this->resizable_ && this->resized_) {
@@ -110,12 +108,11 @@ void PanelWidget::drag(MouseButtonCommand& c, sf::Vector2f delta) {
 float PanelWidget::get_scale() { return 1.0; }
 void PanelWidget::set_scale(float factor) {}
 
-void PanelWidget::click(MouseButtonCommand& c) {
-   sf::Vector2f mouse_pos(c.x, c.y);
-   if (c.button == MouseButtonCommand::MOUSE_BUTTON::LEFT &&
-       c.state == MouseButtonCommand::STATE::PRESSED) {
-      this->resized_ = this->resize_handle_ && this->resize_handle_->get_global_bounds().contains(mouse_pos);
-      this->clicked_ = !this->resized_ && this->panel_->get_global_bounds().contains(mouse_pos);
+void PanelWidget::click(MouseButton button, MouseButtonState state, sf::Vector2f pos) {
+   if (button == MouseButton::Left &&
+       state == MouseButtonState::Pressed) {
+      this->resized_ = this->resize_handle_ && this->resize_handle_->get_global_bounds().contains(pos);
+      this->clicked_ = !this->resized_ && this->panel_->get_global_bounds().contains(pos);
    } else {
       this->clicked_ = false;
    }

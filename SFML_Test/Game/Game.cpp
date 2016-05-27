@@ -1,18 +1,23 @@
 #include "Game.h"
 #include "TextFactory.h"
-#include "InputController.h"
 #include "TextureManager.h"
 #include "TextSerializer.h"
+
+#include "CloseInputEvent.h"
+#include "ResizeInputEvent.h"
+#include "KeyPressInputEvent.h"
+#include "MouseMoveInputEvent.h"
+#include "MouseWheelInputEvent.h"
+#include "MouseButtonInputEvent.h"
 
 #include "Scene.h"
 
 Game::Game()
-: next_scene_(nullptr)
+: InputListener("Game")
+, next_scene_(nullptr)
 , prev_scene_(nullptr)
 , window_("SFML Test", sf::Vector2f(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT), Settings::Instance()->FRAMERATE_LIMIT)
 {
-   Service::init(); // initialize service locator
-
    // TODO: probably need to move this into a config class or something
    Serialize::SerialObj config_line;
    Serializer* config_reader = new TextSerializer();
@@ -59,8 +64,8 @@ Game::Game()
 
    // set up input
    Service::provide_input(&this->input_);
-   Service::get_input().registerInputListener(dynamic_cast<InputListener*>(this));
-
+   Service::get_input().attach(*this);
+   
    // load fonts
    TextFactory::inst()->load_font("retro", "retro.ttf");
 
@@ -105,32 +110,32 @@ Scene* Game::switch_scene(Scene* scene) {
    return this->prev_scene_;
 }
 
-void Game::process(CloseCommand& c) {
-   this->scenes_.top()->process(*this, c);
+void Game::process(CloseInputEvent& e) {
+   this->scenes_.top()->process(*this, e);
 }
 
-void Game::process(KeyPressCommand& c) {
-   this->scenes_.top()->process(*this, c);
-}
-
-void Game::process(WindowResizeCommand& c) {
+void Game::process(ResizeInputEvent& e) {
    // update settings
-   Settings::Instance()->cur_width(c.width);
-   Settings::Instance()->cur_height(c.height);
+   Settings::Instance()->cur_width(e.width);
+   Settings::Instance()->cur_height(e.height);
 
-   this->scenes_.top()->process(*this, c);
+   this->scenes_.top()->process(*this, e);
 }
 
-void Game::process(MouseMoveCommand& c) {
-   this->scenes_.top()->process(*this, c);
+void Game::process(KeyPressInputEvent& e) {
+   this->scenes_.top()->process(*this, e);
 }
 
-void Game::process(MouseButtonCommand& c) {
-   this->scenes_.top()->process(*this, c);
+void Game::process(MouseMoveInputEvent& e) {
+   this->scenes_.top()->process(*this, e);
 }
 
-void Game::process(MouseWheelCommand& c) {
-   this->scenes_.top()->process(*this, c);
+void Game::process(MouseWheelInputEvent& e) {
+   this->scenes_.top()->process(*this, e);
+}
+
+void Game::process(MouseButtonInputEvent& e) {
+   this->scenes_.top()->process(*this, e);
 }
 
 bool Game::poll_event(sf::Event& event) {
@@ -145,7 +150,7 @@ void Game::main_loop() {
       }
 
       // poll input
-      Service::get_input().pollEvents(*this);
+      Service::get_input().poll_event(*this);
 
       // check if we need to unload a scene
       if (this->prev_scene_) {
