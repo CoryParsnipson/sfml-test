@@ -23,15 +23,22 @@
 
 #include "TransformSceneGraphNode.h"
 
+#include "MoveCameraCommand.h"
+
 BuilderScene::BuilderScene()
 : Scene("BuilderScene")
 , map_(nullptr)
+, map_camera_(new Camera("Map Camera", sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height())))
 , map_filename_("flat_map_test.txt")
 , mouse_(nullptr)
 , center_dot_(nullptr)
 , selection_rectangle_(nullptr)
 , tile_cursor_(nullptr)
 , map_grid_(nullptr)
+, move_camera_left(new MoveCameraCommand(*this->map_camera_, sf::Vector2f(-10, 0)))
+, move_camera_right(new MoveCameraCommand(*this->map_camera_, sf::Vector2f(10, 0)))
+, move_camera_up(new MoveCameraCommand(*this->map_camera_, sf::Vector2f(0, -10)))
+, move_camera_down(new MoveCameraCommand(*this->map_camera_, sf::Vector2f(0, 10)))
 , last_frame_time(0)
 , frame_measurement_interval(6)
 , frame_count(0)
@@ -41,8 +48,6 @@ BuilderScene::BuilderScene()
    TextureManager::inst()->create_texture("tile_solid", "flatmap_test_texture.png", sf::IntRect(0, 0, 40, 40));
    TextureManager::inst()->create_texture("tile_clear", "flatmap_test_texture.png", sf::IntRect(40, 0, 40, 40));
    TextureManager::inst()->print();
-
-   this->map_camera_ = new Camera("Map Camera", sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height()));
 
    // create "map layers" using a new camera
    this->scene_graph_[1] = new CameraSceneGraphNode(*this->map_camera_); // layer for map
@@ -243,6 +248,22 @@ void BuilderScene::process(Game& game, KeyPressInputEvent& e) {
    case Key::Escape:
       // load super secret test ui scene
       game.switch_scene(new TestUIScene());
+   break;
+   case Key::Left:
+      this->move_camera_left->execute();
+      this->map_->grid()->move(-this->move_camera_left->get_delta()); // reverse pan the grid so it stays in place
+   break;
+   case Key::Right:
+      this->move_camera_right->execute();
+      this->map_->grid()->move(-this->move_camera_right->get_delta()); // reverse pan the grid so it stays in place
+   break;
+   case Key::Up:
+      this->move_camera_up->execute();
+      this->map_->grid()->move(-this->move_camera_up->get_delta()); // reverse pan the grid so it stays in place
+   break;
+   case Key::Down:
+      this->move_camera_down->execute();
+      this->map_->grid()->move(-this->move_camera_down->get_delta()); // reverse pan the grid so it stays in place
    break;
    default:
       // do nothing

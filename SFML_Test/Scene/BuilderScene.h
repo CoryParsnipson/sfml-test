@@ -13,6 +13,8 @@ class Map;
 class MapBuilder;
 class Serializer;
 
+class MoveCameraCommand;
+
 class BuilderScene
 : public Scene
 , public MouseControllable
@@ -61,6 +63,11 @@ protected:
 
    // mouse controllable state
    sf::Vector2f click_press_pos_;
+
+   MoveCameraCommand* move_camera_left;
+   MoveCameraCommand* move_camera_right;
+   MoveCameraCommand* move_camera_up;
+   MoveCameraCommand* move_camera_down;
 
    sf::Clock clock;
    int last_frame_time;

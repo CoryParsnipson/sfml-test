@@ -75,6 +75,11 @@ const sf::Transform& Camera::get_transform() const {
    return this->state_;
 }
 
+void Camera::move(sf::Vector2f delta) {
+   this->view_->move(-delta); // invert delta to make it act like a pan
+   this->state_.translate(-delta);
+}
+
 void Camera::set_viewport(const sf::FloatRect& viewport) {
    this->view_->setViewport(viewport);
 }
@@ -84,8 +89,7 @@ const sf::FloatRect& Camera::get_viewport() {
 }
 
 void Camera::drag(MouseButton button, sf::Vector2f pos, sf::Vector2f delta) {
-   this->view_->move(-delta); // invert delta to make it act like a pan
-   this->state_.translate(-delta);
+   this->move(delta);
 }
 
 float Camera::get_scale() {

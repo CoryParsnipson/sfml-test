@@ -40,6 +40,8 @@ public:
 
    const sf::Transform& get_transform() const;
 
+   void move(sf::Vector2f delta);
+
    // viewport management
    void set_viewport(const sf::FloatRect& viewport);
    const sf::FloatRect& get_viewport();
