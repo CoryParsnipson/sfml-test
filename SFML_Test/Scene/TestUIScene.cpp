@@ -9,6 +9,7 @@
 
 #include "PanelWidget.h"
 #include "TextWidget.h"
+#include "ButtonWidget.h"
 
 #include "CameraSceneGraphNode.h"
 #include "DrawableSceneGraphNode.h"
@@ -46,6 +47,9 @@ TestUIScene::TestUIScene()
    tw->set_size(sf::Vector2f(300, 200));
    this->widget_->add(tw);
    this->scene_graph_[0]->add(new DrawableSceneGraphNode(*this->widget_));
+   
+   Widget* bw = new ButtonWidget(sf::Vector2f(10, 30), sf::Vector2f(30, 15));
+   this->widget_->add(bw);
 
    // set up mouse
    this->mouse_ = UtilFactory::inst()->create_mouse(0);
