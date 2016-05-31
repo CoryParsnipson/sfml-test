@@ -29,7 +29,7 @@ BuilderScene::BuilderScene()
 : Scene("BuilderScene")
 , map_(nullptr)
 , map_camera_(new Camera("Map Camera", sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height())))
-, map_filename_("flat_map_test.txt")
+, map_filename_("pkmn_map_test.txt")
 , mouse_(nullptr)
 , center_dot_(nullptr)
 , selection_rectangle_(nullptr)
@@ -45,8 +45,27 @@ BuilderScene::BuilderScene()
 , show_debug_info_(false)
 {
    // load textures
-   TextureManager::inst()->create_texture("tile_solid", "flatmap_test_texture.png", sf::IntRect(0, 0, 40, 40));
-   TextureManager::inst()->create_texture("tile_clear", "flatmap_test_texture.png", sf::IntRect(40, 0, 40, 40));
+   TextureManager::inst()->create_texture("tile_grass", "pkmn_tiles_outdoor1.png", sf::IntRect(0, 0, 64, 64));
+   TextureManager::inst()->create_texture("tile_worn_grass", "pkmn_tiles_outdoor1.png", sf::IntRect(64, 0, 64, 64));
+   TextureManager::inst()->create_texture("tile_sign", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 0, 64, 64));
+   TextureManager::inst()->create_texture("tile_dirt_ul", "pkmn_tiles_outdoor1.png", sf::IntRect(0, 64, 64, 64));
+   TextureManager::inst()->create_texture("tile_dirt_um", "pkmn_tiles_outdoor1.png", sf::IntRect(64, 64, 64, 64));
+   TextureManager::inst()->create_texture("tile_dirt_ur", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 64, 64, 64));
+   TextureManager::inst()->create_texture("tile_dirt_ml", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 0, 64, 64));
+   TextureManager::inst()->create_texture("tile_dirt_mm", "pkmn_tiles_outdoor1.png", sf::IntRect(64, 128, 64, 64));
+   TextureManager::inst()->create_texture("tile_dirt_mr", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 128, 64, 64));
+   TextureManager::inst()->create_texture("tile_dirt_bl", "pkmn_tiles_outdoor1.png", sf::IntRect(0, 192, 64, 64));
+   TextureManager::inst()->create_texture("tile_dirt_bm", "pkmn_tiles_outdoor1.png", sf::IntRect(64, 192, 64, 64));
+   TextureManager::inst()->create_texture("tile_dirt_br", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 192, 64, 64));
+   TextureManager::inst()->create_texture("tile_water_ul", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 64, 64, 64));
+   TextureManager::inst()->create_texture("tile_water_um", "pkmn_tiles_outdoor1.png", sf::IntRect(256, 64, 64, 64));
+   TextureManager::inst()->create_texture("tile_water_ur", "pkmn_tiles_outdoor1.png", sf::IntRect(320, 64, 64, 64));
+   TextureManager::inst()->create_texture("tile_water_ml", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 128, 64, 64));
+   TextureManager::inst()->create_texture("tile_water_mm", "pkmn_tiles_outdoor1.png", sf::IntRect(256, 128, 64, 64));
+   TextureManager::inst()->create_texture("tile_water_mr", "pkmn_tiles_outdoor1.png", sf::IntRect(320, 128, 64, 64));
+   TextureManager::inst()->create_texture("tile_water_bl", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 192, 64, 64));
+   TextureManager::inst()->create_texture("tile_water_bm", "pkmn_tiles_outdoor1.png", sf::IntRect(256, 192, 64, 64));
+   TextureManager::inst()->create_texture("tile_water_br", "pkmn_tiles_outdoor1.png", sf::IntRect(320, 192, 64, 64));
    TextureManager::inst()->print();
 
    // create "map layers" using a new camera
@@ -224,11 +243,11 @@ void BuilderScene::process(Game& game, KeyPressInputEvent& e) {
    break;
    case Key::Num1:
    case Key::Numpad1:
-      this->set_tiles(TextureManager::inst()->get_texture("tile_solid"));
+      this->set_tiles(TextureManager::inst()->get_texture("tile_grass"));
    break;
    case Key::Num2:
    case Key::Numpad2:
-      this->set_tiles(TextureManager::inst()->get_texture("tile_clear"));
+      this->set_tiles(TextureManager::inst()->get_texture("tile_worn_grass"));
    break;
    case Key::O:
       this->toggle_debug_info();

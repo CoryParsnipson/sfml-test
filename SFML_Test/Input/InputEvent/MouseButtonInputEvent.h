@@ -1,21 +1,9 @@
 #ifndef MOUSE_BUTTON_INPUT_EVENT_H
 #define MOUSE_BUTTON_INPUT_EVENT_H
 
+#include "Input.h"
 #include "InputEvent.h"
 #include "InputListener.h"
-
-enum class MouseButton {
-   Left,
-   Right,
-   Middle,
-   XButton1,
-   XButton2
-};
-
-enum class MouseButtonState {
-   Pressed,
-   Released
-};
 
 class MouseButtonInputEvent : public InputEvent {
 public:
