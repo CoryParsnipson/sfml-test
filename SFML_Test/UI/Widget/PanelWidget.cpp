@@ -2,7 +2,7 @@
 #include "RenderSurface.h"
 #include "TextureManager.h"
 
-PanelWidget::PanelWidget(const sf::Vector2f& pos, const sf::Vector2f& size, Widget* parent, bool draggable, bool resizable)
+PanelWidget::PanelWidget(const sf::Vector2f& pos, const sf::Vector2f& size, bool draggable, bool resizable)
 : Widget()
 , clicked_(false)
 , resized_(false)
@@ -39,19 +39,8 @@ void PanelWidget::set_position(const sf::Vector2f& pos) {
       this->resize_handle_->set_position(this->panel_->get_position() + this->panel_->get_size() - this->resize_handle_->get_size());
    }
 
-   Widget::set_position(pos);
-}
-
-void PanelWidget::move(const sf::Vector2f& delta) {
    // make sure the render texture is big enough
-   this->surface_.set_size(this->get_position() + this->panel_->get_size() + delta);
-
-   this->panel_->move(delta);
-   if (this->resize_handle_) {
-      this->resize_handle_->move(delta);
-   }
-
-   Widget::move(delta);
+   this->surface_.set_size(this->get_position() + this->panel_->get_size());
 }
 
 sf::Vector2f PanelWidget::get_size() {
@@ -60,16 +49,13 @@ sf::Vector2f PanelWidget::get_size() {
 
 void PanelWidget::set_size(const sf::Vector2f& size) {
    this->panel_->set_size(size);
-
-   const_iterator<CompositeList> it;
-   for (it = this->children_.begin(); it != this->children_.end(); ++it) {
-      (*it)->set_size(size);
+   if (this->resize_handle_) {
+      this->resize_handle_->set_position(this->panel_->get_position() + this->panel_->get_size() - this->resize_handle_->get_size());
    }
 }
 
 void PanelWidget::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
-   this->surface_.clear(sf::Color::Red);
-
+   this->surface_.clear();
    this->panel_->draw(this->surface_, render_states);
 
    if (this->resize_handle_) {

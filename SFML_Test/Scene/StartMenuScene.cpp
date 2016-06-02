@@ -55,7 +55,6 @@ StartMenuScene::StartMenuScene()
          12,
          TextFactory::ALIGN::CENTER,
          sf::Color::White,
-         0,
          this->show_debug_info_
    ));
    this->scene_graph_[0]->add(node);

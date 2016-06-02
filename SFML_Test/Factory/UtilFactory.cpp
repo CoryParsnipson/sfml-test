@@ -16,7 +16,7 @@ UtilFactory* UtilFactory::inst() {
 UtilFactory::UtilFactory() {}
 UtilFactory::~UtilFactory() {}
 
-Entity* UtilFactory::create_mouse(int layer) {
+Entity* UtilFactory::create_mouse() {
    Entity* mouse = new Entity();
    DebugPart* debug_part = new DebugPart();
    GraphicsPart* graphics_part = new GraphicsPart();

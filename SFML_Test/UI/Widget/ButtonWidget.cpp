@@ -13,18 +13,21 @@ ButtonWidget::~ButtonWidget() {
    delete this->background_;
 }
 
+void ButtonWidget::set_background(Graphic* background) {
+   Graphic* old_background = this->background_;
+
+   this->background_ = background;
+   this->background_->set_position(old_background->get_position());
+
+   delete old_background;
+}
+
 const sf::Vector2f& ButtonWidget::get_position() {
    return this->background_->get_position();
 }
 
 void ButtonWidget::set_position(const sf::Vector2f& pos) {
    this->background_->set_position(pos);
-   Widget::set_position(pos); 
-}
-
-void ButtonWidget::move(const sf::Vector2f& delta) {
-   this->background_->move(delta);
-   Widget::move(delta);
 }
 
 sf::Vector2f ButtonWidget::get_size() {

@@ -20,11 +20,11 @@ TileFactory::TileFactory() {
 TileFactory::~TileFactory() {
 }
 
-Entity* TileFactory::create_tile(Texture& t, int layer, bool debug) {
-   return this->create_tile(t, sf::Vector2f(0, 0), layer, debug);
+Entity* TileFactory::create_tile(Texture& t, bool debug) {
+   return this->create_tile(t, sf::Vector2f(0, 0), debug);
 }
 
-Entity* TileFactory::create_tile(Texture& t, sf::Vector2f pos, int layer, bool debug) {
+Entity* TileFactory::create_tile(Texture& t, sf::Vector2f pos, bool debug) {
    Entity* tile = new Entity();
    GraphicsPart* graphics_part = new GraphicsPart();
    PhysicsPart* physics_part = new PhysicsPart();
@@ -46,7 +46,7 @@ Entity* TileFactory::create_tile(Texture& t, sf::Vector2f pos, int layer, bool d
    return tile;
 }
 
-Entity* TileFactory::create_tile_cursor(sf::Vector2f& one, sf::Vector2f& two, int layer, bool debug) {
+Entity* TileFactory::create_tile_cursor(sf::Vector2f& one, sf::Vector2f& two, bool debug) {
    Entity* cursor = new Entity();
    GraphicsPart* graphics_part = new GraphicsPart();
    PhysicsPart* physics_part = new PhysicsPart();
@@ -78,7 +78,7 @@ Entity* TileFactory::create_tile_cursor(sf::Vector2f& one, sf::Vector2f& two, in
    return cursor;
 }
 
-Entity* TileFactory::create_selection_rectangle(sf::FloatRect* bounds, int layer, bool debug) {
+Entity* TileFactory::create_selection_rectangle(sf::FloatRect* bounds, bool debug) {
    Entity* sr = new Entity();
    GraphicsPart* graphics_part = new GraphicsPart();
    PhysicsPart* physics_part = new PhysicsPart();

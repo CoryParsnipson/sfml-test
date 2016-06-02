@@ -32,8 +32,7 @@ public:
       sf::Vector2f pos = sf::Vector2f(0, 0),
       int size = 12,
       ALIGN alignment = ALIGN::LEFT,
-      sf::Color color = sf::Color::White,
-      int layer = 0
+      sf::Color color = sf::Color::White
    );
 
    virtual TextGraphic* create_text(
@@ -42,8 +41,7 @@ public:
       sf::Vector2f pos = sf::Vector2f(0, 0),
       int size = 12,
       ALIGN alignment = ALIGN::LEFT,
-      sf::Color color = sf::Color::White,
-      int layer = 0
+      sf::Color color = sf::Color::White
    );
 
    virtual Entity* create_text_entity(
@@ -53,7 +51,6 @@ public:
       int size = 12,
       ALIGN alignment = ALIGN::LEFT,
       sf::Color color = sf::Color::White,
-      int layer = 0,
       bool debug = false
    );
 

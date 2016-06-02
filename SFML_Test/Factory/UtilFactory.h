@@ -11,7 +11,7 @@ public:
    static UtilFactory* inst();
    virtual ~UtilFactory();
 
-   virtual Entity* create_mouse(int layer);
+   virtual Entity* create_mouse();
 
    virtual Entity* create_graphic(Graphic* g, sf::FloatRect bounding_box, bool debug = false);
 

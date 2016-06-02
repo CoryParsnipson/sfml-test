@@ -55,7 +55,7 @@ sf::Font* TextFactory::get_font(std::string font_name) {
    return it->second;
 }
 
-TextGraphic* TextFactory::create_text(std::string msg, sf::Font* font, sf::Vector2f pos, int size, ALIGN alignment, sf::Color color, int layer) {
+TextGraphic* TextFactory::create_text(std::string msg, sf::Font* font, sf::Vector2f pos, int size, ALIGN alignment, sf::Color color) {
    TextGraphic* t = new TextGraphic(msg, font, size);
 
    t->set_color(color);
@@ -65,15 +65,15 @@ TextGraphic* TextFactory::create_text(std::string msg, sf::Font* font, sf::Vecto
    return t;
 }
 
-TextGraphic* TextFactory::create_text(std::string msg, std::string font, sf::Vector2f pos, int size, ALIGN alignment, sf::Color color, int layer) {
-   return this->create_text(msg, this->get_font(font), pos, size, alignment, color, layer);
+TextGraphic* TextFactory::create_text(std::string msg, std::string font, sf::Vector2f pos, int size, ALIGN alignment, sf::Color color) {
+   return this->create_text(msg, this->get_font(font), pos, size, alignment, color);
 }
 
-Entity* TextFactory::create_text_entity(std::string msg, std::string font, sf::Vector2f pos, int size, ALIGN alignment, sf::Color color, int layer, bool debug) {
+Entity* TextFactory::create_text_entity(std::string msg, std::string font, sf::Vector2f pos, int size, ALIGN alignment, sf::Color color, bool debug) {
    Entity* text_entity = new Entity();
    GraphicsPart* text_entity_graphics = new GraphicsPart();
 
-   text_entity_graphics->add(this->create_text(msg, font, pos, size, alignment, color, layer));
+   text_entity_graphics->add(this->create_text(msg, font, pos, size, alignment, color));
    text_entity->add(text_entity_graphics);
 
    if (debug) {

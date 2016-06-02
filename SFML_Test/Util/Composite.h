@@ -102,7 +102,6 @@ void Composite<T>::remove(T* child) {
    iterator<CompositeList> it;
    for (it = this->children_.begin(); it != this->children_.end(); ++it) {
       if (*it == child) {
-         delete *it;
          this->children_.erase(it);
          return;
       }

@@ -13,8 +13,8 @@ TextWidget::TextWidget(const std::string& text)
 {
    this->text_->set_color(sf::Color::Blue);
 
-   this->text_size_.x = this->text_->get_local_bounds().width;
-   this->text_size_.y = this->text_->get_local_bounds().height;
+   this->size_.x = this->text_->get_local_bounds().width;
+   this->size_.y = this->text_->get_local_bounds().height;
 }
 
 TextWidget::~TextWidget() {
@@ -32,23 +32,28 @@ const sf::Vector2f& TextWidget::get_position() {
    return this->text_->get_position();
 }
 
-void TextWidget::move(const sf::Vector2f& delta) {
-   this->text_->move(delta);
-
-   Widget::move(delta);
+void TextWidget::set_position(const sf::Vector2f& pos) {
+   this->text_->set_position(pos);
 }
 
 sf::Vector2f TextWidget::get_size() {
-   return this->text_size_;
+   return this->size_;
 }
 
 void TextWidget::set_size(const sf::Vector2f& size) {
-   this->text_size_ = size;
+   this->size_ = size;
    this->word_wrap();
 }
 
 void TextWidget::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
+   // TODO: this is a hack
+   this->set_size(this->parent_->get_size());
+   // end hack
+
    this->text_->draw(surface, render_states);
+
+   render_states.transform.translate(this->get_position());
+   Widget::draw(surface, render_states);
 }
 
 void TextWidget::word_wrap() {

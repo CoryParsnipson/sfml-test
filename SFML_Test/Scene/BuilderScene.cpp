@@ -106,7 +106,7 @@ BuilderScene::BuilderScene()
    delete map_builder;
 
    // initialize entities
-   this->mouse_ = UtilFactory::inst()->create_mouse(0);
+   this->mouse_ = UtilFactory::inst()->create_mouse();
    this->scene_graph_[4]->add(new EntitySceneGraphNode(*this->mouse_));
 
    // let our mouse controller manipulate this scene
@@ -470,7 +470,6 @@ void BuilderScene::set_tiles(Texture& tile_texture) {
          Entity* tile = TileFactory::inst()->create_tile(
             tile_texture,
             sf::Vector2f(tile_col, tile_row),
-            0,
             false
          );
 

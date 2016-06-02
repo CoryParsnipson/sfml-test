@@ -41,6 +41,8 @@ INCLUDE_PATHS += SFML_Test/Serializer
 INCLUDE_PATHS += SFML_Test/Map
 INCLUDE_PATHS += SFML_Test/Manager
 INCLUDE_PATHS += SFML_Test/Factory
+INCLUDE_PATHS += SFML_Test/UI/Widget
+INCLUDE_PATHS += SFML_Test/UI/Compositor
 INCLUDE_PATHS += SFML_Test/UI
 
 CXX_FILES = 
@@ -59,7 +61,8 @@ CXX_FILES += $(PROJECT_DIR)/Serializer/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Map/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Manager/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Factory/*.cpp
-CXX_FILES += $(PROJECT_DIR)/UI/*.cpp
+CXX_FILES += $(PROJECT_DIR)/UI/Widget/*.cpp
+CXX_FILES += $(PROJECT_DIR)/UI/Compositor/*.cpp
 
 .PHONY: for_debug for_release
 .DEFAULT_GOAL := for_debug

@@ -23,6 +23,7 @@ TestUIScene::TestUIScene()
 {
    // load textures
    TextureManager::inst()->create_texture("ui_resize_handle", "ui_panel_test.png", sf::IntRect(30, 0, 10, 10));
+   TextureManager::inst()->create_texture("tile_water_ul", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 64, 64, 64));
    TextureManager::inst()->print();
 
    this->hud_camera_ = new Camera("Hud Camera", sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height()));
@@ -41,18 +42,19 @@ TestUIScene::TestUIScene()
    )));
 
    // test widget
-   this->widget_ = new PanelWidget(sf::Vector2f(100, 100), sf::Vector2f(300, 200), nullptr, true, true);
+   this->widget_ = new PanelWidget(sf::Vector2f(100, 100), sf::Vector2f(300, 200), true, true);
 
    Widget* tw = new TextWidget("PENIS PENIS PENIS PENIS PENIS PENIS PENIS PENIS PENIS");
    tw->set_size(sf::Vector2f(300, 200));
    this->widget_->add(tw);
    this->scene_graph_[0]->add(new DrawableSceneGraphNode(*this->widget_));
    
-   Widget* bw = new ButtonWidget(sf::Vector2f(10, 30), sf::Vector2f(30, 15));
+   ButtonWidget* bw = new ButtonWidget(sf::Vector2f(10, 30), sf::Vector2f(30, 15));
+   bw->set_background(new SpriteGraphic(TextureManager::inst()->get_texture("tile_water_ul")));
    this->widget_->add(bw);
 
    // set up mouse
-   this->mouse_ = UtilFactory::inst()->create_mouse(0);
+   this->mouse_ = UtilFactory::inst()->create_mouse();
    dynamic_cast<MouseControlPart*>(this->mouse_->get("control"))->set_controllable(dynamic_cast<PanelWidget*>(this->widget_));
    this->scene_graph_[2]->add(new EntitySceneGraphNode(*this->mouse_));
 
@@ -62,6 +64,7 @@ TestUIScene::TestUIScene()
 }
 
 TestUIScene::~TestUIScene() {
+   delete this->widget_;
 }
 
 void TestUIScene::enter(Game& game) {

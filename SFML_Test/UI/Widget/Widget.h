@@ -1,6 +1,7 @@
 #ifndef WIDGET_H
 #define WIDGET_H
 
+#include "UI.h"
 #include "dependencies.h"
 #include "Draw.h"
 #include "Update.h"
@@ -12,22 +13,21 @@ class Widget
 , public Composite<Widget>
 {
 public:
-   enum Position {
-      ABSOLUTE,
-      RELATIVE,
-      STATIC
-   };
-
    Widget();
    virtual ~Widget();
 
+   // composite interface
+   virtual void add_post(Widget* child);
+   virtual void remove_post(Widget* child);
+
    // widget interface
-   void set_positioning(Widget::Position position);
-   Widget::Position get_positioning();
+   void set_positioning(UI::Positioning position);
+   UI::Positioning get_positioning();
 
    virtual const sf::Vector2f& get_position() = 0;
-   virtual void set_position(const sf::Vector2f& pos);
-   virtual void move(const sf::Vector2f& delta);
+   virtual void set_position(const sf::Vector2f& pos) = 0;
+
+   void move(const sf::Vector2f& delta);
 
    virtual sf::Vector2f get_size() = 0;
    virtual void set_size(const sf::Vector2f& size) = 0;
@@ -38,8 +38,13 @@ public:
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 
+private:
+   void set_parent(Widget* parent);
+   Widget* get_parent();
+
 protected:
-   Position position_;
+   Widget* parent_;
+   UI::Positioning positioning_;
 };
 
 #endif

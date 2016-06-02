@@ -14,7 +14,7 @@ public:
 
    // widget interface
    virtual const sf::Vector2f& get_position();
-   virtual void move(const sf::Vector2f& delta);
+   virtual void set_position(const sf::Vector2f& pos);
 
    virtual sf::Vector2f get_size();
    virtual void set_size(const sf::Vector2f& size);
@@ -25,7 +25,7 @@ public:
 protected:
    std::string raw_text_;
 
-   sf::Vector2f text_size_;
+   sf::Vector2f size_;
    Graphic* text_;
 
    void word_wrap();
