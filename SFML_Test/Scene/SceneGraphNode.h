@@ -16,9 +16,6 @@ public:
    virtual ~SceneGraphNode();
 
    // scene graph interface
-   void set_render_state(const sf::RenderStates& state_);
-   sf::RenderStates get_render_state();
-
    bool visible() const;
    void visible(bool visible);
 
@@ -29,7 +26,6 @@ public:
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 
 protected:
-   sf::RenderStates state_;
    bool visible_; // visibility for this node AND IT'S CHILDREN
 
    // interface hooks for CHILDREN

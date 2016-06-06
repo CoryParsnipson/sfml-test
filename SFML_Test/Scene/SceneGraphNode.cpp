@@ -1,8 +1,7 @@
 #include "SceneGraphNode.h"
 
 SceneGraphNode::SceneGraphNode(sf::RenderStates state /* = sf::RenderStates::Default*/, bool visible /* = true */)
-: state_(state)
-, visible_(visible)
+: visible_(visible)
 {
 }
 
@@ -11,14 +10,6 @@ SceneGraphNode::~SceneGraphNode() {
    for (it = this->children_.begin(); it != this->children_.end(); ++it) {
       delete *it;
    }
-}
-
-void SceneGraphNode::set_render_state(const sf::RenderStates& state) {
-   this->state_ = state;
-}
-
-sf::RenderStates SceneGraphNode::get_render_state() {
-   return this->state_;
 }
 
 bool SceneGraphNode::visible() const {
@@ -35,9 +26,6 @@ void SceneGraphNode::draw(RenderSurface& surface, sf::RenderStates render_states
    }
 
    this->pre_draw(surface, render_states);
-
-   // combine parent transform with current node's transform to pass onto children
-   render_states.transform *= this->state_.transform;
 
    const_iterator<CompositeList> it;
    for (it = this->children_.begin(); it != this->children_.end(); ++it) {

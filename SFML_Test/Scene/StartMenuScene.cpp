@@ -17,11 +17,6 @@ StartMenuScene::StartMenuScene()
 : Scene("StartMenuScene")
 , show_debug_info_(false)
 {
-   sf::RenderStates s;
-   s.transform = sf::Transform::Identity;
-   s.transform.translate(this->camera_->get_center());
-   this->scene_graph_[0]->set_render_state(s);
-
    // populate entities
    SceneGraphNode* node = new EntitySceneGraphNode(
       *TextFactory::inst()->create_text_entity(
@@ -58,6 +53,8 @@ StartMenuScene::StartMenuScene()
          this->show_debug_info_
    ));
    this->scene_graph_[0]->add(node);
+
+   this->camera_->move(sf::Vector2f(Settings::Instance()->cur_width() / 2.f, Settings::Instance()->cur_height() / 2.f));
 }
 
 StartMenuScene::~StartMenuScene() {
@@ -80,17 +77,14 @@ void StartMenuScene::process(Game& game, CloseInputEvent& e) {
 }
 
 void StartMenuScene::process(Game& game, ResizeInputEvent& e) {
-   sf::Vector2f original_offset = this->camera_->get_center();
+   sf::Vector2f original_offset(this->camera_->get_size() / 2.f);
 
    Scene::process(game, e);
 
-   sf::Vector2f new_size(e.width, e.height);
    sf::Vector2f new_center(e.width / 2.f, e.height / 2.f);
 
-   // adjust scene graph
-   sf::RenderStates s(this->scene_graph_[0]->get_render_state());
-   s.transform.translate(new_center - original_offset);
-   this->scene_graph_[0]->set_render_state(s);
+   this->camera_->set_size(sf::Vector2f(e.width, e.height));
+   this->camera_->move(new_center - original_offset);
 }
 
 void StartMenuScene::process(Game& game, KeyPressInputEvent& e) {

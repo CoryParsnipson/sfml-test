@@ -21,8 +21,6 @@
 #include "FlatMapBuilder.h"
 #include "Grid.h"
 
-#include "TransformSceneGraphNode.h"
-
 #include "MoveCameraCommand.h"
 
 BuilderScene::BuilderScene()
