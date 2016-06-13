@@ -15,12 +15,13 @@ void ConsoleLogger::msg(std::string tag, CATEGORY c, std::string msg) {
       return;
    }
 
-   if (msg == this->last_line_) {
+   if (msg == this->last_line_ && tag == this->last_tag_) {
       this->multiplicity++;
 
       std::cout << "\r";
    } else {
       this->multiplicity = 1;
+      this->last_tag_ = tag;
       this->last_line_ = msg;
       
       std::cout << "\n";

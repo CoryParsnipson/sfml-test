@@ -13,6 +13,7 @@ public:
 
 protected:
    int multiplicity;
+   std::string last_tag_;
    std::string last_line_;
 };
 
