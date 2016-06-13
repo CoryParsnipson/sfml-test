@@ -1,8 +1,8 @@
 #include "CameraSceneGraphNode.h"
 #include "Camera.h"
 
-CameraSceneGraphNode::CameraSceneGraphNode(Camera& c, sf::RenderStates state /* = sf::RenderStates::Default */, bool visible /* = true */)
-: SceneGraphNode(state, visible)
+CameraSceneGraphNode::CameraSceneGraphNode(Camera& c, bool visible /* = true */)
+: SceneGraphNode(visible)
 , camera_(&c)
 {
 }

@@ -12,7 +12,7 @@ class SceneGraphNode
 , public Update
 {
 public:
-   SceneGraphNode(sf::RenderStates state = sf::RenderStates::Default, bool visible = true);
+   SceneGraphNode(bool visible = true);
    virtual ~SceneGraphNode();
 
    // scene graph interface

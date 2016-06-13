@@ -5,7 +5,7 @@
 
 class DrawableSceneGraphNode : public SceneGraphNode {
 public:
-   DrawableSceneGraphNode(Draw& d, sf::RenderStates state = sf::RenderStates::Default, bool visible = true);
+   DrawableSceneGraphNode(Draw& d, bool visible = true);
 
 protected:
    Draw* drawable_;

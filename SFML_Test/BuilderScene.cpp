@@ -113,7 +113,6 @@ BuilderScene::BuilderScene()
    // create a selection rectangle entity and add it to the scene initally invisible
    this->selection_rectangle_ = new EntitySceneGraphNode(
       *TileFactory::inst()->create_selection_rectangle(),
-      sf::RenderStates::Default,
       false
    );
    this->scene_graph_[3]->add(this->selection_rectangle_);
@@ -125,7 +124,6 @@ BuilderScene::BuilderScene()
          nullvect,
          nullvect
       ),
-      sf::RenderStates::Default,
       false
    );
    this->scene_graph_[2]->add(this->tile_cursor_);

@@ -7,7 +7,7 @@ class Camera;
 
 class CameraSceneGraphNode : public SceneGraphNode {
 public:
-   CameraSceneGraphNode(Camera& c, sf::RenderStates state = sf::RenderStates::Default, bool visible = true);
+   CameraSceneGraphNode(Camera& c, bool visible = true);
 
 protected:
    Camera* camera_;

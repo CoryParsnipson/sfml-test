@@ -1,6 +1,6 @@
 #include "SceneGraphNode.h"
 
-SceneGraphNode::SceneGraphNode(sf::RenderStates state /* = sf::RenderStates::Default*/, bool visible /* = true */)
+SceneGraphNode::SceneGraphNode(bool visible /* = true */)
 : visible_(visible)
 {
 }
@@ -37,5 +37,11 @@ void SceneGraphNode::draw(RenderSurface& surface, sf::RenderStates render_states
 
 void SceneGraphNode::update(Game& game, Scene* scene /* = nullptr */, Entity* entity /* = nullptr */) {
    this->pre_update(game, scene, entity);
+
+   const_iterator<CompositeList> it;
+   for (it = this->children_.begin(); it != this->children_.end(); ++it) {
+      (*it)->update(game, scene, entity);
+   }
+
    this->post_update(game, scene, entity);
 }

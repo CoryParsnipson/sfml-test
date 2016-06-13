@@ -1,8 +1,8 @@
 #include "EntitySceneGraphNode.h"
 #include "Entity.h"
 
-EntitySceneGraphNode::EntitySceneGraphNode(Entity& e, sf::RenderStates state /* = sf::RenderStates::Default */, bool visible /* = true */)
-: SceneGraphNode(state, visible)
+EntitySceneGraphNode::EntitySceneGraphNode(Entity& e, bool visible /* = true */)
+: SceneGraphNode(visible)
 , entity_(&e)
 {
 }

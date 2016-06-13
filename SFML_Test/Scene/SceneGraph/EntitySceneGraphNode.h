@@ -7,7 +7,7 @@ class Entity;
 
 class EntitySceneGraphNode : public SceneGraphNode {
 public:
-   EntitySceneGraphNode(Entity& e, sf::RenderStates state = sf::RenderStates::Default, bool visible = true);
+   EntitySceneGraphNode(Entity& e, bool visible = true);
 
    Entity* get_entity();
 
