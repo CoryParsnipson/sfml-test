@@ -7,6 +7,9 @@ class DrawableSceneGraphNode : public SceneGraphNode {
 public:
    DrawableSceneGraphNode(Draw& d, bool visible = true);
 
+   // scene graph visitor interface
+   virtual void accept(SceneGraphVisitor& visitor);
+
 protected:
    Draw* drawable_;
 

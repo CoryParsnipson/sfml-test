@@ -6,7 +6,7 @@ SceneGraphNode::SceneGraphNode(bool visible /* = true */)
 }
 
 SceneGraphNode::~SceneGraphNode() {
-   iterator<CompositeList> it;
+   SceneGraphNode::iterator it;
    for (it = this->children_.begin(); it != this->children_.end(); ++it) {
       delete *it;
    }
@@ -27,7 +27,7 @@ void SceneGraphNode::draw(RenderSurface& surface, sf::RenderStates render_states
 
    this->pre_draw(surface, render_states);
 
-   const_iterator<CompositeList> it;
+   SceneGraphNode::const_iterator it;
    for (it = this->children_.begin(); it != this->children_.end(); ++it) {
       (*it)->draw(surface, render_states);
    }
@@ -38,7 +38,7 @@ void SceneGraphNode::draw(RenderSurface& surface, sf::RenderStates render_states
 void SceneGraphNode::update(Game& game, Scene* scene /* = nullptr */, Entity* entity /* = nullptr */) {
    this->pre_update(game, scene, entity);
 
-   const_iterator<CompositeList> it;
+   SceneGraphNode::const_iterator it;
    for (it = this->children_.begin(); it != this->children_.end(); ++it) {
       (*it)->update(game, scene, entity);
    }

@@ -1,4 +1,5 @@
 #include "EntitySceneGraphNode.h"
+#include "SceneGraphVisitor.h"
 #include "Entity.h"
 
 EntitySceneGraphNode::EntitySceneGraphNode(Entity& e, bool visible /* = true */)
@@ -9,6 +10,10 @@ EntitySceneGraphNode::EntitySceneGraphNode(Entity& e, bool visible /* = true */)
 
 Entity* EntitySceneGraphNode::get_entity() {
    return this->entity_;
+}
+
+void EntitySceneGraphNode::accept(SceneGraphVisitor& visitor) {
+   visitor.visit(this->entity_);
 }
 
 void EntitySceneGraphNode::pre_draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {

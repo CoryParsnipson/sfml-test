@@ -12,7 +12,7 @@ Widget::~Widget() {
    }
 
    // delete all children (Widget can only have 1 parent)
-   iterator<CompositeList> it;
+   Widget::iterator it;
    for (it = this->children_.begin(); it != this->children_.end(); ++it) {
       delete *it;
    }
@@ -47,14 +47,14 @@ void Widget::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf
    sf::RenderStates widget_state = render_states;
    widget_state.transform.translate(this->get_position());
 
-   const_iterator<CompositeList> it;
+   Widget::iterator it;
    for (it = this->children_.begin(); it != this->children_.end(); ++it) {
       (*it)->draw(surface, ((*it)->get_positioning() == UI::Positioning::Default ? widget_state : render_states));
    }
 }
 
 void Widget::update(Game& game, Scene* scene, Entity* entity) {
-   const_iterator<CompositeList> it;
+   Widget::iterator it;
    for (it = this->children_.begin(); it != this->children_.end(); ++it) {
       (*it)->update(game, scene, entity);
    }

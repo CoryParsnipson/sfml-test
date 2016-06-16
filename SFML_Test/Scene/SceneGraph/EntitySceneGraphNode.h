@@ -11,6 +11,9 @@ public:
 
    Entity* get_entity();
 
+   // scene graph visitor interface
+   virtual void accept(SceneGraphVisitor& visitor);
+
 protected:
    Entity* entity_;
 

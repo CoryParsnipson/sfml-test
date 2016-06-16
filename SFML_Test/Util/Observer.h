@@ -6,19 +6,19 @@
 #include <iostream>
 
 // ----------------------------------------------------------------------------
-// useful things
-// ----------------------------------------------------------------------------
-template<typename C>
-using iterator = typename C::iterator;
-
-template<typename C>
-using const_iterator = typename C::const_iterator;
-
-// ----------------------------------------------------------------------------
 // forward declarations
 // ----------------------------------------------------------------------------
 template <class T> class Observer;
 template <class T> class Subject;
+
+// ----------------------------------------------------------------------------
+// aliases
+// ----------------------------------------------------------------------------
+template <class T>
+using ObserverList = std::vector<Observer<T>*>;
+
+template <class T>
+using SubjectList = std::vector<Subject<T>*>;
 
 // ----------------------------------------------------------------------------
 // Subject base class
@@ -31,8 +31,6 @@ template <class T> class Subject;
 template <class T>
 class Subject {
 public:
-   using ObserverList = std::vector<Observer<T>*>;
-
    Subject(std::string id = "Subject");
    virtual ~Subject();
 
@@ -55,7 +53,7 @@ private:
 
 protected:
    std::string id_;
-   ObserverList observers_;
+   ObserverList<T> observers_;
 };
 
 // ----------------------------------------------------------------------------
@@ -69,8 +67,6 @@ protected:
 template <class T>
 class Observer {
 public:
-   using SubjectList = std::vector<Subject<T>*>;
-
    // ----------------------------------------------------------------------------
    // public interface
    // ----------------------------------------------------------------------------
@@ -99,7 +95,7 @@ private:
 
 protected:
    std::string id_;
-   SubjectList subjects_;
+   SubjectList<T> subjects_;
 };
 
 // ----------------------------------------------------------------------------
@@ -128,7 +124,7 @@ Subject<T>::Subject(std::string id /* = "Subject" */)
 
 template <class T>
 Subject<T>::~Subject() {
-   const_iterator<ObserverList> it;
+   typename ObserverList<T>::const_iterator it;
    for (it = this->observers_.begin(); it != this->observers_.end(); ++it) {
       (*it)->remove(*this);
    }
@@ -139,7 +135,7 @@ Subject<T>::~Subject() {
 // ----------------------------------------------------------------------------
 template <class T>
 bool Subject<T>::attach(Observer<T>& observer) {
-   const_iterator<ObserverList> it;
+   typename ObserverList<T>::const_iterator it;
    for (it = this->observers_.begin(); it != this->observers_.end(); ++it) {
       if ((*it) == &observer) {
          //Service::get_logger().msg("Subject", Logger::WARNING, "(id = " + this->id_ + ") Ignoring request to attach observer that is already attached.");
@@ -154,7 +150,7 @@ bool Subject<T>::attach(Observer<T>& observer) {
 
 template <class T>
 bool Subject<T>::detach(Observer<T>& observer) {
-   const_iterator<ObserverList> it = std::find(this->observers_.begin(), this->observers_.end(), &observer);
+   typename ObserverList<T>::const_iterator it = std::find(this->observers_.begin(), this->observers_.end(), &observer);
    if (it != this->observers_.end()) {
       (*it)->remove(*this);
       this->observers_.erase(it);
@@ -168,7 +164,7 @@ bool Subject<T>::detach(Observer<T>& observer) {
 
 template <class T>
 void Subject<T>::notify(T& message) {
-   const_iterator<ObserverList> it;
+   typename ObserverList<T>::const_iterator it;
    for (it = this->observers_.begin(); it != this->observers_.end(); ++it) {
       (*it)->notify(message);
    }
@@ -185,7 +181,7 @@ Observer<T>::Observer(std::string id /* = "Observer" */)
 
 template <class T>
 Observer<T>::~Observer() {
-   const_iterator<SubjectList> it = this->subjects_.begin();
+   typename SubjectList<T>::const_iterator it = this->subjects_.begin();
 
    // need to use while loop because detach modifies this list
    while (it != this->subjects_.end()) {
@@ -205,7 +201,7 @@ void Observer<T>::add(Subject<T>& subject) {
 
 template <class T>
 void Observer<T>::remove(Subject<T>& subject) {
-   const_iterator<SubjectList> it = std::find(this->subjects_.begin(), this->subjects_.end(), &subject);
+   typename SubjectList<T>::const_iterator it = std::find(this->subjects_.begin(), this->subjects_.end(), &subject);
    if (it != this->subjects_.end()) {
       this->subjects_.erase(it);
    }

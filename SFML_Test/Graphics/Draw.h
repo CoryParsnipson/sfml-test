@@ -22,7 +22,7 @@ public:
 
    // drawable interface
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {
-      iterator<Composite<Graphic>::CompositeList> it;
+      Graphic::const_iterator it;
       for (it = this->children_.begin(); it != this->children_.end(); ++it) {
          (*it)->draw(surface, render_states);
       }
