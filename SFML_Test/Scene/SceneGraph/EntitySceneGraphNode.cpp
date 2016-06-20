@@ -1,5 +1,4 @@
 #include "EntitySceneGraphNode.h"
-#include "SceneGraphVisitor.h"
 #include "Entity.h"
 
 EntitySceneGraphNode::EntitySceneGraphNode(Entity& e, bool visible /* = true */)

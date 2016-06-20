@@ -5,11 +5,7 @@
 #include "Composite.h"
 #include "Draw.h"
 #include "Update.h"
-
-// ----------------------------------------------------------------------------
-// forward declarations
-// ----------------------------------------------------------------------------
-class SceneGraphVisitor;
+#include "SceneGraphVisitor.h"
 
 // ----------------------------------------------------------------------------
 // SceneGraphNode abstract base

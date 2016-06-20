@@ -12,6 +12,7 @@
 // entities with commands.
 // ----------------------------------------------------------------------------
 class Gamepad
+: public Update
 {
 public:
    Gamepad(std::string id) : enable_(true), id_(std::move(id)) {}

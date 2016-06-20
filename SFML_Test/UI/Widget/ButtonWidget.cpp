@@ -38,6 +38,10 @@ void ButtonWidget::set_size(const sf::Vector2f& size) {
    this->background_->set_size(size);
 }
 
+bool ButtonWidget::intersects(const sf::Vector2f& other) {
+   return this->background_->get_global_bounds().contains(other);
+}
+
 void ButtonWidget::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    this->background_->draw(surface, render_states);
 

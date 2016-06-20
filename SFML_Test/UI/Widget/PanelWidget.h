@@ -23,6 +23,8 @@ public:
    virtual sf::Vector2f get_size();
    virtual void set_size(const sf::Vector2f& size);
 
+   virtual bool intersects(const sf::Vector2f& other);
+
    // draw interface
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 

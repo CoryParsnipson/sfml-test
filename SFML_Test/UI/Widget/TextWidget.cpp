@@ -45,6 +45,10 @@ void TextWidget::set_size(const sf::Vector2f& size) {
    this->word_wrap();
 }
 
+bool TextWidget::intersects(const sf::Vector2f& other) {
+   return this->text_->get_global_bounds().contains(other);
+}
+
 void TextWidget::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    // TODO: this is a hack
    this->set_size(this->parent_->get_size());

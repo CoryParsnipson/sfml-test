@@ -1,29 +1,29 @@
-#ifndef ENTITY_SCENE_GRAPH_NODE_H
-#define ENTITY_SCENE_GRAPH_NODE_H
+#ifndef WIDGET_SCENE_GRAPH_NODE_H
+#define WIDGET_SCENE_GRAPH_NODE_H
 
 #include "SceneGraphNode.h"
 
 // -----------------------------------------------------------------------------
 // forward declarations
 // -----------------------------------------------------------------------------
-class Entity;
+class Widget;
 
 // -----------------------------------------------------------------------------
-// EntitySceneGraphNode class
-//
-// This is a scene graph node that contains an entity.
+// WidgetSceneGraphNode class
+// 
+// This is a scene graph node that contains a UI widget.
 // -----------------------------------------------------------------------------
-class EntitySceneGraphNode : public SceneGraphNode {
+class WidgetSceneGraphNode : public SceneGraphNode {
 public:
-   EntitySceneGraphNode(Entity& e, bool visible = true);
+   WidgetSceneGraphNode(Widget& w, bool visible = true);
 
-   Entity* get_entity();
+   Widget* get_widget();
 
    // scene graph visitor interface
    virtual void accept(SceneGraphVisitor& visitor);
 
 protected:
-   Entity* entity_;
+   Widget* widget_;
 
    virtual void pre_draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
    virtual void post_update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);

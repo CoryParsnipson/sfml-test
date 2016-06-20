@@ -54,6 +54,10 @@ void PanelWidget::set_size(const sf::Vector2f& size) {
    }
 }
 
+bool PanelWidget::intersects(const sf::Vector2f& other) {
+   return this->panel_->get_global_bounds().contains(other);
+}
+
 void PanelWidget::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    this->surface_.clear();
    this->panel_->draw(this->surface_, render_states);
