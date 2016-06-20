@@ -1,7 +1,7 @@
 #include "ButtonWidget.h"
 
-ButtonWidget::ButtonWidget(const sf::Vector2f& pos, const sf::Vector2f& size, Widget* parent /* = nullptr */)
-: Widget()
+ButtonWidget::ButtonWidget(std::string id, const sf::Vector2f& pos, const sf::Vector2f& size, Widget* parent /* = nullptr */)
+: Widget(id)
 , background_(new SpriteGraphic())
 {
    this->background_->set_position(pos);

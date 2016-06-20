@@ -7,6 +7,7 @@
 #include "dependencies.h"
 #include "Command.h"
 #include "SceneGraphVisitor.h"
+#include "Scene.h"
 
 // ----------------------------------------------------------------------------
 // forward declarations
@@ -17,7 +18,6 @@ class SceneGraphNode;
 // ----------------------------------------------------------------------------
 // aliases
 // ----------------------------------------------------------------------------
-using SceneGraph = std::map<int, SceneGraphNode*>;
 using WidgetList = std::vector<Widget*>;
 
 // ----------------------------------------------------------------------------
@@ -33,11 +33,11 @@ class GetWidgetCommand
 , public SceneGraphVisitor
 {
 public:
-   GetWidgetCommand(SceneGraph* scene_graph, sf::Vector2f target = sf::Vector2f(0, 0));
+   GetWidgetCommand(Scene::SceneGraph* scene_graph, sf::Vector2f target = sf::Vector2f(0, 0));
    virtual ~GetWidgetCommand();
 
-   void scene_graph(SceneGraph* scene_graph);
-   SceneGraph* scene_graph();
+   void scene_graph(Scene::SceneGraph* scene_graph);
+   Scene::SceneGraph* scene_graph();
 
    void target(sf::Vector2f pos);
    const sf::Vector2f& target();
@@ -56,7 +56,7 @@ public:
 
 protected:
    sf::Vector2f target_;
-   SceneGraph* scene_graph_;
+   Scene::SceneGraph* scene_graph_;
 
    WidgetList widgets_;   
 };

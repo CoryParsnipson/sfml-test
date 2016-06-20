@@ -12,11 +12,13 @@
 #include "ButtonWidget.h"
 
 #include "CameraSceneGraphNode.h"
-#include "DrawableSceneGraphNode.h"
 #include "EntitySceneGraphNode.h"
+
+#include "GetWidgetCommand.h"
 
 TestUIScene::TestUIScene()
 : Scene("TestUIScene")
+, get_widgets_(new GetWidgetCommand(&this->scene_graph_))
 , last_frame_time(0)
 , frame_measurement_interval(6)
 , frame_count(0)
@@ -41,15 +43,19 @@ TestUIScene::TestUIScene()
          12
    )));
 
-   // test widget
-   this->widget_ = new PanelWidget(sf::Vector2f(100, 100), sf::Vector2f(300, 200), true, true);
+   this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", "retro");
+   this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
+   this->scene_graph_[1]->add(new EntitySceneGraphNode(*this->fps_display_));
 
-   Widget* tw = new TextWidget("PENIS PENIS PENIS PENIS PENIS PENIS PENIS PENIS PENIS");
+   // test widget
+   this->widget_ = new PanelWidget("Test Panel 1", sf::Vector2f(100, 100), sf::Vector2f(300, 200), true, true);
+   this->scene_graph_[0]->add(this->widget_);
+
+   Widget* tw = new TextWidget("Text Widget 1", "PENIS PENIS PENIS PENIS PENIS PENIS PENIS PENIS PENIS");
    tw->set_size(sf::Vector2f(300, 200));
    this->widget_->add(tw);
-   this->scene_graph_[0]->add(new DrawableSceneGraphNode(*this->widget_));
    
-   ButtonWidget* bw = new ButtonWidget(sf::Vector2f(10, 30), sf::Vector2f(30, 15));
+   ButtonWidget* bw = new ButtonWidget("Button Widget 1", sf::Vector2f(10, 30), sf::Vector2f(30, 15));
    bw->set_background(new SpriteGraphic(TextureManager::inst()->get_texture("tile_water_ul")));
    this->widget_->add(bw);
 
@@ -57,14 +63,9 @@ TestUIScene::TestUIScene()
    this->mouse_ = UtilFactory::inst()->create_mouse();
    dynamic_cast<MouseControlPart*>(this->mouse_->get("control"))->set_controllable(dynamic_cast<PanelWidget*>(this->widget_));
    this->scene_graph_[2]->add(new EntitySceneGraphNode(*this->mouse_));
-
-   this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", "retro");
-   this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
-   this->scene_graph_[1]->add(new EntitySceneGraphNode(*this->fps_display_));
 }
 
 TestUIScene::~TestUIScene() {
-   delete this->widget_;
 }
 
 void TestUIScene::enter(Game& game) {
@@ -85,6 +86,27 @@ void TestUIScene::update(Game& game, Scene* scene, Entity* entity) {
       this->update_fps();
    }
    this->frame_count = (this->frame_count + 1) % this->frame_measurement_interval;
+}
+
+void TestUIScene::process(Game& game, MouseButtonInputEvent& e) {
+   if (!(e.button == MouseButton::Left && e.state == MouseButtonState::Released)) {
+      return;
+   }
+   
+   Service::get_logger().msg("TestUIScene", Logger::INFO, "Click release start. ------");
+
+   std::vector<Widget*> w;
+   
+   this->get_widgets_->target(sf::Vector2f(e.x, e.y));
+   this->get_widgets_->execute();
+
+   w = this->get_widgets_->get();
+
+   for (std::vector<Widget*>::const_iterator it = w.begin(); it != w.end(); ++it) {
+      Service::get_logger().msg("TestUIScene", Logger::INFO, **it);
+   }
+
+   Service::get_logger().msg("TestUIScene", Logger::INFO, "Click release end. ------");
 }
 
 void TestUIScene::process(Game& game, ResizeInputEvent& e) {

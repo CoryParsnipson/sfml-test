@@ -13,7 +13,7 @@ public:
    const float MIN_PANEL_WIDTH = 90.f;
    const float MIN_PANEL_HEIGHT = 90.f;
 
-   PanelWidget(const sf::Vector2f& pos, const sf::Vector2f& size, bool draggable = false, bool resizable = false);
+   PanelWidget(std::string id, const sf::Vector2f& pos, const sf::Vector2f& size, bool draggable = false, bool resizable = false);
    virtual ~PanelWidget();
 
    // widget interface

@@ -2,8 +2,8 @@
 #include "RenderSurface.h"
 #include "TextureManager.h"
 
-PanelWidget::PanelWidget(const sf::Vector2f& pos, const sf::Vector2f& size, bool draggable, bool resizable)
-: Widget()
+PanelWidget::PanelWidget(std::string id, const sf::Vector2f& pos, const sf::Vector2f& size, bool draggable, bool resizable)
+: Widget(id)
 , clicked_(false)
 , resized_(false)
 , draggable_(draggable)

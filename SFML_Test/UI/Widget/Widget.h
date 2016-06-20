@@ -1,24 +1,25 @@
 #ifndef WIDGET_H
 #define WIDGET_H
 
-#include "UI.h"
 #include "dependencies.h"
-#include "Draw.h"
-#include "Update.h"
-#include "Composite.h"
+#include "UI.h"
+#include "SceneGraphNode.h"
 
+// -----------------------------------------------------------------------------
+// Widget class
+//
+// This is the base class for all UI elements. This happens to be a child
+// class of SceneGraphNode.
+// -----------------------------------------------------------------------------
 class Widget
-: public Draw
-, public Update
-, public Composite<Widget>
+: public SceneGraphNode
 {
 public:
-   Widget();
+   Widget(std::string id = "Widget");
    virtual ~Widget();
 
-   // composite interface
-   virtual void add_post(Widget* child);
-   virtual void remove_post(Widget* child);
+   // scene graph visitor interface
+   virtual void accept(SceneGraphVisitor& visitor);
 
    // widget interface
    void set_positioning(UI::Positioning position);
@@ -40,12 +41,14 @@ public:
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 
+   operator std::string() const;
+
 private:
-   void set_parent(Widget* parent);
-   Widget* get_parent();
+   friend std::ostream& operator<<(std::ostream& stream, const Widget& widget);
+   std::string to_string() const;
 
 protected:
-   Widget* parent_;
+   std::string id_;
    UI::Positioning positioning_;
 };
 

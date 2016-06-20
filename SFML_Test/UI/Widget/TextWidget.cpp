@@ -6,8 +6,8 @@
 #include "TextWidget.h"
 #include "TextFactory.h"
 
-TextWidget::TextWidget(const std::string& text)
-: Widget()
+TextWidget::TextWidget(std::string id, const std::string& text)
+: Widget(id)
 , raw_text_(text)
 , text_(new TextGraphic(text, TextFactory::inst()->get_font("retro")))
 {
@@ -50,10 +50,6 @@ bool TextWidget::intersects(const sf::Vector2f& other) {
 }
 
 void TextWidget::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
-   // TODO: this is a hack
-   this->set_size(this->parent_->get_size());
-   // end hack
-
    this->text_->draw(surface, render_states);
 
    render_states.transform.translate(this->get_position());

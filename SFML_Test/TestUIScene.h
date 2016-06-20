@@ -3,7 +3,11 @@
 
 #include "Scene.h"
 
+// -----------------------------------------------------------------------------
+// forward declarations
+// -----------------------------------------------------------------------------
 class Widget;
+class GetWidgetCommand;
 
 class TestUIScene
 : public Scene
@@ -19,6 +23,7 @@ public:
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 
    // command interface
+   virtual void process(Game& game, MouseButtonInputEvent& e);
    virtual void process(Game& game, ResizeInputEvent& e);
 
 protected:
@@ -28,6 +33,8 @@ protected:
    Entity* fps_display_;
 
    Widget* widget_;
+   
+   GetWidgetCommand* get_widgets_;
 
    sf::Clock clock;
    int last_frame_time;

@@ -9,7 +9,7 @@ class ButtonWidget
 , public MouseControllable
 {
 public:
-   ButtonWidget(const sf::Vector2f& pos, const sf::Vector2f& size, Widget* parent = nullptr);
+   ButtonWidget(std::string id, const sf::Vector2f& pos, const sf::Vector2f& size, Widget* parent = nullptr);
    ~ButtonWidget();
 
    void set_background(Graphic* background);

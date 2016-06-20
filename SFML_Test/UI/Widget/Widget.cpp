@@ -1,34 +1,29 @@
 #include "Widget.h"
 
-Widget::Widget()
-: parent_(nullptr)
+// ----------------------------------------------------------------------------
+// free function helper methods
+// ----------------------------------------------------------------------------
+std::ostream& operator<<(std::ostream& stream, const Widget& widget) {
+   stream << widget.to_string();
+   return stream;
+}
+
+// ----------------------------------------------------------------------------
+// Widget constructor implementations
+// ----------------------------------------------------------------------------
+Widget::Widget(std::string id /* = "Widget" */)
+: id_(std::move(id))
 , positioning_(UI::Positioning::Default)
 {}
 
 Widget::~Widget() {
-   // remove itself from parent
-   if (this->parent_) {
-      this->parent_->remove(this);
-   }
-
-   // delete all children (Widget can only have 1 parent)
-   Widget::iterator it;
-   for (it = this->children_.begin(); it != this->children_.end(); ++it) {
-      delete *it;
-   }
-   this->children_.clear();
 }
 
-void Widget::add_post(Widget* child) {
-   if (child && child->get_parent()) {
-      child->get_parent()->remove(child);
-   }
-   child->set_parent(this);
-}
-
-void Widget::remove_post(Widget* child) {
-   assert(child);
-   child->set_parent(nullptr);
+// ----------------------------------------------------------------------------
+// Widget method implementations
+// ----------------------------------------------------------------------------
+void Widget::accept(SceneGraphVisitor& visitor) {
+   visitor.visit(this);
 }
 
 void Widget::set_positioning(UI::Positioning positioning) {
@@ -49,7 +44,7 @@ void Widget::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf
 
    Widget::iterator it;
    for (it = this->children_.begin(); it != this->children_.end(); ++it) {
-      (*it)->draw(surface, ((*it)->get_positioning() == UI::Positioning::Default ? widget_state : render_states));
+      (*it)->draw(surface, (static_cast<Widget*>(*it)->get_positioning() == UI::Positioning::Default ? widget_state : render_states));
    }
 }
 
@@ -60,10 +55,10 @@ void Widget::update(Game& game, Scene* scene, Entity* entity) {
    }
 }
 
-void Widget::set_parent(Widget* parent) {
-   this->parent_ = parent;
+Widget::operator std::string() const {
+   return this->to_string();
 }
 
-Widget* Widget::get_parent() {
-   return this->parent_;
+std::string Widget::to_string() const {
+   return "[Widget: " + this->id_ + "]";
 }

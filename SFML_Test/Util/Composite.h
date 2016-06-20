@@ -341,7 +341,6 @@ void Composite<T, Traits>::remove(T* child) {
    typename std::vector<T*>::iterator it;
    for (it = this->children_.begin(); it != this->children_.end(); ++it) {
       if (*it == child) {
-         delete *it; // do you need delete?
          this->children_.erase(it);
          return;
       }

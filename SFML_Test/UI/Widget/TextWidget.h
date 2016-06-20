@@ -7,7 +7,7 @@ class TextWidget
 : public Widget
 {
 public:
-   TextWidget(const std::string& text);
+   TextWidget(std::string id, const std::string& text);
    virtual ~TextWidget();
 
    void set_text(const std::string& text);
