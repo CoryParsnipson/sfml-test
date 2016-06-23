@@ -163,7 +163,7 @@ BuilderScene::BuilderScene()
       center_dot_graphic->get_global_bounds(),
       this->show_debug_info_
    );
-   this->scene_graph_[3]->add(new DrawableSceneGraphNode(*this->center_dot_));
+   this->scene_graph_[3]->add(new EntitySceneGraphNode(*this->center_dot_));
 
    this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", "retro");
    this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);

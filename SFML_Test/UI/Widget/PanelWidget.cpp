@@ -14,6 +14,8 @@ PanelWidget::PanelWidget(std::string id, const sf::Vector2f& pos, const sf::Vect
 {
    this->set_size(size);
 
+   this->transform_.translate(pos);
+
    this->panel_->set_position(pos);
    this->panel_->set_color(sf::Color(192, 192, 192, 255));
 
@@ -34,6 +36,10 @@ const sf::Vector2f& PanelWidget::get_position() {
 }
 
 void PanelWidget::set_position(const sf::Vector2f& pos) {
+   // update scene graph node transform info
+   this->transform_.translate(-1.f * this->panel_->get_position());
+   this->transform_.translate(pos);
+
    this->panel_->set_position(pos);
    if (this->resize_handle_) {
       this->resize_handle_->set_position(this->panel_->get_position() + this->panel_->get_size() - this->resize_handle_->get_size());
@@ -55,7 +61,8 @@ void PanelWidget::set_size(const sf::Vector2f& size) {
 }
 
 bool PanelWidget::intersects(const sf::Vector2f& other) {
-   return this->panel_->get_global_bounds().contains(other);
+   sf::Transform transform = this->transform();
+   return transform.transformRect(this->panel_->get_local_bounds()).contains(other);
 }
 
 void PanelWidget::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {

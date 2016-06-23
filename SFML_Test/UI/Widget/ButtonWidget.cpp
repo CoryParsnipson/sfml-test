@@ -1,4 +1,5 @@
 #include "ButtonWidget.h"
+#include "RenderSurface.h"
 
 ButtonWidget::ButtonWidget(std::string id, const sf::Vector2f& pos, const sf::Vector2f& size, Widget* parent /* = nullptr */)
 : Widget(id)
@@ -39,7 +40,8 @@ void ButtonWidget::set_size(const sf::Vector2f& size) {
 }
 
 bool ButtonWidget::intersects(const sf::Vector2f& other) {
-   return this->background_->get_global_bounds().contains(other);
+   sf::Transform transform = this->transform();
+   return transform.transformRect(this->background_->get_global_bounds()).contains(other);
 }
 
 void ButtonWidget::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {

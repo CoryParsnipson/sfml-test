@@ -31,6 +31,11 @@ public:
    bool visible() const;
    void visible(bool visible);
 
+   SceneGraphNode* parent();
+   void parent(SceneGraphNode* node);
+
+   virtual sf::Transform transform();
+
    // scene graph visitor interface
    virtual void accept(SceneGraphVisitor& visitor) = 0;
 
@@ -42,8 +47,13 @@ public:
 
 protected:
    bool visible_; // visibility for this node AND IT'S CHILDREN
+   sf::Transform transform_;
+   SceneGraphNode* parent_;
 
    // interface hooks for children 
+   virtual void add_pre(SceneGraphNode* child);
+   virtual void remove_post(SceneGraphNode* child);
+   
    virtual void pre_draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {}
    virtual void post_draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {}
 

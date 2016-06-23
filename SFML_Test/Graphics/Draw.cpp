@@ -123,6 +123,10 @@ void SpriteGraphic::scale(const sf::Vector2f& factor) {
    return this->drawable_->scale(factor);
 }
 
+const sf::Transform& SpriteGraphic::transform() const {
+   return this->drawable_->getTransform();
+}
+
 void SpriteGraphic::set_texture(Texture& texture) {
    this->texture_ = &texture;
    this->drawable_->setTexture(&texture.get_texture(), true);
@@ -307,6 +311,10 @@ void TextGraphic::scale(const sf::Vector2f& factor) {
    this->size_.y = this->get_local_bounds().height;
 }
 
+const sf::Transform& TextGraphic::transform() const {
+   return this->drawable_->getTransform();
+}
+
 void TextGraphic::set_texture(Texture& texture) {}
 void TextGraphic::set_texture_rect(const sf::IntRect& rect) {}
 void TextGraphic::set_outline_color(const sf::Color& color) {}
@@ -465,6 +473,10 @@ void VertexGraphic::scale(const sf::Vector2f& factor) {
    this->size_.y = this->drawable_->getBounds().height;
 
    this->state_.transform.scale(factor);
+}
+
+const sf::Transform& VertexGraphic::transform() const {
+   return this->state_.transform;
 }
 
 Texture* VertexGraphic::get_texture() const {

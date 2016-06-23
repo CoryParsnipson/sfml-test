@@ -8,6 +8,9 @@ CameraSceneGraphNode::CameraSceneGraphNode(Camera& c, bool visible /* = true */)
 {
 }
 
+sf::Transform CameraSceneGraphNode::transform() {
+   return SceneGraphNode::transform() * this->camera_->get_transform();
+}
 
 void CameraSceneGraphNode::accept(SceneGraphVisitor& visitor) {
    visitor.visit(this->camera_);

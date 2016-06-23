@@ -9,6 +9,9 @@ class CameraSceneGraphNode : public SceneGraphNode {
 public:
    CameraSceneGraphNode(Camera& c, bool visible = true);
 
+   // scene graph interface
+   virtual sf::Transform transform();
+
    // scene graph visitor interface
    virtual void accept(SceneGraphVisitor& visitor);
 

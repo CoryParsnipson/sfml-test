@@ -46,7 +46,8 @@ void TextWidget::set_size(const sf::Vector2f& size) {
 }
 
 bool TextWidget::intersects(const sf::Vector2f& other) {
-   return this->text_->get_global_bounds().contains(other);
+   sf::Transform transform = this->transform();
+   return transform.transformRect(this->text_->get_local_bounds()).contains(other);
 }
 
 void TextWidget::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {

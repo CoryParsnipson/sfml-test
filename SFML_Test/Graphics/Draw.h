@@ -63,6 +63,8 @@ public:
    virtual void scale(float factorX, float factorY) = 0;
    virtual void scale(const sf::Vector2f& factor) = 0;
 
+   virtual const sf::Transform& transform() const = 0;
+
    // sprite/shape interface
    virtual void set_texture(Texture& texture) = 0;
    virtual void set_texture_rect(const sf::IntRect& rect) = 0;
@@ -131,6 +133,8 @@ public:
    virtual void scale(float factorX, float factorY);
    virtual void scale(const sf::Vector2f& factor);
 
+   virtual const sf::Transform& transform() const;
+   
    // sprite/shape interface
    virtual void set_texture(Texture& texture);
    virtual void set_texture_rect(const sf::IntRect& rect);
@@ -204,6 +208,8 @@ public:
    virtual void scale(float factorX, float factorY);
    virtual void scale(const sf::Vector2f& factor);
 
+   virtual const sf::Transform& transform() const;
+   
    // sprite/shape interface
    virtual void set_texture(Texture& texture);
    virtual void set_texture_rect(const sf::IntRect& rect);
@@ -280,6 +286,8 @@ public:
    virtual void scale(float factorX, float factorY);
    virtual void scale(const sf::Vector2f& factor);
 
+   virtual const sf::Transform& transform() const;
+   
    // sprite/shape interface
    virtual void set_texture(Texture& texture) {}
    virtual void set_texture_rect(const sf::IntRect& rect) {}
