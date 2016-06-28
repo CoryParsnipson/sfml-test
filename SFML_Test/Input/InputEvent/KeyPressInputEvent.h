@@ -21,7 +21,8 @@ public:
    const bool system;
 
    KeyPressInputEvent(Key key, bool alt, bool ctrl, bool shift, bool system)
-   : key(key)
+   : InputEvent("KeyPress")
+   , key(key)
    , alt(alt)
    , ctrl(ctrl)
    , shift(shift)
@@ -31,6 +32,9 @@ public:
    virtual void execute(InputListener& listener) {
       listener.process(*this);
    }
+
+private:
+   friend std::ostream& operator<<(std::ostream& stream, const KeyPressInputEvent& event);
 };
 
 #endif

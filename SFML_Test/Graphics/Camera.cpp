@@ -108,4 +108,4 @@ void Camera::set_scale(float factor) {
    this->zoom_factor_ = factor;
 }
 
-void Camera::click(MouseButton button, MouseButtonState state, sf::Vector2f pos) {}
+void Camera::click(MouseButton button, ButtonState state, sf::Vector2f pos) {}

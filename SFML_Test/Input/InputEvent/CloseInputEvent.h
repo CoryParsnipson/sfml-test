@@ -13,9 +13,14 @@
 // ----------------------------------------------------------------------------
 class CloseInputEvent : public InputEvent {
 public:
+   CloseInputEvent() : InputEvent("Close") {}
+
    virtual void execute(InputListener& listener) {
       listener.process(*this);
    }
+
+private:
+   friend std::ostream& operator<<(std::ostream& stream, const CloseInputEvent& event);
 };
 
 #endif

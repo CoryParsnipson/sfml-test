@@ -11,7 +11,8 @@ public:
    const int delta;
 
    MouseWheelInputEvent(int x, int y, int delta)
-   : x(x)
+   : InputEvent("MouseWheel")
+   , x(x)
    , y(y)
    , delta(delta)
    {}
@@ -19,6 +20,9 @@ public:
    virtual void execute(InputListener& listener) {
       listener.process(*this);
    }
+
+private:
+   friend std::ostream& operator<<(std::ostream& stream, const MouseWheelInputEvent& event);
 };
 
 #endif

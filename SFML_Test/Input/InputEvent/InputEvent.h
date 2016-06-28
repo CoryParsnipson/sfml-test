@@ -23,28 +23,19 @@ public:
 
    virtual void execute(InputListener& listener) = 0;
 
-   operator std::string() const {
+   virtual operator std::string() const {
       return this->to_string();
    }
 
 private:
    friend std::ostream& operator<<(std::ostream& stream, const InputEvent& event);
 
-   std::string to_string() const {
-      return "[InputEvent: " + this->id_ + "]";
-   }
-
 protected:
    std::string id_;
-};
 
-// ----------------------------------------------------------------------------
-// free function helper methods
-// ----------------------------------------------------------------------------
-template <class T>
-std::ostream& operator<<(std::ostream& stream, const InputEvent& event) {
-   stream << event.to_string();
-   return stream;
-}
+   virtual std::string to_string() const {
+      return "[InputEvent: " + this->id_ + "]";
+   }
+};
 
 #endif

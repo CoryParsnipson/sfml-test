@@ -49,6 +49,7 @@ INCLUDE_PATHS += SFML_Test/UI
 CXX_FILES = 
 CXX_FILES += $(PROJECT_DIR)/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Input/Command/*.cpp
+CXX_FILES += $(PROJECT_DIR)/Input/InputEvent/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Input/Gamepad/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Input/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Logger/*.cpp

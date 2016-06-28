@@ -35,7 +35,7 @@ void MouseControlPart::process(MouseButtonInputEvent& e) {
    Service::get_logger().msg("ControlPart", Logger::INFO, e);
    
    this->button_ = e.button;
-   this->is_panning = (e.state == MouseButtonState::Pressed);
+   this->is_panning = (e.state == ButtonState::Pressed);
    this->panning_anchor = sf::Vector2f(e.x, e.y);
 
    if (this->controllable_) {

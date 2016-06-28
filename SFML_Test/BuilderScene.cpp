@@ -350,14 +350,14 @@ void BuilderScene::set_scale(float factor) {
    this->map_->grid()->set_scale(factor);
 }
 
-void BuilderScene::click(MouseButton button, MouseButtonState state, sf::Vector2f pos) {
+void BuilderScene::click(MouseButton button, ButtonState state, sf::Vector2f pos) {
    if (button == MouseButton::Left) {
-      if (state == MouseButtonState::Pressed) {
+      if (state == ButtonState::Pressed) {
          this->click_press_pos_ = pos;
 
          this->selection_rectangle_->visible(true);
          this->update_selection_rect(this->click_press_pos_, this->click_press_pos_);
-      } else if (state == MouseButtonState::Released) {
+      } else if (state == ButtonState::Released) {
          this->selection_rectangle_->visible(false);
          this->update_tile_cursor(this->click_press_pos_, pos);
       }

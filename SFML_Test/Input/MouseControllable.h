@@ -15,7 +15,7 @@ public:
    virtual float get_scale() = 0;
    virtual void set_scale(float factor) = 0;
 
-   virtual void click(MouseButton button, MouseButtonState state, sf::Vector2f pos) = 0;
+   virtual void click(MouseButton button, ButtonState state, sf::Vector2f pos) = 0;
 };
 
 #endif

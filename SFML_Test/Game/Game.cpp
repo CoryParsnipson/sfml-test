@@ -154,14 +154,14 @@ void Game::main_loop() {
 
       // check if we need to unload a scene
       if (this->prev_scene_) {
-         this->prev_scene_->exit(*this);
+         this->prev_scene_->do_exit(*this);
          delete this->prev_scene_;
          this->prev_scene_ = nullptr;
       }
 
       // check if we need to load a scene
       if (this->next_scene_) {
-         this->next_scene_->enter(*this);
+         this->next_scene_->do_enter(*this);
          this->scenes_.push(this->next_scene_);
          this->next_scene_ = nullptr;
       }

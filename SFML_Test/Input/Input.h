@@ -20,7 +20,7 @@ enum class MouseButton {
    XButton2
 };
 
-enum class MouseButtonState {
+enum class ButtonState {
    Pressed,
    Released
 };

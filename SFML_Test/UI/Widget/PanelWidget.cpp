@@ -105,9 +105,8 @@ void PanelWidget::drag(MouseButton button, sf::Vector2f pos, sf::Vector2f delta)
 float PanelWidget::get_scale() { return 1.0; }
 void PanelWidget::set_scale(float factor) {}
 
-void PanelWidget::click(MouseButton button, MouseButtonState state, sf::Vector2f pos) {
-   if (button == MouseButton::Left &&
-       state == MouseButtonState::Pressed) {
+void PanelWidget::click(MouseButton button, ButtonState state, sf::Vector2f pos) {
+   if (button == MouseButton::Left && state == ButtonState::Pressed) {
       this->resized_ = this->resize_handle_ && this->resize_handle_->get_global_bounds().contains(pos);
       this->clicked_ = !this->resized_ && this->panel_->get_global_bounds().contains(pos);
    } else {

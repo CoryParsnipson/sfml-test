@@ -61,5 +61,5 @@ float ButtonWidget::get_scale() {
 void ButtonWidget::set_scale(float factor) {
 }
 
-void ButtonWidget::click(MouseButton button, MouseButtonState state, sf::Vector2f pos) {
+void ButtonWidget::click(MouseButton button, ButtonState state, sf::Vector2f pos) {
 }

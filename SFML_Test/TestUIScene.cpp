@@ -16,6 +16,8 @@
 
 #include "GetWidgetCommand.h"
 
+#include "PlayerGamepad.h"
+
 TestUIScene::TestUIScene()
 : Scene("TestUIScene")
 , get_widgets_(new GetWidgetCommand(&this->scene_graph_))
@@ -63,6 +65,9 @@ TestUIScene::TestUIScene()
    this->mouse_ = UtilFactory::inst()->create_mouse();
    dynamic_cast<MouseControlPart*>(this->mouse_->get("control"))->set_controllable(dynamic_cast<PanelWidget*>(this->widget_));
    this->scene_graph_[2]->add(new EntitySceneGraphNode(*this->mouse_));
+
+   // create player controls
+   this->set_gamepad(new PlayerGamepad());
 }
 
 TestUIScene::~TestUIScene() {
@@ -89,7 +94,7 @@ void TestUIScene::update(Game& game, Scene* scene, Entity* entity) {
 }
 
 void TestUIScene::process(Game& game, MouseButtonInputEvent& e) {
-   if (!(e.button == MouseButton::Left && e.state == MouseButtonState::Released)) {
+   if (!(e.button == MouseButton::Left && e.state == ButtonState::Released)) {
       return;
    }
    

@@ -32,7 +32,7 @@ public:
    virtual float get_scale();
    virtual void set_scale(float factor);
 
-   virtual void click(MouseButton button, MouseButtonState state, sf::Vector2f pos);
+   virtual void click(MouseButton button, ButtonState state, sf::Vector2f pos);
 
 protected:
    Graphic* background_;

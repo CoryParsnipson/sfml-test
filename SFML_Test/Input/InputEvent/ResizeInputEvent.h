@@ -17,12 +17,21 @@ public:
    const int height;
 
    ResizeInputEvent(int width, int height)
-   : width(width)
+   : InputEvent("Resize")
+   , width(width)
    , height(height)
    {}
 
    virtual void execute(InputListener& listener) {
       listener.process(*this);
+   }
+
+private:
+   friend std::ostream& operator<<(std::ostream& stream, const ResizeInputEvent& event);
+
+protected:
+   virtual std::string to_string() const {
+      return "[InputEvent: " + this->id_ + " (" + std::to_string(this->width) + ", " + std::to_string(this->height) + "]";
    }
 };
 

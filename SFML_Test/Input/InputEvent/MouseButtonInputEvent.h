@@ -8,12 +8,13 @@
 class MouseButtonInputEvent : public InputEvent {
 public:
    const MouseButton button;
-   const MouseButtonState state;
+   const ButtonState state;
    const int x;
    const int y;
 
-   MouseButtonInputEvent(MouseButton button, MouseButtonState state, int x, int y)
-   : button(button)
+   MouseButtonInputEvent(MouseButton button, ButtonState state, int x, int y)
+   : InputEvent("MouseButton")
+   , button(button)
    , state(state)
    , x(x)
    , y(y)
@@ -22,6 +23,9 @@ public:
    virtual void execute(InputListener& listener) {
       listener.process(*this);
    }
+
+private:
+   friend std::ostream& operator<<(std::ostream& stream, const MouseButtonInputEvent& event);
 };
 
 #endif

@@ -4,28 +4,39 @@
 #include <string>
 
 #include "Update.h"
+#include "InputListener.h"
 
 // ----------------------------------------------------------------------------
 // Gamepad abstract base
 //
 // This class is an abstract base class that allows one to control game
-// entities with commands.
+// entities with commands. The abstract base class is also an input listener
+// that does nothing by default. 
 // ----------------------------------------------------------------------------
 class Gamepad
 : public Update
+, public InputListener
 {
 public:
    Gamepad(std::string id) : enable_(true), id_(std::move(id)) {}
    virtual ~Gamepad() {}
 
-   // update interface
-   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr) = 0;
+   operator std::string() const { return this->to_string(); }
 
    bool is_enabled() { return this->enable_; }
    void enable() { this->enable_ = true; }
    void disable() { this->enable_ = false; }
-   
-   operator std::string() const { return this->to_string(); }
+
+   // update interface
+   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr) = 0;
+
+   // input event processing
+   virtual void process(CloseInputEvent& e) {}
+   virtual void process(ResizeInputEvent& e) {}
+   virtual void process(KeyPressInputEvent& e) {}
+   virtual void process(MouseMoveInputEvent& e) {}
+   virtual void process(MouseWheelInputEvent& e) {}
+   virtual void process(MouseButtonInputEvent& e) {}
 
 private:
    friend std::ostream& operator<<(std::ostream& stream, const Gamepad& gamepad) {

@@ -17,13 +17,17 @@ public:
    const int y;
 
    MouseMoveInputEvent(int x, int y)
-   : x(x)
+   : InputEvent("MouseMove")
+   , x(x)
    , y(y)
    {}
 
    virtual void execute(InputListener& listener) {
       listener.process(*this);
    }
+
+private:
+   friend std::ostream& operator<<(std::ostream& stream, const MouseMoveInputEvent& event);
 };
 
 #endif

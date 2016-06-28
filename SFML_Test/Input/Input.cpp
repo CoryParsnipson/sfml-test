@@ -55,7 +55,7 @@ void Input::poll_event(Game& game) {
          Service::get_logger().msg("Input", Logger::INFO, "Received mouse button pressed event.");
          event = new MouseButtonInputEvent(
             static_cast<MouseButton>(sfml_event.mouseButton.button),
-            MouseButtonState::Pressed,
+            ButtonState::Pressed,
             sfml_event.mouseButton.x,
             sfml_event.mouseButton.y
          );
@@ -64,7 +64,7 @@ void Input::poll_event(Game& game) {
          Service::get_logger().msg("Input", Logger::INFO, "Received mouse button released event.");
          event = new MouseButtonInputEvent(
             static_cast<MouseButton>(sfml_event.mouseButton.button),
-            MouseButtonState::Released,
+            ButtonState::Released,
             sfml_event.mouseButton.x,
             sfml_event.mouseButton.y
          );

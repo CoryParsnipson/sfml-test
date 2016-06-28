@@ -15,6 +15,7 @@
 #include "Camera.h"
 #include "Update.h"
 #include "Entity.h"
+#include "Gamepad.h"
 
 #include "CameraSceneGraphNode.h"
 
@@ -24,6 +25,7 @@ class Scene
 {
 public:
    using SceneGraph = std::map<int, SceneGraphNode*>;
+   using GamepadList = std::vector<Gamepad*>;
 
    Scene(std::string id)
    : id_(id)
@@ -39,15 +41,38 @@ public:
       delete this->camera_;
       this->camera_ = nullptr;
 
-      SceneGraph::iterator it;
+      SceneGraph::const_iterator it;
       for (it = this->scene_graph_.begin(); it != this->scene_graph_.end(); ++it) {
          delete it->second;
-         this->scene_graph_.erase(it);
       }
       this->scene_graph_.clear();
+
+      GamepadList::const_iterator g_it;
+      for (g_it = this->gamepads_.begin(); g_it != this->gamepads_.end(); ++g_it) {
+         delete *g_it;
+      }
+      this->gamepads_.clear();
    }
 
    virtual std::string id() { return this->id_; }
+
+   void do_enter(Game& game) {
+      // start gamepads from receiving input events
+      for (GamepadList::const_iterator it = this->gamepads_.begin(); it != this->gamepads_.end(); ++it) {
+         Service::get_input().attach(**it);
+      }
+      
+      this->enter(game);
+   }
+
+   void do_exit(Game& game) {
+      // stop gamepads from receiving input events
+      for (GamepadList::const_iterator it = this->gamepads_.begin(); it != this->gamepads_.end(); ++it) {
+         Service::get_input().detach(**it);
+      }
+
+      this->exit(game);
+   }
 
    virtual void enter(Game& game) {}
    virtual void exit(Game& game) {}
@@ -71,6 +96,20 @@ public:
       }
    }
 
+   // gamepad interface
+   void set_gamepad(Gamepad* gamepad, int player_id = -1) {
+      if (player_id >= 0 && player_id < (int)this->gamepads_.size()) {
+         delete this->gamepads_[player_id];
+         this->gamepads_[player_id] = gamepad;
+      } else {
+         this->gamepads_.push_back(gamepad);
+      }
+   }
+
+   Gamepad* get_gamepad(int player_id);
+   void remove_gamepad(int player_id);
+   void remove_gamepad(Gamepad* gamepad);
+
    // input event processing default implementations
    virtual void process(Game& game, CloseInputEvent& e) {
       game.unload_scene();
@@ -89,6 +128,9 @@ protected:
    std::string id_;
    Camera* camera_;
    SceneGraph scene_graph_;
+
+private:
+   GamepadList gamepads_;
 };
 
 #endif
