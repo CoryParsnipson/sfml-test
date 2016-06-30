@@ -10,12 +10,17 @@
 #include "MouseWheelInputEvent.h"
 #include "MouseButtonInputEvent.h"
 
+// ----------------------------------------------------------------------------
+// Input class constructors
+// ----------------------------------------------------------------------------
 Input::Input(std::string id /* = "Input" */)
 : Subject<InputEvent>(id)
 {
 }
 
-
+// ----------------------------------------------------------------------------
+// Input class method implementations 
+// ----------------------------------------------------------------------------
 void Input::poll_event(Game& game) {
    sf::Event sfml_event;
    InputEvent* event = nullptr;

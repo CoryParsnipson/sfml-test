@@ -14,6 +14,7 @@
 // ----------------------------------------------------------------------------
 class Widget;
 class SceneGraphNode;
+class PlayerGamepad;
 
 // ----------------------------------------------------------------------------
 // aliases
@@ -33,14 +34,14 @@ class GetWidgetCommand
 , public SceneGraphVisitor
 {
 public:
-   GetWidgetCommand(Scene::SceneGraph* scene_graph, sf::Vector2f target = sf::Vector2f(0, 0));
+   GetWidgetCommand(Scene::SceneGraph* scene_graph, PlayerGamepad* gamepad = nullptr);
    virtual ~GetWidgetCommand();
 
    void scene_graph(Scene::SceneGraph* scene_graph);
    Scene::SceneGraph* scene_graph();
 
-   void target(sf::Vector2f pos);
-   const sf::Vector2f& target();
+   void gamepad(PlayerGamepad* gamepad);
+   PlayerGamepad* gamepad();
 
    const WidgetList& get();
 
@@ -55,8 +56,8 @@ public:
    virtual void visit(Widget*);
 
 protected:
-   sf::Vector2f target_;
    Scene::SceneGraph* scene_graph_;
+   PlayerGamepad* gamepad_; // TODO: UGH
 
    WidgetList widgets_;   
 };

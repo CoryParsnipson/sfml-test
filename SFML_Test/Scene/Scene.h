@@ -97,16 +97,18 @@ public:
    }
 
    // gamepad interface
-   void set_gamepad(Gamepad* gamepad, int player_id = -1) {
+   int gamepad(Gamepad* gamepad, int player_id = -1) {
       if (player_id >= 0 && player_id < (int)this->gamepads_.size()) {
          delete this->gamepads_[player_id];
          this->gamepads_[player_id] = gamepad;
+         return player_id;
       } else {
          this->gamepads_.push_back(gamepad);
+         return this->gamepads_.size() - 1;
       }
    }
 
-   Gamepad* get_gamepad(int player_id);
+   Gamepad* gamepad(int player_id);
    void remove_gamepad(int player_id);
    void remove_gamepad(Gamepad* gamepad);
 

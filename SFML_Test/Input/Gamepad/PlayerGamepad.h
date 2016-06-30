@@ -1,6 +1,7 @@
 #ifndef PLAYER_GAMEPAD_H
 #define PLAYER_GAMEPAD_H
 
+#include "dependencies.h"
 #include "Input.h"
 #include "Gamepad.h"
 
@@ -26,6 +27,15 @@ public:
    PlayerGamepad(std::string id = "PlayerGamepad");
    virtual ~PlayerGamepad();
 
+   sf::Vector2f position();
+
+   // command interface
+   void set(Command* command, Key keycode, ButtonState state = ButtonState::Pressed);
+   void set(Command* command, MouseButton button, ButtonState state = ButtonState::Pressed);
+
+   void unset(Key keycode, ButtonState state);
+   void unset(MouseButton button, ButtonState state);
+
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 
@@ -42,6 +52,8 @@ protected:
    MouseBinding mouse_buttons_;
    Command* mouse_move_command_;
    Command* mouse_wheel_command_;
+
+   sf::Vector2f pos_;
 };
 
 #endif

@@ -67,7 +67,10 @@ TestUIScene::TestUIScene()
    this->scene_graph_[2]->add(new EntitySceneGraphNode(*this->mouse_));
 
    // create player controls
-   this->set_gamepad(new PlayerGamepad());
+   PlayerGamepad* pg = new PlayerGamepad();
+   pg->set(new GetWidgetCommand(&this->scene_graph_, pg), MouseButton::Left);
+
+   this->gamepad(pg);
 }
 
 TestUIScene::~TestUIScene() {
@@ -93,27 +96,7 @@ void TestUIScene::update(Game& game, Scene* scene, Entity* entity) {
    this->frame_count = (this->frame_count + 1) % this->frame_measurement_interval;
 }
 
-void TestUIScene::process(Game& game, MouseButtonInputEvent& e) {
-   if (!(e.button == MouseButton::Left && e.state == ButtonState::Released)) {
-      return;
-   }
-   
-   Service::get_logger().msg("TestUIScene", Logger::INFO, "Click release start. ------");
-
-   std::vector<Widget*> w;
-   
-   this->get_widgets_->target(sf::Vector2f(e.x, e.y));
-   this->get_widgets_->execute();
-
-   w = this->get_widgets_->get();
-
-   for (std::vector<Widget*>::const_iterator it = w.begin(); it != w.end(); ++it) {
-      Service::get_logger().msg("TestUIScene", Logger::INFO, **it);
-   }
-
-   Service::get_logger().msg("TestUIScene", Logger::INFO, "Click release end. ------");
-}
-
+void TestUIScene::process(Game& game, MouseButtonInputEvent& e) {}
 void TestUIScene::process(Game& game, ResizeInputEvent& e) {
    Scene::process(game, e);
 

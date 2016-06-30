@@ -4,10 +4,11 @@
 #include "Draw.h"
 #include "Entity.h"
 #include "Widget.h"
+#include "PlayerGamepad.h"
 
-GetWidgetCommand::GetWidgetCommand(Scene::SceneGraph* scene_graph, sf::Vector2f target /* = sf::Vector2f(0, 0) */ )
-: target_(target)
-, scene_graph_(scene_graph)
+GetWidgetCommand::GetWidgetCommand(Scene::SceneGraph* scene_graph, PlayerGamepad* gamepad /* = nullptr */)
+: scene_graph_(scene_graph)
+, gamepad_(gamepad)
 {
 }
 
@@ -23,12 +24,12 @@ Scene::SceneGraph* GetWidgetCommand::scene_graph() {
    return this->scene_graph_;
 }
 
-void GetWidgetCommand::target(sf::Vector2f pos) {
-   this->target_ = pos;
+void GetWidgetCommand::gamepad(PlayerGamepad* gamepad) {
+   this->gamepad_ = gamepad;
 }
 
-const sf::Vector2f& GetWidgetCommand::target() {
-   return this->target_;
+PlayerGamepad* GetWidgetCommand::gamepad() {
+   return this->gamepad_;
 }
 
 const WidgetList& GetWidgetCommand::get() {
@@ -37,6 +38,13 @@ const WidgetList& GetWidgetCommand::get() {
 
 void GetWidgetCommand::execute() {
    this->widgets_.clear();
+
+   if (!this->gamepad_) {
+      Service::get_logger().msg("GetWidgetCommand", Logger::WARNING, "Command has no gamepad reference.");
+      return;
+   }
+
+   Service::get_logger().msg("GetWidgetCommand", Logger::INFO, "target = (" + std::to_string(this->gamepad_->position().x) + ", " + std::to_string(this->gamepad_->position().y) + ")");
 
    // iterate from highest z-index to lowest
    Scene::SceneGraph::const_reverse_iterator it;
@@ -49,6 +57,11 @@ void GetWidgetCommand::execute() {
          (*node_it)->accept(*this);
       }
    }
+
+   Service::get_logger().msg("GetWidgetCommand", Logger::INFO, "GOT WIDGETS");
+   for (WidgetList::const_iterator wit = this->widgets_.begin(); wit != this->widgets_.end(); ++wit) {
+      Service::get_logger().msg("GetWidgetCommand", Logger::INFO, **wit);
+   }
 }
 
 void GetWidgetCommand::unexecute() {
@@ -60,7 +73,7 @@ void GetWidgetCommand::visit(Draw* draw) {}
 void GetWidgetCommand::visit(Entity* entity) {}
 
 void GetWidgetCommand::visit(Widget* widget) {
-   if (widget && widget->intersects(this->target_)) {
+   if (widget && widget->intersects(this->gamepad_->position())) {
       this->widgets_.push_back(widget);
    }
 }

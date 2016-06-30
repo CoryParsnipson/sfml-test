@@ -4,14 +4,6 @@
 #include "Entity.h"
 #include "Command.h"
 
-//#include "InputEvent.h"
-//#include "CloseInputEvent.h"
-//#include "ResizeInputEvent.h"
-//#include "KeyPressInputEvent.h"
-//#include "MouseMoveInputEvent.h"
-//#include "MouseWheelInputEvent.h"
-//#include "MouseButtonInputEvent.h"
-
 PlayerGamepad::PlayerGamepad(std::string id /* = "PlayerGamepad" */)
 : Gamepad(id)
 , mouse_move_command_(nullptr)
@@ -37,6 +29,30 @@ PlayerGamepad::~PlayerGamepad() {
 
    delete this->mouse_move_command_;
    delete this->mouse_wheel_command_;
+}
+
+sf::Vector2f PlayerGamepad::position() {
+   return this->pos_;
+}
+
+void PlayerGamepad::set(Command* command, Key keycode, ButtonState state /* = ButtonState::Pressed */) {
+   this->unset(keycode, state);
+   this->keys_[keycode][state] = command;
+}
+
+void PlayerGamepad::set(Command* command, MouseButton button, ButtonState state /* = ButtonState::Pressed */) {
+   this->unset(button, state);
+   this->mouse_buttons_[button][state] = command;
+}
+
+void PlayerGamepad::unset(Key keycode, ButtonState state) {
+   delete this->keys_[keycode][state];
+   this->keys_[keycode][state] = nullptr;
+}
+
+void PlayerGamepad::unset(MouseButton button, ButtonState state) {
+   delete this->mouse_buttons_[button][state];
+   this->mouse_buttons_[button][state] = nullptr;
 }
 
 void PlayerGamepad::update(Game& game, Scene* scene /* = nullptr */, Entity* entity /* = nullptr */) {
@@ -65,4 +81,12 @@ void PlayerGamepad::process(MouseWheelInputEvent& e) {
 
 void PlayerGamepad::process(MouseButtonInputEvent& e) {
    Service::get_logger().msg(Gamepad::id_, Logger::INFO, "Received " + std::string(e));
+
+   // update gamepad position
+   this->pos_ = sf::Vector2f(e.x, e.y);
+
+   Command* c = this->mouse_buttons_[e.button][e.state];
+   if (c) {
+      c->execute();
+   }
 }
