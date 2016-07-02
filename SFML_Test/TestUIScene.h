@@ -34,8 +34,6 @@ protected:
 
    Widget* widget_;
    
-   GetWidgetCommand* get_widgets_;
-
    sf::Clock clock;
    int last_frame_time;
    int frame_measurement_interval;

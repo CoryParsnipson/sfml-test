@@ -4,10 +4,11 @@
 #include "Draw.h"
 #include "Entity.h"
 #include "Widget.h"
-#include "PlayerGamepad.h"
+#include "Gamepad.h"
 
-GetWidgetCommand::GetWidgetCommand(Scene::SceneGraph* scene_graph, PlayerGamepad* gamepad /* = nullptr */)
-: scene_graph_(scene_graph)
+GetWidgetCommand::GetWidgetCommand(Scene::SceneGraph* scene_graph, Gamepad* gamepad)
+: Command("GetWidgetCommand")
+, scene_graph_(scene_graph)
 , gamepad_(gamepad)
 {
 }
@@ -24,11 +25,11 @@ Scene::SceneGraph* GetWidgetCommand::scene_graph() {
    return this->scene_graph_;
 }
 
-void GetWidgetCommand::gamepad(PlayerGamepad* gamepad) {
+void GetWidgetCommand::gamepad(Gamepad* gamepad) {
    this->gamepad_ = gamepad;
 }
 
-PlayerGamepad* GetWidgetCommand::gamepad() {
+Gamepad* GetWidgetCommand::gamepad() {
    return this->gamepad_;
 }
 
@@ -44,7 +45,8 @@ void GetWidgetCommand::execute() {
       return;
    }
 
-   Service::get_logger().msg("GetWidgetCommand", Logger::INFO, "target = (" + std::to_string(this->gamepad_->position().x) + ", " + std::to_string(this->gamepad_->position().y) + ")");
+   sf::Vector2f gamepad_cursor(this->gamepad_->cursor_position());
+   Service::get_logger().msg("GetWidgetCommand", Logger::INFO, "target = (" + std::to_string(gamepad_cursor.x) + ", " + std::to_string(gamepad_cursor.y) + ")");
 
    // iterate from highest z-index to lowest
    Scene::SceneGraph::const_reverse_iterator it;
@@ -73,7 +75,7 @@ void GetWidgetCommand::visit(Draw* draw) {}
 void GetWidgetCommand::visit(Entity* entity) {}
 
 void GetWidgetCommand::visit(Widget* widget) {
-   if (widget && widget->intersects(this->gamepad_->position())) {
+   if (widget && widget->intersects(this->gamepad_->cursor_position())) {
       this->widgets_.push_back(widget);
    }
 }

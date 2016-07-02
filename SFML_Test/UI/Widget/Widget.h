@@ -35,6 +35,15 @@ public:
 
    virtual bool intersects(const sf::Vector2f& other) = 0;
 
+   // widget event interface
+   virtual void on_hover();
+
+   virtual void on_mouse_in();
+   virtual void on_mouse_out();
+
+   virtual void on_click();
+   virtual void on_release();
+
    // draw interface
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 

@@ -1,6 +1,8 @@
 #include "Camera.h"
 #include "RenderSurface.h"
 
+#include "TextFactory.h"
+
 // initialize static member variables
 const float Camera::ZOOM_FACTOR_MIN = 0.125;
 const float Camera::ZOOM_FACTOR_MAX = 3.0;
@@ -77,7 +79,7 @@ const sf::Transform& Camera::get_transform() const {
 
 void Camera::move(sf::Vector2f delta) {
    this->view_->move(-delta); // invert delta to make it act like a pan
-   this->state_.translate(-delta);
+   this->state_.translate(delta); // need to store un-inverted delta because of reasons...
 }
 
 void Camera::set_viewport(const sf::FloatRect& viewport) {

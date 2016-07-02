@@ -1,13 +1,15 @@
 #include "ButtonWidget.h"
 #include "RenderSurface.h"
 
-ButtonWidget::ButtonWidget(std::string id, const sf::Vector2f& pos, const sf::Vector2f& size, Widget* parent /* = nullptr */)
+ButtonWidget::ButtonWidget(std::string id, const sf::Vector2f& pos, const sf::Vector2f& size, Command* action /* = nullptr */, Widget* parent /* = nullptr */)
 : Widget(id)
 , background_(new SpriteGraphic())
 {
    this->background_->set_position(pos);
    this->background_->set_size(size);
    this->background_->set_color(sf::Color::Red);
+
+   this->action(action);
 }
 
 ButtonWidget::~ButtonWidget() {
@@ -21,6 +23,14 @@ void ButtonWidget::set_background(Graphic* background) {
    this->background_->set_position(old_background->get_position());
 
    delete old_background;
+}
+
+void ButtonWidget::action(Command* action) {
+   this->action_ = action;
+}
+
+Command* ButtonWidget::action() {
+   return this->action_;
 }
 
 const sf::Vector2f& ButtonWidget::get_position() {
@@ -42,6 +52,12 @@ void ButtonWidget::set_size(const sf::Vector2f& size) {
 bool ButtonWidget::intersects(const sf::Vector2f& other) {
    sf::Transform transform = this->transform();
    return transform.transformRect(this->background_->get_global_bounds()).contains(other);
+}
+
+void ButtonWidget::on_click() {
+   if (this->action_) {
+      this->action_->execute();
+   }
 }
 
 void ButtonWidget::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {

@@ -25,6 +25,10 @@ public:
 
    virtual bool intersects(const sf::Vector2f& other);
 
+   // widget event interface
+   virtual void on_click();
+   virtual void on_release();
+
    // draw interface
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 

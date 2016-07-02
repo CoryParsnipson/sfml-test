@@ -8,13 +8,13 @@
 #include "Command.h"
 #include "SceneGraphVisitor.h"
 #include "Scene.h"
+#include "Widget.h"
 
 // ----------------------------------------------------------------------------
 // forward declarations
 // ----------------------------------------------------------------------------
-class Widget;
 class SceneGraphNode;
-class PlayerGamepad;
+class Gamepad;
 
 // ----------------------------------------------------------------------------
 // aliases
@@ -34,14 +34,14 @@ class GetWidgetCommand
 , public SceneGraphVisitor
 {
 public:
-   GetWidgetCommand(Scene::SceneGraph* scene_graph, PlayerGamepad* gamepad = nullptr);
+   GetWidgetCommand(Scene::SceneGraph* scene_graph, Gamepad* gamepad);
    virtual ~GetWidgetCommand();
 
    void scene_graph(Scene::SceneGraph* scene_graph);
    Scene::SceneGraph* scene_graph();
 
-   void gamepad(PlayerGamepad* gamepad);
-   PlayerGamepad* gamepad();
+   void gamepad(Gamepad* gamepad);
+   Gamepad* gamepad();
 
    const WidgetList& get();
 
@@ -57,7 +57,7 @@ public:
 
 protected:
    Scene::SceneGraph* scene_graph_;
-   PlayerGamepad* gamepad_; // TODO: UGH
+   Gamepad* gamepad_; // TODO: UGH
 
    WidgetList widgets_;   
 };

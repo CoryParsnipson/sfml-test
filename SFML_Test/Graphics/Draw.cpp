@@ -26,7 +26,11 @@ void SpriteGraphic::draw(RenderSurface& surface, sf::RenderStates render_states 
 }
 
 sf::FloatRect SpriteGraphic::get_local_bounds() const {
-   return this->drawable_->getLocalBounds();
+   sf::FloatRect local_bounds = this->drawable_->getLocalBounds();
+   local_bounds.width *= this->get_scale().x;
+   local_bounds.height *= this->get_scale().y;
+
+   return local_bounds;
 }
 
 sf::FloatRect SpriteGraphic::get_global_bounds() const {

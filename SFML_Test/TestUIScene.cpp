@@ -14,13 +14,15 @@
 #include "CameraSceneGraphNode.h"
 #include "EntitySceneGraphNode.h"
 
+#include "MacroCommand.h"
+#include "ClickCommand.h"
 #include "GetWidgetCommand.h"
+#include "MoveCameraCommand.h"
 
 #include "PlayerGamepad.h"
 
 TestUIScene::TestUIScene()
 : Scene("TestUIScene")
-, get_widgets_(new GetWidgetCommand(&this->scene_graph_))
 , last_frame_time(0)
 , frame_measurement_interval(6)
 , frame_count(0)
@@ -61,6 +63,8 @@ TestUIScene::TestUIScene()
    bw->set_background(new SpriteGraphic(TextureManager::inst()->get_texture("tile_water_ul")));
    this->widget_->add(bw);
 
+   bw->action(new MoveCameraCommand(*this->camera_, sf::Vector2f(10, 50)));
+
    // set up mouse
    this->mouse_ = UtilFactory::inst()->create_mouse();
    dynamic_cast<MouseControlPart*>(this->mouse_->get("control"))->set_controllable(dynamic_cast<PanelWidget*>(this->widget_));
@@ -68,9 +72,15 @@ TestUIScene::TestUIScene()
 
    // create player controls
    PlayerGamepad* pg = new PlayerGamepad();
-   pg->set(new GetWidgetCommand(&this->scene_graph_, pg), MouseButton::Left);
-
    this->gamepad(pg);
+   
+   GetWidgetCommand* gwc = new GetWidgetCommand(&this->scene_graph_, pg);
+
+   MacroCommand* macro1 = new MacroCommand("ClickWidgetMacroCommand");
+   macro1->add(gwc);
+   macro1->add(new ClickCommand(gwc));
+
+   pg->set(macro1, MouseButton::Left);
 }
 
 TestUIScene::~TestUIScene() {
