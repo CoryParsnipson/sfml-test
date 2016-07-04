@@ -17,6 +17,7 @@
 #include "ClickCommand.h"
 #include "HoverCommand.h"
 #include "GetWidgetCommand.h"
+#include "WidgetEventCommand.h"
 #include "MoveCameraCommand.h"
 
 #include "PlayerGamepad.h"
@@ -69,17 +70,8 @@ TestUIScene::TestUIScene()
    this->gamepad(pg);
    
    GetWidgetCommand* gwc = new GetWidgetCommand(&this->scene_graph_, pg);
-
-   MacroCommand* macro1 = new MacroCommand("ClickWidgetMacroCommand");
-   macro1->add(gwc);
-   macro1->add(new ClickCommand(gwc));
-
-   MacroCommand* macro2 = new MacroCommand("HoverWidgetMacroCommand");
-   macro2->add(gwc);
-   macro2->add(new HoverCommand(gwc));
-
-   pg->set(macro1, MouseButton::Left);
-   pg->set(macro2, MouseAction::Move);
+   pg->set(new WidgetEventCommand(&Widget::on_click, gwc), MouseButton::Left);
+   pg->set(new WidgetEventCommand(&Widget::on_hover, gwc), MouseAction::Move);
 }
 
 TestUIScene::~TestUIScene() {
