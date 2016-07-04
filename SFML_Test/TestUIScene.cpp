@@ -4,7 +4,6 @@
 #include "TextureManager.h"
 
 #include "Game.h"
-#include "MouseControlPart.h"
 #include "GraphicsPart.h"
 
 #include "PanelWidget.h"
@@ -16,6 +15,7 @@
 
 #include "MacroCommand.h"
 #include "ClickCommand.h"
+#include "HoverCommand.h"
 #include "GetWidgetCommand.h"
 #include "MoveCameraCommand.h"
 
@@ -36,7 +36,6 @@ TestUIScene::TestUIScene()
 
    // create layers
    this->scene_graph_[1] = new CameraSceneGraphNode(*this->hud_camera_); // hud layer
-   this->scene_graph_[2] = new CameraSceneGraphNode(*this->hud_camera_); // mouse layer
 
    // populate entities
    this->scene_graph_[1]->add(new EntitySceneGraphNode(
@@ -52,7 +51,7 @@ TestUIScene::TestUIScene()
    this->scene_graph_[1]->add(new EntitySceneGraphNode(*this->fps_display_));
 
    // test widget
-   this->widget_ = new PanelWidget("Test Panel 1", sf::Vector2f(100, 100), sf::Vector2f(300, 200), true, true);
+   this->widget_ = new PanelWidget("Test Panel 1", sf::Vector2f(100, 100), sf::Vector2f(300, 200));
    this->scene_graph_[0]->add(this->widget_);
 
    Widget* tw = new TextWidget("Text Widget 1", "PENIS PENIS PENIS PENIS PENIS PENIS PENIS PENIS PENIS");
@@ -65,11 +64,6 @@ TestUIScene::TestUIScene()
 
    bw->action(new MoveCameraCommand(*this->camera_, sf::Vector2f(10, 50)));
 
-   // set up mouse
-   this->mouse_ = UtilFactory::inst()->create_mouse();
-   dynamic_cast<MouseControlPart*>(this->mouse_->get("control"))->set_controllable(dynamic_cast<PanelWidget*>(this->widget_));
-   this->scene_graph_[2]->add(new EntitySceneGraphNode(*this->mouse_));
-
    // create player controls
    PlayerGamepad* pg = new PlayerGamepad();
    this->gamepad(pg);
@@ -80,7 +74,12 @@ TestUIScene::TestUIScene()
    macro1->add(gwc);
    macro1->add(new ClickCommand(gwc));
 
+   MacroCommand* macro2 = new MacroCommand("HoverWidgetMacroCommand");
+   macro2->add(gwc);
+   macro2->add(new HoverCommand(gwc));
+
    pg->set(macro1, MouseButton::Left);
+   pg->set(macro2, MouseAction::Move);
 }
 
 TestUIScene::~TestUIScene() {
@@ -88,12 +87,10 @@ TestUIScene::~TestUIScene() {
 
 void TestUIScene::enter(Game& game) {
    Service::get_logger().msg(this->id_, Logger::INFO, "Entering test UI menu state.");
-   Service::get_input().attach(*dynamic_cast<InputListener*>(this->mouse_->get("control")));
 }
 
 void TestUIScene::exit(Game& game) {
    Service::get_logger().msg(this->id_, Logger::INFO, "Exiting test UI menu state.");
-   Service::get_input().detach(*dynamic_cast<InputListener*>(this->mouse_->get("control")));
 }
 
 void TestUIScene::update(Game& game, Scene* scene, Entity* entity) {

@@ -30,6 +30,7 @@ public:
    // command interface
    void set(Command* command, Key keycode, ButtonState state = ButtonState::Pressed);
    void set(Command* command, MouseButton button, ButtonState state = ButtonState::Pressed);
+   void set(Command* command, MouseAction binding);
 
    void unset(Key keycode, ButtonState state);
    void unset(MouseButton button, ButtonState state);

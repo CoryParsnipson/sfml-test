@@ -41,6 +41,22 @@ void PlayerGamepad::set(Command* command, MouseButton button, ButtonState state 
    this->mouse_buttons_[button][state] = command;
 }
 
+void PlayerGamepad::set(Command* command, MouseAction binding) {
+   switch (binding) {
+   case MouseAction::Move:
+      delete this->mouse_move_command_;
+      this->mouse_move_command_ = command;
+   break;
+   case MouseAction::Wheel:
+      delete this->mouse_wheel_command_;
+      this->mouse_wheel_command_ = command;
+   break;
+   default:
+      Service::get_logger().msg(this->id_, Logger::ERROR, "Received invalid MouseAction directive.");
+   break;
+   }
+}
+
 void PlayerGamepad::unset(Key keycode, ButtonState state) {
    delete this->keys_[keycode][state];
    this->keys_[keycode][state] = nullptr;
@@ -69,6 +85,13 @@ void PlayerGamepad::process(KeyPressInputEvent& e) {
 
 void PlayerGamepad::process(MouseMoveInputEvent& e) {
    Service::get_logger().msg(Gamepad::id_, Logger::INFO, "Received " + std::string(e));
+
+   // update gamepad position
+   this->cursor_pos_ = sf::Vector2f(e.x, e.y);
+
+   if (this->mouse_move_command_) {
+      this->mouse_move_command_->execute();
+   }
 }
 
 void PlayerGamepad::process(MouseWheelInputEvent& e) {

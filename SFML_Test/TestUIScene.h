@@ -28,10 +28,7 @@ public:
 
 protected:
    Camera* hud_camera_;
-   
-   Entity* mouse_;
    Entity* fps_display_;
-
    Widget* widget_;
    
    sf::Clock clock;
