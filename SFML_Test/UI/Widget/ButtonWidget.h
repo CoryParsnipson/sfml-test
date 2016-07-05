@@ -29,6 +29,9 @@ public:
    virtual bool intersects(const sf::Vector2f& other);
 
    // widget event interface
+   virtual void on_mouse_in();
+   virtual void on_mouse_out();
+
    virtual void on_click();
 
    // draw interface

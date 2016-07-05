@@ -83,6 +83,11 @@ public:
       for (it = this->scene_graph_.begin(); it != this->scene_graph_.end(); ++it) {
          it->second->draw(surface, render_states);
       }
+
+      GamepadList::const_iterator git;
+      for (git = this->gamepads_.begin(); git != this->gamepads_.end(); ++git) {
+         (*git)->draw(surface, render_states);
+      }
    }
 
    // update interface
@@ -93,6 +98,11 @@ public:
          for (node_it = it->second->begin(); node_it != it->second->end(); ++node_it) {
             node_it->update(game, this);
          }
+      }
+
+      GamepadList::const_iterator git;
+      for (git = this->gamepads_.begin(); git != this->gamepads_.end(); ++git) {
+         (*git)->update(game, this);
       }
    }
 

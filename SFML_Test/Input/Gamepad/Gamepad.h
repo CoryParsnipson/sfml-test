@@ -3,6 +3,7 @@
 
 #include <string>
 
+#include "Draw.h"
 #include "Update.h"
 #include "InputListener.h"
 
@@ -14,7 +15,8 @@
 // that does nothing by default. 
 // ----------------------------------------------------------------------------
 class Gamepad
-: public Update
+: public Draw
+, public Update
 , public InputListener
 {
 public:
@@ -30,6 +32,9 @@ public:
 
    sf::Vector2f cursor_position() { return this->cursor_pos_; }
    sf::Vector2f prev_cursor_position() { return this->cursor_pos_prev_; }
+
+   // draw interface
+   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {}
 
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr) = 0;

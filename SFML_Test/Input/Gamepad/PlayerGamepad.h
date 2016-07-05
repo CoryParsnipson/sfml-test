@@ -35,6 +35,9 @@ public:
    void unset(Key keycode, ButtonState state);
    void unset(MouseButton button, ButtonState state);
 
+   // draw interface
+   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
+
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
 
@@ -51,6 +54,10 @@ protected:
    MouseBinding mouse_buttons_;
    Command* mouse_move_command_;
    Command* mouse_wheel_command_;
+
+   bool show_cursor_;
+   Graphic* cursor_;
+   Graphic* cursor_text_;
 };
 
 #endif

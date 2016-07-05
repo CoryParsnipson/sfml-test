@@ -178,6 +178,7 @@ sf::Vector2f SpriteGraphic::find_character_pos(std::size_t index) const { return
 
 TextGraphic::TextGraphic()
 : drawable_(new sf::Text()) {
+   this->em_->setString("m");
 }
 
 TextGraphic::TextGraphic(const char* text, sf::Font* font, unsigned int size)

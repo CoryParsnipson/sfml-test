@@ -3,12 +3,20 @@
 #include "Scene.h"
 #include "Entity.h"
 #include "Command.h"
+#include "TextFactory.h"
 
 PlayerGamepad::PlayerGamepad(std::string id /* = "PlayerGamepad" */)
 : Gamepad(id)
 , mouse_move_command_(nullptr)
 , mouse_wheel_command_(nullptr)
-{}
+, show_cursor_(true)
+, cursor_(new SpriteGraphic())
+{
+   this->cursor_->set_size(6, 6);
+   this->cursor_->set_color(sf::Color::Red);
+
+   this->cursor_text_ = TextFactory::inst()->create_text("", "retro");
+}
 
 PlayerGamepad::~PlayerGamepad() {
    for (KeyBinding::iterator k_it = this->keys_.begin(); k_it != this->keys_.end(); ++k_it) {
@@ -29,6 +37,9 @@ PlayerGamepad::~PlayerGamepad() {
 
    delete this->mouse_move_command_;
    delete this->mouse_wheel_command_;
+
+   delete this->cursor_;
+   delete this->cursor_text_;
 }
 
 void PlayerGamepad::set(Command* command, Key keycode, ButtonState state /* = ButtonState::Pressed */) {
@@ -67,8 +78,18 @@ void PlayerGamepad::unset(MouseButton button, ButtonState state) {
    this->mouse_buttons_[button][state] = nullptr;
 }
 
+void PlayerGamepad::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
+   this->cursor_->draw(surface, render_states);
+   this->cursor_text_->draw(surface, render_states);
+}
+
 void PlayerGamepad::update(Game& game, Scene* scene /* = nullptr */, Entity* entity /* = nullptr */) {
-   // empty
+   sf::Vector2f c = this->cursor_position();
+
+   this->cursor_->set_position(c);
+   this->cursor_text_->set_position(c + this->cursor_->get_size());
+
+   this->cursor_text_->set_string(std::to_string((int)c.x) + ", " + std::to_string((int)c.y));
 }
 
 void PlayerGamepad::process(CloseInputEvent& e) {

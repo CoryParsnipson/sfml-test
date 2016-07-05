@@ -54,6 +54,14 @@ bool ButtonWidget::intersects(const sf::Vector2f& other) {
    return transform.transformRect(this->background_->get_global_bounds()).contains(other);
 }
 
+void ButtonWidget::on_mouse_in() {
+   this->background_->set_color(sf::Color(255, 255, 255, 127));
+}
+
+void ButtonWidget::on_mouse_out() {
+   this->background_->set_color(sf::Color(255, 255, 255, 255));
+}
+
 void ButtonWidget::on_click() {
    if (this->action_) {
       this->action_->execute();
