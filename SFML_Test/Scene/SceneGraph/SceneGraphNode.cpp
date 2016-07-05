@@ -42,6 +42,11 @@ sf::Transform SceneGraphNode::transform() {
    return transform;
 }
 
+void SceneGraphNode::on_mouse_in() {}
+void SceneGraphNode::on_mouse_out() {}
+void SceneGraphNode::on_click() {}
+void SceneGraphNode::on_release() {}
+
 void SceneGraphNode::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    if (!this->visible()) {
       return;

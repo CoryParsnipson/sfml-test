@@ -38,11 +38,6 @@ void Widget::move(const sf::Vector2f& delta) {
    this->set_position(this->get_position() + delta);
 }
 
-void Widget::on_mouse_in() {}
-void Widget::on_mouse_out() {}
-void Widget::on_click() {}
-void Widget::on_release() {}
-
 void Widget::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    sf::RenderStates widget_state = render_states;
    widget_state.transform.translate(this->get_position());

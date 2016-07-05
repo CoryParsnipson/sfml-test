@@ -36,6 +36,13 @@ public:
 
    virtual sf::Transform transform();
 
+   // mouse event interface
+   virtual void on_mouse_in();
+   virtual void on_mouse_out();
+
+   virtual void on_click();
+   virtual void on_release();
+
    // scene graph visitor interface
    virtual void accept(SceneGraphVisitor& visitor) = 0;
 
