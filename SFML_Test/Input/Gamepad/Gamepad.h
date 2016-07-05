@@ -29,6 +29,7 @@ public:
    void disable() { this->enable_ = false; }
 
    sf::Vector2f cursor_position() { return this->cursor_pos_; }
+   sf::Vector2f prev_cursor_position() { return this->cursor_pos_prev_; }
 
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr) = 0;
@@ -53,6 +54,7 @@ protected:
    std::string id_;
 
    sf::Vector2f cursor_pos_;
+   sf::Vector2f cursor_pos_prev_;
 };
 
 #endif

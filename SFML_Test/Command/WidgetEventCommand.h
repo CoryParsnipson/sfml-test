@@ -3,24 +3,41 @@
 
 #include "Command.h"
 #include "Widget.h"
-#include "GetWidgetCommand.h"
+#include "Scene.h"
 
-using WidgetFunction = void (Widget::*)();
+// ----------------------------------------------------------------------------
+// forward declarations
+// ----------------------------------------------------------------------------
+class Gamepad;
+class GetWidgetCommand;
 
+// ----------------------------------------------------------------------------
+// enum classes
+// ----------------------------------------------------------------------------
+enum class WidgetOp {
+   MouseMove,
+   MouseClick,
+   MouseRelease
+};
+
+// ----------------------------------------------------------------------------
+// WidgetEventCommand
+//
+// This command allows the caller to interact with widgets.
+// ----------------------------------------------------------------------------
 class WidgetEventCommand : public Command {
 public:
-   WidgetEventCommand(WidgetFunction action, GetWidgetCommand* target = nullptr);
-
-   void target(GetWidgetCommand* target);
-   GetWidgetCommand* target();
+   WidgetEventCommand(WidgetOp action, Scene::SceneGraph* scene_graph, Gamepad* gamepad);
+   virtual ~WidgetEventCommand();
 
    // command interface
    virtual void execute();
    virtual void unexecute();
 
 protected:
-   WidgetFunction action_;
+   WidgetOp action_;
    GetWidgetCommand* target_;
+   Gamepad* gamepad_;
 };
 
 #endif

@@ -4,12 +4,11 @@
 #include "Draw.h"
 #include "Entity.h"
 #include "Widget.h"
-#include "Gamepad.h"
 
-GetWidgetCommand::GetWidgetCommand(Scene::SceneGraph* scene_graph, Gamepad* gamepad)
+GetWidgetCommand::GetWidgetCommand(Scene::SceneGraph* scene_graph, sf::Vector2f target /* = sf::Vector2f(0, 0) */)
 : Command("GetWidgetCommand")
+, target_(target)
 , scene_graph_(scene_graph)
-, gamepad_(gamepad)
 {
 }
 
@@ -25,28 +24,22 @@ Scene::SceneGraph* GetWidgetCommand::scene_graph() {
    return this->scene_graph_;
 }
 
-void GetWidgetCommand::gamepad(Gamepad* gamepad) {
-   this->gamepad_ = gamepad;
-}
-
-Gamepad* GetWidgetCommand::gamepad() {
-   return this->gamepad_;
-}
-
 const WidgetList& GetWidgetCommand::get() {
    return this->widgets_;
+}
+
+void GetWidgetCommand::target(sf::Vector2f target) {
+   this->target_ = target;
+}
+
+sf::Vector2f GetWidgetCommand::target() {
+   return this->target_;
 }
 
 void GetWidgetCommand::execute() {
    this->widgets_.clear();
 
-   if (!this->gamepad_) {
-      Service::get_logger().msg("GetWidgetCommand", Logger::WARNING, "Command has no gamepad reference.");
-      return;
-   }
-
-   sf::Vector2f gamepad_cursor(this->gamepad_->cursor_position());
-   Service::get_logger().msg("GetWidgetCommand", Logger::INFO, "target = (" + std::to_string(gamepad_cursor.x) + ", " + std::to_string(gamepad_cursor.y) + ")");
+   Service::get_logger().msg("GetWidgetCommand", Logger::INFO, "target = (" + std::to_string(this->target_.x) + ", " + std::to_string(this->target_.y) + ")");
 
    // iterate from highest z-index to lowest
    Scene::SceneGraph::const_reverse_iterator it;
@@ -75,7 +68,7 @@ void GetWidgetCommand::visit(Draw* draw) {}
 void GetWidgetCommand::visit(Entity* entity) {}
 
 void GetWidgetCommand::visit(Widget* widget) {
-   if (widget && widget->intersects(this->gamepad_->cursor_position())) {
+   if (widget && widget->intersects(this->target_)) {
       this->widgets_.push_back(widget);
    }
 }

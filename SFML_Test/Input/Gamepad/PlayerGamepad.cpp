@@ -87,6 +87,7 @@ void PlayerGamepad::process(MouseMoveInputEvent& e) {
    Service::get_logger().msg(Gamepad::id_, Logger::INFO, "Received " + std::string(e));
 
    // update gamepad position
+   this->cursor_pos_prev_ = this->cursor_pos_;
    this->cursor_pos_ = sf::Vector2f(e.x, e.y);
 
    if (this->mouse_move_command_) {
@@ -102,6 +103,7 @@ void PlayerGamepad::process(MouseButtonInputEvent& e) {
    Service::get_logger().msg(Gamepad::id_, Logger::INFO, "Received " + std::string(e));
 
    // update gamepad position
+   this->cursor_pos_prev_ = this->cursor_pos_;
    this->cursor_pos_ = sf::Vector2f(e.x, e.y);
 
    Command* c = this->mouse_buttons_[e.button][e.state];

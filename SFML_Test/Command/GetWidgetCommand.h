@@ -1,20 +1,11 @@
 #ifndef GET_WIDGET_COMMAND_H
 #define GET_WIDGET_COMMAND_H
 
-#include <map>
-#include <vector>
-
 #include "dependencies.h"
 #include "Command.h"
 #include "SceneGraphVisitor.h"
 #include "Scene.h"
 #include "Widget.h"
-
-// ----------------------------------------------------------------------------
-// forward declarations
-// ----------------------------------------------------------------------------
-class SceneGraphNode;
-class Gamepad;
 
 // ----------------------------------------------------------------------------
 // aliases
@@ -34,16 +25,16 @@ class GetWidgetCommand
 , public SceneGraphVisitor
 {
 public:
-   GetWidgetCommand(Scene::SceneGraph* scene_graph, Gamepad* gamepad);
+   GetWidgetCommand(Scene::SceneGraph* scene_graph, sf::Vector2f target = sf::Vector2f(0, 0));
    virtual ~GetWidgetCommand();
 
    void scene_graph(Scene::SceneGraph* scene_graph);
    Scene::SceneGraph* scene_graph();
 
-   void gamepad(Gamepad* gamepad);
-   Gamepad* gamepad();
-
    const WidgetList& get();
+
+   void target(sf::Vector2f target);
+   sf::Vector2f target();
 
    // command interface
    virtual void execute();
@@ -56,9 +47,8 @@ public:
    virtual void visit(Widget*);
 
 protected:
+   sf::Vector2f target_;
    Scene::SceneGraph* scene_graph_;
-   Gamepad* gamepad_; // TODO: UGH
-
    WidgetList widgets_;   
 };
 

@@ -38,7 +38,6 @@ void Widget::move(const sf::Vector2f& delta) {
    this->set_position(this->get_position() + delta);
 }
 
-void Widget::on_hover() {}
 void Widget::on_mouse_in() {}
 void Widget::on_mouse_out() {}
 void Widget::on_click() {}

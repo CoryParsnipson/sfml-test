@@ -13,10 +13,6 @@
 #include "CameraSceneGraphNode.h"
 #include "EntitySceneGraphNode.h"
 
-#include "MacroCommand.h"
-#include "ClickCommand.h"
-#include "HoverCommand.h"
-#include "GetWidgetCommand.h"
 #include "WidgetEventCommand.h"
 #include "MoveCameraCommand.h"
 
@@ -69,9 +65,8 @@ TestUIScene::TestUIScene()
    PlayerGamepad* pg = new PlayerGamepad();
    this->gamepad(pg);
    
-   GetWidgetCommand* gwc = new GetWidgetCommand(&this->scene_graph_, pg);
-   pg->set(new WidgetEventCommand(&Widget::on_click, gwc), MouseButton::Left);
-   pg->set(new WidgetEventCommand(&Widget::on_hover, gwc), MouseAction::Move);
+   pg->set(new WidgetEventCommand(WidgetOp::MouseClick, &this->scene_graph_, pg), MouseButton::Left);
+   pg->set(new WidgetEventCommand(WidgetOp::MouseMove, &this->scene_graph_, pg), MouseAction::Move);
 }
 
 TestUIScene::~TestUIScene() {

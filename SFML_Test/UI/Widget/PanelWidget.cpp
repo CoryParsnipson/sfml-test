@@ -55,9 +55,14 @@ bool PanelWidget::intersects(const sf::Vector2f& other) {
    return transform.transformRect(this->panel_->get_local_bounds()).contains(other);
 }
 
-void PanelWidget::on_hover() {
+void PanelWidget::on_mouse_in() {
    this->panel_->set_outline_thickness(-2.0f);
    this->panel_->set_outline_color(sf::Color::Red);
+}
+
+void PanelWidget::on_mouse_out() {
+   this->panel_->set_outline_thickness(0);
+   this->panel_->set_outline_color(sf::Color::Transparent);
 }
 
 void PanelWidget::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
