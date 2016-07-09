@@ -3,15 +3,22 @@
 SceneGraphNode::SceneGraphNode(bool visible /* = true */)
 : visible_(visible)
 , transform_(sf::Transform::Identity)
-, parent_(nullptr)
 {
 }
 
 SceneGraphNode::~SceneGraphNode() {
    SceneGraphNode::iterator it;
-   for (it = this->children_.begin(); it != this->children_.end(); ++it) {
+   for (it = this->begin(); it != this->end(); ++it) {
       delete *it;
    }
+}
+
+SceneGraphNode* SceneGraphNode::layer(int idx) const {
+   return this->child(idx);
+}
+
+int SceneGraphNode::num_layers() const {
+   return this->num_children();
 }
 
 bool SceneGraphNode::visible() const {
@@ -20,17 +27,6 @@ bool SceneGraphNode::visible() const {
 
 void SceneGraphNode::visible(bool visible) {
    this->visible_ = visible;
-}
-
-SceneGraphNode* SceneGraphNode::parent() {
-   return this->parent_;
-}
-
-void SceneGraphNode::parent(SceneGraphNode* parent) {
-   if (this->parent_) {
-      this->parent_->remove(this);
-   }
-   this->parent_ = parent;
 }
 
 sf::Transform SceneGraphNode::transform() {
@@ -56,8 +52,8 @@ void SceneGraphNode::draw(RenderSurface& surface, sf::RenderStates render_states
 
    this->pre_draw(surface, render_states);
 
-   SceneGraphNode::const_iterator it;
-   for (it = this->children_.begin(); it != this->children_.end(); ++it) {
+   SceneGraphNode::iterator it;
+   for (it = this->begin(); it != this->end(); ++it) {
       (*it)->draw(surface, render_states);
    }
 
@@ -67,22 +63,10 @@ void SceneGraphNode::draw(RenderSurface& surface, sf::RenderStates render_states
 void SceneGraphNode::update(Game& game, Scene* scene /* = nullptr */, Entity* entity /* = nullptr */) {
    this->pre_update(game, scene, entity);
 
-   SceneGraphNode::const_iterator it;
-   for (it = this->children_.begin(); it != this->children_.end(); ++it) {
+   SceneGraphNode::iterator it;
+   for (it = this->begin(); it != this->end(); ++it) {
       (*it)->update(game, scene, entity);
    }
 
    this->post_update(game, scene, entity);
-}
-
-void SceneGraphNode::add_pre(SceneGraphNode* child) {
-   if (child) {
-      child->parent(this);
-   }
-}
-
-void SceneGraphNode::remove_post(SceneGraphNode* child) {
-   if (child) {
-      child->parent(nullptr);
-   }
 }

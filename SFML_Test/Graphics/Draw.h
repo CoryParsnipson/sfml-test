@@ -22,8 +22,8 @@ public:
 
    // drawable interface
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {
-      Graphic::const_iterator it;
-      for (it = this->children_.begin(); it != this->children_.end(); ++it) {
+      Graphic::iterator it;
+      for (it = this->begin(); it != this->end(); ++it) {
          (*it)->draw(surface, render_states);
       }
    }

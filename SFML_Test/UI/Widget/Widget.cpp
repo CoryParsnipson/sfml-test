@@ -43,14 +43,14 @@ void Widget::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf
    widget_state.transform.translate(this->get_position());
 
    Widget::iterator it;
-   for (it = this->children_.begin(); it != this->children_.end(); ++it) {
+   for (it = this->begin(); it != this->end(); ++it) {
       (*it)->draw(surface, (static_cast<Widget*>(*it)->get_positioning() == UI::Positioning::Default ? widget_state : render_states));
    }
 }
 
 void Widget::update(Game& game, Scene* scene, Entity* entity) {
    Widget::iterator it;
-   for (it = this->children_.begin(); it != this->children_.end(); ++it) {
+   for (it = this->begin(); it != this->end(); ++it) {
       (*it)->update(game, scene, entity);
    }
 }
