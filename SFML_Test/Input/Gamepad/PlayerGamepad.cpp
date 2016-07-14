@@ -83,7 +83,7 @@ void PlayerGamepad::draw(RenderSurface& surface, sf::RenderStates render_states 
    this->cursor_text_->draw(surface, render_states);
 }
 
-void PlayerGamepad::update(Game& game, Scene* scene /* = nullptr */, Entity* entity /* = nullptr */) {
+void PlayerGamepad::update(Game& game, Scene* scene /* = nullptr */) {
    sf::Vector2f c = this->cursor_position();
 
    this->cursor_->set_position(c);

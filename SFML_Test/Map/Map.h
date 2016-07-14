@@ -24,7 +24,7 @@ public:
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 
    // update interface
-   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
+   virtual void update(Game& game, Scene* scene = nullptr);
 
    void add(Entity* tile);
    void add(Grid* grid);

@@ -29,7 +29,7 @@ void Map::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::R
    }
 }
 
-void Map::update(Game& game, Scene* scene, Entity* entity) {
+void Map::update(Game& game, Scene* scene) {
    Map::TileList::const_iterator it;
    for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
       (*it)->update(game, scene);

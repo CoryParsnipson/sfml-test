@@ -50,7 +50,7 @@ public:
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 
    // update interface
-   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
+   virtual void update(Game& game, Scene* scene = nullptr);
 
 protected:
    bool visible_; // visibility for this node AND IT'S CHILDREN
@@ -60,8 +60,8 @@ protected:
    virtual void pre_draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {}
    virtual void post_draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {}
 
-   virtual void pre_update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr) {}
-   virtual void post_update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr) {}
+   virtual void pre_update(Game& game, Scene* scene = nullptr) {}
+   virtual void post_update(Game& game, Scene* scene = nullptr) {}
 };
 
 #endif

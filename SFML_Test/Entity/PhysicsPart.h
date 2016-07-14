@@ -28,7 +28,7 @@ public:
    virtual bool intersects(sf::FloatRect& other);
 
    // update interface
-   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
+   virtual void update(Game& game, Scene* scene = nullptr);
 
    // serialize interface
    virtual Serialize::SerialObj serialize();

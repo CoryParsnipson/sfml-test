@@ -49,13 +49,13 @@ void MouseControlPart::set_controllable(MouseControllable* c) {
    this->controllable_ = c;
 }
 
-void MouseControlPart::update(Game& game, Scene* scene, Entity* entity) {
-   if (!entity) {
-      Service::get_logger().msg("MouseControlPart", Logger::ERROR, "Entity null pointer received.");
-      return;
-   }
+void MouseControlPart::update(Game& game, Scene* scene) {
+   //if (!entity) {
+   //   Service::get_logger().msg("MouseControlPart", Logger::ERROR, "Entity null pointer received.");
+   //   return;
+   //}
 
-   entity->set_position(this->last_mouse_pos);
+   //entity->set_position(this->last_mouse_pos);
 
    if (!this->controllable_) {
       Service::get_logger().msg("MouseControlPart", Logger::WARNING, "Controllable target not registered!");

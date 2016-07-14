@@ -1,4 +1,5 @@
 #include "ReferencePart.h"
+#include "Entity.h"
 
 ReferencePart::ReferencePart(std::string id)
 : Part(id)
@@ -41,7 +42,7 @@ void ReferencePart::remove(Entity* entity) {
    }
 }
 
-void ReferencePart::update(Game& game, Scene* scene, Entity* entity) {
+void ReferencePart::update(Game& game, Scene* scene) {
 }
 
 Serialize::SerialObj ReferencePart::serialize() {

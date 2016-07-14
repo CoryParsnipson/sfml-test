@@ -48,43 +48,43 @@ void DebugPart::draw(RenderSurface& surface, sf::RenderStates render_states /* =
    }
 }
 
-void DebugPart::update(Game& game, Scene* scene, Entity* entity) {
-   unsigned int graphic_idx = 0;
-   Graphic* g = nullptr;
-   GraphicsPart* graphics = dynamic_cast<GraphicsPart*>(entity->get("graphics"));
-   PhysicsPart* physics = dynamic_cast<PhysicsPart*>(entity->get("physics"));
+void DebugPart::update(Game& game, Scene* scene) {
+   //unsigned int graphic_idx = 0;
+   //Graphic* g = nullptr;
+   //GraphicsPart* graphics = dynamic_cast<GraphicsPart*>(entity->get("graphics"));
+   //PhysicsPart* physics = dynamic_cast<PhysicsPart*>(entity->get("physics"));
 
-   // get entity's debug enable
-   if (entity) {
-      this->show_text(entity->enable_debug_text());
-   }
+   //// get entity's debug enable
+   //if (entity) {
+   //   this->show_text(entity->enable_debug_text());
+   //}
 
-   // update size and position of each debug part sprite based on entity's graphic part
-   if (graphics) {
-      while ((g = graphics->get(graphic_idx))) {
-         if (graphic_idx >= this->sprites_.size()) {
-            Graphic* g_debug = new SpriteGraphic();
+   //// update size and position of each debug part sprite based on entity's graphic part
+   //if (graphics) {
+   //   while ((g = graphics->get(graphic_idx))) {
+   //      if (graphic_idx >= this->sprites_.size()) {
+   //         Graphic* g_debug = new SpriteGraphic();
 
-            g_debug->set_color(sf::Color::Transparent);
-            g_debug->set_outline_color(sf::Color::Red);
-            g_debug->set_outline_thickness(1.0);
+   //         g_debug->set_color(sf::Color::Transparent);
+   //         g_debug->set_outline_color(sf::Color::Red);
+   //         g_debug->set_outline_thickness(1.0);
 
-            this->sprites_.push_back(g_debug);
-         }
+   //         this->sprites_.push_back(g_debug);
+   //      }
 
-         this->sprites_[graphic_idx]->set_position(g->get_position());
-         this->sprites_[graphic_idx]->set_size(g->get_size());
+   //      this->sprites_[graphic_idx]->set_position(g->get_position());
+   //      this->sprites_[graphic_idx]->set_size(g->get_size());
 
-         ++graphic_idx;
-      }
-   }
+   //      ++graphic_idx;
+   //   }
+   //}
 
-   // write down position of entity based on entity's physics part
-   if (physics && this->show_text()) {
-      sf::Vector2f pos = physics->get_position();
-      this->pos_text_->set_string(std::to_string((int)pos.x) + ", " + std::to_string((int)pos.y));
-      this->pos_text_->set_position(pos);
-   }
+   //// write down position of entity based on entity's physics part
+   //if (physics && this->show_text()) {
+   //   sf::Vector2f pos = physics->get_position();
+   //   this->pos_text_->set_string(std::to_string((int)pos.x) + ", " + std::to_string((int)pos.y));
+   //   this->pos_text_->set_position(pos);
+   //}
 }
 
 Serialize::SerialObj DebugPart::serialize() {

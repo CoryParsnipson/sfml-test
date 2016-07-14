@@ -80,8 +80,8 @@ void TestUIScene::exit(Game& game) {
    Service::get_logger().msg(this->id_, Logger::INFO, "Exiting test UI menu state.");
 }
 
-void TestUIScene::update(Game& game, Scene* scene, Entity* entity) {
-   Scene::update(game, scene, entity);
+void TestUIScene::update(Game& game, Scene* scene) {
+   Scene::update(game, scene);
 
    // calculate and show FPS
    if (!this->frame_count) {

@@ -19,6 +19,6 @@ void EntitySceneGraphNode::pre_draw(RenderSurface& surface, sf::RenderStates ren
    this->entity_->draw(surface, render_states);
 }
 
-void EntitySceneGraphNode::post_update(Game& game, Scene* scene /* = nullptr */, Entity* entity /* = nullptr */) {
-   this->entity_->update(game, scene, entity);
+void EntitySceneGraphNode::post_update(Game& game, Scene* scene /* = nullptr */) {
+   this->entity_->update(game, scene);
 }

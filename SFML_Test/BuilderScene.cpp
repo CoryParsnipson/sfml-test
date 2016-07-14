@@ -187,8 +187,8 @@ void BuilderScene::exit(Game& game) {
    Service::get_input().detach(*dynamic_cast<InputListener*>(this->mouse_->get("control")));
 }
 
-void BuilderScene::update(Game& game, Scene* scene, Entity* entity) {
-   Scene::update(game, scene, entity);
+void BuilderScene::update(Game& game, Scene* scene) {
+   Scene::update(game, scene);
 
    this->map_->update(game, this);
    this->mouse_->update(game, this);

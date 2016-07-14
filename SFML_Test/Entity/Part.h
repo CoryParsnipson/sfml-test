@@ -32,7 +32,7 @@ public:
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {}
 
    // update interface
-   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr) = 0;
+   virtual void update(Game& game, Scene* scene = nullptr) = 0;
 
    // serialize interface
    virtual Serialize::SerialObj serialize() = 0;

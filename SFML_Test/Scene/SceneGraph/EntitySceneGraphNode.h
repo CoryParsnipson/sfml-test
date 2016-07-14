@@ -26,7 +26,7 @@ protected:
    Entity* entity_;
 
    virtual void pre_draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
-   virtual void post_update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
+   virtual void post_update(Game& game, Scene* scene = nullptr);
 };
 
 #endif

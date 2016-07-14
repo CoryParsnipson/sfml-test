@@ -91,7 +91,7 @@ public:
    }
 
    // update interface
-   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr) {
+   virtual void update(Game& game, Scene* scene = nullptr) {
       SceneGraph::iterator it;
       for (it = this->scene_graph_.begin(); it != this->scene_graph_.end(); ++it) {
          SceneGraphNode::prefix_iterator node_it;

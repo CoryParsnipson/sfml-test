@@ -60,13 +60,13 @@ void SceneGraphNode::draw(RenderSurface& surface, sf::RenderStates render_states
    this->post_draw(surface, render_states);
 }
 
-void SceneGraphNode::update(Game& game, Scene* scene /* = nullptr */, Entity* entity /* = nullptr */) {
-   this->pre_update(game, scene, entity);
+void SceneGraphNode::update(Game& game, Scene* scene /* = nullptr */) {
+   this->pre_update(game, scene);
 
    SceneGraphNode::iterator it;
    for (it = this->begin(); it != this->end(); ++it) {
-      (*it)->update(game, scene, entity);
+      (*it)->update(game, scene);
    }
 
-   this->post_update(game, scene, entity);
+   this->post_update(game, scene);
 }

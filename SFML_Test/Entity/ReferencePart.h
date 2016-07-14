@@ -3,6 +3,8 @@
 
 #include "Part.h"
 
+class Entity;
+
 class ReferencePart : public Part {
 public:
    typedef std::vector<Entity*> entities_t;
@@ -16,7 +18,7 @@ public:
    virtual void remove(Entity* entity);
 
    // update interface
-   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
+   virtual void update(Game& game, Scene* scene = nullptr);
 
    // serialize interface
    virtual Serialize::SerialObj serialize();

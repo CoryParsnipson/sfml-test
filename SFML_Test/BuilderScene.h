@@ -27,7 +27,7 @@ public:
    virtual void exit(Game& game);
 
    // update interface
-   virtual void update(Game& game, Scene* scene = nullptr, Entity* entity = nullptr);
+   virtual void update(Game& game, Scene* scene = nullptr);
 
    // input event processing
    virtual void process(Game& game, CloseInputEvent& e);

@@ -78,11 +78,7 @@ void GraphicsPart::draw(RenderSurface& surface, sf::RenderStates render_states /
    }
 }
 
-void GraphicsPart::update(Game& game, Scene* scene, Entity* entity) {
-   if (!entity) {
-      Service::get_logger().msg("GraphicsPart", Logger::ERROR, "Entity null pointer received.");
-      return;
-   }
+void GraphicsPart::update(Game& game, Scene* scene) {
 }
 
 Serialize::SerialObj GraphicsPart::serialize() {

@@ -48,10 +48,10 @@ void Widget::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf
    }
 }
 
-void Widget::update(Game& game, Scene* scene, Entity* entity) {
+void Widget::update(Game& game, Scene* scene) {
    Widget::iterator it;
    for (it = this->begin(); it != this->end(); ++it) {
-      (*it)->update(game, scene, entity);
+      (*it)->update(game, scene);
    }
 }
 
