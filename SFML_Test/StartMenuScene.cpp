@@ -28,7 +28,7 @@ StartMenuScene::StartMenuScene()
          sf::Color::White,
          this->show_debug_info_
    ));
-   this->scene_graph_[0]->add(node);
+   this->scene_graph_->add(node);
 
    node = new EntitySceneGraphNode(
       *TextFactory::inst()->create_text_entity(
@@ -40,7 +40,7 @@ StartMenuScene::StartMenuScene()
          sf::Color::White,
          this->show_debug_info_
    ));
-   this->scene_graph_[0]->add(node);
+   this->scene_graph_->add(node);
 
    node = new EntitySceneGraphNode(
       *TextFactory::inst()->create_text_entity(
@@ -52,7 +52,7 @@ StartMenuScene::StartMenuScene()
          sf::Color::White,
          this->show_debug_info_
    ));
-   this->scene_graph_[0]->add(node);
+   this->scene_graph_->add(node);
 
    this->camera_->move(sf::Vector2f(Settings::Instance()->cur_width() / 2.f, Settings::Instance()->cur_height() / 2.f));
 }
@@ -106,20 +106,17 @@ void StartMenuScene::toggle_debug_info() {
    this->show_debug_info_ = !this->show_debug_info_;
    Service::get_logger().msg(this->id(), Logger::INFO, "Debug info: " + std::string(this->show_debug_info_ ? "SHOW" : "HIDE"));
 
-   SceneGraph::iterator it;
-   for (it = this->scene_graph_.begin(); it != this->scene_graph_.end(); ++it) {
-      SceneGraphNode::prefix_iterator node_it;
-      for (node_it = it->second->begin(); node_it != it->second->end(); ++node_it) {
-         auto e = dynamic_cast<EntitySceneGraphNode*>(*node_it);
-         if (!e) {
-            continue;
-         }
+   SceneGraphNode::prefix_iterator it;
+   for (it = this->scene_graph_->begin(); it != this->scene_graph_->end(); ++it) {
+      auto e = dynamic_cast<EntitySceneGraphNode*>(*it);
+      if (!e) {
+         continue;
+      }
 
-         if (this->show_debug_info_) {
-            e->get_entity()->add(new DebugPart());
-         } else {
-            e->get_entity()->remove("debug");
-         }
+      if (this->show_debug_info_) {
+         e->get_entity()->add(new DebugPart());
+      } else {
+         e->get_entity()->remove("debug");
       }
    }
 }

@@ -26,6 +26,7 @@
 BuilderScene::BuilderScene()
 : Scene("BuilderScene")
 , map_(nullptr)
+, hud_camera_(new Camera("Hud Camera", sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height())))
 , map_camera_(new Camera("Map Camera", sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height())))
 , map_filename_("pkmn_map_test.txt")
 , mouse_(nullptr)
@@ -66,28 +67,6 @@ BuilderScene::BuilderScene()
    TextureManager::inst()->create_texture("tile_water_br", "pkmn_tiles_outdoor1.png", sf::IntRect(320, 192, 64, 64));
    TextureManager::inst()->print();
 
-   // create "map layers" using a new camera
-   this->scene_graph_[1] = new CameraSceneGraphNode(*this->map_camera_); // layer for map
-   this->scene_graph_[2] = new CameraSceneGraphNode(*this->map_camera_); // layer for tile cursor
-
-   this->scene_graph_[3] = new CameraSceneGraphNode(*this->camera_); // layer for hud
-   this->scene_graph_[4] = new CameraSceneGraphNode(*this->camera_); // layer for mouse
-
-   // build the map
-   this->serializer_ = new TextSerializer();
-   this->serializer_->open_infile(this->map_filename_);
-
-   MapBuilder* map_builder = new FlatMapBuilder();
-   map_builder->set_serializer(this->serializer_);
-   map_builder->build();
-
-   this->map_ = map_builder->get_map();
-   this->scene_graph_[1]->add(new DrawableSceneGraphNode(*this->map_));
-
-   this->map_grid_ = new DrawableSceneGraphNode(*this->map_->grid());
-   this->map_grid_->visible(false);
-   this->scene_graph_[2]->add(this->map_grid_);
-
    sf::VertexArray* backdrop = new sf::VertexArray(sf::TrianglesStrip, 4);
    (*backdrop)[0].position = sf::Vector2f(0, 0);
    (*backdrop)[1].position = sf::Vector2f(0, Settings::Instance()->cur_height());
@@ -99,13 +78,32 @@ BuilderScene::BuilderScene()
    (*backdrop)[2].color = sf::Color(50, 50, 50, 255);
    (*backdrop)[3].color = sf::Color(25, 25, 25, 255);
    this->backdrop_ = new VertexGraphic(backdrop);
-   this->scene_graph_[0]->add(new DrawableSceneGraphNode(*this->backdrop_));
+   this->scene_graph_->insert(0, new DrawableSceneGraphNode(*this->backdrop_));
+
+   // create "map layers" using a new camera
+   this->scene_graph_->insert(1, new CameraSceneGraphNode(*this->map_camera_)); // layer for map
+   this->scene_graph_->insert(2, new CameraSceneGraphNode(*this->hud_camera_)); // layer for hud 
+
+   // build the map
+   this->serializer_ = new TextSerializer();
+   this->serializer_->open_infile(this->map_filename_);
+
+   MapBuilder* map_builder = new FlatMapBuilder();
+   map_builder->set_serializer(this->serializer_);
+   map_builder->build();
+
+   this->map_ = map_builder->get_map();
+   this->scene_graph_->child(1)->add(new DrawableSceneGraphNode(*this->map_));
+
+   this->map_grid_ = new DrawableSceneGraphNode(*this->map_->grid());
+   this->map_grid_->visible(false);
+   this->scene_graph_->child(1)->add(this->map_grid_);
 
    delete map_builder;
 
    // initialize entities
    this->mouse_ = UtilFactory::inst()->create_mouse();
-   this->scene_graph_[4]->add(new EntitySceneGraphNode(*this->mouse_));
+   this->scene_graph_->child(2)->add(new EntitySceneGraphNode(*this->mouse_));
 
    // let our mouse controller manipulate this scene
    dynamic_cast<MouseControlPart*>(this->mouse_->get("control"))->set_controllable(this);
@@ -115,7 +113,7 @@ BuilderScene::BuilderScene()
       *TileFactory::inst()->create_selection_rectangle(),
       false
    );
-   this->scene_graph_[3]->add(this->selection_rectangle_);
+   this->scene_graph_->child(2)->insert(1, this->selection_rectangle_);
 
    // create a tile cursor
    sf::Vector2f nullvect(0, 0);
@@ -126,32 +124,32 @@ BuilderScene::BuilderScene()
       ),
       false
    );
-   this->scene_graph_[2]->add(this->tile_cursor_);
+   this->scene_graph_->child(1)->add(this->tile_cursor_);
 
    // create fixed hud items
    Entity* t = TextFactory::inst()->create_text_entity("SFML_Test", "retro");
-   this->scene_graph_[3]->add(new EntitySceneGraphNode(*t));
+   this->scene_graph_->child(2)->insert(2, new EntitySceneGraphNode(*t));
 
    t = TextFactory::inst()->create_text_entity("r: reset pan position", "retro", sf::Vector2f(0, 15));
-   this->scene_graph_[3]->add(new EntitySceneGraphNode(*t));
+   this->scene_graph_->child(2)->insert(2, new EntitySceneGraphNode(*t));
 
    t = TextFactory::inst()->create_text_entity("g: toggle grid visibility", "retro", sf::Vector2f(0, 30));
-   this->scene_graph_[3]->add(new EntitySceneGraphNode(*t));
+   this->scene_graph_->child(2)->insert(2, new EntitySceneGraphNode(*t));
 
    t = TextFactory::inst()->create_text_entity("o: toggle entity hitboxes", "retro", sf::Vector2f(0, 45));
-   this->scene_graph_[3]->add(new EntitySceneGraphNode(*t));
+   this->scene_graph_->child(2)->insert(2, new EntitySceneGraphNode(*t));
 
    t = TextFactory::inst()->create_text_entity("1: add green tiles at selection", "retro", sf::Vector2f(0, 60));
-   this->scene_graph_[3]->add(new EntitySceneGraphNode(*t));
+   this->scene_graph_->child(2)->insert(2, new EntitySceneGraphNode(*t));
 
    t = TextFactory::inst()->create_text_entity("2: add blue tiles at selection", "retro", sf::Vector2f(0, 75));
-   this->scene_graph_[3]->add(new EntitySceneGraphNode(*t));
+   this->scene_graph_->child(2)->insert(2, new EntitySceneGraphNode(*t));
 
    t = TextFactory::inst()->create_text_entity("del: remove tiles at selection", "retro", sf::Vector2f(0, 90));
-   this->scene_graph_[3]->add(new EntitySceneGraphNode(*t));
+   this->scene_graph_->child(2)->insert(2, new EntitySceneGraphNode(*t));
 
    t = TextFactory::inst()->create_text_entity("right click: click and drag to pan", "retro", sf::Vector2f(0, 105));
-   this->scene_graph_[3]->add(new EntitySceneGraphNode(*t));
+   this->scene_graph_->child(2)->insert(2, new EntitySceneGraphNode(*t));
 
    Graphic* center_dot_graphic = new SpriteGraphic();
    center_dot_graphic->set_size(3, 3);
@@ -163,11 +161,11 @@ BuilderScene::BuilderScene()
       center_dot_graphic->get_global_bounds(),
       this->show_debug_info_
    );
-   this->scene_graph_[3]->add(new EntitySceneGraphNode(*this->center_dot_));
+   this->scene_graph_->child(2)->insert(2, new EntitySceneGraphNode(*this->center_dot_));
 
    this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", "retro");
    this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
-   this->scene_graph_[3]->add(new EntitySceneGraphNode(*this->fps_display_));
+   this->scene_graph_->child(2)->insert(2, new EntitySceneGraphNode(*this->fps_display_));
 }
 
 BuilderScene::~BuilderScene() {
@@ -222,9 +220,12 @@ void BuilderScene::process(Game& game, ResizeInputEvent& e) {
    // update backsplash
    this->backdrop_->set_size(Settings::Instance()->cur_width(), Settings::Instance()->cur_height());
 
-   // update map camera
+   // update custom scene cameras
    this->map_camera_->set_size(sf::Vector2f(e.width, e.height));
    this->map_camera_->set_center(sf::Vector2f(e.width / 2.f, e.height / 2.f));
+
+   this->hud_camera_->set_size(sf::Vector2f(e.width, e.height));
+   this->hud_camera_->set_center(sf::Vector2f(e.width / 2.f, e.height / 2.f));
 }
 
 void BuilderScene::process(Game& game, KeyPressInputEvent& e) {
@@ -380,20 +381,18 @@ void BuilderScene::toggle_debug_info() {
    this->show_debug_info_ = !this->show_debug_info_;
    Service::get_logger().msg(this->id(), Logger::INFO, "Debug info: " + std::string(this->show_debug_info_ ? "SHOW" : "HIDE"));
 
-   SceneGraph::iterator it;
-   for (it = this->scene_graph_.begin(); it != this->scene_graph_.end(); ++it) {
-      SceneGraphNode::prefix_iterator node_it;
-      for (node_it = it->second->begin(); node_it != it->second->end(); ++node_it) {
-         auto e = dynamic_cast<EntitySceneGraphNode*>(*node_it);
-         if (!e) {
-            continue;
-         }
+   // TODO: can replace this with visitor
+   SceneGraphNode::prefix_iterator it;
+   for (it = this->scene_graph_->begin(); it != this->scene_graph_->end(); ++it) {
+      auto e = dynamic_cast<EntitySceneGraphNode*>(*it);
+      if (!e) {
+         continue;
+      }
 
-         if (this->show_debug_info_) {
-            e->get_entity()->add(new DebugPart());
-         } else {
-            e->get_entity()->remove("debug");
-         }
+      if (this->show_debug_info_) {
+         e->get_entity()->add(new DebugPart());
+      } else {
+         e->get_entity()->remove("debug");
       }
    }
 }

@@ -48,6 +48,7 @@ public:
 protected:
    // scene fixtures
    Map* map_;
+   Camera* hud_camera_;
    Camera* map_camera_;
    Graphic* backdrop_;
    std::string map_filename_;

@@ -27,7 +27,7 @@ public:
    virtual void process(Game& game, ResizeInputEvent& e);
 
 protected:
-   Camera* hud_camera_;
+   Camera* ui_camera_;
    Entity* fps_display_;
    Widget* widget_;
    

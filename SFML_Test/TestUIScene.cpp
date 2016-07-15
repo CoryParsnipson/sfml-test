@@ -20,6 +20,7 @@
 
 TestUIScene::TestUIScene()
 : Scene("TestUIScene")
+, ui_camera_(new Camera("UI Camera", sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height())))
 , last_frame_time(0)
 , frame_measurement_interval(6)
 , frame_count(0)
@@ -29,13 +30,10 @@ TestUIScene::TestUIScene()
    TextureManager::inst()->create_texture("tile_water_ul", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 64, 64, 64));
    TextureManager::inst()->print();
 
-   this->hud_camera_ = new Camera("Hud Camera", sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height()));
-
-   // create layers
-   this->scene_graph_[1] = new CameraSceneGraphNode(*this->hud_camera_); // hud layer
+   this->scene_graph_->add(new CameraSceneGraphNode(*this->ui_camera_));
 
    // populate entities
-   this->scene_graph_[1]->add(new EntitySceneGraphNode(
+   this->scene_graph_->add(new EntitySceneGraphNode(
       *TextFactory::inst()->create_text_entity(
          "Test UI Scene",
          "retro",
@@ -45,11 +43,11 @@ TestUIScene::TestUIScene()
 
    this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", "retro");
    this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
-   this->scene_graph_[1]->add(new EntitySceneGraphNode(*this->fps_display_));
+   this->scene_graph_->add(new EntitySceneGraphNode(*this->fps_display_));
 
    // test widget
    this->widget_ = new PanelWidget("Test Panel 1", sf::Vector2f(100, 100), sf::Vector2f(300, 200));
-   this->scene_graph_[0]->add(this->widget_);
+   this->scene_graph_->child(0)->add(this->widget_);
 
    Widget* tw = new TextWidget("Text Widget 1", "PENIS PENIS PENIS PENIS PENIS PENIS PENIS PENIS PENIS");
    tw->set_size(sf::Vector2f(300, 200));
@@ -59,14 +57,14 @@ TestUIScene::TestUIScene()
    bw->set_background(new SpriteGraphic(TextureManager::inst()->get_texture("tile_water_ul")));
    this->widget_->add(bw);
 
-   bw->action(new MoveCameraCommand(*this->camera_, sf::Vector2f(10, 50)));
+   bw->action(new MoveCameraCommand(*this->ui_camera_, sf::Vector2f(10, 50)));
 
    // create player controls
    PlayerGamepad* pg = new PlayerGamepad();
    this->gamepad(pg);
    
-   pg->set(new WidgetEventCommand(WidgetOp::MouseClick, &this->scene_graph_, pg), MouseButton::Left);
-   pg->set(new WidgetEventCommand(WidgetOp::MouseMove, &this->scene_graph_, pg), MouseAction::Move);
+   pg->set(new WidgetEventCommand(WidgetOp::MouseClick, this->scene_graph_, pg), MouseButton::Left);
+   pg->set(new WidgetEventCommand(WidgetOp::MouseMove, this->scene_graph_, pg), MouseAction::Move);
 }
 
 TestUIScene::~TestUIScene() {
@@ -100,9 +98,9 @@ void TestUIScene::process(Game& game, ResizeInputEvent& e) {
    // reposition fps display
    this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
 
-   // adjust hud camera
-   this->hud_camera_->set_size(sf::Vector2f(e.width, e.height));
-   this->hud_camera_->set_center(sf::Vector2f(e.width / 2.f, e.height / 2.f));
+   // adjust camera
+   this->ui_camera_->set_size(sf::Vector2f(e.width, e.height));
+   this->ui_camera_->set_center(sf::Vector2f(e.width / 2.f, e.height / 2.f));
 }
 
 void TestUIScene::update_fps() {

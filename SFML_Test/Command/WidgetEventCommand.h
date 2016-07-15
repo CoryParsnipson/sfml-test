@@ -27,7 +27,7 @@ enum class WidgetOp {
 // ----------------------------------------------------------------------------
 class WidgetEventCommand : public Command {
 public:
-   WidgetEventCommand(WidgetOp action, Scene::SceneGraph* scene_graph, Gamepad* gamepad);
+   WidgetEventCommand(WidgetOp action, SceneGraphNode* scene_graph, Gamepad* gamepad);
    virtual ~WidgetEventCommand();
 
    // command interface

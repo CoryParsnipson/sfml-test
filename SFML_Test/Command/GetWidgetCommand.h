@@ -25,11 +25,11 @@ class GetWidgetCommand
 , public SceneGraphVisitor
 {
 public:
-   GetWidgetCommand(Scene::SceneGraph* scene_graph, sf::Vector2f target = sf::Vector2f(0, 0));
+   GetWidgetCommand(SceneGraphNode* scene_graph, sf::Vector2f target = sf::Vector2f(0, 0));
    virtual ~GetWidgetCommand();
 
-   void scene_graph(Scene::SceneGraph* scene_graph);
-   Scene::SceneGraph* scene_graph();
+   void scene_graph(SceneGraphNode* scene_graph);
+   SceneGraphNode* scene_graph();
 
    const WidgetList& get();
 
@@ -48,7 +48,7 @@ public:
 
 protected:
    sf::Vector2f target_;
-   Scene::SceneGraph* scene_graph_;
+   SceneGraphNode* scene_graph_;
    WidgetList widgets_;   
 };
 

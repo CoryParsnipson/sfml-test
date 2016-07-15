@@ -17,6 +17,7 @@
 #include "Entity.h"
 #include "Gamepad.h"
 
+#include "SceneGraphNode.h"
 #include "CameraSceneGraphNode.h"
 
 class Scene
@@ -24,15 +25,14 @@ class Scene
 , public Update
 {
 public:
-   using SceneGraph = std::map<int, SceneGraphNode*>;
    using GamepadList = std::vector<Gamepad*>;
 
    Scene(std::string id)
    : id_(id)
    , camera_(new Camera("Camera", sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height())))
+   , scene_graph_(new CameraSceneGraphNode(*this->camera_))
    {
       Service::get_logger().msg(this->id(), Logger::INFO, "Creating new Scene.");
-      this->scene_graph_[0] = new CameraSceneGraphNode(*this->camera_);
    }
 
    virtual ~Scene() {
@@ -41,11 +41,7 @@ public:
       delete this->camera_;
       this->camera_ = nullptr;
 
-      SceneGraph::const_iterator it;
-      for (it = this->scene_graph_.begin(); it != this->scene_graph_.end(); ++it) {
-         delete it->second;
-      }
-      this->scene_graph_.clear();
+      delete this->scene_graph_;
 
       GamepadList::const_iterator g_it;
       for (g_it = this->gamepads_.begin(); g_it != this->gamepads_.end(); ++g_it) {
@@ -79,9 +75,10 @@ public:
 
    // draw interface
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {
-      SceneGraph::iterator it;
-      for (it = this->scene_graph_.begin(); it != this->scene_graph_.end(); ++it) {
-         it->second->draw(surface, render_states);
+      SceneGraphNode::iterator it;
+      for (it = this->scene_graph_->begin(); it != this->scene_graph_->end(); ++it) {
+         this->camera_->draw(surface, render_states); // reset any camera transformations
+         (*it)->draw(surface, render_states);
       }
 
       GamepadList::const_iterator git;
@@ -92,13 +89,7 @@ public:
 
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr) {
-      SceneGraph::iterator it;
-      for (it = this->scene_graph_.begin(); it != this->scene_graph_.end(); ++it) {
-         SceneGraphNode::prefix_iterator node_it;
-         for (node_it = it->second->begin(); node_it != it->second->end(); ++node_it) {
-            node_it->update(game, this);
-         }
-      }
+      this->scene_graph_->update(game, scene);
 
       GamepadList::const_iterator git;
       for (git = this->gamepads_.begin(); git != this->gamepads_.end(); ++git) {
@@ -139,7 +130,7 @@ public:
 protected:
    std::string id_;
    Camera* camera_;
-   SceneGraph scene_graph_;
+   SceneGraphNode* scene_graph_;
 
 private:
    GamepadList gamepads_;

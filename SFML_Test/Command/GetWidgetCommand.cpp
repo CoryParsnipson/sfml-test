@@ -5,7 +5,7 @@
 #include "Entity.h"
 #include "Widget.h"
 
-GetWidgetCommand::GetWidgetCommand(Scene::SceneGraph* scene_graph, sf::Vector2f target /* = sf::Vector2f(0, 0) */)
+GetWidgetCommand::GetWidgetCommand(SceneGraphNode* scene_graph, sf::Vector2f target /* = sf::Vector2f(0, 0) */)
 : Command("GetWidgetCommand")
 , target_(target)
 , scene_graph_(scene_graph)
@@ -16,11 +16,11 @@ GetWidgetCommand::~GetWidgetCommand() {
    this->widgets_.clear();
 }
 
-void GetWidgetCommand::scene_graph(Scene::SceneGraph* scene_graph) {
+void GetWidgetCommand::scene_graph(SceneGraphNode* scene_graph) {
    this->scene_graph_ = scene_graph;
 }
 
-Scene::SceneGraph* GetWidgetCommand::scene_graph() {
+SceneGraphNode* GetWidgetCommand::scene_graph() {
    return this->scene_graph_;
 }
 
@@ -42,15 +42,12 @@ void GetWidgetCommand::execute() {
    Service::get_logger().msg("GetWidgetCommand", Logger::INFO, "target = (" + std::to_string(this->target_.x) + ", " + std::to_string(this->target_.y) + ")");
 
    // iterate from highest z-index to lowest
-   Scene::SceneGraph::const_reverse_iterator it;
+   SceneGraphNode::reverse_postfix_iterator it;
    for (it = this->scene_graph_->rbegin(); it != this->scene_graph_->rend(); ++it) {
-      SceneGraphNode::postfix_iterator node_it;
-      for (node_it = it->second->begin(); node_it != it->second->end(); ++node_it) {
-         if (!(*node_it)->visible()) {
-            continue;
-         }
-         (*node_it)->accept(*this);
+      if (!(*it)->visible()) {
+         continue;
       }
+      (*it)->accept(*this);
    }
 
    Service::get_logger().msg("GetWidgetCommand", Logger::INFO, "GOT WIDGETS");
