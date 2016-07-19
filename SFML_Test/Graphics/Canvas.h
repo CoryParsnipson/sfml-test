@@ -12,9 +12,6 @@ public:
    Canvas(const std::string& title, const sf::Vector2f& size, int framerate_limit = 60);
    virtual ~Canvas();
 
-   // render surface interface
-   virtual void set_camera(Camera& camera);
-
    virtual void draw(sf::Drawable& drawable, sf::RenderStates render_states = sf::RenderStates::Default);
 
    virtual void update();
@@ -25,6 +22,10 @@ public:
    void set_mouse_cursor_visible(bool visible);
 
    bool poll_event(sf::Event& event);
+
+   // for internal use only...
+   virtual const sf::View& view() const;
+   virtual void view(const sf::View& view);
 
 protected:
    sf::RenderWindow surface_;

@@ -50,9 +50,23 @@ void PanelWidget::set_size(const sf::Vector2f& size) {
    this->surface_.bounds(this->get_position(), effective_size);
 }
 
+bool PanelWidget::intersects(const sf::Vector2i& other) {
+   return this->intersects(static_cast<sf::Vector2i>(other));
+}
+
 bool PanelWidget::intersects(const sf::Vector2f& other) {
    sf::Transform transform = this->transform();
    return transform.transformRect(this->panel_->get_local_bounds()).contains(other);
+}
+
+bool PanelWidget::intersects(const sf::FloatRect& other) {
+   sf::Transform transform = this->transform();
+   return transform.transformRect(this->panel_->get_local_bounds()).intersects(other);
+}
+
+bool PanelWidget::intersects(const SceneObject& other) {
+   // TODO: implement me
+   return false;
 }
 
 void PanelWidget::on_mouse_in() {
@@ -67,10 +81,10 @@ void PanelWidget::on_mouse_out() {
 
 void PanelWidget::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    this->surface_.clear();
-   this->panel_->draw(this->surface_, render_states);
+   this->panel_->draw(this->surface_);
 
    // draw children on top of this widget
-   Widget::draw(this->surface_, render_states);
+   Widget::draw(this->surface_);
 
    // draw to intermediate surface
    this->surface_.update();

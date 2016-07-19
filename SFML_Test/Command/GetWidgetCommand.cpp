@@ -1,11 +1,10 @@
 #include "GetWidgetCommand.h"
-#include "SceneGraphNode.h"
 #include "Camera.h"
 #include "Draw.h"
 #include "Entity.h"
 #include "Widget.h"
 
-GetWidgetCommand::GetWidgetCommand(SceneGraphNode* scene_graph, sf::Vector2f target /* = sf::Vector2f(0, 0) */)
+GetWidgetCommand::GetWidgetCommand(SceneObject* scene_graph, sf::Vector2f target /* = sf::Vector2f(0, 0) */)
 : Command("GetWidgetCommand")
 , target_(target)
 , scene_graph_(scene_graph)
@@ -16,11 +15,11 @@ GetWidgetCommand::~GetWidgetCommand() {
    this->widgets_.clear();
 }
 
-void GetWidgetCommand::scene_graph(SceneGraphNode* scene_graph) {
+void GetWidgetCommand::scene_graph(SceneObject* scene_graph) {
    this->scene_graph_ = scene_graph;
 }
 
-SceneGraphNode* GetWidgetCommand::scene_graph() {
+SceneObject* GetWidgetCommand::scene_graph() {
    return this->scene_graph_;
 }
 
@@ -42,7 +41,7 @@ void GetWidgetCommand::execute() {
    Service::get_logger().msg("GetWidgetCommand", Logger::INFO, "target = (" + std::to_string(this->target_.x) + ", " + std::to_string(this->target_.y) + ")");
 
    // iterate from highest z-index to lowest
-   SceneGraphNode::reverse_postfix_iterator it;
+   SceneObject::reverse_postfix_iterator it;
    for (it = this->scene_graph_->rbegin(); it != this->scene_graph_->rend(); ++it) {
       if (!(*it)->visible()) {
          continue;

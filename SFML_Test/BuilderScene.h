@@ -4,9 +4,6 @@
 #include "Scene.h"
 #include "MouseControllable.h"
 
-#include "EntitySceneGraphNode.h"
-#include "DrawableSceneGraphNode.h"
-
 class Texture;
 
 class Map;
@@ -50,7 +47,7 @@ protected:
    Map* map_;
    Camera* hud_camera_;
    Camera* map_camera_;
-   Graphic* backdrop_;
+   Entity* backdrop_;
    std::string map_filename_;
    Serializer* serializer_;
 
@@ -58,9 +55,8 @@ protected:
    Entity* mouse_;
    Entity* center_dot_;
    Entity* fps_display_;
-   EntitySceneGraphNode* selection_rectangle_;
-   EntitySceneGraphNode* tile_cursor_;
-   DrawableSceneGraphNode* map_grid_;
+   Entity* selection_rectangle_;
+   Entity* tile_cursor_;
 
    // mouse controllable state
    sf::Vector2f click_press_pos_;

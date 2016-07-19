@@ -36,12 +36,18 @@ public:
    virtual sf::Vector2f round(const sf::Vector2f& pos);
    virtual sf::Vector2f ceil(const sf::Vector2f& pos);
 
-   // draw interface
-   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
-
    // serialize interface
    virtual Serialize::SerialObj serialize();
    virtual void deserialize(Serialize::SerialObj& obj);
+
+   // scene graph interface
+   virtual bool intersects(const sf::Vector2i& other);
+   virtual bool intersects(const sf::Vector2f& other);
+   virtual bool intersects(const sf::FloatRect& other);
+   virtual bool intersects(const SceneObject& other);
+
+   // scene graph visitor interface
+   virtual void accept(SceneGraphVisitor& visitor);
 
 protected:
    Graphic* origin_dot_;
@@ -56,6 +62,9 @@ protected:
 
    void create_text_markers();
    void clear_text_markers();
+
+   // scene graph interface hooks 
+   virtual void pre_draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 };
 
 #endif

@@ -13,9 +13,6 @@ public:
    SubCanvas(const sf::Vector2f& size);
    virtual ~SubCanvas();
 
-   // render surface interface
-   virtual void set_camera(Camera& camera);
-
    virtual void draw(sf::Drawable& drawable, sf::RenderStates render_states = sf::RenderStates::Default);
 
    virtual void update();
@@ -31,6 +28,10 @@ public:
    void bounds(sf::FloatRect bounds);
    void bounds(sf::Vector2f pos, sf::Vector2f size);
    void bounds(float left, float top, float width, float height);
+
+   // for internal use only...
+   virtual const sf::View& view() const;
+   virtual void view(const sf::View& view);
 
 protected:
    sf::FloatRect bounds_;

@@ -8,13 +8,12 @@ const float Camera::ZOOM_FACTOR_MIN = 0.125;
 const float Camera::ZOOM_FACTOR_MAX = 3.0;
 
 Camera::Camera(const std::string& id, const sf::Vector2f& size)
-: id_(id)
+: SceneObject(true)
+, id_(id)
 , zoom_factor_(1.0)
 , original_center_(size.x / 2.f, size.y / 2.f)
-, state_(sf::Transform::Identity)
-, view_(nullptr)
+, view_(new sf::View(this->original_center_, size))
 {
-   this->view_ = new sf::View(this->original_center_, size);
 }
 
 Camera::~Camera() {
@@ -32,20 +31,16 @@ const std::string& Camera::to_string() {
 void Camera::reset_pan() {
    sf::Vector2f pan_delta = this->original_center_ - this->get_center();
    this->view_->move(pan_delta);
-   this->state_.translate(pan_delta);
+   this->transform_.translate(pan_delta);
 }
 
 void Camera::reset_zoom() {
    this->set_scale(1.0);
-   this->state_.scale(1 / this->zoom_factor_, 1 / this->zoom_factor_);
+   this->transform_.scale(1 / this->zoom_factor_, 1 / this->zoom_factor_);
 }
 
 sf::Vector2f Camera::get_pan_delta() {
    return (this->original_center_ - this->get_center());
-}
-
-void Camera::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
-   surface.set_camera(*this);
 }
 
 sf::Vector2f Camera::get_size() {
@@ -73,13 +68,13 @@ void Camera::set_center(const sf::Vector2f& center) {
    this->original_center_ = center;
 }
 
-const sf::Transform& Camera::get_transform() const {
-   return this->state_;
+void Camera::move(sf::Vector2f delta) {
+   this->view_->move(delta);
+   this->transform_.translate(delta);
 }
 
-void Camera::move(sf::Vector2f delta) {
-   this->view_->move(-delta); // invert delta to make it act like a pan
-   this->state_.translate(delta); // need to store un-inverted delta because of reasons...
+const sf::View& Camera::view() const {
+   return *this->view_;
 }
 
 void Camera::set_viewport(const sf::FloatRect& viewport) {
@@ -105,9 +100,26 @@ void Camera::set_scale(float factor) {
 
    // update viewport size
    this->view_->zoom(factor / this->zoom_factor_);
-   this->state_.scale(factor / this->zoom_factor_, factor / this->zoom_factor_);
+   this->transform_.scale(factor / this->zoom_factor_, factor / this->zoom_factor_);
 
    this->zoom_factor_ = factor;
 }
 
 void Camera::click(MouseButton button, ButtonState state, sf::Vector2f pos) {}
+
+bool Camera::intersects(const sf::Vector2i& other) { return false; }
+bool Camera::intersects(const sf::Vector2f& other) { return false; }
+bool Camera::intersects(const sf::FloatRect& other) { return false; }
+bool Camera::intersects(const SceneObject& other) { return false; }
+
+void Camera::accept(SceneGraphVisitor& visitor) {
+   visitor.visit(this);
+}
+
+void Camera::draw_pre(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
+   this->prev_view_ = surface.view();
+}
+
+void Camera::draw_post(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
+   surface.view(this->prev_view_);
+}

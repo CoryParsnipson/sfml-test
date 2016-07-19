@@ -3,42 +3,39 @@
 
 #include "dependencies.h"
 
-#include "Draw.h"
-#include "Update.h"
-#include "Entity.h"
+#include "SceneObject.h"
 
 class Grid;
+class Entity;
 class Serializer;
 
 class Map
-: public Draw
-, public Update
+: public SceneObject
 {
 public:
-   typedef std::vector<Entity*> TileList;
+   using TileList = std::vector<Entity*>;
 
    Map();
    virtual ~Map();
 
-   // draw interface
-   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
+   virtual std::string to_string();
+   virtual void serialize(Serializer& serializer);
 
-   // update interface
-   virtual void update(Game& game, Scene* scene = nullptr);
+   Grid* grid();
 
    void add(Entity* tile);
    void add(Grid* grid);
 
    void remove(Entity* tile);
 
-   virtual TileList intersects(sf::Vector2i point);
-   virtual TileList intersects(sf::Vector2f point);
-   virtual TileList intersects(sf::FloatRect rect);
+   // scene graph interface
+   virtual bool intersects(const sf::Vector2i& other);
+   virtual bool intersects(const sf::Vector2f& other);
+   virtual bool intersects(const sf::FloatRect& other);
+   virtual bool intersects(const SceneObject& other);
 
-   virtual std::string to_string();
-   virtual void serialize(Serializer& serializer);
-
-   Grid* grid();
+   // scene graph visitor interface
+   virtual void accept(SceneGraphVisitor& visitor);
 
 protected:
    Grid* grid_;

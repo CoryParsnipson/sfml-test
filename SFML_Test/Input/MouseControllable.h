@@ -1,6 +1,7 @@
 #ifndef MOUSE_CONTROLLABLE_H
 #define MOUSE_CONTROLLABLE_H
 
+#include "dependencies.h"
 #include "MouseButtonInputEvent.h"
 
 // ----------------------------------------------------------------------------

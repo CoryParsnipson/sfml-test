@@ -77,39 +77,6 @@ void Entity::set_size(const sf::Vector2f& size) {
    }
 }
 
-bool Entity::intersects(sf::Vector2i& other) {
-   bool does_intersect = false;
-
-   PartList::const_iterator it;
-   for (it = this->parts_.begin(); it != this->parts_.end(); ++it) {
-      does_intersect |= it->second->intersects(other);
-   }
-
-   return does_intersect;
-}
-
-bool Entity::intersects(sf::Vector2f& other) {
-   bool does_intersect = false;
-
-   PartList::const_iterator it;
-   for (it = this->parts_.begin(); it != this->parts_.end(); ++it) {
-      does_intersect |= it->second->intersects(other);
-   }
-
-   return does_intersect;
-}
-
-bool Entity::intersects(sf::FloatRect& other) {
-   bool does_intersect = false;
-
-   PartList::const_iterator it;
-   for (it = this->parts_.begin(); it != this->parts_.end(); ++it) {
-      does_intersect |= it->second->intersects(other);
-   }
-
-   return does_intersect;
-}
-
 void Entity::add(Part* part) {
    // if part name already exists, delete it
    this->remove(part->name());
@@ -130,20 +97,6 @@ Part* Entity::get(const std::string& part_name) {
       return nullptr;
    }
    return it->second;
-}
-
-void Entity::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
-   PartList::const_iterator it;
-   for (it = this->parts_.begin(); it != this->parts_.end(); it++) {
-      it->second->draw(surface, render_states);
-   }
-}
-
-void Entity::update(Game& game, Scene* scene) {
-   PartList::const_iterator it;
-   for (it = this->parts_.begin(); it != this->parts_.end(); it++) {
-      it->second->update(game, scene);
-   }
 }
 
 Serialize::SerialObj Entity::serialize() {
@@ -178,4 +131,60 @@ void Entity::deserialize(Serialize::SerialObj& obj) {
 
    // TODO: create debug part if needed
    // TODO: create reference part if needed
+}
+
+bool Entity::intersects(const sf::Vector2i& other) {
+   bool does_intersect = false;
+
+   PartList::const_iterator it;
+   for (it = this->parts_.begin(); it != this->parts_.end(); ++it) {
+      does_intersect |= it->second->intersects(other);
+   }
+
+   return does_intersect;
+}
+
+bool Entity::intersects(const sf::Vector2f& other) {
+   bool does_intersect = false;
+
+   PartList::const_iterator it;
+   for (it = this->parts_.begin(); it != this->parts_.end(); ++it) {
+      does_intersect |= it->second->intersects(other);
+   }
+
+   return does_intersect;
+}
+
+bool Entity::intersects(const sf::FloatRect& other) {
+   bool does_intersect = false;
+
+   PartList::const_iterator it;
+   for (it = this->parts_.begin(); it != this->parts_.end(); ++it) {
+      does_intersect |= it->second->intersects(other);
+   }
+
+   return does_intersect;
+}
+
+bool Entity::intersects(const SceneObject& other) {
+   // TODO: implement me
+   return false;
+}
+
+void Entity::accept(SceneGraphVisitor& visitor) {
+   visitor.visit(this);
+}
+
+void Entity::draw_pre(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
+   PartList::const_iterator it;
+   for (it = this->parts_.begin(); it != this->parts_.end(); it++) {
+      it->second->draw(surface, render_states);
+   }
+}
+
+void Entity::update_pre(Game& game, Scene* scene /* = nullptr */) {
+   PartList::const_iterator it;
+   for (it = this->parts_.begin(); it != this->parts_.end(); it++) {
+      it->second->update(game, scene);
+   }
 }

@@ -21,13 +21,16 @@ public:
    virtual sf::Vector2f get_size();
    virtual void set_size(const sf::Vector2f& size);
 
+   virtual bool intersects(const sf::Vector2i& other);
    virtual bool intersects(const sf::Vector2f& other);
+   virtual bool intersects(const sf::FloatRect& other);
+   virtual bool intersects(const SceneObject& other);
 
    // widget event interface
    virtual void on_mouse_in();
    virtual void on_mouse_out();
 
-   // draw interface
+   // TODO: hack...
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 
 protected:

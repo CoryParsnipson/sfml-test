@@ -17,9 +17,6 @@
 #include "Entity.h"
 #include "Gamepad.h"
 
-#include "SceneGraphNode.h"
-#include "CameraSceneGraphNode.h"
-
 class Scene
 : public Draw
 , public Update
@@ -30,7 +27,7 @@ public:
    Scene(std::string id)
    : id_(id)
    , camera_(new Camera("Camera", sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height())))
-   , scene_graph_(new CameraSceneGraphNode(*this->camera_))
+   , scene_graph_(this->camera_)
    {
       Service::get_logger().msg(this->id(), Logger::INFO, "Creating new Scene.");
    }
@@ -38,10 +35,8 @@ public:
    virtual ~Scene() {
       Service::get_logger().msg(this->id(), Logger::INFO, "Destroying Scene.");
 
-      delete this->camera_;
-      this->camera_ = nullptr;
-
       delete this->scene_graph_;
+      this->scene_graph_ = nullptr;
 
       GamepadList::const_iterator g_it;
       for (g_it = this->gamepads_.begin(); g_it != this->gamepads_.end(); ++g_it) {
@@ -75,11 +70,7 @@ public:
 
    // draw interface
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {
-      SceneGraphNode::iterator it;
-      for (it = this->scene_graph_->begin(); it != this->scene_graph_->end(); ++it) {
-         this->camera_->draw(surface, render_states); // reset any camera transformations
-         (*it)->draw(surface, render_states);
-      }
+      this->scene_graph_->draw(surface, render_states);
 
       GamepadList::const_iterator git;
       for (git = this->gamepads_.begin(); git != this->gamepads_.end(); ++git) {
@@ -130,7 +121,7 @@ public:
 protected:
    std::string id_;
    Camera* camera_;
-   SceneGraphNode* scene_graph_;
+   SceneObject* scene_graph_;
 
 private:
    GamepadList gamepads_;

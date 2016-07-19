@@ -19,10 +19,10 @@ public:
    virtual sf::Vector2f get_size();
    virtual void set_size(const sf::Vector2f& size);
 
+   virtual bool intersects(const sf::Vector2i& other);
    virtual bool intersects(const sf::Vector2f& other);
-
-   // draw interface
-   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
+   virtual bool intersects(const sf::FloatRect& other);
+   virtual bool intersects(const SceneObject& other);
 
 protected:
    std::string raw_text_;
@@ -31,6 +31,9 @@ protected:
    Graphic* text_;
 
    void word_wrap();
+
+   // scene graph interface hooks
+   virtual void draw_pre(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 };
 
 #endif

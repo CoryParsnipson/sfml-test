@@ -10,9 +10,6 @@
 #include "TextWidget.h"
 #include "ButtonWidget.h"
 
-#include "CameraSceneGraphNode.h"
-#include "EntitySceneGraphNode.h"
-
 #include "WidgetEventCommand.h"
 #include "MoveCameraCommand.h"
 
@@ -30,24 +27,24 @@ TestUIScene::TestUIScene()
    TextureManager::inst()->create_texture("tile_water_ul", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 64, 64, 64));
    TextureManager::inst()->print();
 
-   this->scene_graph_->add(new CameraSceneGraphNode(*this->ui_camera_));
+   this->scene_graph_->add(this->ui_camera_);
 
    // populate entities
-   this->scene_graph_->add(new EntitySceneGraphNode(
-      *TextFactory::inst()->create_text_entity(
+   this->scene_graph_->add(
+      TextFactory::inst()->create_text_entity(
          "Test UI Scene",
          "retro",
          sf::Vector2f(0, 0),
          12
-   )));
+   ));
 
    this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", "retro");
    this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
-   this->scene_graph_->add(new EntitySceneGraphNode(*this->fps_display_));
+   this->scene_graph_->add(this->fps_display_);
 
    // test widget
    this->widget_ = new PanelWidget("Test Panel 1", sf::Vector2f(100, 100), sf::Vector2f(300, 200));
-   this->scene_graph_->child(0)->add(this->widget_);
+   this->scene_graph_->layer(0)->add(this->widget_);
 
    Widget* tw = new TextWidget("Text Widget 1", "PENIS PENIS PENIS PENIS PENIS PENIS PENIS PENIS PENIS");
    tw->set_size(sf::Vector2f(300, 200));

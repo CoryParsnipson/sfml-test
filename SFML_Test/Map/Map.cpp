@@ -13,27 +13,36 @@ Map::Map()
 }
 
 Map::~Map() {
-   Map::TileList::iterator it;
-   for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
-      delete *it;
-   }
+   // TODO: come back to this!
+   //Map::TileList::iterator it;
+   //for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
+   //   delete *it;
+   //}
 
    delete this->grid_;
    this->grid_ = nullptr;
 }
 
-void Map::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
+std::string Map::to_string() {
+   return "[Map]";
+}
+
+void Map::serialize(Serializer& serializer) {
+   // serialize the grid
+   serializer.comment("grid");
+   serializer.set(this->grid_->serialize());
+
+   // serialize all tiles
+   serializer.comment("map tiles");
+
    Map::TileList::const_iterator it;
    for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
-      (*it)->draw(surface, render_states);
+      serializer.set((*it)->serialize());
    }
 }
 
-void Map::update(Game& game, Scene* scene) {
-   Map::TileList::const_iterator it;
-   for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
-      (*it)->update(game, scene);
-   }
+Grid* Map::grid() {
+   return this->grid_;
 }
 
 void Map::add(Entity* tile) {
@@ -66,56 +75,11 @@ void Map::remove(Entity* tile) {
    }
 }
 
-Map::TileList Map::intersects(sf::Vector2i point) {
-   Map::TileList tiles;
-   Map::TileList::const_iterator it;
+bool Map::intersects(const sf::Vector2i& other) { return false; }
+bool Map::intersects(const sf::Vector2f& other) { return false; }
+bool Map::intersects(const sf::FloatRect& other) { return false; }
+bool Map::intersects(const SceneObject& other) { return false; }
 
-   for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
-      PhysicsPart* tile_physics = dynamic_cast<PhysicsPart*>((*it)->get("physics"));
-      if (tile_physics && tile_physics->intersects(point)) {
-         tiles.push_back(*it);
-      }
-   }
-
-   return tiles;
-}
-
-Map::TileList Map::intersects(sf::Vector2f point) {
-   return this->intersects(static_cast<sf::Vector2i>(point));
-}
-
-Map::TileList Map::intersects(sf::FloatRect rect) {
-   Map::TileList tiles;
-   Map::TileList::const_iterator it;
-
-   for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
-      PhysicsPart* tile_physics = dynamic_cast<PhysicsPart*>((*it)->get("physics"));
-      if (tile_physics && tile_physics->intersects(rect)) {
-         tiles.push_back(*it);
-      }
-   }
-
-   return tiles;
-}
-
-std::string Map::to_string() {
-   return "[Map]";
-}
-
-void Map::serialize(Serializer& serializer) {
-   // serialize the grid
-   serializer.comment("grid");
-   serializer.set(this->grid_->serialize());
-
-   // serialize all tiles
-   serializer.comment("map tiles");
-
-   Map::TileList::const_iterator it;
-   for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
-      serializer.set((*it)->serialize());
-   }
-}
-
-Grid* Map::grid() {
-   return this->grid_;
+void Map::accept(SceneGraphVisitor& visitor) {
+   // TODO: implement me
 }

@@ -24,9 +24,9 @@ public:
    virtual void set_size(float width, float height) {}
    virtual void set_size(const sf::Vector2f& size) {}
 
-   virtual bool intersects(sf::Vector2i& other) { return false; }
-   virtual bool intersects(sf::Vector2f& other) { return false; }
-   virtual bool intersects(sf::FloatRect& other) { return false; }
+   virtual bool intersects(const sf::Vector2i& other) { return false; }
+   virtual bool intersects(const sf::Vector2f& other) { return false; }
+   virtual bool intersects(const sf::FloatRect& other) { return false; }
 
    // draw interface
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {}

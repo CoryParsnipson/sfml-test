@@ -14,10 +14,6 @@ SubCanvas::SubCanvas(const sf::Vector2f& size)
 SubCanvas::~SubCanvas() {
 }
 
-void SubCanvas::set_camera(Camera& camera) {
-   // do nothing
-}
-
 void SubCanvas::draw(sf::Drawable& drawable, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    render_states.transform.translate(-this->bounds_.left, -this->bounds_.top);
    this->surface_.draw(drawable, render_states);
@@ -29,7 +25,8 @@ void SubCanvas::update() {
 }
 
 void SubCanvas::clear(const sf::Color& color /* = sf::Color::Black */) {
-   this->surface_.clear(color);
+   //this->surface_.clear(color);
+   this->surface_.clear(sf::Color::Red);
 }
 
 const sf::Texture& SubCanvas::get_texture() {
@@ -63,4 +60,12 @@ void SubCanvas::bounds(sf::Vector2f pos, sf::Vector2f size) {
 
 void SubCanvas::bounds(float left, float top, float width, float height) {
    this->bounds(sf::FloatRect(left, top, width, height));
+}
+
+const sf::View& SubCanvas::view() const {
+   return this->surface_.getView();
+}
+
+void SubCanvas::view(const sf::View& view) {
+   this->surface_.setView(view);
 }

@@ -2,7 +2,7 @@
 #include "GetWidgetCommand.h"
 #include "Gamepad.h"
 
-WidgetEventCommand::WidgetEventCommand(WidgetOp action, SceneGraphNode* scene_graph, Gamepad* gamepad)
+WidgetEventCommand::WidgetEventCommand(WidgetOp action, SceneObject* scene_graph, Gamepad* gamepad)
 : Command("WidgetEventCommand")
 , action_(action)
 , target_(new GetWidgetCommand(scene_graph))

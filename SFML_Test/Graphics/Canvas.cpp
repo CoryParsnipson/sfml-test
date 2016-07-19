@@ -12,10 +12,6 @@ Canvas::~Canvas() {
    this->surface_.close();
 }
 
-void Canvas::set_camera(Camera& camera) {
-   this->surface_.setView(*camera.view_);
-}
-
 void Canvas::draw(sf::Drawable& drawable, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    this->surface_.draw(drawable, render_states);
 }
@@ -39,4 +35,12 @@ void Canvas::set_mouse_cursor_visible(bool visible) {
 
 bool Canvas::poll_event(sf::Event& event) {
    return this->surface_.pollEvent(event);
+}
+
+const sf::View& Canvas::view() const {
+   return this->surface_.getView();
+}
+
+void Canvas::view(const sf::View& view) {
+   this->surface_.setView(view);
 }

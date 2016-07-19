@@ -49,9 +49,23 @@ void ButtonWidget::set_size(const sf::Vector2f& size) {
    this->background_->set_size(size);
 }
 
+bool ButtonWidget::intersects(const sf::Vector2i& other) {
+   return this->intersects(static_cast<sf::Vector2f>(other));
+}
+
 bool ButtonWidget::intersects(const sf::Vector2f& other) {
    sf::Transform transform = this->transform();
    return transform.transformRect(this->background_->get_global_bounds()).contains(other);
+}
+
+bool ButtonWidget::intersects(const sf::FloatRect& other) {
+   sf::Transform transform = this->transform();
+   return transform.transformRect(this->background_->get_global_bounds()).intersects(other);
+}
+
+bool ButtonWidget::intersects(const SceneObject& other) {
+   // TODO: implement me
+   return false;
 }
 
 void ButtonWidget::on_mouse_in() {
@@ -68,13 +82,6 @@ void ButtonWidget::on_click() {
    }
 }
 
-void ButtonWidget::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
-   this->background_->draw(surface, render_states);
-
-   // draw children on top of this widget
-   Widget::draw(surface, render_states);
-}
-
 void ButtonWidget::drag(MouseButton button, sf::Vector2f pos, sf::Vector2f delta) {
 }
 
@@ -86,4 +93,8 @@ void ButtonWidget::set_scale(float factor) {
 }
 
 void ButtonWidget::click(MouseButton button, ButtonState state, sf::Vector2f pos) {
+}
+
+void ButtonWidget::draw_pre(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
+   this->background_->draw(surface, render_states);
 }

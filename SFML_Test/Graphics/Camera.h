@@ -1,21 +1,16 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "Draw.h"
 #include "MouseControllable.h"
+#include "SceneObject.h"
 
 class Camera
-: public Draw
+: public SceneObject
 , public MouseControllable
 {
 public:
    static const float ZOOM_FACTOR_MIN;
    static const float ZOOM_FACTOR_MAX;
-
-   // TODO: is there a way to access view without having to explicitly declare every friend?
-   friend class RenderSurface;
-   friend class Canvas;
-   friend class SubCanvas;
 
    Camera(const std::string& id, const sf::Vector2f& size);
    virtual ~Camera();
@@ -28,9 +23,6 @@ public:
 
    sf::Vector2f get_pan_delta();
 
-   // draw interface
-   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
-
    // view interface
    sf::Vector2f get_size();
    void set_size(const sf::Vector2f& size);
@@ -38,9 +30,9 @@ public:
    const sf::Vector2f& get_center();
    void set_center(const sf::Vector2f& center);
 
-   const sf::Transform& get_transform() const;
-
    void move(sf::Vector2f delta);
+
+   const sf::View& view() const; // for internal use only...
 
    // viewport management
    void set_viewport(const sf::FloatRect& viewport);
@@ -54,12 +46,27 @@ public:
 
    virtual void click(MouseButton button, ButtonState state, sf::Vector2f pos);
 
-protected:
+   // scene graph interface
+   virtual bool intersects(const sf::Vector2i& other);
+   virtual bool intersects(const sf::Vector2f& other);
+   virtual bool intersects(const sf::FloatRect& other);
+   virtual bool intersects(const SceneObject& other);
+
+   // scene graph visitor interface
+   virtual void accept(SceneGraphVisitor& visitor);
+
+private:
    std::string id_;
    float zoom_factor_;
 
    sf::Vector2f original_center_;
-   sf::Transform state_; // sf::Transform that is modified alongside sf::View
    sf::View* view_;
+
+   sf::View prev_view_;
+
+protected:
+   // scene graph interface hooks
+   virtual void draw_pre(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
+   virtual void draw_post(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 };
 #endif

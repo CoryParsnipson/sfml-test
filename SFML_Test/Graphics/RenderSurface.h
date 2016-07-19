@@ -14,15 +14,16 @@ public:
    RenderSurface() {}
    virtual ~RenderSurface() {}
 
-   // set the current camera
-   virtual void set_camera(Camera& camera) = 0;
-
    // draw interface
    virtual void draw(sf::Drawable& drawable, sf::RenderStates render_states = sf::RenderStates::Default) = 0;
 
    // update interface
    virtual void update() = 0;
    virtual void clear(const sf::Color& color = sf::Color::Black) = 0;
+
+   // for internal use only...
+   virtual const sf::View& view() const = 0;
+   virtual void view(const sf::View& view) = 0;
 };
 
 #endif

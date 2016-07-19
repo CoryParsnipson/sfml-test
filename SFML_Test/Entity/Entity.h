@@ -3,20 +3,18 @@
 
 #include "dependencies.h"
 
-#include "Draw.h"
-#include "Update.h"
+#include "SceneObject.h"
 #include "Serialize.h"
 
 // forward declarations
 class Part;
 
 class Entity
-: public Draw
-, public Update
+: public SceneObject
 , public Serialize
 {
 public:
-   typedef std::map<std::string, Part*> PartList;
+   using PartList = std::map<std::string, Part*>;
 
    Entity(std::string name = "entity");
    virtual ~Entity();
@@ -35,25 +33,23 @@ public:
    void set_size(float width, float height);
    void set_size(const sf::Vector2f& size);
 
-   bool intersects(sf::Vector2i& other);
-   bool intersects(sf::Vector2f& other);
-   bool intersects(sf::FloatRect& other);
-   //bool intersects(Entity& other); // TODO
-
    // part management interface
    void add(Part* part);
    void remove(const std::string& part_id);
    Part* get(const std::string& part_name);
 
-   // draw interface
-   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
-
-   // update interface
-   virtual void update(Game& game, Scene* scene = nullptr);
-
    // serialize interface
    virtual Serialize::SerialObj serialize();
    virtual void deserialize(Serialize::SerialObj& obj);
+
+   // scene graph interface
+   virtual bool intersects(const sf::Vector2i& other);
+   virtual bool intersects(const sf::Vector2f& other);
+   virtual bool intersects(const sf::FloatRect& other);
+   virtual bool intersects(const SceneObject& other);
+
+   // scene graph visitor interface
+   virtual void accept(SceneGraphVisitor& visitor);
 
 protected:
    bool enable_debug_wireframe_;
@@ -61,6 +57,10 @@ protected:
 
    std::string name_;
    PartList parts_;
+
+   // scene graph interface hooks
+   virtual void draw_pre(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
+   virtual void update_pre(Game& game, Scene* scene = nullptr);
 };
 
 #endif

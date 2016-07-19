@@ -19,6 +19,8 @@ Things to do next
 TODO
 ----
 
+* Create an entity that contains a Gamepad instance? (For drawing mouse cursor and stuff)
+
 * Think about making some sort of exception service? Make it graphical; print to screen
  
 * the Bridge pattern can be used to isolate sfml-test specific code from SFML library code

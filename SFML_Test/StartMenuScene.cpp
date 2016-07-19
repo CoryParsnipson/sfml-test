@@ -10,48 +10,44 @@
 #include "Draw.h"
 #include "GraphicsPart.h"
 #include "DebugPart.h"
-
-#include "EntitySceneGraphNode.h"
+#include "SceneObject.h"
 
 StartMenuScene::StartMenuScene()
 : Scene("StartMenuScene")
 , show_debug_info_(false)
 {
    // populate entities
-   SceneGraphNode* node = new EntitySceneGraphNode(
-      *TextFactory::inst()->create_text_entity(
-         "SFML TEST",
-         "retro",
-         sf::Vector2f(0, 0),
-         36,
-         TextFactory::ALIGN::CENTER,
-         sf::Color::White,
-         this->show_debug_info_
-   ));
+   SceneObject* node = TextFactory::inst()->create_text_entity(
+      "SFML TEST",
+      "retro",
+      sf::Vector2f(0, 0),
+      36,
+      TextFactory::ALIGN::CENTER,
+      sf::Color::White,
+      this->show_debug_info_
+   );
    this->scene_graph_->add(node);
 
-   node = new EntitySceneGraphNode(
-      *TextFactory::inst()->create_text_entity(
-         "main menu",
-         "retro",
-         sf::Vector2f(0, 45),
-         12,
-         TextFactory::ALIGN::CENTER,
-         sf::Color::White,
-         this->show_debug_info_
-   ));
+   node = TextFactory::inst()->create_text_entity(
+      "main menu",
+      "retro",
+      sf::Vector2f(0, 45),
+      12,
+      TextFactory::ALIGN::CENTER,
+      sf::Color::White,
+      this->show_debug_info_
+   );
    this->scene_graph_->add(node);
 
-   node = new EntitySceneGraphNode(
-      *TextFactory::inst()->create_text_entity(
-         "(Press SPACE or ENTER)",
-         "retro",
-         sf::Vector2f(0, 60),
-         12,
-         TextFactory::ALIGN::CENTER,
-         sf::Color::White,
-         this->show_debug_info_
-   ));
+   node = TextFactory::inst()->create_text_entity(
+      "(Press SPACE or ENTER)",
+      "retro",
+      sf::Vector2f(0, 60),
+      12,
+      TextFactory::ALIGN::CENTER,
+      sf::Color::White,
+      this->show_debug_info_
+   );
    this->scene_graph_->add(node);
 
    this->camera_->move(sf::Vector2f(Settings::Instance()->cur_width() / 2.f, Settings::Instance()->cur_height() / 2.f));
@@ -106,17 +102,18 @@ void StartMenuScene::toggle_debug_info() {
    this->show_debug_info_ = !this->show_debug_info_;
    Service::get_logger().msg(this->id(), Logger::INFO, "Debug info: " + std::string(this->show_debug_info_ ? "SHOW" : "HIDE"));
 
-   SceneGraphNode::prefix_iterator it;
+   // TODO: this could be replaced with a visitor
+   SceneObject::prefix_iterator it;
    for (it = this->scene_graph_->begin(); it != this->scene_graph_->end(); ++it) {
-      auto e = dynamic_cast<EntitySceneGraphNode*>(*it);
+      auto e = dynamic_cast<Entity*>(*it);
       if (!e) {
          continue;
       }
 
       if (this->show_debug_info_) {
-         e->get_entity()->add(new DebugPart());
+         e->add(new DebugPart());
       } else {
-         e->get_entity()->remove("debug");
+         e->remove("debug");
       }
    }
 }

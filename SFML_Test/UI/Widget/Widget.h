@@ -3,23 +3,19 @@
 
 #include "dependencies.h"
 #include "UI.h"
-#include "SceneGraphNode.h"
+#include "SceneObject.h"
 
 // -----------------------------------------------------------------------------
 // Widget class
 //
-// This is the base class for all UI elements. This happens to be a child
-// class of SceneGraphNode.
+// This is the base class for all UI elements.
 // -----------------------------------------------------------------------------
 class Widget
-: public SceneGraphNode
+: public SceneObject
 {
 public:
    Widget(std::string id = "Widget");
    virtual ~Widget();
-
-   // scene graph visitor interface
-   virtual void accept(SceneGraphVisitor& visitor);
 
    // widget interface
    void set_positioning(UI::Positioning position);
@@ -33,15 +29,16 @@ public:
    virtual sf::Vector2f get_size() = 0;
    virtual void set_size(const sf::Vector2f& size) = 0;
 
-   virtual bool intersects(const sf::Vector2f& other) = 0;
-
-   // draw interface
-   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
-
-   // update interface
-   virtual void update(Game& game, Scene* scene = nullptr);
-
    operator std::string() const;
+
+   // scene graph interface
+   virtual bool intersects(const sf::Vector2i& other) = 0;
+   virtual bool intersects(const sf::Vector2f& other) = 0;
+   virtual bool intersects(const sf::FloatRect& other) = 0;
+   virtual bool intersects(const SceneObject& other) = 0;
+
+   // scene graph visitor interface
+   virtual void accept(SceneGraphVisitor& visitor);
 
 private:
    friend std::ostream& operator<<(std::ostream& stream, const Widget& widget);

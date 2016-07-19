@@ -79,7 +79,7 @@ public:
    void remove(T* child);
    void remove(int idx);
 
-   T* parent();
+   T* parent() const;
 
    // hooks for child interface
    virtual void add_pre(T* child) {}
@@ -543,7 +543,7 @@ void Composite<T, hasParentPointer>::parent(T* parent) {
 }
 
 template <class T, bool hasParentPointer>
-T* Composite<T, hasParentPointer>::parent() {
+T* Composite<T, hasParentPointer>::parent() const {
    return this->parent_;
 }
 

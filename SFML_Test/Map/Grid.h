@@ -2,16 +2,17 @@
 #define GRID_H
 
 #include "dependencies.h"
-#include "Draw.h"
+#include "SceneObject.h"
 #include "Serialize.h"
 
 class Grid
-: public Draw
+: public SceneObject
 , public Serialize
 {
 public:
    Grid(const std::string& id)
-   : id_(id)
+   : SceneObject()
+   , id_(id)
    , origin_(0, 0)
    , tile_width_(10)
    , tile_height_(10)
@@ -21,7 +22,8 @@ public:
    }
 
    Grid(const std::string& id, int tile_size)
-   : id_(id)
+   : SceneObject()
+   , id_(id)
    , origin_(0, 0)
    , tile_width_(tile_size > 0 ? tile_size : 10)
    , tile_height_(tile_size > 0 ? tile_size : 10)
@@ -31,7 +33,8 @@ public:
    }
 
    Grid(const std::string& id, const sf::Vector2f& tile_size)
-   : id_(id)
+   : SceneObject()
+   , id_(id)
    , origin_(0, 0)
    , tile_width_(tile_size.x > 0 ? tile_size.x : 10)
    , tile_height_(tile_size.y > 0 ? tile_size.y : 10)
@@ -79,9 +82,6 @@ public:
    virtual sf::Vector2f floor(const sf::Vector2f& pos) = 0;
    virtual sf::Vector2f round(const sf::Vector2f& pos) = 0;
    virtual sf::Vector2f ceil(const sf::Vector2f& pos) = 0;
-
-   // draw interface
-   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) = 0;
 
    // serialize interface
    virtual Serialize::SerialObj serialize() = 0;

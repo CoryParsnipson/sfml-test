@@ -45,16 +45,23 @@ void TextWidget::set_size(const sf::Vector2f& size) {
    this->word_wrap();
 }
 
+bool TextWidget::intersects(const sf::Vector2i& other) {
+   return this->intersects(static_cast<sf::Vector2f>(other));
+}
+
 bool TextWidget::intersects(const sf::Vector2f& other) {
    sf::Transform transform = this->transform();
    return transform.transformRect(this->text_->get_local_bounds()).contains(other);
 }
 
-void TextWidget::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
-   this->text_->draw(surface, render_states);
+bool TextWidget::intersects(const sf::FloatRect& other) {
+   sf::Transform transform = this->transform();
+   return transform.transformRect(this->text_->get_local_bounds()).intersects(other);
+}
 
-   render_states.transform.translate(this->get_position());
-   Widget::draw(surface, render_states);
+bool TextWidget::intersects(const SceneObject& other) {
+   // TODO: implement me
+   return false;
 }
 
 void TextWidget::word_wrap() {
@@ -76,4 +83,8 @@ void TextWidget::word_wrap() {
    }
 
    this->text_->set_string(text);
+}
+
+void TextWidget::draw_pre(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
+   this->text_->draw(surface, render_states);
 }

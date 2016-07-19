@@ -23,9 +23,9 @@ public:
    void set_solid(bool solid);
    bool is_solid();
 
-   virtual bool intersects(sf::Vector2i& other);
-   virtual bool intersects(sf::Vector2f& other);
-   virtual bool intersects(sf::FloatRect& other);
+   virtual bool intersects(const sf::Vector2i& other);
+   virtual bool intersects(const sf::Vector2f& other);
+   virtual bool intersects(const sf::FloatRect& other);
 
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr);

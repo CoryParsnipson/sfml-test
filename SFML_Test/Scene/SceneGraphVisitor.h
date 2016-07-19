@@ -15,7 +15,7 @@ class Widget;
 // This interface should be extended by any class that needs to traverse
 // the scene graph and do non-trivial processing of the scene graph nodes.
 // This is an implementation of the visitor pattern on the scene graph
-// hierarchy. The other half of this interface is in the SceneGraphNode class.
+// hierarchy.
 // ----------------------------------------------------------------------------
 class SceneGraphVisitor {
 public:

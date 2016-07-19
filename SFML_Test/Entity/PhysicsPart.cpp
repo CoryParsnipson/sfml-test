@@ -50,15 +50,15 @@ bool PhysicsPart::is_solid() {
    return this->solid_;
 }
 
-bool PhysicsPart::intersects(sf::Vector2i& other) {
+bool PhysicsPart::intersects(const sf::Vector2i& other) {
    return this->bounding_box_.contains(static_cast<sf::Vector2f>(other));
 }
 
-bool PhysicsPart::intersects(sf::Vector2f& other) {
+bool PhysicsPart::intersects(const sf::Vector2f& other) {
    return this->bounding_box_.contains(other);
 }
 
-bool PhysicsPart::intersects(sf::FloatRect& other) {
+bool PhysicsPart::intersects(const sf::FloatRect& other) {
    return this->bounding_box_.intersects(other);
 }
 

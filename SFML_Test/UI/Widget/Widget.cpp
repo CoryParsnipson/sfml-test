@@ -38,23 +38,6 @@ void Widget::move(const sf::Vector2f& delta) {
    this->set_position(this->get_position() + delta);
 }
 
-void Widget::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
-   sf::RenderStates widget_state = render_states;
-   widget_state.transform.translate(this->get_position());
-
-   Widget::iterator it;
-   for (it = this->begin(); it != this->end(); ++it) {
-      (*it)->draw(surface, (static_cast<Widget*>(*it)->get_positioning() == UI::Positioning::Default ? widget_state : render_states));
-   }
-}
-
-void Widget::update(Game& game, Scene* scene) {
-   Widget::iterator it;
-   for (it = this->begin(); it != this->end(); ++it) {
-      (*it)->update(game, scene);
-   }
-}
-
 Widget::operator std::string() const {
    return this->to_string();
 }
