@@ -54,6 +54,8 @@ protected:
    sf::Transform transform_;
 
    // interface hooks for children 
+   virtual void apply_transform(sf::RenderStates& render_states);
+
    virtual void draw_pre(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
    virtual void draw_post(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 

@@ -50,7 +50,7 @@ StartMenuScene::StartMenuScene()
    );
    this->scene_graph_->add(node);
 
-   this->camera_->move(sf::Vector2f(Settings::Instance()->cur_width() / 2.f, Settings::Instance()->cur_height() / 2.f));
+   this->camera_->move(-1.f * sf::Vector2f(Settings::Instance()->cur_width() / 2.f, Settings::Instance()->cur_height() / 2.f));
 }
 
 StartMenuScene::~StartMenuScene() {

@@ -71,11 +71,18 @@ public:
    // draw interface
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {
       this->scene_graph_->draw(surface, render_states);
+   
+      // TODO: hack, temporary
+      sf::View v = surface.view();
+      surface.view(this->camera_->view());
 
       GamepadList::const_iterator git;
       for (git = this->gamepads_.begin(); git != this->gamepads_.end(); ++git) {
          (*git)->draw(surface, render_states);
       }
+
+      surface.view(v);
+      // end hack
    }
 
    // update interface

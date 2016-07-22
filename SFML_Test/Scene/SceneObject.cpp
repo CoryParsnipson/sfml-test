@@ -44,8 +44,7 @@ void SceneObject::draw(RenderSurface& surface, sf::RenderStates render_states /*
       return;
    }
 
-   render_states.transform *= this->transform_;
-
+   this->apply_transform(render_states);
    this->draw_pre(surface, render_states);
 
    SceneObject::iterator it;
@@ -65,6 +64,10 @@ void SceneObject::update(Game& game, Scene* scene /* = nullptr */) {
    }
 
    this->update_post(game, scene);
+}
+
+void SceneObject::apply_transform(sf::RenderStates& render_states) {
+   render_states.transform *= this->transform_;
 }
 
 void SceneObject::draw_pre(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {}

@@ -30,13 +30,11 @@ const std::string& Camera::to_string() {
 
 void Camera::reset_pan() {
    sf::Vector2f pan_delta = this->original_center_ - this->get_center();
-   this->view_->move(pan_delta);
-   this->transform_.translate(pan_delta);
+   this->move(pan_delta);
 }
 
 void Camera::reset_zoom() {
    this->set_scale(1.0);
-   this->transform_.scale(1 / this->zoom_factor_, 1 / this->zoom_factor_);
 }
 
 sf::Vector2f Camera::get_pan_delta() {
@@ -70,7 +68,9 @@ void Camera::set_center(const sf::Vector2f& center) {
 
 void Camera::move(sf::Vector2f delta) {
    this->view_->move(delta);
-   this->transform_.translate(delta);
+
+   // transform (for child scene object positioning) moves in opposite direction of camera
+   this->transform_.translate(-delta);
 }
 
 const sf::View& Camera::view() const {
@@ -116,8 +116,13 @@ void Camera::accept(SceneGraphVisitor& visitor) {
    visitor.visit(this);
 }
 
+void Camera::apply_transform(sf::RenderStates& render_states) {
+   // disable for camera, because pre-draw handles this
+}
+
 void Camera::draw_pre(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    this->prev_view_ = surface.view();
+   surface.view(*this->view_);
 }
 
 void Camera::draw_post(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
