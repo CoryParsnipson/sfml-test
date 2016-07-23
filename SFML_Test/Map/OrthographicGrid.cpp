@@ -267,7 +267,7 @@ void OrthographicGrid::accept(SceneGraphVisitor& visitor) {
    // TODO: implement me
 }
 
-void OrthographicGrid::pre_draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
+void OrthographicGrid::draw_pre(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    GridlineList::const_iterator it;
    for (it = this->grid_cols_.begin(); it != this->grid_cols_.end(); ++it) {
       (*it)->draw(surface, render_states);

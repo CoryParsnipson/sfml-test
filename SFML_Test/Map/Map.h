@@ -23,7 +23,7 @@ public:
 
    Grid* grid();
 
-   void add(Entity* tile);
+   using SceneObject::add;
    void add(Grid* grid);
 
    void remove(Entity* tile);

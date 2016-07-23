@@ -67,7 +67,7 @@ void MouseControlPart::update(Game& game, Scene* scene) {
       sf::Vector2f panning_delta = (this->last_mouse_pos - this->panning_anchor) * this->controllable_->get_scale();
 
       this->panning_anchor = this->last_mouse_pos;
-      this->controllable_->drag(this->button_, this->last_mouse_pos, this->MOUSE_PAN_COEFFICIENT * panning_delta);
+      this->controllable_->drag(this->button_, this->last_mouse_pos, -1.f * this->MOUSE_PAN_COEFFICIENT * panning_delta);
    }
 
    // respond to mouse wheel events

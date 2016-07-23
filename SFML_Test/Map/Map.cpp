@@ -45,19 +45,6 @@ Grid* Map::grid() {
    return this->grid_;
 }
 
-void Map::add(Entity* tile) {
-   // check to see if entity is already in map and abort
-   Map::TileList::const_iterator it;
-   for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
-      if (tile == (*it)) {
-         Service::get_logger().msg("Map", Logger::WARNING, "Ignoring request to add tile which is already in map.");
-         return;
-      }
-   }
-
-   this->tiles_.push_back(tile);
-}
-
 void Map::add(Grid* grid) {
    delete this->grid_;
    this->grid_ = grid;

@@ -99,7 +99,7 @@ BuilderScene::BuilderScene()
    this->map_ = map_builder->get_map();
    this->scene_graph_->layer(1)->add(this->map_);
 
-   this->map_->grid()->visible(true);
+   this->map_->grid()->visible(false);
    this->scene_graph_->layer(1)->add(this->map_->grid());
 
    delete map_builder;
@@ -228,8 +228,8 @@ void BuilderScene::process(Game& game, KeyPressInputEvent& e) {
    switch (e.key) {
    case Key::R:
       // reset grid too (encapsulate this in grid class?)
-      this->map_->grid()->set_scale(1.f);
-      this->map_->grid()->move(this->map_camera_->get_pan_delta()); // move the grid back too
+      //this->map_->grid()->set_scale(1.f);
+      //this->map_->grid()->move(this->map_camera_->get_pan_delta()); // move the grid back too
 
       this->map_camera_->reset_pan();
       this->map_camera_->reset_zoom();
@@ -326,7 +326,7 @@ void BuilderScene::drag(MouseButton button, sf::Vector2f pos, sf::Vector2f delta
       this->update_selection_rect(this->click_press_pos_, pos);
    } else if (button == MouseButton::Right) {
       this->map_camera_->drag(button, pos, delta); // pan only the map layers
-      this->map_->grid()->move(-delta); // reverse pan the grid so it stays in place
+      //this->map_->grid()->move(-delta); // reverse pan the grid so it stays in place
 
       // if the selection rectangle is visible, update it
       if (this->selection_rectangle_->visible()) {
@@ -344,7 +344,7 @@ void BuilderScene::set_scale(float factor) {
 
    factor = std::max(factor, Camera::ZOOM_FACTOR_MIN);
    factor = std::min(factor, Camera::ZOOM_FACTOR_MAX);
-   this->map_->grid()->set_scale(factor);
+   //this->map_->grid()->set_scale(factor);
 }
 
 void BuilderScene::click(MouseButton button, ButtonState state, sf::Vector2f pos) {
