@@ -16,8 +16,9 @@ CFLAGS = -g -Wall -std=c++11
 # path defines
 PROJECT_DIR := $(PWD)/SFML_Test
 OUTPUT_DIR := $(PWD)
-OUTPUT_DIR_DEBUG := $(PWD)/Debug
-OUTPUT_DIR_RELEASE := $(PWD)/Release
+OUTPUT_DIR_PROFILER := $(OUTPUT_DIR)/Profiler
+OUTPUT_DIR_DEBUG := $(OUTPUT_DIR)/Debug
+OUTPUT_DIR_RELEASE := $(OUTPUT_DIR)/Release
 
 # dll stuff
 DL_INCLUDES = -lsfml-window -lsfml-graphics -lsfml-system
@@ -45,7 +46,7 @@ INCLUDE_PATHS += SFML_Test/UI/Widget
 INCLUDE_PATHS += SFML_Test/UI/Compositor
 INCLUDE_PATHS += SFML_Test/UI
 
-CXX_FILES = 
+CXX_FILES =
 CXX_FILES += $(PROJECT_DIR)/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Input/InputEvent/*.cpp
 CXX_FILES += $(PROJECT_DIR)/Input/Gamepad/*.cpp
@@ -65,13 +66,17 @@ CXX_FILES += $(PROJECT_DIR)/Factory/*.cpp
 CXX_FILES += $(PROJECT_DIR)/UI/Widget/*.cpp
 CXX_FILES += $(PROJECT_DIR)/UI/Compositor/*.cpp
 
-.PHONY: for_debug for_release
-.DEFAULT_GOAL := for_debug
+.PHONY: profiler debug release
+.DEFAULT_GOAL := debug
 
-for_debug: OUTPUT_DIR = $(OUTPUT_DIR_DEBUG)
-for_release: OUTPUT_DIR = $(OUTPUT_DIR_RELEASE)
+profiler: CFLAGS += -pg
+profiler: OUTPUT_DIR = $(OUTPUT_DIR_PROFILER)
 
-all for_debug for_release: $(PROJECT_DIR)/$(RUNNER_FILE)
+debug: OUTPUT_DIR = $(OUTPUT_DIR_DEBUG)
+
+release: OUTPUT_DIR = $(OUTPUT_DIR_RELEASE)
+
+all profiler debug release: $(PROJECT_DIR)/$(RUNNER_FILE)
 	@echo ---- Making target: $(TARGET)
 	@echo "  PROJECT_DIR : $(PROJECT_DIR)"
 	@echo "  TARGET_DIR  : $(OUTPUT_DIR)"

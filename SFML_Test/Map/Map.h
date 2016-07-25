@@ -13,8 +13,6 @@ class Map
 : public SceneObject
 {
 public:
-   using TileList = std::vector<Entity*>;
-
    Map();
    virtual ~Map();
 
@@ -25,8 +23,6 @@ public:
 
    using SceneObject::add;
    void add(Grid* grid);
-
-   void remove(Entity* tile);
 
    // scene graph interface
    virtual bool intersects(const sf::Vector2i& other);
@@ -39,7 +35,6 @@ public:
 
 protected:
    Grid* grid_;
-   TileList tiles_;
 };
 
 #endif

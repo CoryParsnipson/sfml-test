@@ -360,17 +360,9 @@ public:
    // NOTE: needed to convert between CompositeIterators with different traits
    template <typename constT>
    CompositeIterator operator=(CompositeIterator<constT, iterateInReverse, TraitsPrefix> other) {
-      // check for self assignment and skip if so
-      if ((void*)this != (void*)&other) {
-         typename NodeList<constT>::const_iterator it;
-         for (it = other.nodes_.begin(); it != other.nodes_.end(); ++it) {
-            this->nodes_.push_back(*it);
-         }
-
-         this->indices_ = other.indices_;
-      }
-
+      this->swap(other);
       CompositeIteratorTraits<T, iterateInReverse, Traits>::init(this->nodes_, this->indices_);
+
       return *this;
    }
 
@@ -386,6 +378,28 @@ public:
 
       ++(*this);
       return *this;
+   }
+
+   // swap
+   template <typename otherT, typename OtherTraits>
+   void swap(CompositeIterator<otherT, iterateInReverse, OtherTraits>& other) {
+      NodeList<otherT> temp(other.nodes_);
+
+      this->nodes_.clear();
+      this->nodes_.reserve(temp.size());
+
+      typename NodeList<otherT>::const_iterator it;
+      for (it = temp.begin(); it != temp.end(); ++it) {
+         this->nodes_.push_back(*it);
+      }
+
+      this->indices_.swap(other.indices_);
+   }
+
+   template <typename OtherTraits>
+   void swap(CompositeIterator<T, iterateInReverse, OtherTraits>& other) {
+      this->nodes_.swap(other.nodes_);
+      this->indices_.swap(other.indices_);
    }
 
    template <typename constT, typename OtherTraits>

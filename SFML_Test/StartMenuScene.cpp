@@ -64,10 +64,6 @@ void StartMenuScene::exit(Game& game) {
    Service::get_logger().msg(this->id_, Logger::INFO, "Exiting game start menu state.");
 }
 
-void StartMenuScene::update(Game& game, Scene* scene) {
-   Scene::update(game, scene);
-}
-
 void StartMenuScene::process(Game& game, CloseInputEvent& e) {
    Scene::process(game, e);
 }

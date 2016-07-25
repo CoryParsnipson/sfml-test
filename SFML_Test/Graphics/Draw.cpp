@@ -16,13 +16,8 @@ SpriteGraphic::~SpriteGraphic() {
    delete this->drawable_;
 }
 
-void SpriteGraphic::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
+void SpriteGraphic::draw_pre(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    surface.draw(*this->drawable_, render_states);
-
-   // combine supplied render states with current render states
-   render_states.transform = render_states.transform * this->drawable_->getTransform();
-
-   Graphic::draw(surface, render_states);
 }
 
 sf::FloatRect SpriteGraphic::get_local_bounds() const {
@@ -206,13 +201,8 @@ TextGraphic::~TextGraphic() {
    delete this->drawable_;
 }
 
-void TextGraphic::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
+void TextGraphic::draw_pre(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    surface.draw(*this->drawable_, render_states);
-
-   // combine supplied render states with current render states
-   render_states.transform = render_states.transform * this->drawable_->getTransform();
-
-   Graphic::draw(surface, render_states);
 }
 
 sf::FloatRect TextGraphic::get_local_bounds() const {
@@ -396,11 +386,8 @@ VertexGraphic::~VertexGraphic() {
    delete this->drawable_;
 }
 
-void VertexGraphic::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
-   // combine supplied render states with current render states
-   render_states.transform = render_states.transform * this->state_.transform;
+void VertexGraphic::draw_pre(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    surface.draw(*this->drawable_, render_states);
-   Graphic::draw(surface, render_states);
 }
 
 sf::FloatRect VertexGraphic::get_local_bounds() const {

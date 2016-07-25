@@ -23,6 +23,8 @@
 
 #include "MoveCameraCommand.h"
 
+#include "PlayerGamepad.h"
+
 BuilderScene::BuilderScene()
 : Scene("BuilderScene")
 , map_(nullptr)
@@ -162,6 +164,9 @@ BuilderScene::BuilderScene()
    this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", "retro");
    this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
    this->scene_graph_->layer(2)->insert(2, this->fps_display_);
+
+   // create player gamepad
+   this->gamepad(new PlayerGamepad());
 }
 
 BuilderScene::~BuilderScene() {
@@ -184,9 +189,6 @@ void BuilderScene::exit(Game& game) {
 void BuilderScene::update(Game& game, Scene* scene) {
    Scene::update(game, scene);
 
-   this->map_->update(game, this);
-   this->mouse_->update(game, this);
-
    // calculate and show FPS
    if (!this->frame_count) {
       this->update_fps();
@@ -207,16 +209,16 @@ void BuilderScene::process(Game& game, ResizeInputEvent& e) {
    // reposition center dot
    this->center_dot_->set_position(new_center);
 
-   // update grid
+   // change grid size
    this->map_->grid()->set_position(-1.f * this->map_camera_->get_pan_delta());
 
    // reposition fps display
    this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
 
-   // update backsplash
+   // change backsplash size
    this->backdrop_->set_size(Settings::Instance()->cur_width(), Settings::Instance()->cur_height());
 
-   // update custom scene cameras
+   // change custom scene camera sizes
    this->map_camera_->set_size(sf::Vector2f(e.width, e.height));
    this->map_camera_->set_center(sf::Vector2f(e.width / 2.f, e.height / 2.f));
 
@@ -228,8 +230,8 @@ void BuilderScene::process(Game& game, KeyPressInputEvent& e) {
    switch (e.key) {
    case Key::R:
       // reset grid too (encapsulate this in grid class?)
-      //this->map_->grid()->set_scale(1.f);
-      //this->map_->grid()->move(this->map_camera_->get_pan_delta()); // move the grid back too
+      this->map_->grid()->set_scale(1.f);
+      this->map_->grid()->move(this->map_camera_->get_pan_delta()); // move the grid back too
 
       this->map_camera_->reset_pan();
       this->map_camera_->reset_zoom();
@@ -297,19 +299,19 @@ void BuilderScene::process(Game& game, KeyPressInputEvent& e) {
    break;
    case Key::Left:
       this->move_camera_left->execute();
-      this->map_->grid()->move(-this->move_camera_left->get_delta()); // reverse pan the grid so it stays in place
+      this->map_->grid()->move(this->move_camera_left->get_delta()); // reverse pan the grid so it stays in place
    break;
    case Key::Right:
       this->move_camera_right->execute();
-      this->map_->grid()->move(-this->move_camera_right->get_delta()); // reverse pan the grid so it stays in place
+      this->map_->grid()->move(this->move_camera_right->get_delta()); // reverse pan the grid so it stays in place
    break;
    case Key::Up:
       this->move_camera_up->execute();
-      this->map_->grid()->move(-this->move_camera_up->get_delta()); // reverse pan the grid so it stays in place
+      this->map_->grid()->move(this->move_camera_up->get_delta()); // reverse pan the grid so it stays in place
    break;
    case Key::Down:
       this->move_camera_down->execute();
-      this->map_->grid()->move(-this->move_camera_down->get_delta()); // reverse pan the grid so it stays in place
+      this->map_->grid()->move(this->move_camera_down->get_delta()); // reverse pan the grid so it stays in place
    break;
    default:
       // do nothing
@@ -326,7 +328,7 @@ void BuilderScene::drag(MouseButton button, sf::Vector2f pos, sf::Vector2f delta
       this->update_selection_rect(this->click_press_pos_, pos);
    } else if (button == MouseButton::Right) {
       this->map_camera_->drag(button, pos, delta); // pan only the map layers
-      //this->map_->grid()->move(-delta); // reverse pan the grid so it stays in place
+      this->map_->grid()->move(delta); // pan the grid so it stays in place
 
       // if the selection rectangle is visible, update it
       if (this->selection_rectangle_->visible()) {
@@ -344,7 +346,7 @@ void BuilderScene::set_scale(float factor) {
 
    factor = std::max(factor, Camera::ZOOM_FACTOR_MIN);
    factor = std::min(factor, Camera::ZOOM_FACTOR_MAX);
-   //this->map_->grid()->set_scale(factor);
+   this->map_->grid()->set_scale(factor);
 }
 
 void BuilderScene::click(MouseButton button, ButtonState state, sf::Vector2f pos) {

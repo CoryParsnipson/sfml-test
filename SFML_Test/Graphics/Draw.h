@@ -14,18 +14,14 @@ public:
 };
 
 class Graphic
-: public Composite<Graphic>
-, public Draw
+: public Draw
 {
 public:
    virtual ~Graphic() {}
 
    // drawable interface
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {
-      Graphic::iterator it;
-      for (it = this->begin(); it != this->end(); ++it) {
-         (*it)->draw(surface, render_states);
-      }
+      this->draw_pre(surface, render_states);
    }
 
    // common sfml drawable interface
@@ -87,6 +83,9 @@ public:
    virtual unsigned int get_character_size() const = 0;
    virtual unsigned int get_em_width() const = 0;
    virtual sf::Vector2f find_character_pos(std::size_t index) const = 0;
+
+protected:
+   virtual void draw_pre(RenderSurface& surface, sf::RenderStates render_states) {}
 };
 
 class SpriteGraphic : public Graphic {
@@ -95,8 +94,7 @@ public:
    SpriteGraphic(Texture& texture);
    virtual ~SpriteGraphic();
 
-   // drawable interface
-   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
+   virtual void draw_pre(RenderSurface& surface, sf::RenderStates render_states);
 
    // common sfml drawable interface
    virtual sf::FloatRect get_local_bounds() const;
@@ -170,8 +168,7 @@ public:
    TextGraphic(const std::string& text, sf::Font* font = nullptr, unsigned int size = 12);
    virtual ~TextGraphic();
 
-   // drawable interface
-   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
+   virtual void draw_pre(RenderSurface& surface, sf::RenderStates render_states);
 
    // common sfml drawable interface
    virtual sf::FloatRect get_local_bounds() const;
@@ -248,8 +245,7 @@ public:
    VertexGraphic(sf::VertexArray* arr);
    virtual ~VertexGraphic();
 
-   // drawable interface
-   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
+   virtual void draw_pre(RenderSurface& surface, sf::RenderStates render_states);
 
    // common sfml drawable interface
    virtual sf::FloatRect get_local_bounds() const;

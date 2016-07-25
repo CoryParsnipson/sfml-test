@@ -5,9 +5,10 @@ This was originally going to be a quick isometric tile demo experiment and it ha
 
 Things to do next
 -----------------
-* Some sort of "GameObject" class to unify everything that's drawable and updateable? Replacement for Entity class that can be shoved into a SceneGraphNode
-   * this class should probably also be a scene graph node
-   * Figure out a nice way to create a scene graph node interface. Is there a way to get rid of the extra layer of objects?
+* need to overhaul graphics classes or something because it's very clunky
+   * the graphics drawing is already a performance bottleneck
+
+* Create an entity that contains a Gamepad instance? (For drawing mouse cursor and stuff)
 
 * make everything relative to in game units instead of pixels
 
@@ -18,9 +19,6 @@ Things to do next
 
 TODO
 ----
-
-* Create an entity that contains a Gamepad instance? (For drawing mouse cursor and stuff)
-
 * Think about making some sort of exception service? Make it graphical; print to screen
  
 * the Bridge pattern can be used to isolate sfml-test specific code from SFML library code
@@ -38,8 +36,6 @@ TODO
 * Serialize map into an xml file instead of reading from handmade text file.
 
 * Service locator is pretty ugly. Refactor?
-
-* need to overhaul graphics classes or something because it's very clunky
 
 * Flesh out UI compositor classes
    * need to decide a way to specify fixed percentage positioning etc?

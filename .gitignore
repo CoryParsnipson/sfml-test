@@ -1,0 +1,12 @@
+# ignore swap files
+*.swp
+
+# ignore generated executables
+sfml_test
+
+# ignore log file
+log.txt
+
+# ignore profiler files
+analysis.txt
+gmon.out
