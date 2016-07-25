@@ -175,16 +175,16 @@ void Entity::accept(SceneGraphVisitor& visitor) {
    visitor.visit(this);
 }
 
+void Entity::update(Game& game, Scene* scene /* = nullptr */) {
+   PartList::const_iterator it;
+   for (it = this->parts_.begin(); it != this->parts_.end(); it++) {
+      it->second->update(game, scene);
+   }
+}
+
 void Entity::draw_pre(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    PartList::const_iterator it;
    for (it = this->parts_.begin(); it != this->parts_.end(); it++) {
       it->second->draw(surface, render_states);
-   }
-}
-
-void Entity::update_pre(Game& game, Scene* scene /* = nullptr */) {
-   PartList::const_iterator it;
-   for (it = this->parts_.begin(); it != this->parts_.end(); it++) {
-      it->second->update(game, scene);
    }
 }

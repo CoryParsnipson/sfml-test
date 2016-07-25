@@ -87,7 +87,10 @@ public:
 
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr) {
-      this->scene_graph_->update(game, scene);
+      SceneObject::prefix_iterator it;
+      for (it = this->scene_graph_->begin(); it != this->scene_graph_->end(); ++it) {
+         (*it)->update(game, scene);
+      }
 
       GamepadList::const_iterator git;
       for (git = this->gamepads_.begin(); git != this->gamepads_.end(); ++git) {

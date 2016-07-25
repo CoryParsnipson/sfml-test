@@ -58,9 +58,6 @@ protected:
 
    virtual void draw_pre(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
    virtual void draw_post(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
-
-   virtual void update_pre(Game& game, Scene* scene = nullptr);
-   virtual void update_post(Game& game, Scene* scene = nullptr);
 };
 
 #endif

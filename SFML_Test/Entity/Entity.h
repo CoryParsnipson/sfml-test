@@ -51,6 +51,9 @@ public:
    // scene graph visitor interface
    virtual void accept(SceneGraphVisitor& visitor);
 
+   // update interface
+   virtual void update(Game& game, Scene* scene = nullptr);
+
 protected:
    bool enable_debug_wireframe_;
    bool enable_debug_text_;
@@ -60,7 +63,6 @@ protected:
 
    // scene graph interface hooks
    virtual void draw_pre(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
-   virtual void update_pre(Game& game, Scene* scene = nullptr);
 };
 
 #endif
