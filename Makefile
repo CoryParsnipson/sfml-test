@@ -74,6 +74,7 @@ profiler: OUTPUT_DIR = $(OUTPUT_DIR_PROFILER)
 
 debug: OUTPUT_DIR = $(OUTPUT_DIR_DEBUG)
 
+release: CFLAGS += -O3
 release: OUTPUT_DIR = $(OUTPUT_DIR_RELEASE)
 
 all profiler debug release: $(PROJECT_DIR)/$(RUNNER_FILE)

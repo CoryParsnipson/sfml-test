@@ -1,0 +1,9 @@
+# config
+
+type: logger, stream: console, enable: true
+type: logger, stream: console, set_tag: Input, tag_value: false
+type: logger, stream: console, set_tag: PhysicsPart, tag_value: false
+type: logger, stream: console, set_tag: ControlPart, tag_value: false
+type: logger, stream: console, set_tag: GraphicsPart, tag_value: false
+type: logger, stream: console, set_tag: TextSerializer, tag_value: false
+type: logger, stream: console, set_tag: PlayerGamepad, tag_value: false

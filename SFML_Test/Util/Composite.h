@@ -334,18 +334,18 @@ public:
       CompositeIteratorTraits<T, iterateInReverse, Traits>::init(this->nodes_, this->indices_);
    }
 
-   CompositeIterator(T* itr) {
-      this->indices_.push_back(0);
-      this->nodes_.push_back(itr);
-      
+   CompositeIterator(T* itr)
+   : indices_{0}
+   , nodes_{itr}
+   {
       CompositeIteratorTraits<T, iterateInReverse, Traits>::init(this->nodes_, this->indices_);
    }
 
    template <typename constT>
-   CompositeIterator(constT* itr) {
-      this->indices_.push_back(0);
-      this->nodes_.push_back(itr);
-      
+   CompositeIterator(constT* itr)
+   : indices_{0}
+   , nodes_{itr}
+   {
       CompositeIteratorTraits<constT, iterateInReverse, Traits>::init(this->nodes_, this->indices_);
    }
 

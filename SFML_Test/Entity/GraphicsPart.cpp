@@ -85,7 +85,7 @@ Serialize::SerialObj GraphicsPart::serialize() {
    Serialize::SerialObj obj;
 
    Graphic* sprite = this->get(0);
-   Texture* texture;
+   Texture* texture(nullptr);
    sf::Vector2f pos;
    if (sprite) {
       pos = sprite->get_position();
