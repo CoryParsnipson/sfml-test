@@ -95,6 +95,6 @@ void ButtonWidget::set_scale(float factor) {
 void ButtonWidget::click(MouseButton button, ButtonState state, sf::Vector2f pos) {
 }
 
-void ButtonWidget::draw_pre(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
+void ButtonWidget::do_draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    this->background_->draw(surface, render_states);
 }

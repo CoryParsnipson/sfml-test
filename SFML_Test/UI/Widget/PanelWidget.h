@@ -30,12 +30,12 @@ public:
    virtual void on_mouse_in();
    virtual void on_mouse_out();
 
-   // TODO: hack...
-   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
-
 protected:
    Graphic* panel_;
    SubCanvas surface_; // intermediate drawing surface to clip contents
+
+   // scene graph interface hooks
+   virtual void do_draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 };
 
 #endif

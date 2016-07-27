@@ -116,15 +116,6 @@ void Camera::accept(SceneGraphVisitor& visitor) {
    visitor.visit(this);
 }
 
-void Camera::apply_transform(sf::RenderStates& render_states) {
-   // disable for camera, because pre-draw handles this
-}
-
-void Camera::draw_pre(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
-   this->prev_view_ = surface.view();
+void Camera::do_apply_transform(RenderSurface& surface, sf::RenderStates& render_states) {
    surface.view(*this->view_);
-}
-
-void Camera::draw_post(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
-   surface.view(this->prev_view_);
 }

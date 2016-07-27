@@ -79,19 +79,14 @@ void PanelWidget::on_mouse_out() {
    this->panel_->set_outline_color(sf::Color::Transparent);
 }
 
-void PanelWidget::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
+void PanelWidget::do_draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    this->surface_.clear();
    this->panel_->draw(this->surface_);
-
-   // draw children on top of this widget
-   Widget::draw(this->surface_);
 
    // draw to intermediate surface
    this->surface_.update();
 
    // take intermediate surface and draw it to the provided surface
    sf::Sprite widget_sprite(this->surface_.get_texture(), static_cast<sf::IntRect>(this->panel_->get_local_bounds()));
-   widget_sprite.setPosition(this->panel_->get_position());
-
    surface.draw(widget_sprite, render_states);
 }

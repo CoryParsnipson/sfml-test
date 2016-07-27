@@ -85,6 +85,6 @@ void TextWidget::word_wrap() {
    this->text_->set_string(text);
 }
 
-void TextWidget::draw_pre(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
+void TextWidget::do_draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    this->text_->draw(surface, render_states);
 }

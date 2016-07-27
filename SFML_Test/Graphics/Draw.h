@@ -19,11 +19,6 @@ class Graphic
 public:
    virtual ~Graphic() {}
 
-   // drawable interface
-   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {
-      this->draw_pre(surface, render_states);
-   }
-
    // common sfml drawable interface
    virtual sf::FloatRect get_local_bounds() const = 0;
    virtual sf::FloatRect get_global_bounds() const = 0;
@@ -83,9 +78,6 @@ public:
    virtual unsigned int get_character_size() const = 0;
    virtual unsigned int get_em_width() const = 0;
    virtual sf::Vector2f find_character_pos(std::size_t index) const = 0;
-
-protected:
-   virtual void draw_pre(RenderSurface& surface, sf::RenderStates render_states) {}
 };
 
 class SpriteGraphic : public Graphic {
@@ -94,7 +86,7 @@ public:
    SpriteGraphic(Texture& texture);
    virtual ~SpriteGraphic();
 
-   virtual void draw_pre(RenderSurface& surface, sf::RenderStates render_states);
+   virtual void draw(RenderSurface& surface, sf::RenderStates render_states);
 
    // common sfml drawable interface
    virtual sf::FloatRect get_local_bounds() const;
@@ -168,7 +160,7 @@ public:
    TextGraphic(const std::string& text, sf::Font* font = nullptr, unsigned int size = 12);
    virtual ~TextGraphic();
 
-   virtual void draw_pre(RenderSurface& surface, sf::RenderStates render_states);
+   virtual void draw(RenderSurface& surface, sf::RenderStates render_states);
 
    // common sfml drawable interface
    virtual sf::FloatRect get_local_bounds() const;
@@ -245,7 +237,7 @@ public:
    VertexGraphic(sf::VertexArray* arr);
    virtual ~VertexGraphic();
 
-   virtual void draw_pre(RenderSurface& surface, sf::RenderStates render_states);
+   virtual void draw(RenderSurface& surface, sf::RenderStates render_states);
 
    // common sfml drawable interface
    virtual sf::FloatRect get_local_bounds() const;

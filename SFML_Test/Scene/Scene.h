@@ -70,7 +70,10 @@ public:
 
    // draw interface
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {
-      this->scene_graph_->draw(surface, render_states);
+      SceneObject::prefix_iterator it;
+      for (it = this->scene_graph_->begin(); it != this->scene_graph_->end(); ++it) {
+         (*it)->draw(surface, render_states);
+      }
    
       // TODO: hack, temporary
       sf::View v = surface.view();

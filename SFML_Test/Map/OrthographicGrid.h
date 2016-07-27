@@ -64,7 +64,7 @@ protected:
    void clear_text_markers();
 
    // scene graph interface hooks 
-   virtual void draw_pre(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
+   virtual void do_draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 };
 
 #endif

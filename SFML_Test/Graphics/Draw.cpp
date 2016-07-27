@@ -16,7 +16,7 @@ SpriteGraphic::~SpriteGraphic() {
    delete this->drawable_;
 }
 
-void SpriteGraphic::draw_pre(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
+void SpriteGraphic::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    surface.draw(*this->drawable_, render_states);
 }
 
@@ -201,7 +201,7 @@ TextGraphic::~TextGraphic() {
    delete this->drawable_;
 }
 
-void TextGraphic::draw_pre(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
+void TextGraphic::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    surface.draw(*this->drawable_, render_states);
 }
 
@@ -386,7 +386,7 @@ VertexGraphic::~VertexGraphic() {
    delete this->drawable_;
 }
 
-void VertexGraphic::draw_pre(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
+void VertexGraphic::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    surface.draw(*this->drawable_, render_states);
 }
 

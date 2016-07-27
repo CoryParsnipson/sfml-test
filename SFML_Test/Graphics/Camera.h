@@ -62,13 +62,8 @@ private:
    sf::Vector2f original_center_;
    sf::View* view_;
 
-   sf::View prev_view_;
-
 protected:
    // scene graph interface hooks
-   virtual void apply_transform(sf::RenderStates& render_states);
-
-   virtual void draw_pre(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
-   virtual void draw_post(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
+   virtual void do_apply_transform(RenderSurface& surface, sf::RenderStates& render_states);
 };
 #endif

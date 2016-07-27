@@ -1,5 +1,6 @@
 #include "SceneObject.h"
 #include "RenderSurface.h"
+#include "Camera.h"
 
 SceneObject::SceneObject(bool visible /* = true */)
 : Composite<SceneObject, true>()
@@ -44,22 +45,21 @@ void SceneObject::draw(RenderSurface& surface, sf::RenderStates render_states /*
       return;
    }
 
-   this->apply_transform(render_states);
-   this->draw_pre(surface, render_states);
-
-   SceneObject::iterator it;
-   for (it = this->begin(); it != this->end(); ++it) {
-      (*it)->draw(surface, render_states);
-   }
-
-   this->draw_post(surface, render_states);
+   this->apply_transform(surface, render_states);
+   this->do_draw(surface, render_states);
 }
 
 void SceneObject::update(Game& game, Scene* scene /* = nullptr */) {}
 
-void SceneObject::apply_transform(sf::RenderStates& render_states) {
+void SceneObject::apply_transform(RenderSurface& surface, sf::RenderStates& render_states) {
+   if (this->parent()) {
+      this->parent()->apply_transform(surface, render_states);
+   }
+   this->do_apply_transform(surface, render_states);
+}
+
+void SceneObject::do_apply_transform(RenderSurface& surface, sf::RenderStates& render_states) {
    render_states.transform *= this->transform_;
 }
 
-void SceneObject::draw_pre(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {}
-void SceneObject::draw_post(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {}
+void SceneObject::do_draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {}

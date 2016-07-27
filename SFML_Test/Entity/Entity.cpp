@@ -182,7 +182,7 @@ void Entity::update(Game& game, Scene* scene /* = nullptr */) {
    }
 }
 
-void Entity::draw_pre(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
+void Entity::do_draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    PartList::const_iterator it;
    for (it = this->parts_.begin(); it != this->parts_.end(); it++) {
       it->second->draw(surface, render_states);
