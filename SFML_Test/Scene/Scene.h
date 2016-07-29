@@ -15,6 +15,7 @@
 #include "Camera.h"
 #include "Update.h"
 #include "Entity.h"
+#include "Widget.h"
 #include "Gamepad.h"
 
 class Scene
@@ -113,8 +114,14 @@ public:
       }
    }
 
+   Gamepad* gamepad(int player_id) {
+      if (player_id < 1 || player_id > (signed int)this->gamepads_.size()) {
+         return this->gamepads_[player_id + 1];
+      }
+      return nullptr;
+   }
+
    // TODO: implement
-   Gamepad* gamepad(int player_id);
    void remove_gamepad(int player_id);
    void remove_gamepad(Gamepad* gamepad);
 

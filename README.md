@@ -35,6 +35,8 @@ TODO
 
 * Serialize map into an xml file instead of reading from handmade text file.
 
+* Change Scene::draw to use a visitor that builds global transform instead of doing it in SceneObject?
+
 * Service locator is pretty ugly. Refactor?
 
 * Flesh out UI compositor classes

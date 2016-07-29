@@ -5,36 +5,47 @@
 #include "Command.h"
 #include "SceneGraphVisitor.h"
 #include "Scene.h"
-#include "Widget.h"
 
 // ----------------------------------------------------------------------------
 // aliases
 // ----------------------------------------------------------------------------
+using CameraList = std::vector<Camera*>;
+using EntityList = std::vector<Entity*>;
 using WidgetList = std::vector<Widget*>;
 
+using SceneObjectList = std::vector<SceneObject*>;
+
 // ----------------------------------------------------------------------------
-// GetWidgetCommand class
+// forward declarations
+// ----------------------------------------------------------------------------
+class SceneObject;
+
+// ----------------------------------------------------------------------------
+// GetSceneObjectCommand class
 //
 // This command takes a reference to a scene graph and a coordinate. Upon
 // execution, it will traverse the scene graph node and create a list of
-// widgets in the scene graph that contain that coordinate. This command
-// will not collect widgets that are not visible from the scene graph.
+// objects in the scene graph that contain that coordinate. This command
+// will not collect objects that are not visible from the scene graph.
 // ----------------------------------------------------------------------------
-class GetWidgetCommand
+class GetSceneObjectCommand
 : public Command
 , public SceneGraphVisitor
 {
 public:
-   GetWidgetCommand(SceneObject* scene_graph, sf::Vector2f target = sf::Vector2f(0, 0));
-   virtual ~GetWidgetCommand();
+   GetSceneObjectCommand(SceneObject* scene_graph, sf::Vector2f target = sf::Vector2f(0, 0));
+   virtual ~GetSceneObjectCommand();
 
    void scene_graph(SceneObject* scene_graph);
    SceneObject* scene_graph();
 
-   const WidgetList& get();
+   const SceneObjectList& get();
+   const WidgetList& get_widgets();
 
    void target(sf::Vector2f target);
    sf::Vector2f target();
+
+   void clear_lists();
 
    // command interface
    virtual void execute();
@@ -42,14 +53,18 @@ public:
 
    // scene graph visitor interface
    virtual void visit(Camera*);
-   virtual void visit(Draw*);
    virtual void visit(Entity*);
    virtual void visit(Widget*);
 
 protected:
    sf::Vector2f target_;
    SceneObject* scene_graph_;
-   WidgetList widgets_;   
+
+   CameraList cameras_;
+   EntityList entities_;
+   WidgetList widgets_;
+
+   SceneObjectList scene_objects_;
 };
 
 #endif

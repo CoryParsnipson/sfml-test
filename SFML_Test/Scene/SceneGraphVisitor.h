@@ -5,7 +5,6 @@
 // forward declarations
 // ----------------------------------------------------------------------------
 class Camera;
-class Draw;
 class Entity;
 class Widget;
 
@@ -20,7 +19,6 @@ class Widget;
 class SceneGraphVisitor {
 public:
    virtual void visit(Camera*) = 0;
-   virtual void visit(Draw*) = 0;
    virtual void visit(Entity*) = 0;
    virtual void visit(Widget*) = 0;
 };

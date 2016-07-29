@@ -7,7 +7,7 @@
 // forward declarations
 // -----------------------------------------------------------------------------
 class Widget;
-class GetWidgetCommand;
+class GetSceneObjectCommand;
 
 class TestUIScene
 : public Scene

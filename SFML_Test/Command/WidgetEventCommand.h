@@ -9,7 +9,7 @@
 // forward declarations
 // ----------------------------------------------------------------------------
 class Gamepad;
-class GetWidgetCommand;
+class GetSceneObjectCommand;
 
 // ----------------------------------------------------------------------------
 // enum classes
@@ -36,7 +36,7 @@ public:
 
 protected:
    WidgetOp action_;
-   GetWidgetCommand* target_;
+   GetSceneObjectCommand* target_;
    Gamepad* gamepad_;
 };
 
