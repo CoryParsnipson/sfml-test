@@ -21,7 +21,10 @@
 #include "FlatMapBuilder.h"
 #include "Grid.h"
 
+#include "MacroCommand.h"
 #include "MoveCameraCommand.h"
+#include "DragCommand.h"
+#include "DragTargetCommand.h"
 
 #include "PlayerGamepad.h"
 
@@ -111,7 +114,7 @@ BuilderScene::BuilderScene()
    this->scene_graph_->layer(2)->add(this->mouse_);
 
    // let our mouse controller manipulate this scene
-   dynamic_cast<MouseControlPart*>(this->mouse_->get("control"))->set_controllable(this);
+   //dynamic_cast<MouseControlPart*>(this->mouse_->get("control"))->set_controllable(this);
 
    // create a selection rectangle entity and add it to the scene initally invisible
    this->selection_rectangle_ = TileFactory::inst()->create_selection_rectangle();
@@ -166,7 +169,27 @@ BuilderScene::BuilderScene()
    this->scene_graph_->layer(2)->insert(2, this->fps_display_);
 
    // create player gamepad
-   this->gamepad(new PlayerGamepad());
+   PlayerGamepad* pg = new PlayerGamepad();
+   this->gamepad(pg);
+   
+   DragCommand* drag_map_camera = new DragCommand(pg);
+   DragCommand* drag_grid = new DragCommand(pg);
+
+   MacroCommand* drag_command = new MacroCommand("DragMacroCommand");
+   drag_command->add(drag_map_camera);
+   drag_command->add(drag_grid);
+
+   MacroCommand* set_drag_targets = new MacroCommand("SetDragTargetsMacroCommand");
+   set_drag_targets->add(new DragTargetCommand(drag_map_camera, this->map_camera_));
+   set_drag_targets->add(new DragTargetCommand(drag_grid, this->map_->grid()));
+
+   MacroCommand* remove_drag_targets = new MacroCommand("RemoveDragTargetsMacroCommand");
+   remove_drag_targets->add(new DragTargetCommand(drag_map_camera, nullptr));
+   remove_drag_targets->add(new DragTargetCommand(drag_grid, nullptr));
+
+   pg->set(drag_command, MouseAction::Move);
+   pg->set(set_drag_targets, MouseButton::Right, ButtonState::Pressed);
+   pg->set(remove_drag_targets, MouseButton::Right, ButtonState::Released);
 }
 
 BuilderScene::~BuilderScene() {

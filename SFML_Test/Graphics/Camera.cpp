@@ -66,7 +66,7 @@ void Camera::set_center(const sf::Vector2f& center) {
    this->original_center_ = center;
 }
 
-void Camera::move(sf::Vector2f delta) {
+void Camera::move(const sf::Vector2f& delta) {
    this->view_->move(delta);
 
    // transform (for child scene object positioning) moves in opposite direction of camera

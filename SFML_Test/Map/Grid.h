@@ -4,9 +4,11 @@
 #include "dependencies.h"
 #include "SceneObject.h"
 #include "Serialize.h"
+#include "MoveCommand.h"
 
 class Grid
 : public SceneObject
+, public Moveable
 , public Serialize
 {
 public:
@@ -75,7 +77,9 @@ public:
 
    virtual sf::Vector2f coord_to_screen(const sf::Vector2f& coord) = 0;
 
+   // move interface
    virtual void move(const sf::Vector2f& delta) = 0;
+
    virtual void set_scale(float factor) = 0;
    virtual void set_position(const sf::Vector2f& pos) = 0;
 

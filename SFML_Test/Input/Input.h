@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include <SFML/Window.hpp>
+
 #include "Observer.h"
 
 class Game;
@@ -41,6 +43,14 @@ enum class Key {
    Numpad0, Numpad1, Numpad2, Numpad3, Numpad4, Numpad5, Numpad6, Numpad7, Numpad8, Numpad9,
    F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15,
    Pause
+};
+
+// ----------------------------------------------------------------------------
+// Moveable interface
+// ----------------------------------------------------------------------------
+class Moveable {
+public:
+   virtual void move(const sf::Vector2f& delta) = 0;
 };
 
 // ----------------------------------------------------------------------------

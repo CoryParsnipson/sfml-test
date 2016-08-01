@@ -3,9 +3,11 @@
 
 #include "MouseControllable.h"
 #include "SceneObject.h"
+#include "MoveCommand.h"
 
 class Camera
 : public SceneObject
+, public Moveable
 , public MouseControllable
 {
 public:
@@ -30,7 +32,8 @@ public:
    const sf::Vector2f& get_center();
    void set_center(const sf::Vector2f& center);
 
-   void move(sf::Vector2f delta);
+   // moveable interface
+   virtual void move(const sf::Vector2f& delta);
 
    const sf::View& view() const; // for internal use only...
 
