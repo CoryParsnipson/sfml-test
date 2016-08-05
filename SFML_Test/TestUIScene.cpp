@@ -85,7 +85,18 @@ void TestUIScene::update(Game& game, Scene* scene) {
    this->frame_count = (this->frame_count + 1) % this->frame_measurement_interval;
 }
 
-void TestUIScene::process(Game& game, MouseButtonInputEvent& e) {}
+void TestUIScene::update_fps() {
+   this->last_frame_time = (((float)this->frame_measurement_interval / this->clock.getElapsedTime().asSeconds()) * Settings::Instance()->FRAMERATE_SMOOTHING)
+                           + (this->last_frame_time * (1.0 - Settings::Instance()->FRAMERATE_SMOOTHING));
+   this->clock.restart();
+
+   // update fps entity
+   GraphicsPart* fps_graphic = dynamic_cast<GraphicsPart*>(fps_display_->get("graphics"));
+   if (fps_graphic) {
+      fps_graphic->get(0)->set_string("FPS: " + std::to_string(this->last_frame_time));
+   }
+}
+
 void TestUIScene::process(Game& game, ResizeInputEvent& e) {
    Scene::process(game, e);
 
@@ -100,14 +111,10 @@ void TestUIScene::process(Game& game, ResizeInputEvent& e) {
    this->ui_camera_->set_center(sf::Vector2f(e.width / 2.f, e.height / 2.f));
 }
 
-void TestUIScene::update_fps() {
-   this->last_frame_time = (((float)this->frame_measurement_interval / this->clock.getElapsedTime().asSeconds()) * Settings::Instance()->FRAMERATE_SMOOTHING)
-                           + (this->last_frame_time * (1.0 - Settings::Instance()->FRAMERATE_SMOOTHING));
-   this->clock.restart();
-
-   // update fps entity
-   GraphicsPart* fps_graphic = dynamic_cast<GraphicsPart*>(fps_display_->get("graphics"));
-   if (fps_graphic) {
-      fps_graphic->get(0)->set_string("FPS: " + std::to_string(this->last_frame_time));
+void TestUIScene::process(Game& game, KeyPressInputEvent& e) {
+   if (e.key == Key::Space) {
+      game.unload_scene();
    }
 }
+
+void TestUIScene::process(Game& game, MouseButtonInputEvent& e) {}

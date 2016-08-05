@@ -2,7 +2,6 @@
 #define BUILDER_SCENE_H
 
 #include "Scene.h"
-#include "MouseControllable.h"
 
 class Texture;
 
@@ -10,11 +9,8 @@ class Map;
 class MapBuilder;
 class Serializer;
 
-class MoveCameraCommand;
-
 class BuilderScene
 : public Scene
-, public MouseControllable
 {
 public:
    BuilderScene();
@@ -34,14 +30,6 @@ public:
    virtual void process(Game& game, MouseWheelInputEvent& e);
    virtual void process(Game& game, MouseButtonInputEvent& e);
 
-   // mouse control interface
-   virtual void drag(MouseButton button, sf::Vector2f pos, sf::Vector2f delta);
-
-   virtual float get_scale();
-   virtual void set_scale(float factor);
-
-   virtual void click(MouseButton button, ButtonState state, sf::Vector2f pos);
-
 protected:
    // scene fixtures
    Map* map_;
@@ -52,19 +40,9 @@ protected:
    Serializer* serializer_;
 
    // entity pointers (no ownership)
-   Entity* mouse_;
    Entity* center_dot_;
    Entity* fps_display_;
-   Entity* selection_rectangle_;
    Entity* tile_cursor_;
-
-   // mouse controllable state
-   sf::Vector2f click_press_pos_;
-
-   MoveCameraCommand* move_camera_left;
-   MoveCameraCommand* move_camera_right;
-   MoveCameraCommand* move_camera_up;
-   MoveCameraCommand* move_camera_down;
 
    sf::Clock clock;
    int last_frame_time;
@@ -76,7 +54,6 @@ protected:
    void update_fps();
    void toggle_debug_info();
 
-   void update_selection_rect(sf::Vector2f& origin_click, sf::Vector2f& mouse_pos);
    void update_tile_cursor(sf::Vector2f& one, sf::Vector2f& two);
 
    void set_tiles(Texture& tile_texture);

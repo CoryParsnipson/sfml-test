@@ -3,7 +3,6 @@
 #include "Draw.h"
 #include "GraphicsPart.h"
 #include "PhysicsPart.h"
-#include "MouseControlPart.h"
 #include "DebugPart.h"
 
 // initialize static members
@@ -15,28 +14,6 @@ UtilFactory* UtilFactory::inst() {
 
 UtilFactory::UtilFactory() {}
 UtilFactory::~UtilFactory() {}
-
-Entity* UtilFactory::create_mouse() {
-   Entity* mouse = new Entity();
-   DebugPart* debug_part = new DebugPart();
-   GraphicsPart* graphics_part = new GraphicsPart();
-   PhysicsPart* physics_part = new PhysicsPart();
-   MouseControlPart* control_part = new MouseControlPart("control");
-
-   Graphic* cursor = new SpriteGraphic();
-   cursor->set_size(6, 6);
-   cursor->set_color(sf::Color::Red);
-   graphics_part->add(cursor);
-
-   mouse->add(graphics_part);
-   mouse->add(physics_part);
-   mouse->add(control_part);
-   mouse->add(debug_part);
-
-   mouse->enable_debug_text(true);
-
-   return mouse;
-}
 
 Entity* UtilFactory::create_graphic(Graphic* g, sf::FloatRect bounding_box, bool debug) {
    Entity* e = new Entity();

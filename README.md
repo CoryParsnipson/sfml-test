@@ -42,5 +42,7 @@ TODO
 
 * Service locator is pretty ugly. Refactor?
 
+* Put game specific scenes and game specific commands in a different folder hierarchy
+
 * Flesh out UI compositor classes
    * need to decide a way to specify fixed percentage positioning etc?

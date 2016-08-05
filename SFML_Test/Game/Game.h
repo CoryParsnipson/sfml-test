@@ -36,7 +36,7 @@ public:
 
    bool poll_event(sf::Event& event);
 
-protected:
+private:
 	// game flow control
 	void main_loop();
 

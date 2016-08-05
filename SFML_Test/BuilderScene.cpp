@@ -12,7 +12,6 @@
 #include "GraphicsPart.h"
 #include "PhysicsPart.h"
 #include "ReferencePart.h"
-#include "MouseControlPart.h"
 
 #include "UtilFactory.h"
 #include "TileFactory.h"
@@ -22,9 +21,11 @@
 #include "Grid.h"
 
 #include "MacroCommand.h"
-#include "MoveCameraCommand.h"
+#include "MoveCommand.h"
 #include "DragCommand.h"
 #include "DragTargetCommand.h"
+#include "SetSelectionRectCommand.h"
+#include "UpdateSelectionRectCommand.h"
 
 #include "PlayerGamepad.h"
 
@@ -34,14 +35,8 @@ BuilderScene::BuilderScene()
 , hud_camera_(new Camera("Hud Camera", sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height())))
 , map_camera_(new Camera("Map Camera", sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height())))
 , map_filename_("pkmn_map_test.txt")
-, mouse_(nullptr)
 , center_dot_(nullptr)
-, selection_rectangle_(nullptr)
 , tile_cursor_(nullptr)
-, move_camera_left(new MoveCameraCommand(*this->map_camera_, sf::Vector2f(-10, 0)))
-, move_camera_right(new MoveCameraCommand(*this->map_camera_, sf::Vector2f(10, 0)))
-, move_camera_up(new MoveCameraCommand(*this->map_camera_, sf::Vector2f(0, -10)))
-, move_camera_down(new MoveCameraCommand(*this->map_camera_, sf::Vector2f(0, 10)))
 , last_frame_time(0)
 , frame_measurement_interval(6)
 , frame_count(0)
@@ -109,17 +104,10 @@ BuilderScene::BuilderScene()
 
    delete map_builder;
 
-   // initialize entities
-   this->mouse_ = UtilFactory::inst()->create_mouse();
-   this->scene_graph_->layer(2)->add(this->mouse_);
-
-   // let our mouse controller manipulate this scene
-   //dynamic_cast<MouseControlPart*>(this->mouse_->get("control"))->set_controllable(this);
-
    // create a selection rectangle entity and add it to the scene initally invisible
-   this->selection_rectangle_ = TileFactory::inst()->create_selection_rectangle();
-   this->selection_rectangle_->visible(false);
-   this->scene_graph_->layer(2)->insert(1, this->selection_rectangle_);
+   Entity* selection_rect = TileFactory::inst()->create_selection_rectangle();
+   selection_rect->visible(false);
+   this->scene_graph_->layer(2)->insert(1, selection_rect);
 
    // create a tile cursor
    sf::Vector2f nullvect(0, 0);
@@ -171,6 +159,9 @@ BuilderScene::BuilderScene()
    // create player gamepad
    PlayerGamepad* pg = new PlayerGamepad();
    this->gamepad(pg);
+
+   // mouse bindings
+   std::shared_ptr<UpdateSelectionRectCommand> usr = std::make_shared<UpdateSelectionRectCommand>(selection_rect);
    
    DragCommand* drag_map_camera = new DragCommand(pg);
    DragCommand* drag_grid = new DragCommand(pg);
@@ -178,6 +169,7 @@ BuilderScene::BuilderScene()
    MacroCommand* drag_command = new MacroCommand("DragMacroCommand");
    drag_command->add(drag_map_camera);
    drag_command->add(drag_grid);
+   drag_command->add(new SetSelectionRectCommand(usr, pg, selection_rect, false));
 
    MacroCommand* set_drag_targets = new MacroCommand("SetDragTargetsMacroCommand");
    set_drag_targets->add(new DragTargetCommand(drag_map_camera, this->map_camera_));
@@ -190,23 +182,44 @@ BuilderScene::BuilderScene()
    pg->set(drag_command, MouseAction::Move);
    pg->set(set_drag_targets, MouseButton::Right, ButtonState::Pressed);
    pg->set(remove_drag_targets, MouseButton::Right, ButtonState::Released);
+
+   pg->set(new SetSelectionRectCommand(usr, pg, selection_rect, true, true, false), MouseButton::Left, ButtonState::Pressed);
+   pg->set(new SetSelectionRectCommand(usr, pg, selection_rect, false, false, true), MouseButton::Left, ButtonState::Released);
+
+   // keyboard bindings
+   MacroCommand* move_camera_left = new MacroCommand("MoveCameraLeftCommand");
+   MacroCommand* move_camera_right = new MacroCommand("MoveCameraRightCommand");
+   MacroCommand* move_camera_up = new MacroCommand("MoveCameraUpCommand");
+   MacroCommand* move_camera_down = new MacroCommand("MoveCameraDownCommand");
+
+   move_camera_left->add(new MoveCommand(this->map_camera_, sf::Vector2f(-10, 0)));
+   move_camera_left->add(new MoveCommand(this->map_->grid(), sf::Vector2f(-10, 0)));
+
+   move_camera_right->add(new MoveCommand(this->map_camera_, sf::Vector2f(10, 0)));
+   move_camera_right->add(new MoveCommand(this->map_->grid(), sf::Vector2f(10, 0)));
+
+   move_camera_up->add(new MoveCommand(this->map_camera_, sf::Vector2f(0, -10)));
+   move_camera_up->add(new MoveCommand(this->map_->grid(), sf::Vector2f(0, -10)));
+
+   move_camera_down->add(new MoveCommand(this->map_camera_, sf::Vector2f(0, 10)));
+   move_camera_down->add(new MoveCommand(this->map_->grid(), sf::Vector2f(0, 10)));
+
+   pg->set(move_camera_left, Key::Left);
+   pg->set(move_camera_right, Key::Right);
+   pg->set(move_camera_up, Key::Up);
+   pg->set(move_camera_down, Key::Down);
 }
 
 BuilderScene::~BuilderScene() {
-   delete this->map_;
    delete this->serializer_;
-   delete this->map_camera_;
-   delete this->selection_rectangle_;
-   delete this->tile_cursor_;
 }
 
 void BuilderScene::enter(Game& game) {
-   Service::get_logger().msg(this->id_, Logger::INFO, "Entering builder start menu state.");
-   Service::get_input().attach(*dynamic_cast<InputListener*>(this->mouse_->get("control")));
+   Service::get_logger().msg(this->id_, Logger::INFO, "Entering builder state.");
 }
 
 void BuilderScene::exit(Game& game) {
-   Service::get_input().detach(*dynamic_cast<InputListener*>(this->mouse_->get("control")));
+   Service::get_logger().msg(this->id_, Logger::INFO, "Exiting builder state.");
 }
 
 void BuilderScene::update(Game& game, Scene* scene) {
@@ -320,22 +333,6 @@ void BuilderScene::process(Game& game, KeyPressInputEvent& e) {
       // load super secret test ui scene
       game.switch_scene(new TestUIScene());
    break;
-   case Key::Left:
-      this->move_camera_left->execute();
-      this->map_->grid()->move(this->move_camera_left->get_delta()); // reverse pan the grid so it stays in place
-   break;
-   case Key::Right:
-      this->move_camera_right->execute();
-      this->map_->grid()->move(this->move_camera_right->get_delta()); // reverse pan the grid so it stays in place
-   break;
-   case Key::Up:
-      this->move_camera_up->execute();
-      this->map_->grid()->move(this->move_camera_up->get_delta()); // reverse pan the grid so it stays in place
-   break;
-   case Key::Down:
-      this->move_camera_down->execute();
-      this->map_->grid()->move(this->move_camera_down->get_delta()); // reverse pan the grid so it stays in place
-   break;
    default:
       // do nothing
    break;
@@ -345,46 +342,6 @@ void BuilderScene::process(Game& game, KeyPressInputEvent& e) {
 void BuilderScene::process(Game& game, MouseMoveInputEvent& c) {}
 void BuilderScene::process(Game& game, MouseWheelInputEvent& c) {}
 void BuilderScene::process(Game& game, MouseButtonInputEvent& c) {}
-
-void BuilderScene::drag(MouseButton button, sf::Vector2f pos, sf::Vector2f delta) {
-   if (button == MouseButton::Left) {
-      this->update_selection_rect(this->click_press_pos_, pos);
-   } else if (button == MouseButton::Right) {
-      this->map_camera_->drag(button, pos, delta); // pan only the map layers
-      this->map_->grid()->move(delta); // pan the grid so it stays in place
-
-      // if the selection rectangle is visible, update it
-      if (this->selection_rectangle_->visible()) {
-         this->update_selection_rect(this->click_press_pos_, pos);
-      }
-   }
-}
-
-float BuilderScene::get_scale() {
-   return this->map_camera_->get_scale();
-}
-
-void BuilderScene::set_scale(float factor) {
-   this->map_camera_->set_scale(factor);
-
-   factor = std::max(factor, Camera::ZOOM_FACTOR_MIN);
-   factor = std::min(factor, Camera::ZOOM_FACTOR_MAX);
-   this->map_->grid()->set_scale(factor);
-}
-
-void BuilderScene::click(MouseButton button, ButtonState state, sf::Vector2f pos) {
-   if (button == MouseButton::Left) {
-      if (state == ButtonState::Pressed) {
-         this->click_press_pos_ = pos;
-
-         this->selection_rectangle_->visible(true);
-         this->update_selection_rect(this->click_press_pos_, this->click_press_pos_);
-      } else if (state == ButtonState::Released) {
-         this->selection_rectangle_->visible(false);
-         this->update_tile_cursor(this->click_press_pos_, pos);
-      }
-   }
-}
 
 void BuilderScene::update_fps() {
    this->last_frame_time = (((float)this->frame_measurement_interval / this->clock.getElapsedTime().asSeconds()) * Settings::Instance()->FRAMERATE_SMOOTHING)
@@ -416,15 +373,6 @@ void BuilderScene::toggle_debug_info() {
          e->remove("debug");
       }
    }
-}
-
-void BuilderScene::update_selection_rect(sf::Vector2f& origin_click, sf::Vector2f& mouse_pos) {
-   sf::FloatRect* new_rect = UtilFactory::inst()->create_float_rect(origin_click, mouse_pos);
-
-   this->selection_rectangle_->set_position(new_rect->left, new_rect->top);
-   this->selection_rectangle_->set_size(new_rect->width, new_rect->height);
-
-   delete new_rect;
 }
 
 void BuilderScene::update_tile_cursor(sf::Vector2f& one, sf::Vector2f& two) {

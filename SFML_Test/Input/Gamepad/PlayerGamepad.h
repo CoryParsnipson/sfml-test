@@ -21,19 +21,20 @@ class PlayerGamepad
 {
 public:
    using Binding = std::map<ButtonState, Command*>;
-   using KeyBinding = std::map<Key, Binding>;
+   using KeyBinding = std::map<Key, Command*>;
    using MouseBinding = std::map<MouseButton, Binding>;
 
    PlayerGamepad(std::string id = "PlayerGamepad");
    virtual ~PlayerGamepad();
 
    // command interface
-   void set(Command* command, Key keycode, ButtonState state = ButtonState::Pressed);
+   void set(Command* command, Key keycode);
    void set(Command* command, MouseButton button, ButtonState state = ButtonState::Pressed);
    void set(Command* command, MouseAction binding);
 
-   void unset(Key keycode, ButtonState state);
+   void unset(Key keycode);
    void unset(MouseButton button, ButtonState state);
+   void unset(MouseAction binding);
 
    // draw interface
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);

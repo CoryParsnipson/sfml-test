@@ -64,10 +64,6 @@ void StartMenuScene::exit(Game& game) {
    Service::get_logger().msg(this->id_, Logger::INFO, "Exiting game start menu state.");
 }
 
-void StartMenuScene::process(Game& game, CloseInputEvent& e) {
-   Scene::process(game, e);
-}
-
 void StartMenuScene::process(Game& game, ResizeInputEvent& e) {
    sf::Vector2f original_offset(this->camera_->get_size() / 2.f);
 
@@ -76,23 +72,19 @@ void StartMenuScene::process(Game& game, ResizeInputEvent& e) {
    sf::Vector2f new_center(e.width / 2.f, e.height / 2.f);
 
    this->camera_->set_size(sf::Vector2f(e.width, e.height));
-   this->camera_->move(new_center - original_offset);
+   this->camera_->move(original_offset - new_center);
 }
 
 void StartMenuScene::process(Game& game, KeyPressInputEvent& e) {
    if (e.key == Key::Space || e.key == Key::Return) {
-      game.switch_scene(new BuilderScene());
+      game.load_scene(new BuilderScene());
    } else if (e.key == Key::Escape) {
       // go to super special awesome test scene
-      game.switch_scene(new TestUIScene());
+      game.load_scene(new TestUIScene());
    } else if (e.key == Key::O) {
       this->toggle_debug_info();
    }
 }
-
-void StartMenuScene::process(Game& game, MouseMoveInputEvent& e) {}
-void StartMenuScene::process(Game& game, MouseWheelInputEvent& e) {}
-void StartMenuScene::process(Game& game, MouseButtonInputEvent& e) {}
 
 void StartMenuScene::toggle_debug_info() {
    this->show_debug_info_ = !this->show_debug_info_;

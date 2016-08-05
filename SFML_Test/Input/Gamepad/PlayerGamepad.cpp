@@ -20,10 +20,7 @@ PlayerGamepad::PlayerGamepad(std::string id /* = "PlayerGamepad" */)
 
 PlayerGamepad::~PlayerGamepad() {
    for (KeyBinding::iterator k_it = this->keys_.begin(); k_it != this->keys_.end(); ++k_it) {
-      for (Binding::const_iterator b_it = k_it->second.begin(); b_it != k_it->second.end(); ++b_it) {
-         delete b_it->second;
-      }
-      k_it->second.clear();
+      delete k_it->second;
    }
    this->keys_.clear();
 
@@ -42,9 +39,9 @@ PlayerGamepad::~PlayerGamepad() {
    delete this->cursor_text_;
 }
 
-void PlayerGamepad::set(Command* command, Key keycode, ButtonState state /* = ButtonState::Pressed */) {
-   this->unset(keycode, state);
-   this->keys_[keycode][state] = command;
+void PlayerGamepad::set(Command* command, Key keycode) {
+   this->unset(keycode);
+   this->keys_[keycode] = command;
 }
 
 void PlayerGamepad::set(Command* command, MouseButton button, ButtonState state /* = ButtonState::Pressed */) {
@@ -68,14 +65,30 @@ void PlayerGamepad::set(Command* command, MouseAction binding) {
    }
 }
 
-void PlayerGamepad::unset(Key keycode, ButtonState state) {
-   delete this->keys_[keycode][state];
-   this->keys_[keycode][state] = nullptr;
+void PlayerGamepad::unset(Key keycode) {
+   delete this->keys_[keycode];
+   this->keys_[keycode] = nullptr;
 }
 
 void PlayerGamepad::unset(MouseButton button, ButtonState state) {
    delete this->mouse_buttons_[button][state];
    this->mouse_buttons_[button][state] = nullptr;
+}
+
+void PlayerGamepad::unset(MouseAction binding) {
+   switch (binding) {
+   case MouseAction::Move:
+      delete this->mouse_move_command_;
+      this->mouse_move_command_ = nullptr;
+   break;
+   case MouseAction::Wheel:
+      delete this->mouse_wheel_command_;
+      this->mouse_wheel_command_ = nullptr;
+   break;
+   default:
+      Service::get_logger().msg(this->id_, Logger::ERROR, "Received invalid MouseAction directive.");
+   break;
+   }
 }
 
 void PlayerGamepad::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
@@ -102,6 +115,11 @@ void PlayerGamepad::process(ResizeInputEvent& e) {
 
 void PlayerGamepad::process(KeyPressInputEvent& e) {
    Service::get_logger().msg(Gamepad::id_, Logger::INFO, "Received " + std::string(e));
+
+   Command* c = this->keys_[e.key];
+   if (c) {
+      c->execute();
+   }
 }
 
 void PlayerGamepad::process(MouseMoveInputEvent& e) {
