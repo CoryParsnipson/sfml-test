@@ -11,7 +11,7 @@
 #include "ButtonWidget.h"
 
 #include "WidgetEventCommand.h"
-#include "MoveCameraCommand.h"
+#include "MoveCommand.h"
 
 #include "PlayerGamepad.h"
 
@@ -54,7 +54,7 @@ TestUIScene::TestUIScene()
    bw->set_background(new SpriteGraphic(TextureManager::inst()->get_texture("tile_water_ul")));
    this->widget_->add(bw);
 
-   bw->action(new MoveCameraCommand(*this->ui_camera_, sf::Vector2f(10, 50)));
+   bw->action(new MoveCommand(this->ui_camera_, sf::Vector2f(10, 50)));
 
    // create player controls
    PlayerGamepad* pg = new PlayerGamepad();

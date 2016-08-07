@@ -24,6 +24,8 @@
 #include "MoveCommand.h"
 #include "DragCommand.h"
 #include "DragTargetCommand.h"
+#include "ToggleVisibleCommand.h"
+#include "SetTileCursorCommand.h"
 #include "SetSelectionRectCommand.h"
 #include "UpdateSelectionRectCommand.h"
 
@@ -171,20 +173,28 @@ BuilderScene::BuilderScene()
    drag_command->add(drag_grid);
    drag_command->add(new SetSelectionRectCommand(usr, pg, selection_rect, false));
 
-   MacroCommand* set_drag_targets = new MacroCommand("SetDragTargetsMacroCommand");
-   set_drag_targets->add(new DragTargetCommand(drag_map_camera, this->map_camera_));
-   set_drag_targets->add(new DragTargetCommand(drag_grid, this->map_->grid()));
+   MacroCommand* on_right_mouse_click = new MacroCommand("SetDragTargetsMacroCommand");
+   on_right_mouse_click->add(new DragTargetCommand(drag_map_camera, this->map_camera_));
+   on_right_mouse_click->add(new DragTargetCommand(drag_grid, this->map_->grid()));
 
-   MacroCommand* remove_drag_targets = new MacroCommand("RemoveDragTargetsMacroCommand");
-   remove_drag_targets->add(new DragTargetCommand(drag_map_camera, nullptr));
-   remove_drag_targets->add(new DragTargetCommand(drag_grid, nullptr));
+   MacroCommand* on_right_mouse_release = new MacroCommand("RemoveDragTargetsMacroCommand");
+   on_right_mouse_release->add(new DragTargetCommand(drag_map_camera, nullptr));
+   on_right_mouse_release->add(new DragTargetCommand(drag_grid, nullptr));
 
    pg->set(drag_command, MouseAction::Move);
-   pg->set(set_drag_targets, MouseButton::Right, ButtonState::Pressed);
-   pg->set(remove_drag_targets, MouseButton::Right, ButtonState::Released);
+   pg->set(on_right_mouse_click, MouseButton::Right, ButtonState::Pressed);
+   pg->set(on_right_mouse_release, MouseButton::Right, ButtonState::Released);
 
-   pg->set(new SetSelectionRectCommand(usr, pg, selection_rect, true, true, false), MouseButton::Left, ButtonState::Pressed);
-   pg->set(new SetSelectionRectCommand(usr, pg, selection_rect, false, false, true), MouseButton::Left, ButtonState::Released);
+   MacroCommand* on_left_mouse_click = new MacroCommand("LeftMouseClickCommand");
+   MacroCommand* on_left_mouse_release = new MacroCommand("LeftMouseReleaseCommand");
+
+   on_left_mouse_click->add(new SetSelectionRectCommand(usr, pg, selection_rect, true, true, false));
+
+   on_left_mouse_release->add(new SetSelectionRectCommand(usr, pg, selection_rect, false, false, true));
+   on_left_mouse_release->add(new SetTileCursorCommand(*this->map_->grid(), usr, this->tile_cursor_));
+
+   pg->set(on_left_mouse_click, MouseButton::Left, ButtonState::Pressed);
+   pg->set(on_left_mouse_release, MouseButton::Left, ButtonState::Released);
 
    // keyboard bindings
    MacroCommand* move_camera_left = new MacroCommand("MoveCameraLeftCommand");
@@ -208,6 +218,8 @@ BuilderScene::BuilderScene()
    pg->set(move_camera_right, Key::Right);
    pg->set(move_camera_up, Key::Up);
    pg->set(move_camera_down, Key::Down);
+
+   pg->set(new ToggleVisibleCommand(this->map_->grid()), Key::G);
 }
 
 BuilderScene::~BuilderScene() {
@@ -317,10 +329,6 @@ void BuilderScene::process(Game& game, KeyPressInputEvent& e) {
    case Key::O:
       this->toggle_debug_info();
    break;
-   case Key::G:
-      // toggle map grid visibility
-      this->map_->grid()->visible(!this->map_->grid()->visible());
-   break;
    case Key::Delete:
    case Key::Backspace:
       this->remove_tiles();
@@ -373,48 +381,6 @@ void BuilderScene::toggle_debug_info() {
          e->remove("debug");
       }
    }
-}
-
-void BuilderScene::update_tile_cursor(sf::Vector2f& one, sf::Vector2f& two) {
-   // compensate for main viewport layer zoom
-   sf::Vector2f offset_one = this->map_camera_->get_scale() * (one - this->camera_->get_center()) + this->camera_->get_center();
-   sf::Vector2f offset_two = this->map_camera_->get_scale() * (two - this->camera_->get_center()) + this->camera_->get_center();
-
-   // compensate for the panning of main viewport layer
-   sf::Vector2f pan_delta = this->map_camera_->get_pan_delta();
-   offset_one -= pan_delta;
-   offset_two -= pan_delta;
-
-   sf::FloatRect* new_rect = UtilFactory::inst()->create_float_rect(offset_one, offset_two);
-
-   bool is_drag_gesture = (new_rect->width >= this->map_->grid()->tile_width() / 3.f ||
-                           new_rect->height >= this->map_->grid()->tile_height() / 3.f);
-
-   if (!is_drag_gesture && this->tile_cursor_->visible() && this->tile_cursor_->intersects(offset_one)) {
-      this->tile_cursor_->visible(false);
-      delete new_rect;
-      return;
-   }
-
-   // round to nearest map grid point
-   sf::Vector2f start_point(new_rect->left, new_rect->top);
-   sf::Vector2f end_point(new_rect->left + new_rect->width, new_rect->top + new_rect->height);
-
-   start_point = this->map_->grid()->floor(start_point);
-   end_point = this->map_->grid()->ceil(end_point);
-
-   // update new_rect
-   new_rect->left = start_point.x;
-   new_rect->top = start_point.y;
-
-   new_rect->width = std::max(end_point.x - new_rect->left, (float)this->map_->grid()->tile_width());
-   new_rect->height = std::max(end_point.y - new_rect->top, (float)this->map_->grid()->tile_height());
-
-   this->tile_cursor_->set_position(new_rect->left, new_rect->top);
-   this->tile_cursor_->set_size(new_rect->width, new_rect->height);
-   this->tile_cursor_->visible(true);
-
-   delete new_rect;
 }
 
 void BuilderScene::set_tiles(Texture& tile_texture) {

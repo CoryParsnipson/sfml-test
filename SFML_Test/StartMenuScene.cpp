@@ -12,10 +12,14 @@
 #include "DebugPart.h"
 #include "SceneObject.h"
 
+#include "PlayerGamepad.h"
+
 StartMenuScene::StartMenuScene()
 : Scene("StartMenuScene")
 , show_debug_info_(false)
 {
+   this->camera_->move(-1.f * sf::Vector2f(Settings::Instance()->cur_width() / 2.f, Settings::Instance()->cur_height() / 2.f));
+
    // populate entities
    SceneObject* node = TextFactory::inst()->create_text_entity(
       "SFML TEST",
@@ -50,7 +54,7 @@ StartMenuScene::StartMenuScene()
    );
    this->scene_graph_->add(node);
 
-   this->camera_->move(-1.f * sf::Vector2f(Settings::Instance()->cur_width() / 2.f, Settings::Instance()->cur_height() / 2.f));
+   this->gamepad(new PlayerGamepad());
 }
 
 StartMenuScene::~StartMenuScene() {

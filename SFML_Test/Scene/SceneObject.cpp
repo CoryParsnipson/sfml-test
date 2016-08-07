@@ -35,6 +35,24 @@ sf::Transform SceneObject::transform() const {
    return this->parent()->transform() * this->transform_;
 }
 
+sf::Vector2f SceneObject::get_world_coordinate(const sf::Vector2f& point) {
+   sf::Vector2f transformed_point = point;
+
+   if (this->parent()) {
+      transformed_point = this->parent()->get_world_coordinate(point);
+   }
+   return transformed_point;
+}
+
+sf::Vector2f SceneObject::get_absolute_coordinate(const sf::Vector2f& point) {
+   sf::Vector2f transformed_point = point;
+
+   if (this->parent()) {
+      transformed_point = this->parent()->get_absolute_coordinate(point);
+   }
+   return transformed_point;
+}
+
 void SceneObject::on_mouse_in() {}
 void SceneObject::on_mouse_out() {}
 void SceneObject::on_click() {}

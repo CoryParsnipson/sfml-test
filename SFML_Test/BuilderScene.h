@@ -54,8 +54,6 @@ protected:
    void update_fps();
    void toggle_debug_info();
 
-   void update_tile_cursor(sf::Vector2f& one, sf::Vector2f& two);
-
    void set_tiles(Texture& tile_texture);
    void remove_tiles();
 };

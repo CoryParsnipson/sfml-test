@@ -50,6 +50,9 @@ public:
    virtual void click(MouseButton button, ButtonState state, sf::Vector2f pos);
 
    // scene graph interface
+   virtual sf::Vector2f get_world_coordinate(const sf::Vector2f& point); // affected by camera transform
+   virtual sf::Vector2f get_absolute_coordinate(const sf::Vector2f& point);
+
    virtual bool intersects(const sf::Vector2i& other);
    virtual bool intersects(const sf::Vector2f& other);
    virtual bool intersects(const sf::FloatRect& other);

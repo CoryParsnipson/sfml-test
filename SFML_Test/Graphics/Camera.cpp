@@ -107,6 +107,14 @@ void Camera::set_scale(float factor) {
 
 void Camera::click(MouseButton button, ButtonState state, sf::Vector2f pos) {}
 
+sf::Vector2f Camera::get_world_coordinate(const sf::Vector2f& point) {
+   return this->transform_.transformPoint(point);
+}
+
+sf::Vector2f Camera::get_absolute_coordinate(const sf::Vector2f& point) {
+   return this->transform_.getInverse().transformPoint(point);
+}
+
 bool Camera::intersects(const sf::Vector2i& other) { return false; }
 bool Camera::intersects(const sf::Vector2f& other) { return false; }
 bool Camera::intersects(const sf::FloatRect& other) { return false; }
