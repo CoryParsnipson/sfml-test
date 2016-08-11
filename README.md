@@ -40,6 +40,8 @@ TODO
 
 * Serialize map into an xml file instead of reading from handmade text file.
 
+* make Game a singleton and refactor all other singletons to be public members of Game?
+
 * Service locator is pretty ugly. Refactor?
 
 * Put game specific scenes and game specific commands in a different folder hierarchy

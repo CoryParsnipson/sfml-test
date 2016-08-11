@@ -14,8 +14,8 @@ class Game
 : public InputListener
 {
 public:
-	Game();
-	virtual ~Game();
+   // instance accessor
+   static Game* instance();
 
    // game flow controls
    void start(); // run main loop
@@ -37,6 +37,12 @@ public:
    bool poll_event(sf::Event& event);
 
 private:
+	Game();
+	virtual ~Game();
+
+   // static singleton instance
+   static Game* instance_;
+
 	// game flow control
 	void main_loop();
 

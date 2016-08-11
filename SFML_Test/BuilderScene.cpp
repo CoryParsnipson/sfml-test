@@ -24,6 +24,8 @@
 #include "MoveCommand.h"
 #include "DragCommand.h"
 #include "DragTargetCommand.h"
+#include "SwitchSceneCommand.h"
+#include "ResetCameraCommand.h"
 #include "ToggleVisibleCommand.h"
 #include "SetTileCursorCommand.h"
 #include "SetSelectionRectCommand.h"
@@ -220,6 +222,8 @@ BuilderScene::BuilderScene()
    pg->set(move_camera_down, Key::Down);
 
    pg->set(new ToggleVisibleCommand(this->map_->grid()), Key::G);
+   pg->set(new ResetCameraCommand(this->map_camera_, this->map_->grid()), Key::R);
+   pg->set(new SwitchSceneCommand(new TestUIScene()), Key::Escape);
 }
 
 BuilderScene::~BuilderScene() {
@@ -275,81 +279,69 @@ void BuilderScene::process(Game& game, ResizeInputEvent& e) {
 }
 
 void BuilderScene::process(Game& game, KeyPressInputEvent& e) {
-   switch (e.key) {
-   case Key::R:
-      // reset grid too (encapsulate this in grid class?)
-      this->map_->grid()->set_scale(1.f);
-      this->map_->grid()->move(this->map_camera_->get_pan_delta()); // move the grid back too
-
-      this->map_camera_->reset_pan();
-      this->map_camera_->reset_zoom();
-   break;
-   case Key::Num1:
-   case Key::Numpad1:
-      this->set_tiles(TextureManager::inst()->get_texture("tile_grass"));
-   break;
-   case Key::Num2:
-   case Key::Numpad2:
-      this->set_tiles(TextureManager::inst()->get_texture("tile_worn_grass"));
-   break;
-   case Key::Num3:
-   case Key::Numpad3:
-      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_ul"));
-   break;
-   case Key::Num4:
-   case Key::Numpad4:
-      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_um"));
-   break;
-   case Key::Num5:
-   case Key::Numpad5:
-      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_ur"));
-   break;
-   case Key::Num6:
-   case Key::Numpad6:
-      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_ml"));
-   break;
-   case Key::Num7:
-   case Key::Numpad7:
-      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_mm"));
-   break;
-   case Key::Num8:
-   case Key::Numpad8:
-      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_mr"));
-   break;
-   case Key::Num9:
-   case Key::Numpad9:
-      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_bl"));
-   break;
-   case Key::Slash:
-      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_bm"));
-   break;
-   case Key::Multiply:
-      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_br"));
-   break;
-   case Key::O:
-      this->toggle_debug_info();
-   break;
-   case Key::Delete:
-   case Key::Backspace:
-      this->remove_tiles();
-   break;
-   case Key::S:
-      Service::get_logger().msg(this->id_, Logger::INFO, "Writing map to file '" + this->map_filename_ + "'");
-      this->map_->serialize(*this->serializer_);
-   break;
-   case Key::Escape:
-      // load super secret test ui scene
-      game.switch_scene(new TestUIScene());
-   break;
-   default:
-      // do nothing
-   break;
-   }
+//   switch (e.key) {
+//   case Key::Num1:
+//   case Key::Numpad1:
+//      this->set_tiles(TextureManager::inst()->get_texture("tile_grass"));
+//   break;
+//   case Key::Num2:
+//   case Key::Numpad2:
+//      this->set_tiles(TextureManager::inst()->get_texture("tile_worn_grass"));
+//   break;
+//   case Key::Num3:
+//   case Key::Numpad3:
+//      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_ul"));
+//   break;
+//   case Key::Num4:
+//   case Key::Numpad4:
+//      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_um"));
+//   break;
+//   case Key::Num5:
+//   case Key::Numpad5:
+//      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_ur"));
+//   break;
+//   case Key::Num6:
+//   case Key::Numpad6:
+//      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_ml"));
+//   break;
+//   case Key::Num7:
+//   case Key::Numpad7:
+//      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_mm"));
+//   break;
+//   case Key::Num8:
+//   case Key::Numpad8:
+//      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_mr"));
+//   break;
+//   case Key::Num9:
+//   case Key::Numpad9:
+//      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_bl"));
+//   break;
+//   case Key::Slash:
+//      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_bm"));
+//   break;
+//   case Key::Multiply:
+//      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_br"));
+//   break;
+//   case Key::O:
+//      this->toggle_debug_info();
+//   break;
+//   case Key::Delete:
+//   case Key::Backspace:
+//      this->remove_tiles();
+//   break;
+//   case Key::S:
+//      Service::get_logger().msg(this->id_, Logger::INFO, "Writing map to file '" + this->map_filename_ + "'");
+//      this->map_->serialize(*this->serializer_);
+//   break;
+//   case Key::Escape:
+//      // load super secret test ui scene
+//      game.switch_scene(new TestUIScene());
+//   break;
+//   default:
+//      // do nothing
+//   break;
+//   }
 }
-
-void BuilderScene::process(Game& game, MouseMoveInputEvent& c) {}
-void BuilderScene::process(Game& game, MouseWheelInputEvent& c) {}
-void BuilderScene::process(Game& game, MouseButtonInputEvent& c) {}
 
 void BuilderScene::update_fps() {
    this->last_frame_time = (((float)this->frame_measurement_interval / this->clock.getElapsedTime().asSeconds()) * Settings::Instance()->FRAMERATE_SMOOTHING)
