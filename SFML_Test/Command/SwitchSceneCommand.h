@@ -16,13 +16,14 @@ class Scene;
 // ----------------------------------------------------------------------------
 class SwitchSceneCommand : public Command {
 public:
-   SwitchSceneCommand(Scene* scene = nullptr);
+   SwitchSceneCommand(Scene* curr_scene, Scene* next_scene = nullptr);
    virtual ~SwitchSceneCommand();
 
    virtual void execute();
    virtual void unexecute();
 
 private:
+   Scene* curr_scene_;
    Scene* next_scene_;
 };
 

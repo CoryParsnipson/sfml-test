@@ -8,6 +8,8 @@ Things to do next
 * Consider adding an array to PlayerGamepad that keeps track of which keys/mouse buttons
    are being pressed
 
+* Refactor factories and manager to be normal objects that can belong to Scene
+
 * need to overhaul graphics classes or something because it's very clunky
    * the graphics drawing is already a performance bottleneck
 

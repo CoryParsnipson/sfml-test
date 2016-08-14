@@ -37,13 +37,14 @@ public:
       Service::get_logger().msg(this->id(), Logger::INFO, "Destroying Scene.");
 
       delete this->scene_graph_;
-      this->scene_graph_ = nullptr;
 
       GamepadList::const_iterator g_it;
       for (g_it = this->gamepads_.begin(); g_it != this->gamepads_.end(); ++g_it) {
          delete *g_it;
       }
       this->gamepads_.clear();
+      
+      delete this->game_;
    }
 
    virtual std::string id() { return this->id_; }
@@ -53,7 +54,8 @@ public:
       for (GamepadList::const_iterator it = this->gamepads_.begin(); it != this->gamepads_.end(); ++it) {
          Service::get_input().attach(**it);
       }
-      
+
+      this->game_ = &game; // set game pointer
       this->enter(game);
    }
 
@@ -63,6 +65,7 @@ public:
          Service::get_input().detach(**it);
       }
 
+      this->game_ = nullptr; // unset game pointer
       this->exit(game);
    }
 
@@ -125,6 +128,15 @@ public:
    void remove_gamepad(int player_id);
    void remove_gamepad(Gamepad* gamepad);
 
+   // scene interface
+   void load_scene(Scene* scene) {
+      this->game_->load_scene(scene);
+   }
+
+   Scene* switch_scene(Scene* scene) {
+      return this->game_->switch_scene(scene);
+   }
+
    // input event processing default implementations
    virtual void process(Game& game, CloseInputEvent& e) {
       game.unload_scene();
@@ -145,6 +157,7 @@ protected:
    SceneObject* scene_graph_;
 
 private:
+   Game* game_;
    GamepadList gamepads_;
 };
 

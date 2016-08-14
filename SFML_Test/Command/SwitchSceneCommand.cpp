@@ -1,9 +1,9 @@
 #include "SwitchSceneCommand.h"
-#include "Game.h"
 #include "Scene.h"
 
-SwitchSceneCommand::SwitchSceneCommand(Scene* scene /* = nullptr */)
-: next_scene_(scene)
+SwitchSceneCommand::SwitchSceneCommand(Scene* curr_scene, Scene* next_scene /* = nullptr */)
+: curr_scene_(curr_scene)
+, next_scene_(next_scene)
 {
 }
 
@@ -11,13 +11,17 @@ SwitchSceneCommand::~SwitchSceneCommand() {
 }
 
 void SwitchSceneCommand::execute() {
-   if (!this->next_scene_) {
+   if (!this->curr_scene_ || !this->next_scene_) {
       return;
    }
 
-   Game::instance()->switch_scene(this->next_scene_);
+   this->curr_scene_->switch_scene(this->next_scene_);
 }
 
 void SwitchSceneCommand::unexecute() {
-   // implement me
+   if (!this->curr_scene_ || !this->next_scene_) {
+      return;
+   }
+
+   this->next_scene_->switch_scene(this->curr_scene_);
 }

@@ -5,12 +5,11 @@
 
 int main()
 {
-   // initialize game instance
-   Game::instance(); // TODO: This is BAD. Introducing static intialization dependencies with other singletons here...
+   Game g;
 
    // don't need to delete scene objects given to game (messy, I know)
-   Game::instance()->load_scene(new StartMenuScene());
-   Game::instance()->start();
+   g.load_scene(new StartMenuScene());
+   g.start();
 
 	return 0;
 }

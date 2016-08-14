@@ -49,6 +49,7 @@ sf::Font* TextFactory::get_font(std::string font_name) {
    FontList::const_iterator it = this->fonts_.find(font_name);
 
    if (it == this->fonts_.end()) {
+      Service::get_logger().msg("TextFactory", Logger::WARNING, "Cannot find font '" + font_name + "'");
       return nullptr;
    }
 

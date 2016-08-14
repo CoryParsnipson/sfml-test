@@ -223,7 +223,7 @@ BuilderScene::BuilderScene()
 
    pg->set(new ToggleVisibleCommand(this->map_->grid()), Key::G);
    pg->set(new ResetCameraCommand(this->map_camera_, this->map_->grid()), Key::R);
-   pg->set(new SwitchSceneCommand(new TestUIScene()), Key::Escape);
+   pg->set(new SwitchSceneCommand(this, new TestUIScene()), Key::Escape);
 }
 
 BuilderScene::~BuilderScene() {

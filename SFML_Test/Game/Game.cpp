@@ -12,15 +12,6 @@
 
 #include "Scene.h"
 
-Game* Game::instance_ = nullptr;
-
-Game* Game::instance() {
-   if (!Game::instance_) {
-      Game::instance_ = new Game();
-   }
-   return Game::instance_;
-}
-
 Game::Game()
 : InputListener("Game")
 , next_scene_(nullptr)
@@ -155,7 +146,6 @@ void Game::main_loop() {
    while (true) {
       if (this->scenes_.empty() && !this->prev_scene_ && !this->next_scene_) {
          Service::get_logger().msg("Game", Logger::INFO, "Exiting game loop...");
-         this->~Game(); // destroy singleton instance...
          return;
       }
 
