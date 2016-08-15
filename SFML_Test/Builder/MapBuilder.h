@@ -4,6 +4,7 @@
 #include "dependencies.h"
 
 #include "Map.h"
+#include "TextureDictionary.h"
 
 // forward declarations
 class Entity;
@@ -11,7 +12,7 @@ class Serializer;
 
 class MapBuilder {
 public:
-   MapBuilder() : serializer_(nullptr) {}
+   MapBuilder() : serializer_(nullptr), grid_font_(nullptr), textures_(&this->default_textures_) {}
    virtual ~MapBuilder() {};
 
    virtual void build() = 0; // call this to build the entire thing
@@ -22,6 +23,17 @@ public:
    void grid_font(sf::Font* grid_font) {
       this->grid_font_ = grid_font;
    }
+
+   void textures(const TextureDictionary* textures) {
+      if (!textures) {
+         this->textures_ = &this->default_textures_;
+         return;
+      }
+      this->textures_ = textures;
+   }
+
+private:
+   TextureDictionary default_textures_;
 
 protected:
    virtual void build_map() = 0;
@@ -34,6 +46,7 @@ protected:
    Map* map_;
 
    sf::Font* grid_font_;
+   const TextureDictionary* textures_;
 };
 
 #endif

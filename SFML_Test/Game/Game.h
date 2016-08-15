@@ -5,7 +5,6 @@
 #include "Input.h"
 #include "FullLogger.h"
 #include "InputListener.h"
-#include "TextureManager.h"
 #include "Canvas.h"
 
 class Scene;

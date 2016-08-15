@@ -1,10 +1,6 @@
 #include "IsoMapBuilder.h"
-
 #include "Serializer.h"
-
 #include "TileFactory.h"
-#include "TextureManager.h"
-
 #include "PhysicsPart.h"
 
 IsoMapBuilder::IsoMapBuilder()

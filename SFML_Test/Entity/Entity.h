@@ -40,7 +40,7 @@ public:
 
    // serialize interface
    virtual Serialize::SerialObj serialize();
-   virtual void deserialize(Serialize::SerialObj& obj);
+   virtual void deserialize(SerialObj& obj, const TextureDictionary* textures = nullptr);
 
    // scene graph interface
    virtual bool intersects(const sf::Vector2i& other);

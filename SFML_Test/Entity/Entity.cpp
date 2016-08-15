@@ -114,18 +114,18 @@ Serialize::SerialObj Entity::serialize() {
    return obj;
 }
 
-void Entity::deserialize(Serialize::SerialObj& obj) {
+void Entity::deserialize(Serialize::SerialObj& obj, const TextureDictionary* textures /* = nullptr */) {
    // create graphics part if needed
    if (obj["texture"] != "") {
       GraphicsPart* graphics_part = new GraphicsPart();
-      graphics_part->deserialize(obj);
+      graphics_part->deserialize(obj, textures);
       this->add(graphics_part);
    }
 
    // create physics part if needed
    if (obj["bounds_width"] != "" && obj["bounds_height"] != "") {
       PhysicsPart* physics_part = new PhysicsPart();
-      physics_part->deserialize(obj);
+      physics_part->deserialize(obj, textures);
       this->add(physics_part);
    }
 

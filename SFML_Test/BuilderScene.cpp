@@ -50,28 +50,28 @@ BuilderScene::BuilderScene()
    this->fonts_.load("retro", "retro.ttf");
    
    // load textures
-   TextureManager::inst()->create_texture("tile_grass", "pkmn_tiles_outdoor1.png", sf::IntRect(0, 0, 64, 64));
-   TextureManager::inst()->create_texture("tile_worn_grass", "pkmn_tiles_outdoor1.png", sf::IntRect(64, 0, 64, 64));
-   TextureManager::inst()->create_texture("tile_sign", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 0, 64, 64));
-   TextureManager::inst()->create_texture("tile_dirt_ul", "pkmn_tiles_outdoor1.png", sf::IntRect(0, 64, 64, 64));
-   TextureManager::inst()->create_texture("tile_dirt_um", "pkmn_tiles_outdoor1.png", sf::IntRect(64, 64, 64, 64));
-   TextureManager::inst()->create_texture("tile_dirt_ur", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 64, 64, 64));
-   TextureManager::inst()->create_texture("tile_dirt_ml", "pkmn_tiles_outdoor1.png", sf::IntRect(0, 128, 64, 64));
-   TextureManager::inst()->create_texture("tile_dirt_mm", "pkmn_tiles_outdoor1.png", sf::IntRect(64, 128, 64, 64));
-   TextureManager::inst()->create_texture("tile_dirt_mr", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 128, 64, 64));
-   TextureManager::inst()->create_texture("tile_dirt_bl", "pkmn_tiles_outdoor1.png", sf::IntRect(0, 192, 64, 64));
-   TextureManager::inst()->create_texture("tile_dirt_bm", "pkmn_tiles_outdoor1.png", sf::IntRect(64, 192, 64, 64));
-   TextureManager::inst()->create_texture("tile_dirt_br", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 192, 64, 64));
-   TextureManager::inst()->create_texture("tile_water_ul", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 64, 64, 64));
-   TextureManager::inst()->create_texture("tile_water_um", "pkmn_tiles_outdoor1.png", sf::IntRect(256, 64, 64, 64));
-   TextureManager::inst()->create_texture("tile_water_ur", "pkmn_tiles_outdoor1.png", sf::IntRect(320, 64, 64, 64));
-   TextureManager::inst()->create_texture("tile_water_ml", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 128, 64, 64));
-   TextureManager::inst()->create_texture("tile_water_mm", "pkmn_tiles_outdoor1.png", sf::IntRect(256, 128, 64, 64));
-   TextureManager::inst()->create_texture("tile_water_mr", "pkmn_tiles_outdoor1.png", sf::IntRect(320, 128, 64, 64));
-   TextureManager::inst()->create_texture("tile_water_bl", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 192, 64, 64));
-   TextureManager::inst()->create_texture("tile_water_bm", "pkmn_tiles_outdoor1.png", sf::IntRect(256, 192, 64, 64));
-   TextureManager::inst()->create_texture("tile_water_br", "pkmn_tiles_outdoor1.png", sf::IntRect(320, 192, 64, 64));
-   TextureManager::inst()->print();
+   this->textures_.load("tile_grass", "pkmn_tiles_outdoor1.png", sf::IntRect(0, 0, 64, 64));
+   this->textures_.load("tile_worn_grass", "pkmn_tiles_outdoor1.png", sf::IntRect(64, 0, 64, 64));
+   this->textures_.load("tile_sign", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 0, 64, 64));
+   this->textures_.load("tile_dirt_ul", "pkmn_tiles_outdoor1.png", sf::IntRect(0, 64, 64, 64));
+   this->textures_.load("tile_dirt_um", "pkmn_tiles_outdoor1.png", sf::IntRect(64, 64, 64, 64));
+   this->textures_.load("tile_dirt_ur", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 64, 64, 64));
+   this->textures_.load("tile_dirt_ml", "pkmn_tiles_outdoor1.png", sf::IntRect(0, 128, 64, 64));
+   this->textures_.load("tile_dirt_mm", "pkmn_tiles_outdoor1.png", sf::IntRect(64, 128, 64, 64));
+   this->textures_.load("tile_dirt_mr", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 128, 64, 64));
+   this->textures_.load("tile_dirt_bl", "pkmn_tiles_outdoor1.png", sf::IntRect(0, 192, 64, 64));
+   this->textures_.load("tile_dirt_bm", "pkmn_tiles_outdoor1.png", sf::IntRect(64, 192, 64, 64));
+   this->textures_.load("tile_dirt_br", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 192, 64, 64));
+   this->textures_.load("tile_water_ul", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 64, 64, 64));
+   this->textures_.load("tile_water_um", "pkmn_tiles_outdoor1.png", sf::IntRect(256, 64, 64, 64));
+   this->textures_.load("tile_water_ur", "pkmn_tiles_outdoor1.png", sf::IntRect(320, 64, 64, 64));
+   this->textures_.load("tile_water_ml", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 128, 64, 64));
+   this->textures_.load("tile_water_mm", "pkmn_tiles_outdoor1.png", sf::IntRect(256, 128, 64, 64));
+   this->textures_.load("tile_water_mr", "pkmn_tiles_outdoor1.png", sf::IntRect(320, 128, 64, 64));
+   this->textures_.load("tile_water_bl", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 192, 64, 64));
+   this->textures_.load("tile_water_bm", "pkmn_tiles_outdoor1.png", sf::IntRect(256, 192, 64, 64));
+   this->textures_.load("tile_water_br", "pkmn_tiles_outdoor1.png", sf::IntRect(320, 192, 64, 64));
+   Service::get_logger().msg(this->id(), Logger::INFO, this->textures_);
 
    sf::VertexArray* backdrop = new sf::VertexArray(sf::TrianglesStrip, 4);
    (*backdrop)[0].position = sf::Vector2f(0, 0);
@@ -102,6 +102,7 @@ BuilderScene::BuilderScene()
    MapBuilder* map_builder = new FlatMapBuilder();
    map_builder->set_serializer(this->serializer_);
    map_builder->grid_font(this->fonts_.get("retro"));
+   map_builder->textures(&this->textures_);
    map_builder->build();
 
    this->map_ = map_builder->get_map();
@@ -286,45 +287,45 @@ void BuilderScene::process(Game& game, KeyPressInputEvent& e) {
 //   switch (e.key) {
 //   case Key::Num1:
 //   case Key::Numpad1:
-//      this->set_tiles(TextureManager::inst()->get_texture("tile_grass"));
+//      this->set_tiles(this->textures_.get("tile_grass"));
 //   break;
 //   case Key::Num2:
 //   case Key::Numpad2:
-//      this->set_tiles(TextureManager::inst()->get_texture("tile_worn_grass"));
+//      this->set_tiles(this->textures_.get("tile_worn_grass"));
 //   break;
 //   case Key::Num3:
 //   case Key::Numpad3:
-//      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_ul"));
+//      this->set_tiles(this->textures_.get("tile_dirt_ul"));
 //   break;
 //   case Key::Num4:
 //   case Key::Numpad4:
-//      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_um"));
+//      this->set_tiles(this->textures_.get("tile_dirt_um"));
 //   break;
 //   case Key::Num5:
 //   case Key::Numpad5:
-//      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_ur"));
+//      this->set_tiles(this->textures_.get("tile_dirt_ur"));
 //   break;
 //   case Key::Num6:
 //   case Key::Numpad6:
-//      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_ml"));
+//      this->set_tiles(this->textures_.get("tile_dirt_ml"));
 //   break;
 //   case Key::Num7:
 //   case Key::Numpad7:
-//      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_mm"));
+//      this->set_tiles(this->textures_.get("tile_dirt_mm"));
 //   break;
 //   case Key::Num8:
 //   case Key::Numpad8:
-//      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_mr"));
+//      this->set_tiles(this->textures_.get("tile_dirt_mr"));
 //   break;
 //   case Key::Num9:
 //   case Key::Numpad9:
-//      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_bl"));
+//      this->set_tiles(this->textures_.get("tile_dirt_bl"));
 //   break;
 //   case Key::Slash:
-//      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_bm"));
+//      this->set_tiles(this->textures_.get("tile_dirt_bm"));
 //   break;
 //   case Key::Multiply:
-//      this->set_tiles(TextureManager::inst()->get_texture("tile_dirt_br"));
+//      this->set_tiles(this->textures_.get("tile_dirt_br"));
 //   break;
 //   case Key::O:
 //      this->toggle_debug_info();

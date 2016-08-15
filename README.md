@@ -5,8 +5,6 @@ This was originally going to be a quick isometric tile demo experiment and it ha
 
 Things to do next
 -----------------
-* Refactor factories and manager to be normal objects that can belong to Scene
-
 * Change Scene::draw to use a visitor that builds global transform instead of doing it in SceneObject?
 
 * Consider adding an array to PlayerGamepad that keeps track of which keys/mouse buttons

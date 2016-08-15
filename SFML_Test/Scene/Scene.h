@@ -18,6 +18,7 @@
 #include "Widget.h"
 #include "Gamepad.h"
 #include "FontDictionary.h"
+#include "TextureDictionary.h"
 
 #include "RemoveCommand.h"
 
@@ -162,7 +163,7 @@ protected:
    SceneObject* scene_graph_;
 
    FontDictionary fonts_;
-   Dictionary<std::string, Texture> textures_;
+   TextureDictionary textures_;
 
 private:
    Game* game_;

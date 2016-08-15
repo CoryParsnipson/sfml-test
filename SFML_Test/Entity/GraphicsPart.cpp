@@ -1,5 +1,4 @@
 #include "GraphicsPart.h"
-#include "TextureManager.h"
 #include "RenderSurface.h"
 #include "Entity.h"
 #include "PhysicsPart.h"
@@ -103,12 +102,18 @@ Serialize::SerialObj GraphicsPart::serialize() {
    return obj;
 }
 
-void GraphicsPart::deserialize(Serialize::SerialObj& obj) {
+void GraphicsPart::deserialize(Serialize::SerialObj& obj, const TextureDictionary* textures /* = nullptr*/) {
    sf::Vector2f pos(0, 0);
    pos.x = std::stod(obj["pos_x"]);
    pos.y = std::stod(obj["pos_y"]);
 
-   Graphic* sprite = new SpriteGraphic(TextureManager::inst()->get_texture(obj["texture"]));
+   Graphic* sprite = nullptr;
+
+   if (textures && textures->get(obj["texture"])) {
+      sprite = new SpriteGraphic(*textures->get(obj["texture"]));
+   } else {
+      sprite = new SpriteGraphic();
+   }
    sprite->set_position(pos);
 
    this->add(sprite);

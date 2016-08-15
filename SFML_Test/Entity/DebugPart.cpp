@@ -93,6 +93,6 @@ Serialize::SerialObj DebugPart::serialize() {
    return obj;
 }
 
-void DebugPart::deserialize(Serialize::SerialObj& obj) {
+void DebugPart::deserialize(Serialize::SerialObj& obj, const TextureDictionary* textures /* = nullptr */) {
    // TODO: implement
 }

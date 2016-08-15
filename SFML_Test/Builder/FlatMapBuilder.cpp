@@ -33,11 +33,9 @@ void FlatMapBuilder::build() {
                grid->font(this->grid_font_);
                this->build_grid(grid);
             }
-         } else if (d["type"] == "layer") {
-            // TODO: do this later
          } else if (d["type"] == "entity") {
             Entity* entity = new Entity();
-            entity->deserialize(d);
+            entity->deserialize(d, this->textures_);
             this->build_tile(entity);
          } else {
             Service::get_logger().msg("FlatMapBuilder", Logger::WARNING, "Received serialized object of unknown type '" + d["type"] + "'");

@@ -2,6 +2,7 @@
 #define SERIALIZE_H
 
 #include "dependencies.h"
+#include "TextureDictionary.h"
 
 class Serialize {
 public:
@@ -10,7 +11,7 @@ public:
    virtual SerialObj serialize() = 0;
 
    // should throw out of range exception on problem
-   virtual void deserialize(SerialObj& obj) = 0;
+   virtual void deserialize(SerialObj& obj, const TextureDictionary* textures = nullptr) = 0;
 };
 
 #endif

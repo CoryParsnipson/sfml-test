@@ -1,7 +1,6 @@
 #include "TestUIScene.h"
 #include "UtilFactory.h"
 #include "TextFactory.h"
-#include "TextureManager.h"
 
 #include "Game.h"
 #include "GraphicsPart.h"
@@ -26,9 +25,9 @@ TestUIScene::TestUIScene()
    this->fonts_.load("retro", "retro.ttf");
    
    // load textures
-   TextureManager::inst()->create_texture("ui_resize_handle", "ui_panel_test.png", sf::IntRect(30, 0, 10, 10));
-   TextureManager::inst()->create_texture("tile_water_ul", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 64, 64, 64));
-   TextureManager::inst()->print();
+   this->textures_.load("ui_resize_handle", "ui_panel_test.png", sf::IntRect(30, 0, 10, 10));
+   this->textures_.load("tile_water_ul", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 64, 64, 64));
+   Service::get_logger().msg(this->id(), Logger::INFO, this->textures_);
 
    this->scene_graph_->add(this->ui_camera_);
 
@@ -54,7 +53,7 @@ TestUIScene::TestUIScene()
    this->widget_->add(tw);
    
    ButtonWidget* bw = new ButtonWidget("Button Widget 1", sf::Vector2f(10, 30), sf::Vector2f(30, 15));
-   bw->set_background(new SpriteGraphic(TextureManager::inst()->get_texture("tile_water_ul")));
+   bw->set_background(new SpriteGraphic(*this->textures_.get("tile_water_ul")));
    this->widget_->add(bw);
 
    bw->action(new MoveCommand(this->ui_camera_, sf::Vector2f(10, 50)));

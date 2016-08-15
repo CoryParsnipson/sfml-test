@@ -1,6 +1,5 @@
 #include "PanelWidget.h"
 #include "RenderSurface.h"
-#include "TextureManager.h"
 
 PanelWidget::PanelWidget(std::string id, const sf::Vector2f& pos, const sf::Vector2f& size)
 : Widget(id)

@@ -23,7 +23,7 @@ public:
 
    // serialize interface
    virtual Serialize::SerialObj serialize();
-   virtual void deserialize(Serialize::SerialObj& obj);
+   virtual void deserialize(Serialize::SerialObj& obj, const TextureDictionary* textures = nullptr);
 
 protected:
    bool show_text_;

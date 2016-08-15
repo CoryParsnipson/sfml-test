@@ -155,7 +155,7 @@ Serialize::SerialObj OrthographicGrid::serialize() {
    return obj;
 }
 
-void OrthographicGrid::deserialize(Serialize::SerialObj& obj) {
+void OrthographicGrid::deserialize(Serialize::SerialObj& obj, const TextureDictionary* textures /* = nullptr */) {
    if (obj["type"] != "grid") {
       throw std::out_of_range("unknown type token '" + obj["type"] + "'");
    }

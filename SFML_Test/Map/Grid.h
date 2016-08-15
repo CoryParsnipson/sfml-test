@@ -96,7 +96,7 @@ public:
 
    // serialize interface
    virtual Serialize::SerialObj serialize() = 0;
-   virtual void deserialize(Serialize::SerialObj& obj) = 0;
+   virtual void deserialize(Serialize::SerialObj& obj, const TextureDictionary* textures = nullptr) = 0;
 
 protected:
    std::string id_;
