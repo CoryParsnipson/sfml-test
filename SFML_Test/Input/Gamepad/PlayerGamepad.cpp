@@ -91,11 +91,6 @@ void PlayerGamepad::unset(MouseAction binding) {
    }
 }
 
-void PlayerGamepad::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
-   this->cursor_->draw(surface, render_states);
-   this->cursor_text_->draw(surface, render_states);
-}
-
 void PlayerGamepad::update(Game& game, Scene* scene /* = nullptr */) {
    sf::Vector2f c = this->cursor_position();
 
@@ -149,4 +144,12 @@ void PlayerGamepad::process(MouseButtonInputEvent& e) {
    if (c) {
       c->execute();
    }
+}
+
+void PlayerGamepad::do_draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
+   // transform to sceen coordinates 
+   render_states.transform.translate(this->get_screen_coordinate(this->cursor_pos_) - this->cursor_pos_);
+
+   this->cursor_->draw(surface, render_states);
+   this->cursor_text_->draw(surface, render_states);
 }

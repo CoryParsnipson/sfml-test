@@ -7,6 +7,7 @@
 class Camera;
 class Entity;
 class Widget;
+class Gamepad;
 
 // ----------------------------------------------------------------------------
 // SceneGraphVisitor interface
@@ -21,6 +22,7 @@ public:
    virtual void visit(Camera*) = 0;
    virtual void visit(Entity*) = 0;
    virtual void visit(Widget*) = 0;
+   virtual void visit(Gamepad*) = 0;
 };
 
 #endif

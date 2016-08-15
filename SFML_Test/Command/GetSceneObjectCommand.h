@@ -5,6 +5,7 @@
 #include "Command.h"
 #include "SceneGraphVisitor.h"
 #include "Scene.h"
+#include "Gamepad.h"
 
 // ----------------------------------------------------------------------------
 // aliases
@@ -12,6 +13,7 @@
 using CameraList = std::vector<Camera*>;
 using EntityList = std::vector<Entity*>;
 using WidgetList = std::vector<Widget*>;
+using GamepadList = std::vector<Gamepad*>;
 
 using SceneObjectList = std::vector<SceneObject*>;
 
@@ -55,6 +57,7 @@ public:
    virtual void visit(Camera*);
    virtual void visit(Entity*);
    virtual void visit(Widget*);
+   virtual void visit(Gamepad*);
 
 protected:
    sf::Vector2f target_;
@@ -63,6 +66,7 @@ protected:
    CameraList cameras_;
    EntityList entities_;
    WidgetList widgets_;
+   GamepadList gamepads_;
 
    SceneObjectList scene_objects_;
 };

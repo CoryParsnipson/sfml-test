@@ -81,10 +81,10 @@ void StartMenuScene::process(Game& game, ResizeInputEvent& e) {
 
 void StartMenuScene::process(Game& game, KeyPressInputEvent& e) {
    if (e.key == Key::Space || e.key == Key::Return) {
-      game.load_scene(new BuilderScene());
+      game.switch_scene(new BuilderScene());
    } else if (e.key == Key::Escape) {
       // go to super special awesome test scene
-      game.load_scene(new TestUIScene());
+      game.switch_scene(new TestUIScene());
    } else if (e.key == Key::O) {
       this->toggle_debug_info();
    }

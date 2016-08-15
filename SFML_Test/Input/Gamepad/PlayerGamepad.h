@@ -36,9 +36,6 @@ public:
    void unset(MouseButton button, ButtonState state);
    void unset(MouseAction binding);
 
-   // draw interface
-   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
-
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr);
 
@@ -59,6 +56,9 @@ protected:
    bool show_cursor_;
    Graphic* cursor_;
    Graphic* cursor_text_;
+
+   // scene object interface hooks
+   virtual void do_draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 };
 
 #endif

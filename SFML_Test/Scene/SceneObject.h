@@ -27,7 +27,7 @@ public:
    sf::Transform transform() const;
 
    virtual sf::Vector2f get_world_coordinate(const sf::Vector2f& point); // affected by camera transform
-   virtual sf::Vector2f get_absolute_coordinate(const sf::Vector2f& point);
+   virtual sf::Vector2f get_screen_coordinate(const sf::Vector2f& point); // relative to viewport
 
    virtual bool intersects(const sf::Vector2i& other) = 0;
    virtual bool intersects(const sf::Vector2f& other) = 0;

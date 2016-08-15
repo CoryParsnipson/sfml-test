@@ -111,7 +111,7 @@ sf::Vector2f Camera::get_world_coordinate(const sf::Vector2f& point) {
    return this->transform_.transformPoint(point);
 }
 
-sf::Vector2f Camera::get_absolute_coordinate(const sf::Vector2f& point) {
+sf::Vector2f Camera::get_screen_coordinate(const sf::Vector2f& point) {
    return this->transform_.getInverse().transformPoint(point);
 }
 

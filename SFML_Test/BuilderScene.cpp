@@ -333,13 +333,6 @@ void BuilderScene::process(Game& game, KeyPressInputEvent& e) {
 //      Service::get_logger().msg(this->id_, Logger::INFO, "Writing map to file '" + this->map_filename_ + "'");
 //      this->map_->serialize(*this->serializer_);
 //   break;
-//   case Key::Escape:
-//      // load super secret test ui scene
-//      game.switch_scene(new TestUIScene());
-//   break;
-//   default:
-//      // do nothing
-//   break;
 //   }
 }
 

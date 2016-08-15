@@ -86,3 +86,10 @@ void GetSceneObjectCommand::visit(Widget* widget) {
       Service::get_logger().msg("GetSceneObjectCommand", Logger::INFO, "Got widget: " + std::string(*widget));
    }
 }
+
+void GetSceneObjectCommand::visit(Gamepad* gamepad) {
+   if (gamepad && gamepad->intersects(this->target_)) {
+      this->gamepads_.push_back(gamepad);
+      this->scene_objects_.push_back(gamepad);
+   }
+}

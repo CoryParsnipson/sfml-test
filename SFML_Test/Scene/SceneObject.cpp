@@ -44,11 +44,11 @@ sf::Vector2f SceneObject::get_world_coordinate(const sf::Vector2f& point) {
    return transformed_point;
 }
 
-sf::Vector2f SceneObject::get_absolute_coordinate(const sf::Vector2f& point) {
+sf::Vector2f SceneObject::get_screen_coordinate(const sf::Vector2f& point) {
    sf::Vector2f transformed_point = point;
 
    if (this->parent()) {
-      transformed_point = this->parent()->get_absolute_coordinate(point);
+      transformed_point = this->parent()->get_screen_coordinate(point);
    }
    return transformed_point;
 }

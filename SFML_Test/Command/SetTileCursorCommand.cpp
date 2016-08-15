@@ -21,11 +21,11 @@ void SetTileCursorCommand::execute() {
    sf::Vector2f* release_pos = this->usr_command_->release_pos();
 
    if (click_pos) {
-      this->utc_command_.click_pos(this->tile_cursor_->get_absolute_coordinate(*click_pos));
+      this->utc_command_.click_pos(this->tile_cursor_->get_screen_coordinate(*click_pos));
    }
    
    if (release_pos) {
-      this->utc_command_.release_pos(this->tile_cursor_->get_absolute_coordinate(*release_pos));
+      this->utc_command_.release_pos(this->tile_cursor_->get_screen_coordinate(*release_pos));
    }
 
    this->utc_command_.execute();

@@ -18,6 +18,8 @@
 #include "Widget.h"
 #include "Gamepad.h"
 
+#include "RemoveCommand.h"
+
 class Scene
 : public Draw
 , public Update
@@ -36,6 +38,7 @@ public:
    virtual ~Scene() {
       Service::get_logger().msg(this->id(), Logger::INFO, "Destroying Scene.");
 
+      // TODO: need to properly clean up scene objects
       delete this->scene_graph_;
 
       GamepadList::const_iterator g_it;
@@ -78,18 +81,6 @@ public:
       for (it = this->scene_graph_->begin(); it != this->scene_graph_->end(); ++it) {
          (*it)->draw(surface, render_states);
       }
-   
-      // TODO: hack, temporary
-      sf::View v = surface.view();
-      surface.view(this->camera_->view());
-
-      GamepadList::const_iterator git;
-      for (git = this->gamepads_.begin(); git != this->gamepads_.end(); ++git) {
-         (*git)->draw(surface, render_states);
-      }
-
-      surface.view(v);
-      // end hack
    }
 
    // update interface
@@ -98,21 +89,24 @@ public:
       for (it = this->scene_graph_->begin(); it != this->scene_graph_->end(); ++it) {
          (*it)->update(game, scene);
       }
-
-      GamepadList::const_iterator git;
-      for (git = this->gamepads_.begin(); git != this->gamepads_.end(); ++git) {
-         (*git)->update(game, this);
-      }
    }
 
    // gamepad interface
    int gamepad(Gamepad* gamepad, int player_id = -1) {
       if (player_id >= 0 && player_id < (int)this->gamepads_.size()) {
+         // remove gamepad scene object from scene graph
+         RemoveCommand rc(this->scene_graph_, gamepad);
+         rc.execute();
+
+         // remove gamepad from gamepad list and replace
          delete this->gamepads_[player_id];
          this->gamepads_[player_id] = gamepad;
+
          return player_id;
       } else {
-         this->gamepads_.push_back(gamepad);
+         this->gamepads_.push_back(gamepad);    // add to gamepad list
+         this->scene_graph_->add(gamepad);      // add to scene graph
+
          return this->gamepads_.size() - 1;
       }
    }
@@ -130,10 +124,20 @@ public:
 
    // scene interface
    void load_scene(Scene* scene) {
+      if (!this->game_) {
+         Service::get_logger().msg(this->id(), Logger::ERROR, "Cannot load scene from a scene that is not on top of the game stack.");
+         return;
+      }
+
       this->game_->load_scene(scene);
    }
 
    Scene* switch_scene(Scene* scene) {
+      if (!this->game_) {
+         Service::get_logger().msg(this->id(), Logger::ERROR, "Cannot switch scene from a scene that is not on top of the game stack.");
+         return nullptr;
+      }
+
       return this->game_->switch_scene(scene);
    }
 

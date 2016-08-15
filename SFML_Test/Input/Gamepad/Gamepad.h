@@ -3,8 +3,7 @@
 
 #include <string>
 
-#include "Draw.h"
-#include "Update.h"
+#include "SceneObject.h"
 #include "InputListener.h"
 
 // ----------------------------------------------------------------------------
@@ -12,11 +11,10 @@
 //
 // This class is an abstract base class that allows one to control game
 // entities with commands. The abstract base class is also an input listener
-// that does nothing by default. 
+// that does nothing by default. This class is also a SceneObject.
 // ----------------------------------------------------------------------------
 class Gamepad
-: public Draw
-, public Update
+: public SceneObject
 , public InputListener
 {
 public:
@@ -33,11 +31,28 @@ public:
    sf::Vector2f cursor_position() { return this->cursor_pos_; }
    sf::Vector2f prev_cursor_position() { return this->cursor_pos_prev_; }
 
-   // draw interface
-   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {}
+   // scene graph interface
+   virtual bool intersects(const sf::Vector2i& other) {
+      return this->intersects(static_cast<sf::Vector2f>(other));
+   }
 
-   // update interface
-   virtual void update(Game& game, Scene* scene = nullptr) = 0;
+   virtual bool intersects(const sf::Vector2f& other) {
+      return this->cursor_pos_ == this->transform().transformPoint(other);
+   }
+
+   virtual bool intersects(const sf::FloatRect& other) {
+      return this->transform().transformRect(other).contains(this->cursor_pos_);
+   }
+
+   virtual bool intersects(const SceneObject& other) {
+      // TODO: implement me
+      return false;
+   }
+
+   // scene graph visitor interface
+   virtual void accept(SceneGraphVisitor& visitor) {
+      visitor.visit(this);
+   }
 
    // input event processing
    virtual void process(CloseInputEvent& e) {}

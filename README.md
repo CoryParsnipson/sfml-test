@@ -5,17 +5,15 @@ This was originally going to be a quick isometric tile demo experiment and it ha
 
 Things to do next
 -----------------
+* Refactor factories and manager to be normal objects that can belong to Scene
+
+* Change Scene::draw to use a visitor that builds global transform instead of doing it in SceneObject?
+
 * Consider adding an array to PlayerGamepad that keeps track of which keys/mouse buttons
    are being pressed
 
-* Refactor factories and manager to be normal objects that can belong to Scene
-
 * need to overhaul graphics classes or something because it's very clunky
    * the graphics drawing is already a performance bottleneck
-
-* Create an entity that contains a Gamepad instance? (For drawing mouse cursor and stuff)
-
-* Change Scene::draw to use a visitor that builds global transform instead of doing it in SceneObject?
 
 * make everything relative to in game units instead of pixels
 
@@ -41,8 +39,6 @@ TODO
    * need to redo facade on sfml drawable objects, because it is super bad
 
 * Serialize map into an xml file instead of reading from handmade text file.
-
-* make Game a singleton and refactor all other singletons to be public members of Game?
 
 * Service locator is pretty ugly. Refactor?
 
