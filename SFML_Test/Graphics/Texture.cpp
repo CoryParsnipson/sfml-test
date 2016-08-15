@@ -11,6 +11,9 @@ Texture::Texture(std::string id, std::string filename, sf::IntRect texture_area)
    this->texture_.loadFromImage(this->texture_mask_, texture_area);
 }
 
+Texture::~Texture() {
+}
+
 const std::string& Texture::id() {
    return this->id_;
 }

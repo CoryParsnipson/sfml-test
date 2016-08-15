@@ -1,6 +1,5 @@
 #include "Game.h"
 #include "TextFactory.h"
-#include "TextureManager.h"
 #include "TextSerializer.h"
 
 #include "CloseInputEvent.h"
@@ -66,9 +65,6 @@ Game::Game()
    Service::provide_input(&this->input_);
    Service::get_input().attach(*this);
    
-   // load fonts
-   TextFactory::inst()->load_font("retro", "retro.ttf");
-
    delete config_reader;
    config_reader = nullptr;
 }

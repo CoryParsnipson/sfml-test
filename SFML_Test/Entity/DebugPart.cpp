@@ -9,10 +9,10 @@
 #include "GraphicsPart.h"
 #include "PhysicsPart.h"
 
-DebugPart::DebugPart(std::string id)
+DebugPart::DebugPart(std::string id /* = "debug" */, sf::Font* debug_font /* = nullptr */)
 : Part(id)
 , show_text_(false)
-, pos_text_(new TextGraphic("", TextFactory::inst()->get_font("retro")))
+, pos_text_(new TextGraphic("", debug_font))
 {
    Service::get_logger().msg("DebugPart", Logger::INFO, "Creating DebugPart");
 }

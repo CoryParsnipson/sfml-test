@@ -24,7 +24,7 @@ public:
    using KeyBinding = std::map<Key, Command*>;
    using MouseBinding = std::map<MouseButton, Binding>;
 
-   PlayerGamepad(std::string id = "PlayerGamepad");
+   PlayerGamepad(std::string id = "PlayerGamepad", sf::Font* cursor_font = nullptr);
    virtual ~PlayerGamepad();
 
    // command interface

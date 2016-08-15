@@ -240,7 +240,7 @@ void OrthographicGrid::create_text_markers() {
 
          text_markers_.push_back(TextFactory::inst()->create_text(
             std::to_string((int)pos.x) + ", " + std::to_string((int)pos.y),
-            "retro",
+            this->font_,
             pos + sf::Vector2f(4, 4),
             8,
             TextFactory::ALIGN::LEFT,

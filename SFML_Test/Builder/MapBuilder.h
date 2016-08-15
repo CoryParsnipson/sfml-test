@@ -19,6 +19,10 @@ public:
    virtual void set_serializer(Serializer* serializer) { this->serializer_ = serializer; };
    virtual Map* get_map() { return this->map_; }
 
+   void grid_font(sf::Font* grid_font) {
+      this->grid_font_ = grid_font;
+   }
+
 protected:
    virtual void build_map() = 0;
    virtual void build_tile(Entity* tile) = 0;
@@ -28,6 +32,8 @@ protected:
 
    Serializer* serializer_;
    Map* map_;
+
+   sf::Font* grid_font_;
 };
 
 #endif

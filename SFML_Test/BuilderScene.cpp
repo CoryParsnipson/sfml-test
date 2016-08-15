@@ -46,6 +46,9 @@ BuilderScene::BuilderScene()
 , frame_count(0)
 , show_debug_info_(false)
 {
+   // load fonts
+   this->fonts_.load("retro", "retro.ttf");
+   
    // load textures
    TextureManager::inst()->create_texture("tile_grass", "pkmn_tiles_outdoor1.png", sf::IntRect(0, 0, 64, 64));
    TextureManager::inst()->create_texture("tile_worn_grass", "pkmn_tiles_outdoor1.png", sf::IntRect(64, 0, 64, 64));
@@ -98,6 +101,7 @@ BuilderScene::BuilderScene()
 
    MapBuilder* map_builder = new FlatMapBuilder();
    map_builder->set_serializer(this->serializer_);
+   map_builder->grid_font(this->fonts_.get("retro"));
    map_builder->build();
 
    this->map_ = map_builder->get_map();
@@ -120,28 +124,28 @@ BuilderScene::BuilderScene()
    this->scene_graph_->layer(1)->add(this->tile_cursor_);
 
    // create fixed hud items
-   Entity* t = TextFactory::inst()->create_text_entity("SFML_Test", "retro");
+   Entity* t = TextFactory::inst()->create_text_entity("SFML_Test", this->fonts_.get("retro"));
    this->scene_graph_->layer(2)->insert(2, t);
 
-   t = TextFactory::inst()->create_text_entity("r: reset pan position", "retro", sf::Vector2f(0, 15));
+   t = TextFactory::inst()->create_text_entity("r: reset pan position", this->fonts_.get("retro"), sf::Vector2f(0, 15));
    this->scene_graph_->layer(2)->insert(2, t);
 
-   t = TextFactory::inst()->create_text_entity("g: toggle grid visibility", "retro", sf::Vector2f(0, 30));
+   t = TextFactory::inst()->create_text_entity("g: toggle grid visibility", this->fonts_.get("retro"), sf::Vector2f(0, 30));
    this->scene_graph_->layer(2)->insert(2, t);
 
-   t = TextFactory::inst()->create_text_entity("o: toggle entity hitboxes", "retro", sf::Vector2f(0, 45));
+   t = TextFactory::inst()->create_text_entity("o: toggle entity hitboxes", this->fonts_.get("retro"), sf::Vector2f(0, 45));
    this->scene_graph_->layer(2)->insert(2, t);
 
-   t = TextFactory::inst()->create_text_entity("1: add green tiles at selection", "retro", sf::Vector2f(0, 60));
+   t = TextFactory::inst()->create_text_entity("1: add green tiles at selection", this->fonts_.get("retro"), sf::Vector2f(0, 60));
    this->scene_graph_->layer(2)->insert(2, t);
 
-   t = TextFactory::inst()->create_text_entity("2: add blue tiles at selection", "retro", sf::Vector2f(0, 75));
+   t = TextFactory::inst()->create_text_entity("2: add blue tiles at selection", this->fonts_.get("retro"), sf::Vector2f(0, 75));
    this->scene_graph_->layer(2)->insert(2, t);
 
-   t = TextFactory::inst()->create_text_entity("del: remove tiles at selection", "retro", sf::Vector2f(0, 90));
+   t = TextFactory::inst()->create_text_entity("del: remove tiles at selection", this->fonts_.get("retro"), sf::Vector2f(0, 90));
    this->scene_graph_->layer(2)->insert(2, t);
 
-   t = TextFactory::inst()->create_text_entity("right click: click and drag to pan", "retro", sf::Vector2f(0, 105));
+   t = TextFactory::inst()->create_text_entity("right click: click and drag to pan", this->fonts_.get("retro"), sf::Vector2f(0, 105));
    this->scene_graph_->layer(2)->insert(2, t);
 
    Graphic* center_dot_graphic = new SpriteGraphic();
@@ -156,12 +160,12 @@ BuilderScene::BuilderScene()
    );
    this->scene_graph_->layer(2)->insert(2, this->center_dot_);
 
-   this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", "retro");
+   this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", this->fonts_.get("retro"));
    this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
    this->scene_graph_->layer(2)->insert(2, this->fps_display_);
 
    // create player gamepad
-   PlayerGamepad* pg = new PlayerGamepad();
+   PlayerGamepad* pg = new PlayerGamepad("PlayerGamepad", this->fonts_.get("retro"));
    this->gamepad(pg);
 
    // mouse bindings
@@ -361,7 +365,7 @@ void BuilderScene::toggle_debug_info() {
       }
 
       if (this->show_debug_info_) {
-         e->add(new DebugPart());
+         e->add(new DebugPart("debug", this->fonts_.get("retro")));
       } else {
          e->remove("debug");
       }

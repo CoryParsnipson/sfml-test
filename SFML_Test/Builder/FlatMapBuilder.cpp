@@ -30,6 +30,7 @@ void FlatMapBuilder::build() {
             if (d["class"] == "OrthographicGrid") {
                grid = new OrthographicGrid("");
                grid->deserialize(d);
+               grid->font(this->grid_font_);
                this->build_grid(grid);
             }
          } else if (d["type"] == "layer") {

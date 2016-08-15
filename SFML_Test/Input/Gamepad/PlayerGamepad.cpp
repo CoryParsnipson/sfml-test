@@ -5,7 +5,7 @@
 #include "Command.h"
 #include "TextFactory.h"
 
-PlayerGamepad::PlayerGamepad(std::string id /* = "PlayerGamepad" */)
+PlayerGamepad::PlayerGamepad(std::string id /* = "PlayerGamepad" */, sf::Font* cursor_font /* = nullptr */)
 : Gamepad(id)
 , mouse_move_command_(nullptr)
 , mouse_wheel_command_(nullptr)
@@ -15,7 +15,7 @@ PlayerGamepad::PlayerGamepad(std::string id /* = "PlayerGamepad" */)
    this->cursor_->set_size(6, 6);
    this->cursor_->set_color(sf::Color::Red);
 
-   this->cursor_text_ = TextFactory::inst()->create_text("", "retro");
+   this->cursor_text_ = TextFactory::inst()->create_text("", cursor_font);
 }
 
 PlayerGamepad::~PlayerGamepad() {

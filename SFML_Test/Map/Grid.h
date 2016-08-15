@@ -20,6 +20,7 @@ public:
    , tile_height_(10)
    , show_debug_info_(false)
    , scale_factor_(1.0)
+   , font_(nullptr)
    {
    }
 
@@ -31,6 +32,7 @@ public:
    , tile_height_(tile_size > 0 ? tile_size : 10)
    , show_debug_info_(false)
    , scale_factor_(1.0)
+   , font_(nullptr)
    {
    }
 
@@ -42,6 +44,7 @@ public:
    , tile_height_(tile_size.y > 0 ? tile_size.y : 10)
    , show_debug_info_(false)
    , scale_factor_(1.0)
+   , font_(nullptr)
    {
    }
 
@@ -77,6 +80,10 @@ public:
 
    virtual sf::Vector2f coord_to_screen(const sf::Vector2f& coord) = 0;
 
+   void font(sf::Font* font) {
+      this->font_ = font;
+   }
+
    // move interface
    virtual void move(const sf::Vector2f& delta) = 0;
 
@@ -102,6 +109,8 @@ protected:
    bool show_debug_info_;
    sf::Vector2f pan_delta_;
    float scale_factor_;
+
+   sf::Font* font_;
 };
 
 #endif

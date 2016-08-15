@@ -20,11 +20,11 @@ TileFactory::TileFactory() {
 TileFactory::~TileFactory() {
 }
 
-Entity* TileFactory::create_tile(Texture& t, bool debug) {
-   return this->create_tile(t, sf::Vector2f(0, 0), debug);
+Entity* TileFactory::create_tile(Texture& t, bool debug /* = false */, sf::Font* debug_font /* = nullptr */) {
+   return this->create_tile(t, sf::Vector2f(0, 0), debug, debug_font);
 }
 
-Entity* TileFactory::create_tile(Texture& t, sf::Vector2f pos, bool debug) {
+Entity* TileFactory::create_tile(Texture& t, sf::Vector2f pos, bool debug /* = false */, sf::Font* debug_font /* = nullptr */) {
    Entity* tile = new Entity();
    GraphicsPart* graphics_part = new GraphicsPart();
    PhysicsPart* physics_part = new PhysicsPart();
@@ -38,7 +38,7 @@ Entity* TileFactory::create_tile(Texture& t, sf::Vector2f pos, bool debug) {
    tile->add(physics_part);
 
    if (debug) {
-      tile->add(new DebugPart());
+      tile->add(new DebugPart("debug", debug_font));
    }
 
    tile->set_position(pos);
@@ -46,7 +46,7 @@ Entity* TileFactory::create_tile(Texture& t, sf::Vector2f pos, bool debug) {
    return tile;
 }
 
-Entity* TileFactory::create_tile_cursor(sf::Vector2f& one, sf::Vector2f& two, bool debug) {
+Entity* TileFactory::create_tile_cursor(sf::Vector2f& one, sf::Vector2f& two, bool debug /* = false */, sf::Font* debug_font /* = nullptr*/) {
    Entity* cursor = new Entity();
    GraphicsPart* graphics_part = new GraphicsPart();
    PhysicsPart* physics_part = new PhysicsPart();
@@ -66,7 +66,7 @@ Entity* TileFactory::create_tile_cursor(sf::Vector2f& one, sf::Vector2f& two, bo
    cursor->add(physics_part);
 
    if (debug) {
-      cursor->add(new DebugPart());
+      cursor->add(new DebugPart("debug", debug_font));
    }
 
    cursor->enable_debug_text(true);
@@ -78,7 +78,7 @@ Entity* TileFactory::create_tile_cursor(sf::Vector2f& one, sf::Vector2f& two, bo
    return cursor;
 }
 
-Entity* TileFactory::create_selection_rectangle(sf::FloatRect* bounds, bool debug) {
+Entity* TileFactory::create_selection_rectangle(sf::FloatRect* bounds, bool debug /* = false */, sf::Font* debug_font /* = nullptr*/) {
    Entity* sr = new Entity();
    GraphicsPart* graphics_part = new GraphicsPart();
    PhysicsPart* physics_part = new PhysicsPart();
@@ -94,7 +94,7 @@ Entity* TileFactory::create_selection_rectangle(sf::FloatRect* bounds, bool debu
    sr->add(physics_part);
 
    if (debug) {
-      sr->add(new DebugPart());
+      sr->add(new DebugPart("debug", debug_font));
    }
 
    sr->enable_debug_text(true);

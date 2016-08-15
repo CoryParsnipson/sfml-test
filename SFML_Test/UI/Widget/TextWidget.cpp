@@ -4,12 +4,11 @@
 
 #include "RenderSurface.h"
 #include "TextWidget.h"
-#include "TextFactory.h"
 
-TextWidget::TextWidget(std::string id, const std::string& text)
+TextWidget::TextWidget(std::string id, const std::string& text, sf::Font* font /* = nullptr */)
 : Widget(id)
 , raw_text_(text)
-, text_(new TextGraphic(text, TextFactory::inst()->get_font("retro")))
+, text_(new TextGraphic(text, font))
 {
    this->text_->set_color(sf::Color::Blue);
 

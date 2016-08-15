@@ -9,7 +9,7 @@ class DebugPart
 public:
    typedef std::vector<Graphic*> SpriteList;
 
-   DebugPart(std::string id = "debug");
+   DebugPart(std::string id = "debug", sf::Font* debug_font = nullptr);
    virtual ~DebugPart();
 
    void show_text(bool show_text);

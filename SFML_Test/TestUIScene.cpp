@@ -22,6 +22,9 @@ TestUIScene::TestUIScene()
 , frame_measurement_interval(6)
 , frame_count(0)
 {
+   // load fonts
+   this->fonts_.load("retro", "retro.ttf");
+   
    // load textures
    TextureManager::inst()->create_texture("ui_resize_handle", "ui_panel_test.png", sf::IntRect(30, 0, 10, 10));
    TextureManager::inst()->create_texture("tile_water_ul", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 64, 64, 64));
@@ -33,12 +36,12 @@ TestUIScene::TestUIScene()
    this->scene_graph_->add(
       TextFactory::inst()->create_text_entity(
          "Test UI Scene",
-         "retro",
+         this->fonts_.get("retro"),
          sf::Vector2f(0, 0),
          12
    ));
 
-   this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", "retro");
+   this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", this->fonts_.get("retro"));
    this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
    this->scene_graph_->add(this->fps_display_);
 
@@ -46,7 +49,7 @@ TestUIScene::TestUIScene()
    this->widget_ = new PanelWidget("Test Panel 1", sf::Vector2f(100, 100), sf::Vector2f(300, 200));
    this->scene_graph_->layer(0)->add(this->widget_);
 
-   Widget* tw = new TextWidget("Text Widget 1", "PENIS PENIS PENIS PENIS PENIS PENIS PENIS PENIS PENIS");
+   Widget* tw = new TextWidget("Text Widget 1", "PENIS PENIS PENIS PENIS PENIS PENIS PENIS PENIS PENIS", this->fonts_.get("retro"));
    tw->set_size(sf::Vector2f(300, 200));
    this->widget_->add(tw);
    
@@ -57,7 +60,7 @@ TestUIScene::TestUIScene()
    bw->action(new MoveCommand(this->ui_camera_, sf::Vector2f(10, 50)));
 
    // create player controls
-   PlayerGamepad* pg = new PlayerGamepad();
+   PlayerGamepad* pg = new PlayerGamepad("PlayerGamepad", this->fonts_.get("retro"));
    this->gamepad(pg);
    
    pg->set(new WidgetEventCommand(WidgetOp::MouseClick, this->scene_graph_, pg), MouseButton::Left);

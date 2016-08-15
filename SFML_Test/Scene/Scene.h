@@ -17,6 +17,7 @@
 #include "Entity.h"
 #include "Widget.h"
 #include "Gamepad.h"
+#include "FontDictionary.h"
 
 #include "RemoveCommand.h"
 
@@ -159,6 +160,9 @@ protected:
    std::string id_;
    Camera* camera_;
    SceneObject* scene_graph_;
+
+   FontDictionary fonts_;
+   Dictionary<std::string, Texture> textures_;
 
 private:
    Game* game_;

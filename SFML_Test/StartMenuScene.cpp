@@ -18,12 +18,13 @@ StartMenuScene::StartMenuScene()
 : Scene("StartMenuScene")
 , show_debug_info_(false)
 {
-   this->camera_->move(-1.f * sf::Vector2f(Settings::Instance()->cur_width() / 2.f, Settings::Instance()->cur_height() / 2.f));
-
+   // load fonts
+   this->fonts_.load("retro", "retro.ttf");
+   
    // populate entities
    SceneObject* node = TextFactory::inst()->create_text_entity(
       "SFML TEST",
-      "retro",
+      this->fonts_.get("retro"),
       sf::Vector2f(0, 0),
       36,
       TextFactory::ALIGN::CENTER,
@@ -34,7 +35,7 @@ StartMenuScene::StartMenuScene()
 
    node = TextFactory::inst()->create_text_entity(
       "main menu",
-      "retro",
+      this->fonts_.get("retro"),
       sf::Vector2f(0, 45),
       12,
       TextFactory::ALIGN::CENTER,
@@ -45,7 +46,7 @@ StartMenuScene::StartMenuScene()
 
    node = TextFactory::inst()->create_text_entity(
       "(Press SPACE or ENTER)",
-      "retro",
+      this->fonts_.get("retro"),
       sf::Vector2f(0, 60),
       12,
       TextFactory::ALIGN::CENTER,
@@ -54,7 +55,8 @@ StartMenuScene::StartMenuScene()
    );
    this->scene_graph_->add(node);
 
-   this->gamepad(new PlayerGamepad());
+   this->camera_->move(-1.f * sf::Vector2f(Settings::Instance()->cur_width() / 2.f, Settings::Instance()->cur_height() / 2.f));
+   this->gamepad(new PlayerGamepad("PlayerGamepad", this->fonts_.get("retro")));
 }
 
 StartMenuScene::~StartMenuScene() {
