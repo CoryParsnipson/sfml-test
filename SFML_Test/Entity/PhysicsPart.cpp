@@ -78,7 +78,7 @@ Serialize::SerialObj PhysicsPart::serialize() {
    return obj;
 }
 
-void PhysicsPart::deserialize(Serialize::SerialObj& obj, const TextureDictionary* textures /* = nullptr */) {
+void PhysicsPart::deserialize(Serialize::SerialObj& obj, const TextureAtlas* textures /* = nullptr */) {
    sf::Vector2f pos;
    sf::Vector2f size;
 

@@ -2,16 +2,16 @@
 #define FONT_DICTIONARY_H
 
 #include "dependencies.h"
-#include "Dictionary.h"
+#include "Atlas.h"
 
 // ----------------------------------------------------------------------------
-// FontDictionary
+// FontAtlas
 //
 // This is a map that contains sf::Font pointers.
 // ----------------------------------------------------------------------------
-class FontDictionary : public Dictionary<std::string, sf::Font> {
+class FontAtlas : public Atlas<std::string, sf::Font> {
 public:
-   FontDictionary();
+   FontAtlas();
 
    void load(std::string font_key, std::string font_filename);
    void unload(std::string font_key);

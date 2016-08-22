@@ -30,7 +30,7 @@ public:
 
    // serialize interface
    virtual Serialize::SerialObj serialize();
-   virtual void deserialize(Serialize::SerialObj& obj, const TextureDictionary* textures = nullptr);
+   virtual void deserialize(Serialize::SerialObj& obj, const TextureAtlas* textures = nullptr);
 
 protected:
    SpriteList sprites_;

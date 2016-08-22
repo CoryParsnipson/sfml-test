@@ -1,11 +1,11 @@
-#include "FontDictionary.h"
+#include "FontAtlas.h"
 
-FontDictionary::FontDictionary()
-: Dictionary("FontDictionary")
+FontAtlas::FontAtlas()
+: Atlas("FontAtlas")
 {
 }
 
-void FontDictionary::load(std::string font_key, std::string font_filename) {
+void FontAtlas::load(std::string font_key, std::string font_filename) {
    sf::Font* font = new sf::Font();
 
    if (!font->loadFromFile(font_filename)) {
@@ -16,6 +16,6 @@ void FontDictionary::load(std::string font_key, std::string font_filename) {
    this->set(font_key, font);
 }
 
-void FontDictionary::unload(std::string font_key) {
+void FontAtlas::unload(std::string font_key) {
    this->set(font_key, nullptr);
 }

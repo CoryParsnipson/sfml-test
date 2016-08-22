@@ -17,8 +17,8 @@
 #include "Entity.h"
 #include "Widget.h"
 #include "Gamepad.h"
-#include "FontDictionary.h"
-#include "TextureDictionary.h"
+#include "FontAtlas.h"
+#include "TextureAtlas.h"
 
 #include "SceneRenderer.h"
 
@@ -161,8 +161,8 @@ protected:
    Camera* camera_;
    SceneObject* scene_graph_;
 
-   FontDictionary fonts_;
-   TextureDictionary textures_;
+   FontAtlas fonts_;
+   TextureAtlas textures_;
 
 private:
    Game* game_;

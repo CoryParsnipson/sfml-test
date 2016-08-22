@@ -102,7 +102,7 @@ Serialize::SerialObj GraphicsPart::serialize() {
    return obj;
 }
 
-void GraphicsPart::deserialize(Serialize::SerialObj& obj, const TextureDictionary* textures /* = nullptr*/) {
+void GraphicsPart::deserialize(Serialize::SerialObj& obj, const TextureAtlas* textures /* = nullptr*/) {
    sf::Vector2f pos(0, 0);
    pos.x = std::stod(obj["pos_x"]);
    pos.y = std::stod(obj["pos_y"]);

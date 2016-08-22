@@ -52,6 +52,6 @@ Serialize::SerialObj ReferencePart::serialize() {
    return obj;
 }
 
-void ReferencePart::deserialize(Serialize::SerialObj& obj, const TextureDictionary* textures /* = nullptr */) {
+void ReferencePart::deserialize(Serialize::SerialObj& obj, const TextureAtlas* textures /* = nullptr */) {
    // TODO: implement
 }

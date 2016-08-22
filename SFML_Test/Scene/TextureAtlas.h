@@ -2,17 +2,17 @@
 #define TEXTURE_DICTIONARY_H
 
 #include "dependencies.h"
-#include "Dictionary.h"
+#include "Atlas.h"
 #include "Texture.h"
 
 // ----------------------------------------------------------------------------
-// TextureDictionary
+// TextureAtlas
 //
 // This is a map that contains Texture pointers.
 // ----------------------------------------------------------------------------
-class TextureDictionary : public Dictionary<std::string, Texture> {
+class TextureAtlas : public Atlas<std::string, Texture> {
 public:
-   TextureDictionary();
+   TextureAtlas();
    
    void load(std::string key, std::string filename, sf::IntRect area = sf::IntRect());
    void unload(std::string key);

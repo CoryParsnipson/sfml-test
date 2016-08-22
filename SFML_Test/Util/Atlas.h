@@ -1,5 +1,5 @@
-#ifndef DICTIONARY_H
-#define DICTIONARY_H
+#ifndef ATLAS_H
+#define ATLAS_H
 
 #include <iostream>
 #include <map>
@@ -9,21 +9,21 @@
 #include "dependencies.h"
 
 // ----------------------------------------------------------------------------
-// Dictionary
+// Atlas
 //
 // This is basically a thin-wrapper on top of an std::map.
 // ----------------------------------------------------------------------------
 template <typename Key, class T>
-class Dictionary {
+class Atlas {
 public:
    using ItemList = std::map<Key, T*>;
 
-   Dictionary(std::string id = "Dictionary")
+   Atlas(std::string id = "Atlas")
    : id_(std::move(id))
    {
    }
 
-   virtual ~Dictionary() {
+   virtual ~Atlas() {
       for (typename ItemList::const_iterator it = this->items_.begin(); it != this->items_.end(); ++it) {
          delete it->second;
       }
@@ -62,14 +62,14 @@ private:
    std::string id_;
    ItemList items_; // ownership (TODO: change to use smart pointers later)
 
-   friend std::ostream& operator<<(std::ostream& stream, const Dictionary& dict) {
+   friend std::ostream& operator<<(std::ostream& stream, const Atlas& dict) {
       stream << dict.to_string();
       return stream;
    }
 
 protected:
    virtual std::string to_string() const {
-     return "[Dictionary: " + this->id() + "<" + typeid(Key).name() + ", " + typeid(T).name() + ">]";
+     return "[Atlas: " + this->id() + "<" + typeid(Key).name() + ", " + typeid(T).name() + ">]";
    }
 
    // hooks for inheriting classes

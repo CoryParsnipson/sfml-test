@@ -4,7 +4,7 @@
 #include "dependencies.h"
 
 #include "Map.h"
-#include "TextureDictionary.h"
+#include "TextureAtlas.h"
 
 // forward declarations
 class Entity;
@@ -24,7 +24,7 @@ public:
       this->grid_font_ = grid_font;
    }
 
-   void textures(const TextureDictionary* textures) {
+   void textures(const TextureAtlas* textures) {
       if (!textures) {
          this->textures_ = &this->default_textures_;
          return;
@@ -33,7 +33,7 @@ public:
    }
 
 private:
-   TextureDictionary default_textures_;
+   TextureAtlas default_textures_;
 
 protected:
    virtual void build_map() = 0;
@@ -46,7 +46,7 @@ protected:
    Map* map_;
 
    sf::Font* grid_font_;
-   const TextureDictionary* textures_;
+   const TextureAtlas* textures_;
 };
 
 #endif

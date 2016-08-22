@@ -114,7 +114,7 @@ Serialize::SerialObj Entity::serialize() {
    return obj;
 }
 
-void Entity::deserialize(Serialize::SerialObj& obj, const TextureDictionary* textures /* = nullptr */) {
+void Entity::deserialize(Serialize::SerialObj& obj, const TextureAtlas* textures /* = nullptr */) {
    // create graphics part if needed
    if (obj["texture"] != "") {
       GraphicsPart* graphics_part = new GraphicsPart();
