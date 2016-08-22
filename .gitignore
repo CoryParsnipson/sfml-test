@@ -8,5 +8,5 @@ sfml_test
 log.txt
 
 # ignore profiler files
-analysis.txt
+analysis*.txt
 gmon.out

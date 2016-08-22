@@ -8,6 +8,8 @@ class Camera;
 class Entity;
 class Widget;
 class Gamepad;
+class Map;
+class Grid;
 
 // ----------------------------------------------------------------------------
 // SceneGraphVisitor interface
@@ -21,6 +23,8 @@ class SceneGraphVisitor {
 public:
    virtual void visit(Camera*) = 0;
    virtual void visit(Entity*) = 0;
+   virtual void visit(Map*) = 0;
+   virtual void visit(Grid*) = 0;
    virtual void visit(Widget*) = 0;
    virtual void visit(Gamepad*) = 0;
 };

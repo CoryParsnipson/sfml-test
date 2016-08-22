@@ -37,11 +37,11 @@ public:
    }
 
    virtual bool intersects(const sf::Vector2f& other) {
-      return this->cursor_pos_ == this->transform().transformPoint(other);
+      return this->cursor_pos_ == this->global_transform().transformPoint(other);
    }
 
    virtual bool intersects(const sf::FloatRect& other) {
-      return this->transform().transformRect(other).contains(this->cursor_pos_);
+      return this->global_transform().transformRect(other).contains(this->cursor_pos_);
    }
 
    virtual bool intersects(const SceneObject& other) {

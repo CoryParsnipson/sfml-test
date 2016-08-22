@@ -56,6 +56,8 @@ public:
    // scene graph visitor interface
    virtual void visit(Camera*);
    virtual void visit(Entity*);
+   virtual void visit(Map*);
+   virtual void visit(Grid*);
    virtual void visit(Widget*);
    virtual void visit(Gamepad*);
 

@@ -49,12 +49,12 @@ bool TextWidget::intersects(const sf::Vector2i& other) {
 }
 
 bool TextWidget::intersects(const sf::Vector2f& other) {
-   sf::Transform transform = this->transform();
+   sf::Transform transform = this->global_transform();
    return transform.transformRect(this->text_->get_local_bounds()).contains(other);
 }
 
 bool TextWidget::intersects(const sf::FloatRect& other) {
-   sf::Transform transform = this->transform();
+   sf::Transform transform = this->global_transform();
    return transform.transformRect(this->text_->get_local_bounds()).intersects(other);
 }
 

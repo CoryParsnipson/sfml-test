@@ -28,11 +28,15 @@ void SceneObject::visible(bool visible) {
    this->visible_ = visible;
 }
 
-sf::Transform SceneObject::transform() const {
+sf::Transform SceneObject::global_transform() const {
    if (!this->parent()) {
       return this->transform_;
    }
-   return this->parent()->transform() * this->transform_;
+   return this->parent()->global_transform() * this->transform_;
+}
+
+sf::Transform SceneObject::local_transform() const {
+   return this->transform_;
 }
 
 sf::Vector2f SceneObject::get_world_coordinate(const sf::Vector2f& point) {
@@ -63,21 +67,9 @@ void SceneObject::draw(RenderSurface& surface, sf::RenderStates render_states /*
       return;
    }
 
-   this->apply_transform(surface, render_states);
    this->do_draw(surface, render_states);
 }
 
 void SceneObject::update(Game& game, Scene* scene /* = nullptr */) {}
-
-void SceneObject::apply_transform(RenderSurface& surface, sf::RenderStates& render_states) {
-   if (this->parent()) {
-      this->parent()->apply_transform(surface, render_states);
-   }
-   this->do_apply_transform(surface, render_states);
-}
-
-void SceneObject::do_apply_transform(RenderSurface& surface, sf::RenderStates& render_states) {
-   render_states.transform *= this->transform_;
-}
 
 void SceneObject::do_draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {}

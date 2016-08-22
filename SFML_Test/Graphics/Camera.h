@@ -70,6 +70,6 @@ private:
 
 protected:
    // scene graph interface hooks
-   virtual void do_apply_transform(RenderSurface& surface, sf::RenderStates& render_states);
+   virtual void do_draw(RenderSurface& surface, sf::RenderStates render_states);
 };
 #endif

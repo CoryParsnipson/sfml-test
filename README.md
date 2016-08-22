@@ -5,13 +5,12 @@ This was originally going to be a quick isometric tile demo experiment and it ha
 
 Things to do next
 -----------------
-* Change Scene::draw to use a visitor that builds global transform instead of doing it in SceneObject?
-
 * Consider adding an array to PlayerGamepad that keeps track of which keys/mouse buttons
    are being pressed
 
 * need to overhaul graphics classes or something because it's very clunky
    * the graphics drawing is already a performance bottleneck
+   * In the scene rendering, entity draw and entity update show most time spent in profiler
 
 * make everything relative to in game units instead of pixels
 
@@ -19,6 +18,8 @@ Things to do next
    * need to upgrade physicscomponent to take list of bounding boxes
    * Work on adding animations
       * need to upgrade graphicscomponent to take in animations capability?
+
+* Unfuck the header inclusion and decrease compile time
 
 TODO
 ----

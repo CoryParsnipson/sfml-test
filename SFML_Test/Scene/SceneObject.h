@@ -24,7 +24,8 @@ public:
    bool visible() const;
    void visible(bool visible);
 
-   sf::Transform transform() const;
+   sf::Transform global_transform() const;
+   sf::Transform local_transform() const; // does not query parent pointers
 
    virtual sf::Vector2f get_world_coordinate(const sf::Vector2f& point); // affected by camera transform
    virtual sf::Vector2f get_screen_coordinate(const sf::Vector2f& point); // relative to viewport
@@ -57,8 +58,6 @@ protected:
    sf::Transform transform_;
 
    // interface hooks for children 
-   virtual void apply_transform(RenderSurface& surface, sf::RenderStates& render_states);
-   virtual void do_apply_transform(RenderSurface& surface, sf::RenderStates& render_states);
    virtual void do_draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 };
 

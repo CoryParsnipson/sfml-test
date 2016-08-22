@@ -20,6 +20,8 @@
 #include "FontDictionary.h"
 #include "TextureDictionary.h"
 
+#include "SceneRenderer.h"
+
 #include "RemoveCommand.h"
 
 class Scene
@@ -79,10 +81,7 @@ public:
 
    // draw interface
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {
-      SceneObject::prefix_iterator it;
-      for (it = this->scene_graph_->begin(); it != this->scene_graph_->end(); ++it) {
-         (*it)->draw(surface, render_states);
-      }
+      this->renderer_.render(*this->scene_graph_, surface, render_states);
    }
 
    // update interface
@@ -168,6 +167,7 @@ protected:
 private:
    Game* game_;
    GamepadList gamepads_;
+   SceneRenderer renderer_;
 };
 
 #endif

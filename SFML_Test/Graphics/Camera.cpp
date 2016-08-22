@@ -124,6 +124,6 @@ void Camera::accept(SceneGraphVisitor& visitor) {
    visitor.visit(this);
 }
 
-void Camera::do_apply_transform(RenderSurface& surface, sf::RenderStates& render_states) {
+void Camera::do_draw(RenderSurface& surface, sf::RenderStates render_states) {
    surface.view(*this->view_);
 }

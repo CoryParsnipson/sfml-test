@@ -78,6 +78,14 @@ void GetSceneObjectCommand::visit(Entity* entity) {
    }
 }
 
+void GetSceneObjectCommand::visit(Map* map) {
+   return;
+}
+
+void GetSceneObjectCommand::visit(Grid* grid) {
+   return;
+}
+
 void GetSceneObjectCommand::visit(Widget* widget) {
    if (widget && widget->intersects(this->target_)) {
       this->widgets_.push_back(widget);

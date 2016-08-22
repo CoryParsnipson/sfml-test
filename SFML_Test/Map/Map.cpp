@@ -51,5 +51,5 @@ bool Map::intersects(const sf::FloatRect& other) { return false; }
 bool Map::intersects(const SceneObject& other) { return false; }
 
 void Map::accept(SceneGraphVisitor& visitor) {
-   // TODO: implement me
+   visitor.visit(this);
 }

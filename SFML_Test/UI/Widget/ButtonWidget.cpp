@@ -54,12 +54,12 @@ bool ButtonWidget::intersects(const sf::Vector2i& other) {
 }
 
 bool ButtonWidget::intersects(const sf::Vector2f& other) {
-   sf::Transform transform = this->transform();
+   sf::Transform transform = this->global_transform();
    return transform.transformRect(this->background_->get_global_bounds()).contains(other);
 }
 
 bool ButtonWidget::intersects(const sf::FloatRect& other) {
-   sf::Transform transform = this->transform();
+   sf::Transform transform = this->global_transform();
    return transform.transformRect(this->background_->get_global_bounds()).intersects(other);
 }
 

@@ -264,7 +264,7 @@ bool OrthographicGrid::intersects(const sf::FloatRect& other) { return false; }
 bool OrthographicGrid::intersects(const SceneObject& other) { return false; }
 
 void OrthographicGrid::accept(SceneGraphVisitor& visitor) {
-   // TODO: implement me
+   visitor.visit(this);
 }
 
 void OrthographicGrid::do_draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
