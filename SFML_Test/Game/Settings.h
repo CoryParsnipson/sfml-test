@@ -19,8 +19,11 @@ public:
 	const float TILE_HEIGHT_RHOMBUS = SCALE_Y * 20; // px
 	const float TILE_HEIGHT_OVERLAP = TILE_HEIGHT_RHOMBUS / 2;
 
-   int cur_width(int new_width = 0);
-   int cur_height(int new_height = 0);
+   int cur_width();
+   void cur_width(int new_width);
+
+   int cur_height();
+   void cur_height(int new_height);
 
 protected:
    int width_;

@@ -11,16 +11,18 @@ Settings* Settings::Instance() {
 	return instance;
 }
 
-int Settings::cur_width(int new_width) {
-   if (new_width > 0) {
-      this->width_ = new_width;
-   }
+int Settings::cur_width() {
    return this->width_;
 }
 
-int Settings::cur_height(int new_height) {
-   if (new_height > 0) {
-      this->height_ = new_height;
-   }
+void Settings::cur_width(int new_width) {
+   this->width_ = new_width;
+}
+
+int Settings::cur_height() {
    return this->height_;
+}
+
+void Settings::cur_height(int new_height) {
+   this->height_ = new_height;
 }
