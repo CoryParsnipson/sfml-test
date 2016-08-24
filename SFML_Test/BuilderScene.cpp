@@ -30,6 +30,7 @@
 #include "SetTileCursorCommand.h"
 #include "SetSelectionRectCommand.h"
 #include "UpdateSelectionRectCommand.h"
+#include "ZoomCommand.h"
 
 #include "PlayerGamepad.h"
 
@@ -202,6 +203,9 @@ BuilderScene::BuilderScene()
 
    pg->set(on_left_mouse_click, MouseButton::Left, ButtonState::Pressed);
    pg->set(on_left_mouse_release, MouseButton::Left, ButtonState::Released);
+
+   ZoomCommand* zoom_command = new ZoomCommand(this->map_camera_, this->map_->grid(), pg);
+   pg->set(zoom_command, MouseAction::Wheel);
 
    // keyboard bindings
    MacroCommand* move_camera_left = new MacroCommand("MoveCameraLeftCommand");

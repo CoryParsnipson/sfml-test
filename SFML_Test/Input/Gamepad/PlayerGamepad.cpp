@@ -131,6 +131,13 @@ void PlayerGamepad::process(MouseMoveInputEvent& e) {
 
 void PlayerGamepad::process(MouseWheelInputEvent& e) {
    Service::get_logger().msg(Gamepad::id_, Logger::INFO, "Received " + std::string(e));
+
+   // update gamepad wheel delta
+   this->wheel_delta_ = e.delta;
+
+   if(this->mouse_wheel_command_) {
+      this->mouse_wheel_command_->execute();
+   }
 }
 
 void PlayerGamepad::process(MouseButtonInputEvent& e) {

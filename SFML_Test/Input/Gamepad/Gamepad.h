@@ -31,6 +31,8 @@ public:
    sf::Vector2f cursor_position() { return this->cursor_pos_; }
    sf::Vector2f prev_cursor_position() { return this->cursor_pos_prev_; }
 
+   float wheel_delta() { return this->wheel_delta_; }
+
    // scene graph interface
    virtual bool intersects(const sf::Vector2i& other) {
       return this->intersects(static_cast<sf::Vector2f>(other));
@@ -75,6 +77,8 @@ protected:
 
    sf::Vector2f cursor_pos_;
    sf::Vector2f cursor_pos_prev_;
+
+   float wheel_delta_;
 };
 
 #endif

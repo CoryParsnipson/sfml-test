@@ -112,7 +112,21 @@ sf::Vector2f Camera::get_world_coordinate(const sf::Vector2f& point) {
 }
 
 sf::Vector2f Camera::get_screen_coordinate(const sf::Vector2f& point) {
-   return this->transform_.getInverse().transformPoint(point);
+   // copy this directly from SFML source...
+   sf::FloatRect raw_viewport = this->view_->getViewport();
+   sf::IntRect viewport(
+      static_cast<int>(0.5f + Settings::Instance()->cur_width() * raw_viewport.left),
+      static_cast<int>(0.5f + Settings::Instance()->cur_height() * raw_viewport.top),
+      static_cast<int>(0.5f + Settings::Instance()->cur_width() * raw_viewport.width),
+      static_cast<int>(0.5f + Settings::Instance()->cur_height() * raw_viewport.height)
+   );
+
+   sf::Vector2f screen_coord(
+      -1.f + 2.f * (point.x - viewport.left) / viewport.width,
+       1.f - 2.f * (point.y - viewport.top) / viewport.height
+   );
+   
+   return this->view_->getInverseTransform().transformPoint(screen_coord);
 }
 
 bool Camera::intersects(const sf::Vector2i& other) { return false; }
