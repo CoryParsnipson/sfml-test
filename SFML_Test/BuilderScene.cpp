@@ -232,6 +232,8 @@ BuilderScene::BuilderScene()
 
    pg->set(new ToggleVisibleCommand(this->map_->grid()), Key::G);
    pg->set(new ResetCameraCommand(this->map_camera_, this->map_->grid()), Key::R);
+   
+   // note, there's a subtle error here. Scene constructor in TestUIScene access global Settings singleton, which may have different state at this line, when when the switch is made
    pg->set(new SwitchSceneCommand(this, new TestUIScene()), Key::Escape);
 }
 

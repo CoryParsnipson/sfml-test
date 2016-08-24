@@ -29,6 +29,7 @@ TestUIScene::TestUIScene()
    this->textures_.load("tile_water_ul", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 64, 64, 64));
    Service::get_logger().msg(this->id(), Logger::INFO, this->textures_);
 
+   // create camera just for UI
    this->scene_graph_->add(this->ui_camera_);
 
    // populate entities
@@ -71,6 +72,19 @@ TestUIScene::~TestUIScene() {
 
 void TestUIScene::enter(Game& game) {
    Service::get_logger().msg(this->id_, Logger::INFO, "Entering test UI menu state.");
+   
+   // update cameras based on window size
+   sf::Vector2f new_size(Settings::Instance()->cur_width(), Settings::Instance()->cur_height());
+   sf::Vector2f new_center(new_size.x/ 2.f, new_size.y/ 2.f);
+
+   this->camera_->set_size(new_size);
+   this->camera_->set_center(new_center);
+
+   this->ui_camera_->set_size(new_size);
+   this->ui_camera_->set_center(new_center);
+
+   // reposition fps display
+   this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
 }
 
 void TestUIScene::exit(Game& game) {

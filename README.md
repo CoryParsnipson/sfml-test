@@ -5,6 +5,8 @@ This was originally going to be a quick isometric tile demo experiment and it ha
 
 Things to do next
 -----------------
+* Remove cur_width and cur_height from Settings singleton. Have scene handle it's own camera manipulation functions. It would be best to get rid of the settings singleton entirely.
+
 * Consider adding an array to PlayerGamepad that keeps track of which keys/mouse buttons
    are being pressed
 
