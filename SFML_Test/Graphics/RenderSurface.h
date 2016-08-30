@@ -14,6 +14,8 @@ public:
    RenderSurface() {}
    virtual ~RenderSurface() {}
 
+   virtual sf::Vector2f size() const = 0;
+
    // draw interface
    virtual void draw(sf::Drawable& drawable, sf::RenderStates render_states = sf::RenderStates::Default) = 0;
 

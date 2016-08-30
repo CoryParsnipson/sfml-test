@@ -35,6 +35,8 @@ public:
 
    bool poll_event(sf::Event& event);
 
+   const Canvas& window() const;
+
 private:
 	// game flow control
 	void main_loop();

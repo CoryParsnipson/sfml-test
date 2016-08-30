@@ -11,8 +11,8 @@ Things to do next
    are being pressed
 
 * need to overhaul graphics classes or something because it's very clunky
-   * the graphics drawing is already a performance bottleneck
    * In the scene rendering, entity draw and entity update show most time spent in profiler
+   * refactor entity component hierarchy
 
 * make everything relative to in game units instead of pixels
 

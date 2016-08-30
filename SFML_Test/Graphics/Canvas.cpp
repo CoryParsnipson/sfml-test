@@ -12,6 +12,10 @@ Canvas::~Canvas() {
    this->surface_.close();
 }
 
+sf::Vector2f Canvas::size() const {
+   return static_cast<sf::Vector2f>(this->surface_.getSize());
+}
+
 void Canvas::draw(sf::Drawable& drawable, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    this->surface_.draw(drawable, render_states);
 }

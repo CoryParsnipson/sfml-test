@@ -1,19 +1,22 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "MouseControllable.h"
 #include "SceneObject.h"
 #include "MoveCommand.h"
+#include "CameraResizePolicy.h"
 
 class Camera
 : public SceneObject
 , public Moveable
-, public MouseControllable
 {
 public:
    static const float ZOOM_FACTOR_MIN;
    static const float ZOOM_FACTOR_MAX;
+   
+   static const float DEFAULT_WIDTH;
+   static const float DEFAULT_HEIGHT;
 
+   Camera(const std::string& id);
    Camera(const std::string& id, const sf::Vector2f& size);
    virtual ~Camera();
 
@@ -25,9 +28,17 @@ public:
 
    sf::Vector2f get_pan_delta();
 
+   void policy(std::shared_ptr<CameraResizePolicy> policy);
+   const std::shared_ptr<CameraResizePolicy>& policy();
+
+   void resize();
+
    // view interface
    sf::Vector2f get_size();
    void set_size(const sf::Vector2f& size);
+
+   float get_scale();
+   void set_scale(float factor);
 
    const sf::Vector2f& get_center();
    void set_center(const sf::Vector2f& center);
@@ -40,14 +51,6 @@ public:
    // viewport management
    void set_viewport(const sf::FloatRect& viewport);
    const sf::FloatRect& get_viewport();
-
-   // mouse control interface
-   virtual void drag(MouseButton button, sf::Vector2f pos, sf::Vector2f delta);
-
-   virtual float get_scale();
-   virtual void set_scale(float factor);
-
-   virtual void click(MouseButton button, ButtonState state, sf::Vector2f pos);
 
    // scene graph interface
    virtual sf::Vector2f get_world_coordinate(const sf::Vector2f& point); // affected by camera transform
@@ -67,6 +70,8 @@ private:
 
    sf::Vector2f original_center_;
    sf::View* view_;
+
+   std::shared_ptr<CameraResizePolicy> resize_policy_;
 
 protected:
    // scene graph interface hooks

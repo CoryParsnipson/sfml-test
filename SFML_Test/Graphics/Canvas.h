@@ -12,6 +12,8 @@ public:
    Canvas(const std::string& title, const sf::Vector2f& size, int framerate_limit = 60);
    virtual ~Canvas();
 
+   virtual sf::Vector2f size() const;
+
    virtual void draw(sf::Drawable& drawable, sf::RenderStates render_states = sf::RenderStates::Default);
 
    virtual void update();

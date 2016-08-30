@@ -43,6 +43,7 @@ public:
 
    const SceneObjectList& get();
    const WidgetList& get_widgets();
+   const CameraList& get_cameras();
 
    void target(sf::Vector2f target);
    sf::Vector2f target();

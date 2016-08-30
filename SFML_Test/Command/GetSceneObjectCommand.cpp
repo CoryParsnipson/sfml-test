@@ -30,6 +30,10 @@ const WidgetList& GetSceneObjectCommand::get_widgets() {
    return this->widgets_;
 }
 
+const CameraList& GetSceneObjectCommand::get_cameras() {
+   return this->cameras_;
+}
+
 void GetSceneObjectCommand::target(sf::Vector2f target) {
    this->target_ = target;
 }

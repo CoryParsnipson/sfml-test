@@ -138,6 +138,10 @@ bool Game::poll_event(sf::Event& event) {
    return this->window_.poll_event(event);
 }
 
+const Canvas& Game::window() const {
+   return this->window_;
+}
+
 void Game::main_loop() {
    while (true) {
       if (this->scenes_.empty() && !this->prev_scene_ && !this->next_scene_) {

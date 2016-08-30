@@ -2,10 +2,24 @@
 #include "RenderSurface.h"
 
 #include "TextFactory.h"
+#include "StretchCameraResizePolicy.h"
 
 // initialize static member variables
 const float Camera::ZOOM_FACTOR_MIN = 0.125;
 const float Camera::ZOOM_FACTOR_MAX = 3.0;
+
+const float Camera::DEFAULT_WIDTH = 800;
+const float Camera::DEFAULT_HEIGHT = 600;
+
+Camera::Camera(const std::string& id)
+: SceneObject(true)
+, id_(id)
+, zoom_factor_(1.0)
+, original_center_(Camera::DEFAULT_WIDTH / 2.f, Camera::DEFAULT_HEIGHT / 2.f)
+, view_(new sf::View(this->original_center_, sf::Vector2f(Camera::DEFAULT_WIDTH, Camera::DEFAULT_HEIGHT)))
+, resize_policy_(new StretchCameraResizePolicy(Camera::DEFAULT_WIDTH, Camera::DEFAULT_HEIGHT))
+{
+}
 
 Camera::Camera(const std::string& id, const sf::Vector2f& size)
 : SceneObject(true)
@@ -13,6 +27,7 @@ Camera::Camera(const std::string& id, const sf::Vector2f& size)
 , zoom_factor_(1.0)
 , original_center_(size.x / 2.f, size.y / 2.f)
 , view_(new sf::View(this->original_center_, size))
+, resize_policy_(new StretchCameraResizePolicy(size))
 {
 }
 
@@ -41,12 +56,42 @@ sf::Vector2f Camera::get_pan_delta() {
    return (this->original_center_ - this->get_center());
 }
 
+void Camera::policy(std::shared_ptr<CameraResizePolicy> policy) {
+   this->resize_policy_ = policy;
+}
+
+const std::shared_ptr<CameraResizePolicy>& Camera::policy() {
+   return this->resize_policy_;
+}
+
+void Camera::resize() {
+   if (this->resize_policy_) {
+      this->resize_policy_->resize(*this);
+   }
+}
+
 sf::Vector2f Camera::get_size() {
    return this->view_->getSize() / this->zoom_factor_;
 }
 
 void Camera::set_size(const sf::Vector2f& size) {
    this->view_->setSize(size * this->zoom_factor_);
+}
+
+float Camera::get_scale() {
+   return this->zoom_factor_;
+}
+
+void Camera::set_scale(float factor) {
+   factor = std::max(factor, Camera::ZOOM_FACTOR_MIN);
+   factor = std::min(factor, Camera::ZOOM_FACTOR_MAX);
+   Service::get_logger().msg(this->id(), Logger::INFO, "Zoom factor: " + std::to_string(factor));
+
+   // update viewport size
+   this->view_->zoom(factor / this->zoom_factor_);
+   this->transform_.scale(factor / this->zoom_factor_, factor / this->zoom_factor_);
+
+   this->zoom_factor_ = factor;
 }
 
 const sf::Vector2f& Camera::get_center() {
@@ -67,10 +112,10 @@ void Camera::set_center(const sf::Vector2f& center) {
 }
 
 void Camera::move(const sf::Vector2f& delta) {
-   this->view_->move(delta);
+   this->view_->move(delta * this->get_scale());
 
    // transform (for child scene object positioning) moves in opposite direction of camera
-   this->transform_.translate(-delta);
+   this->transform_.translate(-delta * this->get_scale());
 }
 
 const sf::View& Camera::view() const {
@@ -85,40 +130,19 @@ const sf::FloatRect& Camera::get_viewport() {
    return this->view_->getViewport();
 }
 
-void Camera::drag(MouseButton button, sf::Vector2f pos, sf::Vector2f delta) {
-   this->move(delta);
-}
-
-float Camera::get_scale() {
-   return this->zoom_factor_;
-}
-
-void Camera::set_scale(float factor) {
-   factor = std::max(factor, Camera::ZOOM_FACTOR_MIN);
-   factor = std::min(factor, Camera::ZOOM_FACTOR_MAX);
-   Service::get_logger().msg(this->id(), Logger::INFO, "Zoom factor: " + std::to_string(factor));
-
-   // update viewport size
-   this->view_->zoom(factor / this->zoom_factor_);
-   this->transform_.scale(factor / this->zoom_factor_, factor / this->zoom_factor_);
-
-   this->zoom_factor_ = factor;
-}
-
-void Camera::click(MouseButton button, ButtonState state, sf::Vector2f pos) {}
-
 sf::Vector2f Camera::get_world_coordinate(const sf::Vector2f& point) {
    return this->transform_.transformPoint(point);
 }
 
 sf::Vector2f Camera::get_screen_coordinate(const sf::Vector2f& point) {
    // copy this directly from SFML source...
+   sf::Vector2f size = this->view_->getSize() / this->get_scale();
    sf::FloatRect raw_viewport = this->view_->getViewport();
    sf::IntRect viewport(
-      static_cast<int>(0.5f + Settings::Instance()->cur_width() * raw_viewport.left),
-      static_cast<int>(0.5f + Settings::Instance()->cur_height() * raw_viewport.top),
-      static_cast<int>(0.5f + Settings::Instance()->cur_width() * raw_viewport.width),
-      static_cast<int>(0.5f + Settings::Instance()->cur_height() * raw_viewport.height)
+      static_cast<int>(0.5f + size.x * raw_viewport.left),
+      static_cast<int>(0.5f + size.y * raw_viewport.top),
+      static_cast<int>(0.5f + size.x * raw_viewport.width),
+      static_cast<int>(0.5f + size.y * raw_viewport.height)
    );
 
    sf::Vector2f screen_coord(

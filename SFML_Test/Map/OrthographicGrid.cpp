@@ -90,7 +90,7 @@ sf::Vector2f OrthographicGrid::coord_to_screen(const sf::Vector2f& coord) {
 }
 
 void OrthographicGrid::move(const sf::Vector2f& delta) {
-   this->pan_delta_ += delta;
+   this->pan_delta_ += delta * this->scale_factor_;
 
    this->clear_gridlines();
    this->create_gridlines();

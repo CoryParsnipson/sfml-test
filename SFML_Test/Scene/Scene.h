@@ -23,6 +23,7 @@
 #include "SceneRenderer.h"
 
 #include "RemoveCommand.h"
+#include "ResizeCameraCommand.h"
 
 class Scene
 : public Draw
@@ -33,7 +34,7 @@ public:
 
    Scene(std::string id)
    : id_(id)
-   , camera_(new Camera("Camera", sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height())))
+   , camera_(new Camera("Camera"))
    , scene_graph_(this->camera_)
    {
       Service::get_logger().msg(this->id(), Logger::INFO, "Creating new Scene.");
@@ -61,6 +62,10 @@ public:
       for (GamepadList::const_iterator it = this->gamepads_.begin(); it != this->gamepads_.end(); ++it) {
          Service::get_input().attach(**it);
       }
+
+      // TODO: enable
+      // resize all the cameras
+      //ResizeCameraCommand rc_command(this->scene_graph_);
 
       this->game_ = &game; // set game pointer
       this->enter(game);

@@ -14,6 +14,10 @@ SubCanvas::SubCanvas(const sf::Vector2f& size)
 SubCanvas::~SubCanvas() {
 }
 
+sf::Vector2f SubCanvas::size() const {
+   return static_cast<sf::Vector2f>(this->surface_.getSize());
+}
+
 void SubCanvas::draw(sf::Drawable& drawable, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    render_states.transform.translate(-this->bounds_.left, -this->bounds_.top);
    this->surface_.draw(drawable, render_states);
