@@ -14,6 +14,7 @@ public:
    virtual void exit(Game& game);
 
    // input event processing
+   virtual void process(Game& game, ResizeInputEvent& e);
    virtual void process(Game& game, KeyPressInputEvent& e);
 
 protected:

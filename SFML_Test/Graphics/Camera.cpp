@@ -2,22 +2,19 @@
 #include "RenderSurface.h"
 
 #include "TextFactory.h"
-#include "StretchCameraResizePolicy.h"
+#include "FitCameraResizePolicy.h"
 
 // initialize static member variables
 const float Camera::ZOOM_FACTOR_MIN = 0.125;
 const float Camera::ZOOM_FACTOR_MAX = 3.0;
 
-const float Camera::DEFAULT_WIDTH = 800;
-const float Camera::DEFAULT_HEIGHT = 600;
-
 Camera::Camera(const std::string& id)
 : SceneObject(true)
 , id_(id)
 , zoom_factor_(1.0)
-, original_center_(Camera::DEFAULT_WIDTH / 2.f, Camera::DEFAULT_HEIGHT / 2.f)
-, view_(new sf::View(this->original_center_, sf::Vector2f(Camera::DEFAULT_WIDTH, Camera::DEFAULT_HEIGHT)))
-, resize_policy_(new StretchCameraResizePolicy(Camera::DEFAULT_WIDTH, Camera::DEFAULT_HEIGHT))
+, original_center_(0, 0)
+, view_(new sf::View(this->original_center_, sf::Vector2f(0, 0)))
+, resize_policy_(new FitCameraResizePolicy())
 {
 }
 
@@ -27,7 +24,7 @@ Camera::Camera(const std::string& id, const sf::Vector2f& size)
 , zoom_factor_(1.0)
 , original_center_(size.x / 2.f, size.y / 2.f)
 , view_(new sf::View(this->original_center_, size))
-, resize_policy_(new StretchCameraResizePolicy(size))
+, resize_policy_(new FitCameraResizePolicy())
 {
 }
 

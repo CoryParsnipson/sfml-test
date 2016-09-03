@@ -54,8 +54,6 @@ StartMenuScene::StartMenuScene()
       this->show_debug_info_
    );
    this->scene_graph_->add(node);
-
-   this->camera_->move(-1.f * sf::Vector2f(Settings::Instance()->cur_width() / 2.f, Settings::Instance()->cur_height() / 2.f));
    this->gamepad(new PlayerGamepad("PlayerGamepad", this->fonts_.get("retro")));
 }
 
@@ -64,10 +62,20 @@ StartMenuScene::~StartMenuScene() {
 
 void StartMenuScene::enter(Game& game) {
    Service::get_logger().msg(this->id_, Logger::INFO, "Entering game start menu state.");
+   this->camera_->reset_pan();
+   this->camera_->move(this->camera_->get_center() - game.window().size());
 }
 
 void StartMenuScene::exit(Game& game) {
    Service::get_logger().msg(this->id_, Logger::INFO, "Exiting game start menu state.");
+}
+
+void StartMenuScene::process(Game& game, ResizeInputEvent& e) {
+   Scene::process(game, e);
+
+   // re-adjust centering
+   this->camera_->reset_pan();
+   this->camera_->move(this->camera_->get_center() - game.window().size());
 }
 
 void StartMenuScene::process(Game& game, KeyPressInputEvent& e) {

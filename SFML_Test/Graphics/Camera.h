@@ -13,9 +13,6 @@ public:
    static const float ZOOM_FACTOR_MIN;
    static const float ZOOM_FACTOR_MAX;
    
-   static const float DEFAULT_WIDTH;
-   static const float DEFAULT_HEIGHT;
-
    Camera(const std::string& id);
    Camera(const std::string& id, const sf::Vector2f& size);
    virtual ~Camera();

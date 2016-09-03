@@ -34,8 +34,6 @@
 
 #include "PlayerGamepad.h"
 
-#include "FitCameraResizePolicy.h"
-
 BuilderScene::BuilderScene()
 : Scene("BuilderScene")
 , map_(nullptr)
@@ -97,13 +95,6 @@ BuilderScene::BuilderScene()
    // create "map layers" using a new camera
    this->scene_graph_->insert(1, this->map_camera_); // layer for map
    this->scene_graph_->insert(2, this->hud_camera_); // layer for hud 
-
-   // set resize policies
-   std::shared_ptr<CameraResizePolicy> crp = std::make_shared<FitCameraResizePolicy>();
-   this->camera_->policy(crp);
-
-   this->hud_camera_->policy(crp);
-   this->map_camera_->policy(crp);
 
    // build the map
    this->serializer_ = new TextSerializer();
