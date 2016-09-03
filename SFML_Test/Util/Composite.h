@@ -177,31 +177,18 @@ public:
 
    // increment the current node in the iteration
    static void next(NodeList<T>& nodes, IndexList& indices) {
-      // if the current node we are on still has unvisited children, descend to next child
-      if (!nodes.empty() && indices.back() < nodes.back()->num_children()) {
-         int next_idx = iterateInReverse ? nodes.back()->num_children() - 1 - indices.back() : indices.back();
-
-         nodes.push_back(nodes.back()->child(next_idx));
-         indices.push_back(0);
+      if (nodes.empty()) {
          return;
       }
 
-      // we have reached a leaf node or finished visiting all children
-      while (!nodes.empty() && indices.back() == nodes.back()->num_children()) {
-         // pop current node because we have already visited this node
-         // (because we are doing prefix iteration)
-         indices.pop_back();
-         nodes.pop_back();
+      T* node = nodes.back();
 
-         // do the if statement from above here
-         // NOTE: indices should be the same length as nodes
-         if (!nodes.empty() && ++indices.back() < nodes.back()->num_children()) {
-            int next_idx = iterateInReverse ? nodes.back()->num_children() - 1 - indices.back() : indices.back();
+      // pop top most node
+      nodes.pop_back();
 
-            nodes.push_back(nodes.back()->child(next_idx));
-            indices.push_back(0);
-            break;
-         }
+      // push all children of top most node
+      for (int i = node->num_children() - 1, j = 0; i >= 0; ++j, --i) {
+         nodes.push_back(node->child(iterateInReverse ? j : i));
       }
    }
 };
