@@ -31,7 +31,7 @@ public:
    void policy(std::shared_ptr<CameraResizePolicy> policy);
    const std::shared_ptr<CameraResizePolicy>& policy();
 
-   void resize();
+   void resize(sf::Vector2f size);
 
    // view interface
    sf::Vector2f get_size();

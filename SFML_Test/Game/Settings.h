@@ -9,7 +9,7 @@ public:
    const float FRAMERATE_SMOOTHING = 0.98;
 
 	const int SCREEN_WIDTH = 800;
-	const int SCREEN_HEIGHT = 500;
+	const int SCREEN_HEIGHT = 600;
 
 	const float SCALE_X = 1; // factor
 	const float SCALE_Y = 1; // factor

@@ -70,17 +70,6 @@ void StartMenuScene::exit(Game& game) {
    Service::get_logger().msg(this->id_, Logger::INFO, "Exiting game start menu state.");
 }
 
-void StartMenuScene::process(Game& game, ResizeInputEvent& e) {
-   sf::Vector2f original_offset(this->camera_->get_size() / 2.f);
-
-   Scene::process(game, e);
-
-   sf::Vector2f new_center(e.width / 2.f, e.height / 2.f);
-
-   this->camera_->set_size(sf::Vector2f(e.width, e.height));
-   this->camera_->move(original_offset - new_center);
-}
-
 void StartMenuScene::process(Game& game, KeyPressInputEvent& e) {
    if (e.key == Key::Space || e.key == Key::Return) {
       game.switch_scene(new BuilderScene());

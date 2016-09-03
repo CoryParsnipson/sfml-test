@@ -16,7 +16,7 @@ public:
    StretchCameraResizePolicy(float x, float y);
    StretchCameraResizePolicy(sf::Vector2f size);
 
-   virtual void resize(Camera& camera);
+   virtual void resize(Camera& camera, sf::Vector2f size);
 
 private:
    sf::Vector2f size_;

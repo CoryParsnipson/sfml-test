@@ -2,8 +2,9 @@
 #include "SceneObject.h"
 #include "Camera.h"
 
-ResizeCameraCommand::ResizeCameraCommand(SceneObject* scene_graph)
-: scene_graph_(scene_graph)
+ResizeCameraCommand::ResizeCameraCommand(const RenderSurface& window, SceneObject* scene_graph)
+: window_(&window)
+, scene_graph_(scene_graph)
 {
 }
 
@@ -27,7 +28,7 @@ void ResizeCameraCommand::unexecute() {
 
 void ResizeCameraCommand::visit(Camera* camera) {
    if (camera) {
-      camera->resize();
+      camera->resize(this->window_->size());
    }
 }
 

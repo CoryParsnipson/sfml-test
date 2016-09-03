@@ -1,6 +1,8 @@
 #ifndef CAMERA_RESIZE_POLICY_H
 #define CAMERA_RESIZE_POLICY_H
 
+#include "dependencies.h"
+
 // ----------------------------------------------------------------------------
 // forward declarations
 // ----------------------------------------------------------------------------
@@ -13,7 +15,7 @@ class Camera;
 // ----------------------------------------------------------------------------
 class CameraResizePolicy {
 public:
-   virtual void resize(Camera& camera) = 0;
+   virtual void resize(Camera& camera, sf::Vector2f size) = 0;
 };
 
 #endif

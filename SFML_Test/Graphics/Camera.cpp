@@ -64,9 +64,9 @@ const std::shared_ptr<CameraResizePolicy>& Camera::policy() {
    return this->resize_policy_;
 }
 
-void Camera::resize() {
+void Camera::resize(sf::Vector2f size) {
    if (this->resize_policy_) {
-      this->resize_policy_->resize(*this);
+      this->resize_policy_->resize(*this, size);
    }
 }
 

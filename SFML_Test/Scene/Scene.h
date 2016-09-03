@@ -63,9 +63,9 @@ public:
          Service::get_input().attach(**it);
       }
 
-      // TODO: enable
       // resize all the cameras
-      //ResizeCameraCommand rc_command(this->scene_graph_);
+      ResizeCameraCommand rc_command(game.window(), this->scene_graph_);
+      rc_command.execute();
 
       this->game_ = &game; // set game pointer
       this->enter(game);
@@ -153,9 +153,9 @@ public:
    }
    virtual void process(Game& game, KeyPressInputEvent& e) {}
    virtual void process(Game& game, ResizeInputEvent& e) {
-      // update main camera
-      this->camera_->set_size(sf::Vector2f(e.width, e.height));
-      this->camera_->set_center(sf::Vector2f(e.width / 2.f, e.height / 2.f));
+      // resize all the cameras
+      ResizeCameraCommand rc_command(game.window(), this->scene_graph_);
+      rc_command.execute();
    }
    virtual void process(Game& game, MouseMoveInputEvent& e) {}
    virtual void process(Game& game, MouseWheelInputEvent& e) {}

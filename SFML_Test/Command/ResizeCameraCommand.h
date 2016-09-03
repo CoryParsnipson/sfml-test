@@ -3,6 +3,7 @@
 
 #include "Command.h"
 #include "SceneGraphVisitor.h"
+#include "RenderSurface.h"
 
 // ----------------------------------------------------------------------------
 // forward declarations
@@ -19,7 +20,7 @@ class ResizeCameraCommand
 , public SceneGraphVisitor
 {
 public:
-   ResizeCameraCommand(SceneObject* scene_graph);
+   ResizeCameraCommand(const RenderSurface& window, SceneObject* scene_graph);
    virtual ~ResizeCameraCommand();
 
    // command interface
@@ -35,6 +36,7 @@ public:
    virtual void visit(Gamepad*);
 
 private:
+   const RenderSurface* window_;
    SceneObject* scene_graph_;
 };
 

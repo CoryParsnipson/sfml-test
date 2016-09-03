@@ -11,7 +11,7 @@ StretchCameraResizePolicy::StretchCameraResizePolicy(sf::Vector2f size)
 {
 }
 
-void StretchCameraResizePolicy::resize(Camera& camera) {
+void StretchCameraResizePolicy::resize(Camera& camera, sf::Vector2f size) {
    camera.set_size(this->size_);
    camera.set_center(0.5f * this->size_);
 }

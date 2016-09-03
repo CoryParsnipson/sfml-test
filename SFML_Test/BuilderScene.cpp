@@ -34,11 +34,13 @@
 
 #include "PlayerGamepad.h"
 
+#include "FitCameraResizePolicy.h"
+
 BuilderScene::BuilderScene()
 : Scene("BuilderScene")
 , map_(nullptr)
-, hud_camera_(new Camera("Hud Camera", sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height())))
-, map_camera_(new Camera("Map Camera", sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height())))
+, hud_camera_(new Camera("Hud Camera"))
+, map_camera_(new Camera("Map Camera"))
 , map_filename_("pkmn_map_test.txt")
 , center_dot_(nullptr)
 , tile_cursor_(nullptr)
@@ -95,6 +97,13 @@ BuilderScene::BuilderScene()
    // create "map layers" using a new camera
    this->scene_graph_->insert(1, this->map_camera_); // layer for map
    this->scene_graph_->insert(2, this->hud_camera_); // layer for hud 
+
+   // set resize policies
+   std::shared_ptr<CameraResizePolicy> crp = std::make_shared<FitCameraResizePolicy>();
+   this->camera_->policy(crp);
+
+   this->hud_camera_->policy(crp);
+   this->map_camera_->policy(crp);
 
    // build the map
    this->serializer_ = new TextSerializer();
@@ -280,13 +289,6 @@ void BuilderScene::process(Game& game, ResizeInputEvent& e) {
 
    // change backsplash size
    this->backdrop_->set_size(Settings::Instance()->cur_width(), Settings::Instance()->cur_height());
-
-   // change custom scene camera sizes
-   this->map_camera_->set_size(sf::Vector2f(e.width, e.height));
-   this->map_camera_->set_center(sf::Vector2f(e.width / 2.f, e.height / 2.f));
-
-   this->hud_camera_->set_size(sf::Vector2f(e.width, e.height));
-   this->hud_camera_->set_center(sf::Vector2f(e.width / 2.f, e.height / 2.f));
 }
 
 void BuilderScene::process(Game& game, KeyPressInputEvent& e) {
