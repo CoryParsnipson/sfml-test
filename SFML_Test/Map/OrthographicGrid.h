@@ -28,6 +28,9 @@ public:
 
    virtual sf::Vector2f coord_to_screen(const sf::Vector2f& coord);
 
+   using Grid::size;
+   virtual void size(sf::Vector2f size);
+
    // moveable interface
    virtual void move(const sf::Vector2f& delta);
 

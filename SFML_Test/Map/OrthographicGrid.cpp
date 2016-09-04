@@ -89,6 +89,16 @@ sf::Vector2f OrthographicGrid::coord_to_screen(const sf::Vector2f& coord) {
    return sf::Vector2f(coord.x * this->tile_width(), coord.y * this->tile_height());
 }
 
+void OrthographicGrid::size(sf::Vector2f size) {
+   Grid::size(size);
+   
+   this->clear_gridlines();
+   this->create_gridlines();
+
+   this->clear_text_markers();
+   this->create_text_markers();
+}
+
 void OrthographicGrid::move(const sf::Vector2f& delta) {
    this->pan_delta_ += delta * this->scale_factor_;
 
@@ -182,25 +192,21 @@ void OrthographicGrid::create_origin_dot() {
 }
 
 void OrthographicGrid::create_gridlines() {
-   int cur_width = Settings::Instance()->cur_width() * this->scale_factor_;
-   int cur_height = Settings::Instance()->cur_height() * this->scale_factor_;
-
-   sf::Vector2f center(Settings::Instance()->cur_width() / 2.f, Settings::Instance()->cur_height() / 2.f);
-   sf::Vector2f screen_start = center - sf::Vector2f(cur_width / 2.f, cur_height / 2.f) + this->pan_delta_;
+   sf::Vector2f screen_start = (this->size_ / 2.f) - (this->size() / 2.f) + this->pan_delta_;
    sf::Vector2f start_pos = this->round(screen_start);
 
-   for (int col_pos = 0; col_pos <= cur_width; col_pos += this->tile_width()) {
+   for (int col_pos = 0; col_pos <= this->size().x; col_pos += this->tile_width()) {
       Graphic* col = new SpriteGraphic();
-      col->set_size(1, cur_height);
+      col->set_size(1, this->size().y);
       col->set_position(col_pos + start_pos.x, screen_start.y);
       col->set_color(sf::Color(230, 230, 230, 90));
 
       this->grid_cols_.push_back(col);
    }
 
-   for (int row_pos = 0; row_pos <= cur_height; row_pos += this->tile_height()) {
+   for (int row_pos = 0; row_pos <= this->size().y; row_pos += this->tile_height()) {
       Graphic* row = new SpriteGraphic();
-      row->set_size(cur_width, 1);
+      row->set_size(this->size().x, 1);
       row->set_position(screen_start.x, row_pos + start_pos.y);
       row->set_color(sf::Color(230, 230, 230, 90));
 
@@ -222,19 +228,16 @@ void OrthographicGrid::clear_gridlines() {
 }
 
 void OrthographicGrid::create_text_markers() {
-   int cur_width = Settings::Instance()->cur_width() * this->scale_factor_;
-   int cur_height = Settings::Instance()->cur_height() * this->scale_factor_;
    int text_interval = this->tile_width() * 8;
 
    sf::Vector2f pos;
-   sf::Vector2f center(Settings::Instance()->cur_width() / 2.f, Settings::Instance()->cur_height() / 2.f);
-   sf::Vector2f screen_start = center - sf::Vector2f(cur_width / 2.f, cur_height / 2.f) + this->pan_delta_;
+   sf::Vector2f screen_start = (this->size_ / 2.f) - (this->size() / 2.f) + this->pan_delta_;
    sf::Vector2f start_pos(
       std::ceil(screen_start.x / (8 * this->tile_width())) * 8 * this->tile_width(),
       std::ceil(screen_start.y / (8 * this->tile_height())) * 8 * this->tile_height()
    );
-   for (int col_pos = -text_interval; col_pos <= cur_width; col_pos += text_interval) {
-      for (int row_pos = -text_interval; row_pos <= cur_height; row_pos += text_interval) {
+   for (int col_pos = -text_interval; col_pos <= this->size().x; col_pos += text_interval) {
+      for (int row_pos = -text_interval; row_pos <= this->size().y; row_pos += text_interval) {
          pos.x = col_pos + start_pos.x;
          pos.y = row_pos + start_pos.y;
 

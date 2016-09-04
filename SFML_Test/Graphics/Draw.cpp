@@ -390,6 +390,10 @@ void VertexGraphic::draw(RenderSurface& surface, sf::RenderStates render_states 
    surface.draw(*this->drawable_, render_states);
 }
 
+sf::Vertex& VertexGraphic::vertex(int idx) {
+   return (*this->drawable_)[idx];
+}
+
 sf::FloatRect VertexGraphic::get_local_bounds() const {
    return this->drawable_->getBounds();
 }
@@ -405,6 +409,7 @@ void VertexGraphic::set_size(float x, float y) {
 }
 
 void VertexGraphic::set_size(const sf::Vector2f& size) {
+   this->set_size(size.x, size.y);
 }
 
 const sf::Vector2f& VertexGraphic::get_position() {

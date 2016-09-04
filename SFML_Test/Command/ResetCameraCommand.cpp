@@ -21,12 +21,12 @@ void ResetCameraCommand::execute() {
    this->scale_factor_ = this->camera_->get_scale();
    this->pan_delta_ = this->camera_->get_pan_delta();
 
-   this->camera_->reset_pan();
    this->camera_->reset_zoom();
+   this->camera_->reset_pan();
 
    if (this->grid_) {
       this->grid_->set_scale(1.f);
-      this->grid_->move(this->pan_delta_);
+      this->grid_->set_position(sf::Vector2f(0, 0));
    }
 }
 
@@ -35,11 +35,12 @@ void ResetCameraCommand::unexecute() {
       return;
    }
 
-   this->camera_->move(-this->pan_delta_);
    this->camera_->set_scale(this->scale_factor_);
+   this->camera_->move(-this->pan_delta_);
 
    if (this->grid_) {
       this->grid_->set_scale(this->scale_factor_);
       this->grid_->move(-this->pan_delta_);
+      this->grid_->size(this->camera_->get_size());
    }
 }

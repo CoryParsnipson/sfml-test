@@ -239,6 +239,9 @@ public:
 
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states);
 
+   // vertex graphic interface
+   sf::Vertex& vertex(int idx);
+
    // common sfml drawable interface
    virtual sf::FloatRect get_local_bounds() const;
    virtual sf::FloatRect get_global_bounds() const;

@@ -16,6 +16,7 @@ public:
    : SceneObject()
    , id_(id)
    , origin_(0, 0)
+   , size_(0, 0)
    , tile_width_(10)
    , tile_height_(10)
    , show_debug_info_(false)
@@ -28,6 +29,7 @@ public:
    : SceneObject()
    , id_(id)
    , origin_(0, 0)
+   , size_(0, 0)
    , tile_width_(tile_size > 0 ? tile_size : 10)
    , tile_height_(tile_size > 0 ? tile_size : 10)
    , show_debug_info_(false)
@@ -40,6 +42,7 @@ public:
    : SceneObject()
    , id_(id)
    , origin_(0, 0)
+   , size_(0, 0)
    , tile_width_(tile_size.x > 0 ? tile_size.x : 10)
    , tile_height_(tile_size.y > 0 ? tile_size.y : 10)
    , show_debug_info_(false)
@@ -75,6 +78,15 @@ public:
    }
    virtual int tile_height() { return this->tile_height_; }
 
+   virtual void size(sf::Vector2f size) {
+      this->size_.x = std::max(size.x, 0.f);
+      this->size_.y = std::max(size.y, 0.f);
+   }
+
+   sf::Vector2f size() {
+      return this->size_ * this->scale_factor_;
+   }
+
    bool show_debug() { return this->show_debug_info_; }
    void show_debug(bool show_debug_info) { this->show_debug_info_ = show_debug_info; }
 
@@ -102,6 +114,8 @@ protected:
    std::string id_;
    sf::Vector2f origin_;
    sf::Vector2f origin_mod_;
+
+   sf::Vector2f size_;
 
    int tile_width_;
    int tile_height_;

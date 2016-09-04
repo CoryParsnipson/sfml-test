@@ -76,9 +76,9 @@ BuilderScene::BuilderScene()
 
    sf::VertexArray* backdrop = new sf::VertexArray(sf::TrianglesStrip, 4);
    (*backdrop)[0].position = sf::Vector2f(0, 0);
-   (*backdrop)[1].position = sf::Vector2f(0, Settings::Instance()->cur_height());
-   (*backdrop)[2].position = sf::Vector2f(Settings::Instance()->cur_width(), 0);
-   (*backdrop)[3].position = sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height());
+   (*backdrop)[1].position = sf::Vector2f(0, 0);
+   (*backdrop)[2].position = sf::Vector2f(0, 0);
+   (*backdrop)[3].position = sf::Vector2f(0, 0);
 
    (*backdrop)[0].color = sf::Color(50, 50, 50, 255);
    (*backdrop)[1].color = sf::Color(25, 25, 25, 255);
@@ -153,7 +153,6 @@ BuilderScene::BuilderScene()
    Graphic* center_dot_graphic = new SpriteGraphic();
    center_dot_graphic->set_size(3, 3);
    center_dot_graphic->set_color(sf::Color(255, 104, 2));
-   center_dot_graphic->set_position(Settings::Instance()->cur_width() / 2, Settings::Instance()->cur_height() / 2);
 
    this->center_dot_ = UtilFactory::inst()->create_graphic(
       center_dot_graphic,
@@ -163,7 +162,6 @@ BuilderScene::BuilderScene()
    this->scene_graph_->layer(2)->insert(2, this->center_dot_);
 
    this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", this->fonts_.get("retro"));
-   this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
    this->scene_graph_->layer(2)->insert(2, this->fps_display_);
 
    // create player gamepad
@@ -232,8 +230,6 @@ BuilderScene::BuilderScene()
 
    pg->set(new ToggleVisibleCommand(this->map_->grid()), Key::G);
    pg->set(new ResetCameraCommand(this->map_camera_, this->map_->grid()), Key::R);
-   
-   // note, there's a subtle error here. Scene constructor in TestUIScene access global Settings singleton, which may have different state at this line, when when the switch is made
    pg->set(new SwitchSceneCommand(this, new TestUIScene()), Key::Escape);
 }
 
@@ -243,6 +239,18 @@ BuilderScene::~BuilderScene() {
 
 void BuilderScene::enter(Game& game) {
    Service::get_logger().msg(this->id_, Logger::INFO, "Entering builder state.");
+
+   // set center dot position
+   this->center_dot_->set_position(game.window().size() / 2.f);
+
+   // set fps display position
+   this->fps_display_->set_position(game.window().size().x - 60, 0);
+
+   // change backsplash size
+   this->backdrop_->set_size(game.window().size());
+
+   // set grid size
+   this->map_->grid()->size(game.window().size());
 }
 
 void BuilderScene::exit(Game& game) {
@@ -276,10 +284,13 @@ void BuilderScene::process(Game& game, ResizeInputEvent& e) {
    this->map_->grid()->set_position(-1.f * this->map_camera_->get_pan_delta());
 
    // reposition fps display
-   this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
+   this->fps_display_->set_position(game.window().size().x - 60, 0);
 
    // change backsplash size
-   this->backdrop_->set_size(Settings::Instance()->cur_width(), Settings::Instance()->cur_height());
+   this->backdrop_->set_size(game.window().size());
+
+   // set grid size
+   this->map_->grid()->size(game.window().size());
 }
 
 void BuilderScene::process(Game& game, KeyPressInputEvent& e) {

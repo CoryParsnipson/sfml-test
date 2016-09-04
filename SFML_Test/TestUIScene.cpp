@@ -16,7 +16,7 @@
 
 TestUIScene::TestUIScene()
 : Scene("TestUIScene")
-, ui_camera_(new Camera("UI Camera", sf::Vector2f(Settings::Instance()->cur_width(), Settings::Instance()->cur_height())))
+, ui_camera_(new Camera("UI Camera"))
 , last_frame_time(0)
 , frame_measurement_interval(6)
 , frame_count(0)
@@ -42,7 +42,6 @@ TestUIScene::TestUIScene()
    ));
 
    this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", this->fonts_.get("retro"));
-   this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
    this->scene_graph_->add(this->fps_display_);
 
    // test widget
@@ -72,19 +71,9 @@ TestUIScene::~TestUIScene() {
 
 void TestUIScene::enter(Game& game) {
    Service::get_logger().msg(this->id_, Logger::INFO, "Entering test UI menu state.");
-   
-   // update cameras based on window size
-   sf::Vector2f new_size(Settings::Instance()->cur_width(), Settings::Instance()->cur_height());
-   sf::Vector2f new_center(new_size.x/ 2.f, new_size.y/ 2.f);
-
-   this->camera_->set_size(new_size);
-   this->camera_->set_center(new_center);
-
-   this->ui_camera_->set_size(new_size);
-   this->ui_camera_->set_center(new_center);
 
    // reposition fps display
-   this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
+   this->fps_display_->set_position(game.window().size().x - 60, 0);
 }
 
 void TestUIScene::exit(Game& game) {
@@ -116,15 +105,8 @@ void TestUIScene::update_fps() {
 void TestUIScene::process(Game& game, ResizeInputEvent& e) {
    Scene::process(game, e);
 
-   sf::Vector2f new_size(e.width, e.height);
-   sf::Vector2f new_center(e.width / 2.f, e.height / 2.f);
-
    // reposition fps display
-   this->fps_display_->set_position(Settings::Instance()->cur_width() - 60, 0);
-
-   // adjust camera
-   this->ui_camera_->set_size(sf::Vector2f(e.width, e.height));
-   this->ui_camera_->set_center(sf::Vector2f(e.width / 2.f, e.height / 2.f));
+   this->fps_display_->set_position(game.window().size().x - 60, 0);
 }
 
 void TestUIScene::process(Game& game, KeyPressInputEvent& e) {
