@@ -1,28 +1,46 @@
-#include "dependencies.h"
+#include <iostream>
+
 #include "Settings.h"
 
-// instantiate singleton instance
-Settings* Settings::instance = NULL;
-
-Settings* Settings::Instance() {
-	if (!instance) {
-		instance = new Settings();
-	}
-	return instance;
+Settings::Settings()
+: framerate_limit_(60)
+, framerate_smoothing_(0.98)
+, default_window_width_(800)
+, default_window_height_(600)
+{
 }
 
-int Settings::cur_width() {
-   return this->width_;
+int Settings::framerate_limit() {
+   return this->framerate_limit_;
 }
 
-void Settings::cur_width(int new_width) {
-   this->width_ = new_width;
+void Settings::framerate_limit(int framerate_limit) {
+   this->framerate_limit_ = std::max(framerate_limit, 0);
 }
 
-int Settings::cur_height() {
-   return this->height_;
+float Settings::framerate_smoothing() {
+   return this->framerate_smoothing_;
 }
 
-void Settings::cur_height(int new_height) {
-   this->height_ = new_height;
+void Settings::framerate_smoothing(float framerate_smoothing) {
+   framerate_smoothing = std::min(framerate_smoothing, 1.f);
+   framerate_smoothing = std::max(framerate_smoothing, 0.f);
+
+   this->framerate_smoothing_ = framerate_smoothing;
+}
+
+int Settings::default_window_width() {
+   return this->default_window_width_;
+}
+
+void Settings::default_window_width(int default_window_width) {
+   this->default_window_width_ = std::max(default_window_width, 1);
+}
+
+int Settings::default_window_height() {
+   return this->default_window_height_;
+}
+
+void Settings::default_window_height(int default_window_height) {
+   this->default_window_height_ = std::max(default_window_height, 1);
 }

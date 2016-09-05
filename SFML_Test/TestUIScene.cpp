@@ -85,14 +85,14 @@ void TestUIScene::update(Game& game, Scene* scene) {
 
    // calculate and show FPS
    if (!this->frame_count) {
-      this->update_fps();
+      this->update_fps(game.settings);
    }
    this->frame_count = (this->frame_count + 1) % this->frame_measurement_interval;
 }
 
-void TestUIScene::update_fps() {
-   this->last_frame_time = (((float)this->frame_measurement_interval / this->clock.getElapsedTime().asSeconds()) * Settings::Instance()->FRAMERATE_SMOOTHING)
-                           + (this->last_frame_time * (1.0 - Settings::Instance()->FRAMERATE_SMOOTHING));
+void TestUIScene::update_fps(Settings& settings) {
+   this->last_frame_time = (((float)this->frame_measurement_interval / this->clock.getElapsedTime().asSeconds()) * settings.framerate_smoothing())
+                           + (this->last_frame_time * (1.0 - settings.framerate_smoothing()));
    this->clock.restart();
 
    // update fps entity

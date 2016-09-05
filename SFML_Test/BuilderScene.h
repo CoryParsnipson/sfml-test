@@ -2,6 +2,7 @@
 #define BUILDER_SCENE_H
 
 #include "Scene.h"
+#include "Settings.h"
 
 class Texture;
 
@@ -48,7 +49,7 @@ protected:
    bool show_debug_info_;
 
    // helper methods
-   void update_fps();
+   void update_fps(Settings& settings);
    void toggle_debug_info();
 
    void set_tiles(Texture& tile_texture);

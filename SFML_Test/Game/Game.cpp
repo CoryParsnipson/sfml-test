@@ -15,7 +15,7 @@ Game::Game()
 : InputListener("Game")
 , next_scene_(nullptr)
 , prev_scene_(nullptr)
-, window_("SFML Test", sf::Vector2f(Settings::Instance()->SCREEN_WIDTH, Settings::Instance()->SCREEN_HEIGHT), Settings::Instance()->FRAMERATE_LIMIT)
+, window_("SFML Test", sf::Vector2f(this->settings.default_window_width(), this->settings.default_window_height()))
 {
    // TODO: probably need to move this into a config class or something
    Serialize::SerialObj config_line;
@@ -111,10 +111,6 @@ void Game::process(CloseInputEvent& e) {
 }
 
 void Game::process(ResizeInputEvent& e) {
-   // update settings
-   Settings::Instance()->cur_width(e.width);
-   Settings::Instance()->cur_height(e.height);
-
    this->scenes_.top()->process(*this, e);
 }
 

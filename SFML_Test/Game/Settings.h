@@ -1,42 +1,35 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+// ----------------------------------------------------------------------------
+// Settings
+//
+// This is an object that contains global settings and information
+// for a game object.
+// ----------------------------------------------------------------------------
 class Settings {
 public:
-	static Settings* Instance();
+   // TODO: serialize and deserialize
+   Settings();
+   
+   int framerate_limit();
+   void framerate_limit(int framerate_limit);
 
-	const int FRAMERATE_LIMIT = 60;
-   const float FRAMERATE_SMOOTHING = 0.98;
+   float framerate_smoothing();
+   void framerate_smoothing(float framerate_smoothing);
 
-	const int SCREEN_WIDTH = 800;
-	const int SCREEN_HEIGHT = 600;
+   int default_window_width();
+   void default_window_width(int default_window_width);
 
-	const float SCALE_X = 1; // factor
-	const float SCALE_Y = 1; // factor
-
-	const float TILE_WIDTH = SCALE_X * 40; // px
-	const float TILE_HEIGHT = SCALE_Y * 40; // px
-	const float TILE_HEIGHT_RHOMBUS = SCALE_Y * 20; // px
-	const float TILE_HEIGHT_OVERLAP = TILE_HEIGHT_RHOMBUS / 2;
-
-   int cur_width();
-   void cur_width(int new_width);
-
-   int cur_height();
-   void cur_height(int new_height);
-
-protected:
-   int width_;
-   int height_;
+   int default_window_height();
+   void default_window_height(int default_window_height);
 
 private:
-	Settings()
-   : width_(SCREEN_WIDTH)
-   , height_(SCREEN_HEIGHT)
-   {};
-	Settings(const Settings& g) {}; // seal off copy constructor
+   int framerate_limit_;
+   float framerate_smoothing_;
 
-	static Settings* instance;
+   int default_window_width_;
+   int default_window_height_;
 };
 
 #endif

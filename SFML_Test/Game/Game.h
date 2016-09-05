@@ -37,6 +37,9 @@ public:
 
    const Canvas& window() const;
 
+   // settings
+   Settings settings;
+
 private:
 	// game flow control
 	void main_loop();

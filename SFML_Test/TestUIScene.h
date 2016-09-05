@@ -2,6 +2,7 @@
 #define TEST_UT_SCENE_H
 
 #include "Scene.h"
+#include "Settings.h"
 
 // -----------------------------------------------------------------------------
 // forward declarations
@@ -38,7 +39,7 @@ protected:
    int frame_count;
 
    // helper methods
-   void update_fps();
+   void update_fps(Settings& settings);
 };
 
 #endif
