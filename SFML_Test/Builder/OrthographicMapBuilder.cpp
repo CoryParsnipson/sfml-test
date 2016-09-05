@@ -1,23 +1,23 @@
-#include "FlatMapBuilder.h"
+#include "OrthographicMapBuilder.h"
 
 #include "TextSerializer.h"
 #include "OrthographicGrid.h"
 #include "TileFactory.h"
 #include "PhysicsPart.h"
 
-FlatMapBuilder::FlatMapBuilder()
+OrthographicMapBuilder::OrthographicMapBuilder()
 : MapBuilder()
 {
 }
 
-FlatMapBuilder::~FlatMapBuilder() {
+OrthographicMapBuilder::~OrthographicMapBuilder() {
 }
 
-void FlatMapBuilder::build() {
+void OrthographicMapBuilder::build() {
    this->build_map();
 
    if (!this->serializer_) {
-      Service::get_logger().msg("FlatMapBuilder", Logger::ERROR, "Serializer has not been initialized!");
+      Service::get_logger().msg("OrthographicMapBuilder", Logger::ERROR, "Serializer has not been initialized!");
       return;
    }
 
@@ -38,40 +38,40 @@ void FlatMapBuilder::build() {
             entity->deserialize(d, this->textures_);
             this->build_tile(entity);
          } else {
-            Service::get_logger().msg("FlatMapBuilder", Logger::WARNING, "Received serialized object of unknown type '" + d["type"] + "'");
+            Service::get_logger().msg("OrthographicMapBuilder", Logger::WARNING, "Received serialized object of unknown type '" + d["type"] + "'");
             continue;
          }
       } catch (const std::out_of_range& e) {
-         Service::get_logger().msg("FlatMapBuilder", Logger::WARNING, "Unable to de-serialize object: " + d["type"]);
+         Service::get_logger().msg("OrthographicMapBuilder", Logger::WARNING, "Unable to de-serialize object: " + d["type"]);
          continue;
       }
    }
 }
 
-void FlatMapBuilder::build_map() {
+void OrthographicMapBuilder::build_map() {
    this->map_ = new Map();
 }
 
-void FlatMapBuilder::build_tile(Entity* tile) {
+void OrthographicMapBuilder::build_tile(Entity* tile) {
    if (!this->map_) {
       this->build_map();
    }
 
    if (!tile) {
-      Service::get_logger().msg("FlatMapBuilder", Logger::WARNING, "Received null tile pointer.");
+      Service::get_logger().msg("OrthographicMapBuilder", Logger::WARNING, "Received null tile pointer.");
       return;
    }
 
    this->map_->add(tile);
 }
 
-void FlatMapBuilder::build_grid(Grid* grid) {
+void OrthographicMapBuilder::build_grid(Grid* grid) {
    if (!this->map_) {
       this->build_map();
    }
 
    if (!grid) {
-      Service::get_logger().msg("FlatMapBuilder", Logger::WARNING, "Received null grid pointer.");
+      Service::get_logger().msg("OrthographicMapBuilder", Logger::WARNING, "Received null grid pointer.");
       return;
    }
 

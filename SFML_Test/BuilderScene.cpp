@@ -17,7 +17,7 @@
 #include "TileFactory.h"
 #include "TextFactory.h"
 #include "TextSerializer.h"
-#include "FlatMapBuilder.h"
+#include "OrthographicMapBuilder.h"
 #include "Grid.h"
 
 #include "MacroCommand.h"
@@ -100,7 +100,7 @@ BuilderScene::BuilderScene()
    this->serializer_ = new TextSerializer();
    this->serializer_->open_infile(this->map_filename_);
 
-   MapBuilder* map_builder = new FlatMapBuilder();
+   MapBuilder* map_builder = new OrthographicMapBuilder();
    map_builder->set_serializer(this->serializer_);
    map_builder->grid_font(this->fonts_.get("retro"));
    map_builder->textures(&this->textures_);

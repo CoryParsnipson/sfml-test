@@ -1,12 +1,12 @@
-#ifndef FLAT_MAP_BUILDER_H
-#define FLAT_MAP_BUILDER_H
+#ifndef ORTHOGRAHPIC_MAP_BUILDER_H
+#define ORTHOGRAHPIC_MAP_BUILDER_H
 
 #include "MapBuilder.h"
 
-class FlatMapBuilder : public MapBuilder {
+class OrthographicMapBuilder : public MapBuilder {
 public:
-   FlatMapBuilder();
-   virtual ~FlatMapBuilder();
+   OrthographicMapBuilder();
+   virtual ~OrthographicMapBuilder();
 
    virtual void build();
 
