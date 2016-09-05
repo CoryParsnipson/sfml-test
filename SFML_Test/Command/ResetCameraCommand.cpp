@@ -41,6 +41,5 @@ void ResetCameraCommand::unexecute() {
    if (this->grid_) {
       this->grid_->set_scale(this->scale_factor_);
       this->grid_->move(-this->pan_delta_);
-      this->grid_->size(this->camera_->get_size());
    }
 }
