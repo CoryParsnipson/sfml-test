@@ -14,55 +14,60 @@ TARGET = sfml_test
 CFLAGS = -g -Wall -std=c++11
 
 # path defines
-PROJECT_DIR := $(PWD)/SFML_Test
-OUTPUT_DIR := $(PWD)
-OUTPUT_DIR_PROFILER := $(OUTPUT_DIR)/Profiler
-OUTPUT_DIR_DEBUG := $(OUTPUT_DIR)/Debug
-OUTPUT_DIR_RELEASE := $(OUTPUT_DIR)/Release
+PROJECT_DIR := $(PWD)
+OUTPUT_DIR := $(PWD)/output
+OUTPUT_DIR_PROFILER := $(OUTPUT_DIR)/profiler
+OUTPUT_DIR_DEBUG := $(OUTPUT_DIR)/debug
+OUTPUT_DIR_RELEASE := $(OUTPUT_DIR)/release
 
 # dll stuff
 DL_INCLUDES = -lsfml-window -lsfml-graphics -lsfml-system
 
 # include paths
 INCLUDE_PATHS = 
-INCLUDE_PATHS += SFML_Test
-INCLUDE_PATHS += SFML_Test/Util
-INCLUDE_PATHS += SFML_Test/Input/InputEvent
-INCLUDE_PATHS += SFML_Test/Input/Gamepad
-INCLUDE_PATHS += SFML_Test/Input
-INCLUDE_PATHS += SFML_Test/Logger
-INCLUDE_PATHS += SFML_Test/Service
-INCLUDE_PATHS += SFML_Test/Game
-INCLUDE_PATHS += SFML_Test/Graphics
-INCLUDE_PATHS += SFML_Test/Command
-INCLUDE_PATHS += SFML_Test/Scene
-INCLUDE_PATHS += SFML_Test/Entity
-INCLUDE_PATHS += SFML_Test/Builder
-INCLUDE_PATHS += SFML_Test/Serializer
-INCLUDE_PATHS += SFML_Test/Map
-INCLUDE_PATHS += SFML_Test/Factory
-INCLUDE_PATHS += SFML_Test/UI/Widget
-INCLUDE_PATHS += SFML_Test/UI/Compositor
-INCLUDE_PATHS += SFML_Test/UI
+INCLUDE_PATHS += $(PROJECT_DIR)
+INCLUDE_PATHS += $(PROJECT_DIR)/engine
+INCLUDE_PATHS += $(PROJECT_DIR)/engine/Util
+INCLUDE_PATHS += $(PROJECT_DIR)/engine/Input/InputEvent
+INCLUDE_PATHS += $(PROJECT_DIR)/engine/Input/Gamepad
+INCLUDE_PATHS += $(PROJECT_DIR)/engine/Input
+INCLUDE_PATHS += $(PROJECT_DIR)/engine/Logger
+INCLUDE_PATHS += $(PROJECT_DIR)/engine/Service
+INCLUDE_PATHS += $(PROJECT_DIR)/engine/Game
+INCLUDE_PATHS += $(PROJECT_DIR)/engine/Graphics
+INCLUDE_PATHS += $(PROJECT_DIR)/engine/Command
+INCLUDE_PATHS += $(PROJECT_DIR)/engine/Scene
+INCLUDE_PATHS += $(PROJECT_DIR)/engine/Entity
+INCLUDE_PATHS += $(PROJECT_DIR)/engine/Builder
+INCLUDE_PATHS += $(PROJECT_DIR)/engine/Serializer
+INCLUDE_PATHS += $(PROJECT_DIR)/engine/Map
+INCLUDE_PATHS += $(PROJECT_DIR)/engine/Factory
+INCLUDE_PATHS += $(PROJECT_DIR)/engine/UI/Widget
+INCLUDE_PATHS += $(PROJECT_DIR)/engine/UI/Compositor
+INCLUDE_PATHS += $(PROJECT_DIR)/engine/UI
+
+INCLUDE_PATHS += $(PROJECT_DIR)/levels
 
 CXX_FILES =
 CXX_FILES += $(PROJECT_DIR)/*.cpp
-CXX_FILES += $(PROJECT_DIR)/Input/InputEvent/*.cpp
-CXX_FILES += $(PROJECT_DIR)/Input/Gamepad/*.cpp
-CXX_FILES += $(PROJECT_DIR)/Input/*.cpp
-CXX_FILES += $(PROJECT_DIR)/Logger/*.cpp
-CXX_FILES += $(PROJECT_DIR)/Service/*.cpp
-CXX_FILES += $(PROJECT_DIR)/Game/*.cpp
-CXX_FILES += $(PROJECT_DIR)/Graphics/*.cpp
-CXX_FILES += $(PROJECT_DIR)/Scene/*.cpp
-CXX_FILES += $(PROJECT_DIR)/Command/*.cpp
-CXX_FILES += $(PROJECT_DIR)/Entity/*.cpp
-CXX_FILES += $(PROJECT_DIR)/Builder/*.cpp
-CXX_FILES += $(PROJECT_DIR)/Serializer/*.cpp
-CXX_FILES += $(PROJECT_DIR)/Map/*.cpp
-CXX_FILES += $(PROJECT_DIR)/Factory/*.cpp
-CXX_FILES += $(PROJECT_DIR)/UI/Widget/*.cpp
-CXX_FILES += $(PROJECT_DIR)/UI/Compositor/*.cpp
+CXX_FILES += $(PROJECT_DIR)/engine/Input/InputEvent/*.cpp
+CXX_FILES += $(PROJECT_DIR)/engine/Input/Gamepad/*.cpp
+CXX_FILES += $(PROJECT_DIR)/engine/Input/*.cpp
+CXX_FILES += $(PROJECT_DIR)/engine/Logger/*.cpp
+CXX_FILES += $(PROJECT_DIR)/engine/Service/*.cpp
+CXX_FILES += $(PROJECT_DIR)/engine/Game/*.cpp
+CXX_FILES += $(PROJECT_DIR)/engine/Graphics/*.cpp
+CXX_FILES += $(PROJECT_DIR)/engine/Scene/*.cpp
+CXX_FILES += $(PROJECT_DIR)/engine/Command/*.cpp
+CXX_FILES += $(PROJECT_DIR)/engine/Entity/*.cpp
+CXX_FILES += $(PROJECT_DIR)/engine/Builder/*.cpp
+CXX_FILES += $(PROJECT_DIR)/engine/Serializer/*.cpp
+CXX_FILES += $(PROJECT_DIR)/engine/Map/*.cpp
+CXX_FILES += $(PROJECT_DIR)/engine/Factory/*.cpp
+CXX_FILES += $(PROJECT_DIR)/engine/UI/Widget/*.cpp
+CXX_FILES += $(PROJECT_DIR)/engine/UI/Compositor/*.cpp
+
+CXX_FILES += $(PROJECT_DIR)/levels/*.cpp
 
 .PHONY: profiler debug release
 .DEFAULT_GOAL := debug

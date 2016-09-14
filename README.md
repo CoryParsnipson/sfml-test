@@ -23,8 +23,6 @@ TODO
 ----
 * make everything relative to in game units instead of pixels
 
-* Unfuck the header inclusion and decrease compile time
-
 * Think about making some sort of exception service? Make it graphical; print to screen
  
 * the Bridge pattern can be used to isolate sfml-test specific code from SFML library code
@@ -40,8 +38,6 @@ TODO
    * need to redo facade on sfml drawable objects, because it is super bad
 
 * Serialize map into an xml file instead of reading from handmade text file.
-
-* Put game specific scenes and game specific commands in a different folder hierarchy
 
 * Flesh out UI compositor classes
    * need to decide a way to specify fixed percentage positioning etc?
