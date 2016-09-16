@@ -25,8 +25,6 @@ public:
 
    // command interface
    virtual void process(Game& game, ResizeInputEvent& e);
-   virtual void process(Game& game, KeyPressInputEvent& e);
-   virtual void process(Game& game, MouseButtonInputEvent& e);
 
 protected:
    Camera* ui_camera_;

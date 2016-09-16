@@ -150,6 +150,16 @@ public:
       return this->game_->switch_scene(scene);
    }
 
+   Scene* unload_scene() {
+      if (!this->game_) {
+         Service::get_logger().msg(this->id(), Logger::ERROR, "Cannot unload scene that is not on top of the game stack.");
+         return nullptr;
+      }
+
+      this->game_->unload_scene();
+      return this->game_->current_scene();
+   }
+
    // input event processing default implementations
    virtual void process(Game& game, CloseInputEvent& e) {
       game.unload_scene();

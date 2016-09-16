@@ -11,6 +11,7 @@
 
 #include "WidgetEventCommand.h"
 #include "MoveCommand.h"
+#include "SwitchSceneCommand.h"
 
 #include "PlayerGamepad.h"
 
@@ -64,6 +65,8 @@ TestUIScene::TestUIScene()
    
    pg->set(new WidgetEventCommand(WidgetOp::MouseClick, this->scene_graph_, pg), MouseButton::Left);
    pg->set(new WidgetEventCommand(WidgetOp::MouseMove, this->scene_graph_, pg), MouseAction::Move);
+
+   pg->set(new SwitchSceneCommand(this, nullptr), Key::Space);
 }
 
 TestUIScene::~TestUIScene() {
@@ -108,11 +111,3 @@ void TestUIScene::process(Game& game, ResizeInputEvent& e) {
    // reposition fps display
    this->fps_display_->set_position(game.window().size().x - 60, 0);
 }
-
-void TestUIScene::process(Game& game, KeyPressInputEvent& e) {
-   if (e.key == Key::Space) {
-      game.unload_scene();
-   }
-}
-
-void TestUIScene::process(Game& game, MouseButtonInputEvent& e) {}

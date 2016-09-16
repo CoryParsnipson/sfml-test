@@ -28,6 +28,7 @@ public:
    void load_scene(Scene* scene);     // load new scene on top of current scene (and switch to it)
    void unload_scene();               // unload current scene and resume previous scene
    Scene* switch_scene(Scene* scene); // unload current scene and load new scene
+   Scene* current_scene();
 
    // input event processing
    virtual void process(CloseInputEvent& e);

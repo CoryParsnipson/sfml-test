@@ -11,7 +11,12 @@ SwitchSceneCommand::~SwitchSceneCommand() {
 }
 
 void SwitchSceneCommand::execute() {
-   if (!this->curr_scene_ || !this->next_scene_) {
+   if (!this->curr_scene_) {
+      return;
+   }
+
+   if (!this->next_scene_) {
+      this->next_scene_ = this->curr_scene_->unload_scene();
       return;
    }
 
@@ -19,7 +24,7 @@ void SwitchSceneCommand::execute() {
 }
 
 void SwitchSceneCommand::unexecute() {
-   if (!this->curr_scene_ || !this->next_scene_) {
+   if (!this->curr_scene_) {
       return;
    }
 

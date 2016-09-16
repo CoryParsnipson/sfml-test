@@ -108,6 +108,10 @@ Scene* Game::switch_scene(Scene* scene) {
    return this->prev_scene_;
 }
 
+Scene* Game::current_scene() {
+   return (this->scenes_.empty() ? nullptr : this->scenes_.top());
+}
+
 void Game::process(CloseInputEvent& e) {
    this->scenes_.top()->process(*this, e);
 }
