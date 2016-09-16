@@ -82,19 +82,6 @@ void ButtonWidget::on_click() {
    }
 }
 
-void ButtonWidget::drag(MouseButton button, sf::Vector2f pos, sf::Vector2f delta) {
-}
-
-float ButtonWidget::get_scale() {
-   return 1.0f;
-}
-
-void ButtonWidget::set_scale(float factor) {
-}
-
-void ButtonWidget::click(MouseButton button, ButtonState state, sf::Vector2f pos) {
-}
-
 void ButtonWidget::do_draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    this->background_->draw(surface, render_states);
 }
