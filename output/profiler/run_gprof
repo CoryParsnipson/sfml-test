@@ -1,0 +1,3 @@
+#!/bin/bash
+
+gprof sfml_test gmon.out > analysis.txt

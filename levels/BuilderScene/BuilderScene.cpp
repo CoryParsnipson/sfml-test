@@ -13,6 +13,9 @@
 #include "PhysicsPart.h"
 #include "ReferencePart.h"
 
+#include "PanelWidget.h"
+#include "ButtonWidget.h"
+
 #include "UtilFactory.h"
 #include "TileFactory.h"
 #include "TextFactory.h"
@@ -31,6 +34,7 @@
 #include "SetSelectionRectCommand.h"
 #include "UpdateSelectionRectCommand.h"
 #include "ZoomCommand.h"
+#include "WidgetEventCommand.h"
 
 #include "PlayerGamepad.h"
 
@@ -164,6 +168,16 @@ BuilderScene::BuilderScene()
    this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", this->fonts_.get("retro"));
    this->scene_graph_->layer(2)->insert(2, this->fps_display_);
 
+   // create UI elements
+   Widget* tile_palette = new PanelWidget("Tiles", sf::Vector2f(10, 50), sf::Vector2f(200, 400));
+   this->scene_graph_->layer(2)->add(tile_palette);
+
+   ButtonWidget* button = nullptr;
+
+   button = new ButtonWidget(this->textures_.get("tile_grass")->id(), sf::Vector2f(10, 10), sf::Vector2f(64, 64));
+   button->set_background(new SpriteGraphic(*this->textures_.get("tile_grass")));
+   tile_palette->add(button);
+
    // create player gamepad
    PlayerGamepad* pg = new PlayerGamepad("PlayerGamepad", this->fonts_.get("retro"));
    this->gamepad(pg);
@@ -178,6 +192,10 @@ BuilderScene::BuilderScene()
    drag_command->add(drag_map_camera);
    drag_command->add(drag_grid);
    drag_command->add(new SetSelectionRectCommand(usr, pg, selection_rect, false));
+   
+   // this is for interacting with button widgets, etc
+   // TODO: too much slow down
+   //drag_command->add(new WidgetEventCommand(WidgetOp::MouseMove, this->scene_graph_, pg));
 
    MacroCommand* on_right_mouse_click = new MacroCommand("SetDragTargetsMacroCommand");
    on_right_mouse_click->add(new DragTargetCommand(drag_map_camera, this->map_camera_));
