@@ -96,7 +96,7 @@ public:
    virtual void update(Game& game, Scene* scene = nullptr) {
       SceneObject::prefix_iterator it;
       for (it = this->scene_graph_->begin(); it != this->scene_graph_->end(); ++it) {
-         (*it)->update(game, scene);
+         (*it)->update(game, (scene ? scene : this));
       }
    }
 
@@ -158,6 +158,10 @@ public:
 
       this->game_->unload_scene();
       return this->game_->current_scene();
+   }
+
+   SceneObject* scene_graph() {
+      return this->scene_graph_;
    }
 
    // input event processing default implementations
