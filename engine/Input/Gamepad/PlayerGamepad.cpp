@@ -11,6 +11,7 @@ PlayerGamepad::PlayerGamepad(std::string id /* = "PlayerGamepad" */, sf::Font* c
 , mouse_wheel_command_(nullptr)
 , show_cursor_(true)
 , cursor_(new SpriteGraphic())
+, updated_in_this_tick_(false)
 {
    this->cursor_->set_size(6, 6);
    this->cursor_->set_color(sf::Color::Red);
@@ -98,6 +99,8 @@ void PlayerGamepad::update(Game& game, Scene* scene /* = nullptr */) {
    this->cursor_text_->set_position(c + this->cursor_->get_size());
 
    this->cursor_text_->set_string(std::to_string((int)c.x) + ", " + std::to_string((int)c.y));
+
+   this->updated_in_this_tick_ = false;
 }
 
 void PlayerGamepad::process(CloseInputEvent& e) {
@@ -120,6 +123,10 @@ void PlayerGamepad::process(KeyPressInputEvent& e) {
 void PlayerGamepad::process(MouseMoveInputEvent& e) {
    Service::get_logger().msg(Gamepad::id_, Logger::INFO, "Received " + std::string(e));
 
+   if (this->updated_in_this_tick_) {
+      return;
+   }
+
    // update gamepad position
    this->cursor_pos_prev_ = this->cursor_pos_;
    this->cursor_pos_ = sf::Vector2f(e.x, e.y);
@@ -127,6 +134,8 @@ void PlayerGamepad::process(MouseMoveInputEvent& e) {
    if (this->mouse_move_command_) {
       this->mouse_move_command_->execute();
    }
+
+   this->updated_in_this_tick_ = true;
 }
 
 void PlayerGamepad::process(MouseWheelInputEvent& e) {

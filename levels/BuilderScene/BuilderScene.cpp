@@ -194,8 +194,7 @@ BuilderScene::BuilderScene()
    drag_command->add(new SetSelectionRectCommand(usr, pg, selection_rect, false));
    
    // this is for interacting with button widgets, etc
-   // TODO: too much slow down
-   //drag_command->add(new WidgetEventCommand(WidgetOp::MouseMove, this->scene_graph_, pg));
+   drag_command->add(new WidgetEventCommand(WidgetOp::MouseMove, this->scene_graph_, pg));
 
    MacroCommand* on_right_mouse_click = new MacroCommand("SetDragTargetsMacroCommand");
    on_right_mouse_click->add(new DragTargetCommand(drag_map_camera, this->map_camera_));

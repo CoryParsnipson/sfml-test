@@ -62,6 +62,9 @@ protected:
 
    // scene object interface hooks
    virtual void do_draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
+
+private:
+   bool updated_in_this_tick_;
 };
 
 #endif
