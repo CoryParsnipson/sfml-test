@@ -51,7 +51,6 @@ void GetSceneObjectCommand::clear_lists() {
 }
 
 void GetSceneObjectCommand::execute() {
-   Service::get_logger().msg("GetSceneObjectCommand", Logger::INFO, "target = (" + std::to_string(this->target_.x) + ", " + std::to_string(this->target_.y) + ")");
    this->clear_lists();
 
    // iterate from highest z-index to lowest
@@ -94,8 +93,6 @@ void GetSceneObjectCommand::visit(Widget* widget) {
    if (widget && widget->intersects(this->target_)) {
       this->widgets_.push_back(widget);
       this->scene_objects_.push_back(widget);
-
-      Service::get_logger().msg("GetSceneObjectCommand", Logger::INFO, "Got widget: " + std::string(*widget));
    }
 }
 

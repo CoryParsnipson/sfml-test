@@ -24,7 +24,6 @@ void SetSelectionRectCommand::execute() {
    } else {
       this->usr_command_->release_pos(this->gamepad_->cursor_position());
    }
-
    
    if (this->set_visible_) {
       this->usr_command_->visible(true);

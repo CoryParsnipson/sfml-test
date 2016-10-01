@@ -20,8 +20,8 @@ public:
    Camera(const std::string& id, const sf::Vector2f& size);
    virtual ~Camera();
 
-   const std::string& id();
-   const std::string& to_string();
+   const std::string& id() const;
+   virtual std::string to_string() const;
 
    void reset_pan();
    void reset_zoom();
@@ -72,6 +72,8 @@ private:
    sf::View* view_;
 
    std::shared_ptr<CameraResizePolicy> resize_policy_;
+
+   friend std::ostream& operator<<(std::ostream& stream, const Camera& camera);
 
 protected:
    // scene graph interface hooks

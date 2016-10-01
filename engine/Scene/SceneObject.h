@@ -7,6 +7,17 @@
 #include "Composite.h"
 #include "SceneGraphVisitor.h"
 
+// ----------------------------------------------------------------------------
+// forward declarations 
+// ----------------------------------------------------------------------------
+class Command;
+
+// ----------------------------------------------------------------------------
+// SceneObject
+//
+// This class is the basis for every object that can be present as an entity
+// in a scene.
+// ----------------------------------------------------------------------------
 class SceneObject
 : public Draw
 , public Update
@@ -15,6 +26,9 @@ class SceneObject
 public:
    SceneObject(bool visible = true);
    virtual ~SceneObject() = 0;
+
+   operator std::string() const;
+   virtual std::string to_string() const;
 
    // scene graph interface
    SceneObject* layer(int idx) const;
@@ -36,10 +50,19 @@ public:
 
    // mouse interaction interface
    virtual void on_mouse_in();
+   virtual void on_mouse_in(Command* cmd);
+
    virtual void on_mouse_out();
+   virtual void on_mouse_out(Command* cmd);
+
+   virtual void on_mouse_move();
+   virtual void on_mouse_move(Command* cmd);
 
    virtual void on_click();
+   virtual void on_click(Command* cmd);
+
    virtual void on_release();
+   virtual void on_release(Command* cmd);
 
    // scene graph visitor interface
    virtual void accept(SceneGraphVisitor& visitor) = 0;
@@ -52,6 +75,13 @@ public:
 
 private:
    bool visible_; // visibility of this node affects children as well
+   friend std::ostream& operator<<(std::ostream& stream, const SceneObject& object);
+
+   Command* on_mouse_in_;
+   Command* on_mouse_out_;
+   Command* on_mouse_move_;
+   Command* on_click_;
+   Command* on_release_;
 
 protected:
    sf::Transform transform_;

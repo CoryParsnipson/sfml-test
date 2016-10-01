@@ -32,12 +32,12 @@ Camera::~Camera() {
    delete this->view_;
 }
 
-const std::string& Camera::id() {
+const std::string& Camera::id() const {
    return this->id_;
 }
 
-const std::string& Camera::to_string() {
-   return this->id();
+std::string Camera::to_string() const {
+   return "[Camera: " + this->id() + "]";
 }
 
 void Camera::reset_pan() {
@@ -150,9 +150,21 @@ sf::Vector2f Camera::get_screen_coordinate(const sf::Vector2f& point) {
    return this->view_->getInverseTransform().transformPoint(screen_coord);
 }
 
-bool Camera::intersects(const sf::Vector2i& other) { return false; }
-bool Camera::intersects(const sf::Vector2f& other) { return false; }
-bool Camera::intersects(const sf::FloatRect& other) { return false; }
+bool Camera::intersects(const sf::Vector2i& other) {
+   return this->intersects(static_cast<sf::Vector2f>(other));
+}
+
+bool Camera::intersects(const sf::Vector2f& other) {
+   sf::FloatRect cam_box(this->get_center() - (this->get_size() / 2.f), this->get_size());
+   return cam_box.contains(other);
+}
+
+bool Camera::intersects(const sf::FloatRect& other) {
+   sf::FloatRect cam_box(this->get_center() - (this->get_size() / 2.f), this->get_size());
+   return cam_box.intersects(other);
+}
+
+// TODO: implement me
 bool Camera::intersects(const SceneObject& other) { return false; }
 
 void Camera::accept(SceneGraphVisitor& visitor) {
@@ -162,3 +174,12 @@ void Camera::accept(SceneGraphVisitor& visitor) {
 void Camera::do_draw(RenderSurface& surface, sf::RenderStates render_states) {
    surface.view(*this->view_);
 }
+
+// ----------------------------------------------------------------------------
+// free function helper methods
+// ----------------------------------------------------------------------------
+std::ostream& operator<<(std::ostream& stream, const Camera& camera) {
+   stream << camera.to_string();
+   return stream;
+}
+

@@ -169,7 +169,7 @@ BuilderScene::BuilderScene()
    this->scene_graph_->layer(2)->insert(2, this->fps_display_);
 
    // create UI elements
-   Widget* tile_palette = new PanelWidget("Tiles", sf::Vector2f(10, 50), sf::Vector2f(200, 400));
+   Widget* tile_palette = new PanelWidget("Tiles", sf::Vector2f(10, 150), sf::Vector2f(200, 400));
    this->scene_graph_->layer(2)->add(tile_palette);
 
    ButtonWidget* button = nullptr;
