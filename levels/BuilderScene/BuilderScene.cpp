@@ -117,12 +117,6 @@ BuilderScene::BuilderScene()
    map_builder->build();
 
    this->map_ = map_builder->get_map();
-   this->map_->clickable(true);
-   SceneObject::prefix_iterator it;
-   for (it = this->map_->begin(); it != this->map_->end(); ++it) {
-      (*it)->clickable(true);
-   }
-
    this->scene_graph_->layer(1)->add(this->map_);
 
    this->map_->grid()->visible(false);
@@ -261,10 +255,11 @@ BuilderScene::BuilderScene()
    on_left_mouse_release->add(new SetSelectionRectCommand(usr, pg, selection_rect, false, false, true));
    on_left_mouse_release->add(new SetTileCursorCommand(*this->map_->grid(), usr, this->tile_cursor_));
 
-   this->map_->on_left_click(new SetSelectionRectCommand(usr, pg, selection_rect, true, true, false));
-   this->map_->on_left_release(on_left_mouse_release);
+   this->map_camera_->clickable(true); // make map camera clickable for tile selection and panning and stuff
+   this->map_camera_->on_left_click(new SetSelectionRectCommand(usr, pg, selection_rect, true, true, false));
+   this->map_camera_->on_left_release(on_left_mouse_release);
 
-   this->map_->on_mouse_move(drag_command);
+   this->map_camera_->on_mouse_move(drag_command);
 }
 
 BuilderScene::~BuilderScene() {
