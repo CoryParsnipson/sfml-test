@@ -9,7 +9,7 @@ ButtonWidget::ButtonWidget(std::string id, const sf::Vector2f& pos, const sf::Ve
    this->background_->set_size(size);
    this->background_->set_color(sf::Color::Red);
 
-   this->action(action);
+   this->on_left_click(action);
 }
 
 ButtonWidget::~ButtonWidget() {
@@ -23,14 +23,6 @@ void ButtonWidget::set_background(Graphic* background) {
    this->background_->set_position(old_background->get_position());
 
    delete old_background;
-}
-
-void ButtonWidget::action(Command* action) {
-   this->action_ = action;
-}
-
-Command* ButtonWidget::action() {
-   return this->action_;
 }
 
 const sf::Vector2f& ButtonWidget::get_position() {
@@ -74,12 +66,6 @@ void ButtonWidget::on_mouse_in() {
 
 void ButtonWidget::on_mouse_out() {
    this->background_->set_color(sf::Color(255, 255, 255, 255));
-}
-
-void ButtonWidget::on_click() {
-   if (this->action_) {
-      this->action_->execute();
-   }
 }
 
 void ButtonWidget::do_draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {

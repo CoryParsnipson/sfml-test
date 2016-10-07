@@ -2,6 +2,8 @@
 #include "Camera.h"
 #include "Entity.h"
 #include "Widget.h"
+#include "Map.h"
+#include "Grid.h"
 
 GetSceneObjectCommand::GetSceneObjectCommand(SceneObject* scene_graph, sf::Vector2f target /* = sf::Vector2f(0, 0) */)
 : Command("GetSceneObjectCommand")
@@ -82,11 +84,15 @@ void GetSceneObjectCommand::visit(Entity* entity) {
 }
 
 void GetSceneObjectCommand::visit(Map* map) {
-   return;
+   if (map && map->intersects(this->target_)) {
+      this->scene_objects_.push_back(map);
+   }
 }
 
 void GetSceneObjectCommand::visit(Grid* grid) {
-   return;
+   if (grid && grid->intersects(this->target_)) {
+      this->scene_objects_.push_back(grid);
+   }
 }
 
 void GetSceneObjectCommand::visit(Widget* widget) {

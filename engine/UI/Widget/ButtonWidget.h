@@ -13,10 +13,6 @@ public:
 
    void set_background(Graphic* background);
 
-   // button widget interface
-   void action(Command* action);
-   Command* action();
-
    // widget interface
    virtual const sf::Vector2f& get_position();
    virtual void set_position(const sf::Vector2f& pos);
@@ -33,11 +29,8 @@ public:
    virtual void on_mouse_in();
    virtual void on_mouse_out();
 
-   virtual void on_click();
-
 protected:
    Graphic* background_;
-   Command* action_;
 
    // scene graph interface hooks
    virtual void do_draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);

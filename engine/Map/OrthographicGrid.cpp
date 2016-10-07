@@ -262,10 +262,10 @@ void OrthographicGrid::clear_text_markers() {
    this->text_markers_.clear();
 }
 
-bool OrthographicGrid::intersects(const sf::Vector2i& other) { return false; }
-bool OrthographicGrid::intersects(const sf::Vector2f& other) { return false; }
-bool OrthographicGrid::intersects(const sf::FloatRect& other) { return false; }
-bool OrthographicGrid::intersects(const SceneObject& other) { return false; }
+bool OrthographicGrid::intersects(const sf::Vector2i& other) { return true; }
+bool OrthographicGrid::intersects(const sf::Vector2f& other) { return true; }
+bool OrthographicGrid::intersects(const sf::FloatRect& other) { return true; }
+bool OrthographicGrid::intersects(const SceneObject& other) { return true; }
 
 void OrthographicGrid::accept(SceneGraphVisitor& visitor) {
    visitor.visit(this);

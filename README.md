@@ -17,6 +17,8 @@ Things to do next
 * Consider adding an array to PlayerGamepad that keeps track of which keys/mouse buttons
    are being pressed
 
+* Add NullCommand
+
 * Service locator is pretty ugly. Refactor?
 
 TODO

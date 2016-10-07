@@ -49,6 +49,12 @@ public:
    virtual bool intersects(const SceneObject& other) = 0;
 
    // mouse interaction interface
+   void propagate_event(bool propagate_event);
+   bool propagate_event() const;
+
+   bool clickable() const;
+   void clickable(bool clickable);
+
    virtual void on_mouse_in();
    virtual void on_mouse_in(Command* cmd);
 
@@ -61,8 +67,20 @@ public:
    virtual void on_click();
    virtual void on_click(Command* cmd);
 
+   virtual void on_left_click();
+   virtual void on_left_click(Command* cmd);
+
+   virtual void on_right_click();
+   virtual void on_right_click(Command* cmd);
+
    virtual void on_release();
    virtual void on_release(Command* cmd);
+
+   virtual void on_left_release();
+   virtual void on_left_release(Command* cmd);
+
+   virtual void on_right_release();
+   virtual void on_right_release(Command* cmd);
 
    // scene graph visitor interface
    virtual void accept(SceneGraphVisitor& visitor) = 0;
@@ -75,13 +93,20 @@ public:
 
 private:
    bool visible_; // visibility of this node affects children as well
+   bool propagate_event_; // false to stop this node from passing mouse events to parent node
    friend std::ostream& operator<<(std::ostream& stream, const SceneObject& object);
+
+   bool clickable_;  // if true, intersect with gamepad cursor checks
 
    Command* on_mouse_in_;
    Command* on_mouse_out_;
    Command* on_mouse_move_;
    Command* on_click_;
+   Command* on_left_click_;
+   Command* on_right_click_;
    Command* on_release_;
+   Command* on_left_release_;
+   Command* on_right_release_;
 
 protected:
    sf::Transform transform_;

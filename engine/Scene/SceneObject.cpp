@@ -6,11 +6,17 @@
 SceneObject::SceneObject(bool visible /* = true */)
 : Composite<SceneObject, true>()
 , visible_(visible)
+, propagate_event_(true)
+, clickable_(false)
 , on_mouse_in_(nullptr)
 , on_mouse_out_(nullptr)
 , on_mouse_move_(nullptr)
 , on_click_(nullptr)
+, on_left_click_(nullptr)
+, on_right_click_(nullptr)
 , on_release_(nullptr)
+, on_left_release_(nullptr)
+, on_right_release_(nullptr)
 , transform_(sf::Transform::Identity)
 {
 }
@@ -71,6 +77,22 @@ sf::Vector2f SceneObject::get_screen_coordinate(const sf::Vector2f& point) {
    return transformed_point;
 }
 
+void SceneObject::propagate_event(bool propagate_event) {
+   this->propagate_event_ = propagate_event;
+}
+
+bool SceneObject::propagate_event() const {
+   return this->propagate_event_;
+}
+
+bool SceneObject::clickable() const {
+   return this->clickable_;
+}
+
+void SceneObject::clickable(bool clickable) {
+   this->clickable_ = clickable;
+}
+
 void SceneObject::on_mouse_in() {
    if (this->on_mouse_in_) {
       this->on_mouse_in_->execute();
@@ -102,8 +124,12 @@ void SceneObject::on_mouse_move(Command* cmd) {
 }
 
 void SceneObject::on_click() {
-   if (this->on_click_) {
+   if (this->clickable() && this->on_click_) {
       this->on_click_->execute();
+   }
+
+   if (this->propagate_event() && this->parent()) {
+      this->parent()->on_click();
    }
 }
 
@@ -111,14 +137,90 @@ void SceneObject::on_click(Command* cmd) {
    this->on_click_ = cmd;
 }
 
+void SceneObject::on_left_click() {
+   if (this->clickable() && this->on_left_click_) {
+      this->on_left_click_->execute();
+   }
+
+   if (this->clickable() && this->on_click_) {
+      this->on_click_->execute();
+   }
+
+   if (this->propagate_event() && this->parent()) {
+      this->parent()->on_left_click();
+   }
+}
+
+void SceneObject::on_left_click(Command* cmd) {
+   this->on_left_click_ = cmd;
+}
+
+void SceneObject::on_right_click() {
+   if (this->clickable() && this->on_right_click_) {
+      this->on_right_click_->execute();
+   }
+
+   if (this->clickable() && this->on_click_) {
+      this->on_click_->execute();
+   }
+
+   if (this->propagate_event() && this->parent()) {
+      this->parent()->on_right_click();
+   }
+}
+
+void SceneObject::on_right_click(Command* cmd) {
+   this->on_right_click_ = cmd;
+}
+
 void SceneObject::on_release() {
    if (this->on_release_) {
       this->on_release_->execute();
+   }
+
+   if (this->propagate_event() && this->parent()) {
+      this->parent()->on_release();
    }
 }
 
 void SceneObject::on_release(Command* cmd) {
    this->on_release_ = cmd;
+}
+
+void SceneObject::on_left_release() {
+   if (this->on_left_release_) {
+      this->on_left_release_->execute();
+   }
+
+   if (this->on_release_) {
+      this->on_release_->execute();
+   }
+
+   if (this->propagate_event() && this->parent()) {
+      this->parent()->on_left_release();
+   }
+}
+
+void SceneObject::on_left_release(Command* cmd) {
+   this->on_left_release_ = cmd;
+}
+
+void SceneObject::on_right_release() {
+   if (this->on_right_release_) {
+      this->on_right_release_->execute();
+   }
+
+   if (this->on_release_) {
+      this->on_release_->execute();
+   }
+
+   if (this->propagate_event() && this->parent()) {
+      this->parent()->on_right_release();
+   }
+}
+
+void SceneObject::on_right_release(Command* cmd) {
+   this->on_right_release_ = cmd;
 }
 
 void SceneObject::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {

@@ -45,10 +45,10 @@ void Map::add(Grid* grid) {
    this->grid_ = grid;
 }
 
-bool Map::intersects(const sf::Vector2i& other) { return false; }
-bool Map::intersects(const sf::Vector2f& other) { return false; }
-bool Map::intersects(const sf::FloatRect& other) { return false; }
-bool Map::intersects(const SceneObject& other) { return false; }
+bool Map::intersects(const sf::Vector2i& other) { return true; }
+bool Map::intersects(const sf::Vector2f& other) { return true; }
+bool Map::intersects(const sf::FloatRect& other) { return true; }
+bool Map::intersects(const SceneObject& other) { return true; }
 
 void Map::accept(SceneGraphVisitor& visitor) {
    visitor.visit(this);

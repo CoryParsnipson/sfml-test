@@ -9,7 +9,6 @@
 #include "TextWidget.h"
 #include "ButtonWidget.h"
 
-#include "WidgetEventCommand.h"
 #include "MoveCommand.h"
 #include "SwitchSceneCommand.h"
 
@@ -57,14 +56,14 @@ TestUIScene::TestUIScene()
    bw->set_background(new SpriteGraphic(*this->textures_.get("tile_water_ul")));
    this->widget_->add(bw);
 
-   bw->action(new MoveCommand(this->ui_camera_, sf::Vector2f(10, 50)));
+   bw->on_left_click(new MoveCommand(this->ui_camera_, sf::Vector2f(10, 50)));
 
    // create player controls
    PlayerGamepad* pg = new PlayerGamepad("PlayerGamepad", this->fonts_.get("retro"));
    this->gamepad(pg);
    
-   pg->set(new WidgetEventCommand(WidgetOp::MouseClick, this->scene_graph_, pg), MouseButton::Left);
-   pg->set(new WidgetEventCommand(WidgetOp::MouseMove, this->scene_graph_, pg), MouseAction::Move);
+   //pg->set(new WidgetEventCommand(WidgetOp::MouseClick, this->scene_graph_, pg), MouseButton::Left);
+   //pg->set(new WidgetEventCommand(WidgetOp::MouseMove, this->scene_graph_, pg), MouseAction::Move);
 
    pg->set(new SwitchSceneCommand(this, nullptr), Key::Space);
 }

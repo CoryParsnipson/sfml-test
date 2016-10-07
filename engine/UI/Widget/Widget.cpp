@@ -12,9 +12,13 @@ std::ostream& operator<<(std::ostream& stream, const Widget& widget) {
 // Widget constructor implementations
 // ----------------------------------------------------------------------------
 Widget::Widget(std::string id /* = "Widget" */)
-: id_(std::move(id))
+: SceneObject()
+, id_(std::move(id))
 , positioning_(UI::Positioning::Default)
-{}
+{
+   // want default UI widget behavior to interact with mouse clicks
+   this->clickable(true);
+}
 
 Widget::~Widget() {
 }
