@@ -33,10 +33,11 @@
 #include "ZoomCommand.h"
 
 #include "LeftMouseClickCommand.h"
-#include "RightMouseClickCommand.h"
 #include "LeftMouseReleaseCommand.h"
+#include "RightMouseClickCommand.h"
 #include "RightMouseReleaseCommand.h"
 #include "MouseMoveCommand.h"
+#include "MouseWheelCommand.h"
 
 #include "Commands/SetSelectionRectCommand.h"
 #include "Commands/UpdateSelectionRectCommand.h"
@@ -188,30 +189,15 @@ BuilderScene::BuilderScene()
    PlayerGamepad* pg = new PlayerGamepad("PlayerGamepad", this->fonts_.get("retro"));
    this->gamepad(pg);
 
-   // mouse bindings
-   std::shared_ptr<UpdateSelectionRectCommand> usr = std::make_shared<UpdateSelectionRectCommand>(selection_rect);
-   
-   DragCommand* drag_map_camera = new DragCommand(pg);
-   DragCommand* drag_grid = new DragCommand(pg);
+   // --- default mouse bindings
+   pg->set(new LeftMouseClickCommand(pg, this->scene_graph_), MouseButton::Left, ButtonState::Pressed);
+   pg->set(new RightMouseClickCommand(pg, this->scene_graph_), MouseButton::Right, ButtonState::Pressed);
 
-   MacroCommand* drag_command = new MacroCommand("DragMacroCommand");
-   drag_command->add(drag_map_camera);
-   drag_command->add(drag_grid);
-   drag_command->add(new SetSelectionRectCommand(usr, pg, selection_rect, false));
-   
-   MacroCommand* on_right_mouse_click = new MacroCommand("SetDragTargetsMacroCommand");
-   on_right_mouse_click->add(new DragTargetCommand(drag_map_camera, this->map_camera_));
-   on_right_mouse_click->add(new DragTargetCommand(drag_grid, this->map_->grid()));
+   pg->set(new LeftMouseReleaseCommand(pg, this->scene_graph_), MouseButton::Left, ButtonState::Released);
+   pg->set(new RightMouseReleaseCommand(pg, this->scene_graph_), MouseButton::Right, ButtonState::Released);
 
-   MacroCommand* on_right_mouse_release = new MacroCommand("RemoveDragTargetsMacroCommand");
-   on_right_mouse_release->add(new DragTargetCommand(drag_map_camera, nullptr));
-   on_right_mouse_release->add(new DragTargetCommand(drag_grid, nullptr));
-
-   pg->set(on_right_mouse_click, MouseButton::Right, ButtonState::Pressed);
-   pg->set(on_right_mouse_release, MouseButton::Right, ButtonState::Released);
-
-   ZoomCommand* zoom_command = new ZoomCommand(this->map_camera_, this->map_->grid(), pg);
-   pg->set(zoom_command, MouseAction::Wheel);
+   pg->set(new MouseMoveCommand(pg, this->scene_graph_), MouseAction::Move);
+   pg->set(new MouseWheelCommand(pg, this->scene_graph_), MouseAction::Wheel);
 
    // keyboard bindings
    MacroCommand* move_camera_left = new MacroCommand("MoveCameraLeftCommand");
@@ -240,26 +226,38 @@ BuilderScene::BuilderScene()
    pg->set(new ResetCameraCommand(this->map_camera_, this->map_->grid()), Key::R);
    pg->set(new SwitchSceneCommand(this, new TestUIScene()), Key::Escape);
 
-   // --- new command tests
-   pg->set(new LeftMouseClickCommand(pg, this->scene_graph_), MouseButton::Left, ButtonState::Pressed);
-   pg->set(new RightMouseClickCommand(pg, this->scene_graph_), MouseButton::Right, ButtonState::Pressed);
+   // --- Builder Scene commands
+   std::shared_ptr<UpdateSelectionRectCommand> usr = std::make_shared<UpdateSelectionRectCommand>(selection_rect);
 
-   pg->set(new LeftMouseReleaseCommand(pg, this->scene_graph_), MouseButton::Left, ButtonState::Released);
-   pg->set(new RightMouseReleaseCommand(pg, this->scene_graph_), MouseButton::Right, ButtonState::Released);
+   DragCommand* drag_map_camera = new DragCommand(pg);
+   DragCommand* drag_grid = new DragCommand(pg);
 
-   pg->set(new MouseMoveCommand(pg, this->scene_graph_), MouseAction::Move);
-
-   // --- selection rect commands
+   MacroCommand* drag_command = new MacroCommand("DragMacroCommand");
+   drag_command->add(drag_map_camera);
+   drag_command->add(drag_grid);
+   drag_command->add(new SetSelectionRectCommand(usr, pg, selection_rect, false));
+   
    MacroCommand* on_left_mouse_release = new MacroCommand("LeftMouseReleaseCommand");
-
    on_left_mouse_release->add(new SetSelectionRectCommand(usr, pg, selection_rect, false, false, true));
    on_left_mouse_release->add(new SetTileCursorCommand(*this->map_->grid(), usr, this->tile_cursor_));
+
+   MacroCommand* on_right_mouse_click = new MacroCommand("SetDragTargetsMacroCommand");
+   on_right_mouse_click->add(new DragTargetCommand(drag_map_camera, this->map_camera_));
+   on_right_mouse_click->add(new DragTargetCommand(drag_grid, this->map_->grid()));
+
+   MacroCommand* on_right_mouse_release = new MacroCommand("RemoveDragTargetsMacroCommand");
+   on_right_mouse_release->add(new DragTargetCommand(drag_map_camera, nullptr));
+   on_right_mouse_release->add(new DragTargetCommand(drag_grid, nullptr));
 
    this->map_camera_->clickable(true); // make map camera clickable for tile selection and panning and stuff
    this->map_camera_->on_left_click(new SetSelectionRectCommand(usr, pg, selection_rect, true, true, false));
    this->map_camera_->on_left_release(on_left_mouse_release);
 
+   this->map_camera_->on_right_click(on_right_mouse_click);
+   this->map_camera_->on_right_release(on_right_mouse_release);
+
    this->map_camera_->on_mouse_move(drag_command);
+   this->map_camera_->on_mouse_wheel(new ZoomCommand(this->map_camera_, this->map_->grid(), pg));
 }
 
 BuilderScene::~BuilderScene() {

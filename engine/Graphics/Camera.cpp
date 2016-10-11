@@ -132,16 +132,7 @@ sf::Vector2f Camera::get_world_coordinate(const sf::Vector2f& point) {
 }
 
 sf::Vector2f Camera::get_screen_coordinate(const sf::Vector2f& point) {
-   // copy this directly from SFML source...
-   sf::Vector2f size = this->view_->getSize() / this->get_scale();
-   sf::FloatRect raw_viewport = this->view_->getViewport();
-   sf::IntRect viewport(
-      static_cast<int>(0.5f + size.x * raw_viewport.left),
-      static_cast<int>(0.5f + size.y * raw_viewport.top),
-      static_cast<int>(0.5f + size.x * raw_viewport.width),
-      static_cast<int>(0.5f + size.y * raw_viewport.height)
-   );
-
+   sf::IntRect viewport = this->viewport();
    sf::Vector2f screen_coord(
       -1.f + 2.f * (point.x - viewport.left) / viewport.width,
        1.f - 2.f * (point.y - viewport.top) / viewport.height
@@ -155,12 +146,12 @@ bool Camera::intersects(const sf::Vector2i& other) {
 }
 
 bool Camera::intersects(const sf::Vector2f& other) {
-   sf::FloatRect cam_box(this->get_center() - (this->get_size() / 2.f), this->get_size());
+   sf::FloatRect cam_box = static_cast<sf::FloatRect>(this->viewport());
    return cam_box.contains(other);
 }
 
 bool Camera::intersects(const sf::FloatRect& other) {
-   sf::FloatRect cam_box(this->get_center() - (this->get_size() / 2.f), this->get_size());
+   sf::FloatRect cam_box = static_cast<sf::FloatRect>(this->viewport());
    return cam_box.intersects(other);
 }
 
@@ -173,6 +164,16 @@ void Camera::accept(SceneGraphVisitor& visitor) {
 
 void Camera::do_draw(RenderSurface& surface, sf::RenderStates render_states) {
    surface.view(*this->view_);
+
+   sf::RectangleShape r;
+   r.setOutlineThickness(1.f);
+   r.setOutlineColor(sf::Color::Blue);
+   r.setFillColor(sf::Color::Transparent);
+
+   r.setSize(this->get_size());
+   r.setPosition(this->get_center() - this->get_size() / 2.f);
+
+   surface.draw(r, render_states);
 }
 
 // ----------------------------------------------------------------------------
@@ -183,3 +184,17 @@ std::ostream& operator<<(std::ostream& stream, const Camera& camera) {
    return stream;
 }
 
+sf::IntRect Camera::viewport() {
+   // copy this directly from SFML source...
+   sf::Vector2f size = this->view_->getSize() / this->get_scale();
+
+   sf::FloatRect raw_viewport = this->view_->getViewport();
+   sf::IntRect viewport(
+      static_cast<int>(0.5f + size.x * raw_viewport.left),
+      static_cast<int>(0.5f + size.y * raw_viewport.top),
+      static_cast<int>(0.5f + size.x * raw_viewport.width),
+      static_cast<int>(0.5f + size.y * raw_viewport.height)
+   );
+
+   return viewport;
+}

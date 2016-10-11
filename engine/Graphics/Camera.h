@@ -4,8 +4,8 @@
 #include <memory>
 #include <string>
 
+#include "Input.h"
 #include "SceneObject.h"
-#include "MoveCommand.h"
 #include "CameraResizePolicy.h"
 
 class Camera
@@ -74,6 +74,8 @@ private:
    std::shared_ptr<CameraResizePolicy> resize_policy_;
 
    friend std::ostream& operator<<(std::ostream& stream, const Camera& camera);
+
+   sf::IntRect viewport();
 
 protected:
    // scene graph interface hooks

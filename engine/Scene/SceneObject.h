@@ -82,6 +82,9 @@ public:
    virtual void on_right_release();
    virtual void on_right_release(Command* cmd);
 
+   virtual void on_mouse_wheel();
+   virtual void on_mouse_wheel(Command* cmd);
+
    // scene graph visitor interface
    virtual void accept(SceneGraphVisitor& visitor) = 0;
 
@@ -107,6 +110,7 @@ private:
    Command* on_release_;
    Command* on_left_release_;
    Command* on_right_release_;
+   Command* on_mouse_wheel_;
 
 protected:
    sf::Transform transform_;

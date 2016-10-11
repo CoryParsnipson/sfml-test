@@ -17,6 +17,7 @@ SceneObject::SceneObject(bool visible /* = true */)
 , on_release_(nullptr)
 , on_left_release_(nullptr)
 , on_right_release_(nullptr)
+, on_mouse_wheel_(nullptr)
 , transform_(sf::Transform::Identity)
 {
 }
@@ -221,6 +222,16 @@ void SceneObject::on_right_release() {
 
 void SceneObject::on_right_release(Command* cmd) {
    this->on_right_release_ = cmd;
+}
+
+void SceneObject::on_mouse_wheel() {
+   if (this->on_mouse_wheel_) {
+      this->on_mouse_wheel_->execute();
+   }
+}
+
+void SceneObject::on_mouse_wheel(Command* cmd) {
+   this->on_mouse_wheel_ = cmd;
 }
 
 void SceneObject::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {

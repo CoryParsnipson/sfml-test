@@ -4,9 +4,9 @@
 #include <string>
 
 #include "sfml.h"
+#include "Input.h"
 #include "SceneObject.h"
 #include "Serialize.h"
-#include "MoveCommand.h"
 
 class Grid
 : public SceneObject
