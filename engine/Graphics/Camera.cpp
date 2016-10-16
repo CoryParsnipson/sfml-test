@@ -164,16 +164,6 @@ void Camera::accept(SceneGraphVisitor& visitor) {
 
 void Camera::do_draw(RenderSurface& surface, sf::RenderStates render_states) {
    surface.view(*this->view_);
-
-   sf::RectangleShape r;
-   r.setOutlineThickness(1.f);
-   r.setOutlineColor(sf::Color::Blue);
-   r.setFillColor(sf::Color::Transparent);
-
-   r.setSize(this->get_size());
-   r.setPosition(this->get_center() - this->get_size() / 2.f);
-
-   surface.draw(r, render_states);
 }
 
 // ----------------------------------------------------------------------------
