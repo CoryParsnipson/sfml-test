@@ -24,7 +24,6 @@
 #include "Grid.h"
 
 #include "MacroCommand.h"
-#include "MoveCommand.h"
 #include "DragCommand.h"
 #include "DragTargetCommand.h"
 #include "SwitchSceneCommand.h"
@@ -32,16 +31,12 @@
 #include "ToggleVisibleCommand.h"
 #include "ZoomCommand.h"
 
-#include "LeftMouseClickCommand.h"
-#include "LeftMouseReleaseCommand.h"
-#include "RightMouseClickCommand.h"
-#include "RightMouseReleaseCommand.h"
-#include "MouseMoveCommand.h"
-#include "MouseWheelCommand.h"
+#include "DefaultMouseGamepadPreset.h"
 
-#include "Commands/SetSelectionRectCommand.h"
-#include "Commands/UpdateSelectionRectCommand.h"
-#include "Commands/SetTileCursorCommand.h"
+#include "SetSelectionRectCommand.h"
+#include "UpdateSelectionRectCommand.h"
+#include "SetTileCursorCommand.h"
+#include "RemoveTilesCommand.h"
 
 #include "PlayerGamepad.h"
 
@@ -189,44 +184,16 @@ BuilderScene::BuilderScene()
    PlayerGamepad* pg = new PlayerGamepad("PlayerGamepad", this->fonts_.get("retro"));
    this->gamepad(pg);
 
-   // --- default mouse bindings
-   pg->set(new LeftMouseClickCommand(pg, this->scene_graph_), MouseButton::Left, ButtonState::Pressed);
-   pg->set(new RightMouseClickCommand(pg, this->scene_graph_), MouseButton::Right, ButtonState::Pressed);
+   DefaultMouseGamepadPreset dmgp(*this->scene_graph_);
+   dmgp.apply(pg);
 
-   pg->set(new LeftMouseReleaseCommand(pg, this->scene_graph_), MouseButton::Left, ButtonState::Released);
-   pg->set(new RightMouseReleaseCommand(pg, this->scene_graph_), MouseButton::Right, ButtonState::Released);
-
-   pg->set(new MouseMoveCommand(pg, this->scene_graph_), MouseAction::Move);
-   pg->set(new MouseWheelCommand(pg, this->scene_graph_), MouseAction::Wheel);
-
-   // keyboard bindings
-   MacroCommand* move_camera_left = new MacroCommand("MoveCameraLeftCommand");
-   MacroCommand* move_camera_right = new MacroCommand("MoveCameraRightCommand");
-   MacroCommand* move_camera_up = new MacroCommand("MoveCameraUpCommand");
-   MacroCommand* move_camera_down = new MacroCommand("MoveCameraDownCommand");
-
-   move_camera_left->add(new MoveCommand(this->map_camera_, sf::Vector2f(-10, 0)));
-   move_camera_left->add(new MoveCommand(this->map_->grid(), sf::Vector2f(-10, 0)));
-
-   move_camera_right->add(new MoveCommand(this->map_camera_, sf::Vector2f(10, 0)));
-   move_camera_right->add(new MoveCommand(this->map_->grid(), sf::Vector2f(10, 0)));
-
-   move_camera_up->add(new MoveCommand(this->map_camera_, sf::Vector2f(0, -10)));
-   move_camera_up->add(new MoveCommand(this->map_->grid(), sf::Vector2f(0, -10)));
-
-   move_camera_down->add(new MoveCommand(this->map_camera_, sf::Vector2f(0, 10)));
-   move_camera_down->add(new MoveCommand(this->map_->grid(), sf::Vector2f(0, 10)));
-
-   pg->set(move_camera_left, Key::Left);
-   pg->set(move_camera_right, Key::Right);
-   pg->set(move_camera_up, Key::Up);
-   pg->set(move_camera_down, Key::Down);
-
+   // builder scene gamepad bindings
    pg->set(new ToggleVisibleCommand(this->map_->grid()), Key::G);
    pg->set(new ResetCameraCommand(this->map_camera_, this->map_->grid()), Key::R);
    pg->set(new SwitchSceneCommand(this, new TestUIScene()), Key::Escape);
+   pg->set(new RemoveTilesCommand(*this->map_, this->tile_cursor_), Key::Delete);
+   pg->set(new RemoveTilesCommand(*this->map_, this->tile_cursor_), Key::Backspace);
 
-   // --- Builder Scene commands
    std::shared_ptr<UpdateSelectionRectCommand> usr = std::make_shared<UpdateSelectionRectCommand>(selection_rect);
 
    DragCommand* drag_map_camera = new DragCommand(pg);
@@ -367,10 +334,6 @@ void BuilderScene::process(Game& game, KeyPressInputEvent& e) {
 //   case Key::O:
 //      this->toggle_debug_info();
 //   break;
-//   case Key::Delete:
-//   case Key::Backspace:
-//      this->remove_tiles();
-//   break;
 //   case Key::S:
 //      Service::get_logger().msg(this->id_, Logger::INFO, "Writing map to file '" + this->map_filename_ + "'");
 //      this->map_->serialize(*this->serializer_);
@@ -432,23 +395,4 @@ void BuilderScene::set_tiles(Texture& tile_texture) {
          this->map_->add(tile);
       }
    }
-}
-
-void BuilderScene::remove_tiles() {
-   Service::get_logger().msg(this->id_, Logger::INFO, "Removing tiles.");
-
-   // get bounds of tile cursor
-   PhysicsPart* tc_physics = dynamic_cast<PhysicsPart*>(this->tile_cursor_->get("physics"));
-   if (!tc_physics) {
-      Service::get_logger().msg(this->id_, Logger::ERROR, "Tile cursor does not have physics part!");
-      return;
-   }
-
-   // TODO: reimplement...
-   // get intersecting entities on map
-   //Map::TileList tiles = this->map_->intersects(tc_physics->get_bounding_box());
-   //Map::TileList::const_iterator it;
-   //for (it = tiles.begin(); it != tiles.end(); ++it) {
-   //   this->map_->remove(*it);
-   //}
 }

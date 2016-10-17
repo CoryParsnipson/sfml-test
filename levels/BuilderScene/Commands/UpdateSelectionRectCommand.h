@@ -2,7 +2,6 @@
 #define UPDATE_SELECTION_RECT_COMMAND
 
 #include "sfml.h"
-
 #include "Command.h"
 
 // ----------------------------------------------------------------------------
