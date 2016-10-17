@@ -29,7 +29,8 @@ void RemoveTilesCommand::execute() {
       return;
    }
 
-   for (Map::prefix_iterator it = this->map_->begin(); it != this->map_->end(); ++it) {
+   Map::iterator it;
+   for (it = this->map_->begin(); it != this->map_->end(); ++it) {
       if ((*it)->intersects(tc_physics->get_bounding_box())) {
          this->removed_tiles_.push_back(*it);
          this->map_->remove(*it);
