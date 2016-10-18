@@ -48,7 +48,7 @@ TestUIScene::TestUIScene()
    this->widget_ = new PanelWidget("Test Panel 1", sf::Vector2f(100, 100), sf::Vector2f(300, 200));
    this->scene_graph_->layer(0)->add(this->widget_);
 
-   Widget* tw = new TextWidget("Text Widget 1", "PENIS PENIS PENIS PENIS PENIS PENIS PENIS PENIS PENIS", this->fonts_.get("retro"));
+   Widget* tw = new TextWidget("Text Widget 1", "TEST TEST TEST TEST TEST TEST TEST TEST TEST", this->fonts_.get("retro"));
    tw->set_size(sf::Vector2f(300, 200));
    this->widget_->add(tw);
    
