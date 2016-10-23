@@ -13,6 +13,7 @@
 #include "PhysicsPart.h"
 #include "ReferencePart.h"
 
+#include "TextWidget.h"
 #include "PanelWidget.h"
 #include "ButtonWidget.h"
 
@@ -131,31 +132,16 @@ BuilderScene::BuilderScene()
    this->tile_cursor_->visible(false);
    this->scene_graph_->layer(1)->add(this->tile_cursor_);
 
+   // UI elements
+   // textboxes
+   this->scene_graph_->layer(2)->add(new TextWidget("Text Widget 1", "SFML_Test", sf::Vector2f(0, 0), this->fonts_.get("retro")));
+   this->scene_graph_->layer(2)->add(new TextWidget("Text Widget 2", "r: reset pan position", sf::Vector2f(0, 15), this->fonts_.get("retro")));
+   this->scene_graph_->layer(2)->add(new TextWidget("Text Widget 3", "g: toggle grid visibility", sf::Vector2f(0, 30), this->fonts_.get("retro")));
+   this->scene_graph_->layer(2)->add(new TextWidget("Text Widget 4", "o: toggle entity hitboxes", sf::Vector2f(0, 45), this->fonts_.get("retro")));
+   this->scene_graph_->layer(2)->add(new TextWidget("Text Widget 5", "del: remove tiles at selection", sf::Vector2f(0, 60), this->fonts_.get("retro")));
+   this->scene_graph_->layer(2)->add(new TextWidget("Text Widget 6", "r-click: click and drag to pan", sf::Vector2f(0, 75), this->fonts_.get("retro")));
+
    // create fixed hud items
-   Entity* t = TextFactory::inst()->create_text_entity("SFML_Test", this->fonts_.get("retro"));
-   this->scene_graph_->layer(2)->insert(2, t);
-
-   t = TextFactory::inst()->create_text_entity("r: reset pan position", this->fonts_.get("retro"), sf::Vector2f(0, 15));
-   this->scene_graph_->layer(2)->insert(2, t);
-
-   t = TextFactory::inst()->create_text_entity("g: toggle grid visibility", this->fonts_.get("retro"), sf::Vector2f(0, 30));
-   this->scene_graph_->layer(2)->insert(2, t);
-
-   t = TextFactory::inst()->create_text_entity("o: toggle entity hitboxes", this->fonts_.get("retro"), sf::Vector2f(0, 45));
-   this->scene_graph_->layer(2)->insert(2, t);
-
-   t = TextFactory::inst()->create_text_entity("1: add green tiles at selection", this->fonts_.get("retro"), sf::Vector2f(0, 60));
-   this->scene_graph_->layer(2)->insert(2, t);
-
-   t = TextFactory::inst()->create_text_entity("2: add blue tiles at selection", this->fonts_.get("retro"), sf::Vector2f(0, 75));
-   this->scene_graph_->layer(2)->insert(2, t);
-
-   t = TextFactory::inst()->create_text_entity("del: remove tiles at selection", this->fonts_.get("retro"), sf::Vector2f(0, 90));
-   this->scene_graph_->layer(2)->insert(2, t);
-
-   t = TextFactory::inst()->create_text_entity("right click: click and drag to pan", this->fonts_.get("retro"), sf::Vector2f(0, 105));
-   this->scene_graph_->layer(2)->insert(2, t);
-
    Graphic* center_dot_graphic = new SpriteGraphic();
    center_dot_graphic->set_size(3, 3);
    center_dot_graphic->set_color(sf::Color(255, 104, 2));
@@ -170,15 +156,47 @@ BuilderScene::BuilderScene()
    this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", this->fonts_.get("retro"));
    this->scene_graph_->layer(2)->insert(2, this->fps_display_);
 
-   // create UI elements
-   Widget* tile_palette = new PanelWidget("Tiles", sf::Vector2f(10, 150), sf::Vector2f(200, 400));
+   // tile palette
+   Widget* tile_palette = new PanelWidget("Tiles", sf::Vector2f(10, 150), sf::Vector2f(200, 830));
    this->scene_graph_->layer(2)->add(tile_palette);
 
-   ButtonWidget* button = nullptr;
+   std::vector<std::string> tile_textures;
+   tile_textures.push_back("tile_grass");
+   tile_textures.push_back("tile_worn_grass");
+   tile_textures.push_back("tile_sign");
+   tile_textures.push_back("tile_dirt_ul");
+   tile_textures.push_back("tile_dirt_um");
+   tile_textures.push_back("tile_dirt_ur");
+   tile_textures.push_back("tile_dirt_ml");
+   tile_textures.push_back("tile_dirt_mm");
+   tile_textures.push_back("tile_dirt_mr");
+   tile_textures.push_back("tile_dirt_bl");
+   tile_textures.push_back("tile_dirt_bm");
+   tile_textures.push_back("tile_dirt_br");
+   tile_textures.push_back("tile_water_ul");
+   tile_textures.push_back("tile_water_um");
+   tile_textures.push_back("tile_water_ur");
+   tile_textures.push_back("tile_water_ml");
+   tile_textures.push_back("tile_water_mm");
+   tile_textures.push_back("tile_water_mr");
+   tile_textures.push_back("tile_water_bl");
+   tile_textures.push_back("tile_water_bm");
+   tile_textures.push_back("tile_water_br");
 
-   button = new ButtonWidget(this->textures_.get("tile_grass")->id(), sf::Vector2f(10, 10), sf::Vector2f(64, 64));
-   button->set_background(new SpriteGraphic(*this->textures_.get("tile_grass")));
-   tile_palette->add(button);
+   ButtonWidget* button = nullptr;
+   int x_pos = 10;
+   int y_pos = 10;
+   
+   for (std::vector<std::string>::const_iterator tile_texture_it = tile_textures.begin(); tile_texture_it != tile_textures.end(); ++tile_texture_it) {
+      button = new ButtonWidget(*tile_texture_it, sf::Vector2f(x_pos, y_pos), sf::Vector2f(64, 64));
+      button->set_background(new SpriteGraphic(*this->textures_.get(*tile_texture_it)));
+      tile_palette->add(button);
+
+      if (x_pos == 84) y_pos += 74;
+
+      if (x_pos == 10) x_pos = 84;
+      else             x_pos = 10;
+   }
 
    // create player gamepad
    PlayerGamepad* pg = new PlayerGamepad("PlayerGamepad", this->fonts_.get("retro"));

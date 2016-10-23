@@ -7,7 +7,7 @@ class TextWidget
 : public Widget
 {
 public:
-   TextWidget(std::string id, const std::string& text, sf::Font* font = nullptr);
+   TextWidget(std::string id, const std::string& text, sf::Vector2f pos = sf::Vector2f(0, 0), sf::Font* font = nullptr);
    virtual ~TextWidget();
 
    void set_text(const std::string& text);

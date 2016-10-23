@@ -5,6 +5,8 @@ ButtonWidget::ButtonWidget(std::string id, const sf::Vector2f& pos, const sf::Ve
 : Widget(id)
 , background_(new SpriteGraphic())
 {
+   this->clickable(true);
+
    this->background_->set_position(pos);
    this->background_->set_size(size);
    this->background_->set_color(sf::Color::Red);

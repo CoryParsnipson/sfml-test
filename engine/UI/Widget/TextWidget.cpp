@@ -5,7 +5,7 @@
 #include "RenderSurface.h"
 #include "TextWidget.h"
 
-TextWidget::TextWidget(std::string id, const std::string& text, sf::Font* font /* = nullptr */)
+TextWidget::TextWidget(std::string id, const std::string& text, sf::Vector2f pos /* = sf::Vector2f(0, 0) */, sf::Font* font /* = nullptr */)
 : Widget(id)
 , raw_text_(text)
 , text_(new TextGraphic(text, font))
@@ -14,6 +14,8 @@ TextWidget::TextWidget(std::string id, const std::string& text, sf::Font* font /
 
    this->size_.x = this->text_->get_local_bounds().width;
    this->size_.y = this->text_->get_local_bounds().height;
+   
+   this->text_->set_position(pos);
 }
 
 TextWidget::~TextWidget() {

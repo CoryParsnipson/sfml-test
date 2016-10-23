@@ -16,8 +16,6 @@ Widget::Widget(std::string id /* = "Widget" */)
 , id_(std::move(id))
 , positioning_(UI::Positioning::Default)
 {
-   // want default UI widget behavior to interact with mouse clicks
-   this->clickable(true);
 }
 
 Widget::~Widget() {
