@@ -37,6 +37,7 @@
 #include "SetSelectionRectCommand.h"
 #include "UpdateSelectionRectCommand.h"
 #include "SetTileCursorCommand.h"
+#include "SetTilesCommand.h"
 #include "RemoveTilesCommand.h"
 
 #include "PlayerGamepad.h"
@@ -190,6 +191,8 @@ BuilderScene::BuilderScene()
    for (std::vector<std::string>::const_iterator tile_texture_it = tile_textures.begin(); tile_texture_it != tile_textures.end(); ++tile_texture_it) {
       button = new ButtonWidget(*tile_texture_it, sf::Vector2f(x_pos, y_pos), sf::Vector2f(64, 64));
       button->set_background(new SpriteGraphic(*this->textures_.get(*tile_texture_it)));
+      button->on_click(new SetTilesCommand(*this->map_, this->tile_cursor_, *this->textures_.get(*tile_texture_it)));
+
       tile_palette->add(button);
 
       if (x_pos == 84) y_pos += 74;
@@ -307,48 +310,6 @@ void BuilderScene::process(Game& game, ResizeInputEvent& e) {
 
 void BuilderScene::process(Game& game, KeyPressInputEvent& e) {
 //   switch (e.key) {
-//   case Key::Num1:
-//   case Key::Numpad1:
-//      this->set_tiles(this->textures_.get("tile_grass"));
-//   break;
-//   case Key::Num2:
-//   case Key::Numpad2:
-//      this->set_tiles(this->textures_.get("tile_worn_grass"));
-//   break;
-//   case Key::Num3:
-//   case Key::Numpad3:
-//      this->set_tiles(this->textures_.get("tile_dirt_ul"));
-//   break;
-//   case Key::Num4:
-//   case Key::Numpad4:
-//      this->set_tiles(this->textures_.get("tile_dirt_um"));
-//   break;
-//   case Key::Num5:
-//   case Key::Numpad5:
-//      this->set_tiles(this->textures_.get("tile_dirt_ur"));
-//   break;
-//   case Key::Num6:
-//   case Key::Numpad6:
-//      this->set_tiles(this->textures_.get("tile_dirt_ml"));
-//   break;
-//   case Key::Num7:
-//   case Key::Numpad7:
-//      this->set_tiles(this->textures_.get("tile_dirt_mm"));
-//   break;
-//   case Key::Num8:
-//   case Key::Numpad8:
-//      this->set_tiles(this->textures_.get("tile_dirt_mr"));
-//   break;
-//   case Key::Num9:
-//   case Key::Numpad9:
-//      this->set_tiles(this->textures_.get("tile_dirt_bl"));
-//   break;
-//   case Key::Slash:
-//      this->set_tiles(this->textures_.get("tile_dirt_bm"));
-//   break;
-//   case Key::Multiply:
-//      this->set_tiles(this->textures_.get("tile_dirt_br"));
-//   break;
 //   case Key::O:
 //      this->toggle_debug_info();
 //   break;
@@ -387,30 +348,6 @@ void BuilderScene::toggle_debug_info() {
          e->add(new DebugPart("debug", this->fonts_.get("retro")));
       } else {
          e->remove("debug");
-      }
-   }
-}
-
-void BuilderScene::set_tiles(Texture& tile_texture) {
-   Service::get_logger().msg(this->id_, Logger::INFO, "Adding new tiles.");
-
-   // get bounds of tile cursor
-   PhysicsPart* tc_physics = dynamic_cast<PhysicsPart*>(this->tile_cursor_->get("physics"));
-   if (!tc_physics) {
-      Service::get_logger().msg(this->id_, Logger::ERROR, "Tile cursor does not have physics part!");
-      return;
-   }
-   sf::FloatRect tc_bounds = tc_physics->get_bounding_box();
-
-   for (int tile_col = tc_bounds.left; tile_col < tc_bounds.left + tc_bounds.width; tile_col += this->map_->grid()->tile_width()) {
-      for (int tile_row = tc_bounds.top; tile_row < tc_bounds.top + tc_bounds.height; tile_row += this->map_->grid()->tile_height()) {
-         Entity* tile = TileFactory::inst()->create_tile(
-            tile_texture,
-            sf::Vector2f(tile_col, tile_row),
-            false
-         );
-
-         this->map_->add(tile);
       }
    }
 }

@@ -11,7 +11,7 @@ PanelWidget::PanelWidget(std::string id, const sf::Vector2f& pos, const sf::Vect
    this->transform_.translate(pos);
 
    this->panel_->set_position(pos);
-   this->panel_->set_color(sf::Color(192, 192, 192, 255));
+   this->panel_->set_color(sf::Color(58, 90, 114, 255));
 
    // change render texture offset
    this->surface_.offset(pos);

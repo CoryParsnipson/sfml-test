@@ -51,8 +51,6 @@ protected:
    // helper methods
    void update_fps(Settings& settings);
    void toggle_debug_info();
-
-   void set_tiles(Texture& tile_texture);
 };
 
 #endif
