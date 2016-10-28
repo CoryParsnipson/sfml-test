@@ -39,6 +39,7 @@
 #include "SetTileCursorCommand.h"
 #include "SetTilesCommand.h"
 #include "RemoveTilesCommand.h"
+#include "ToggleDebugInfoCommand.h"
 
 #include "PlayerGamepad.h"
 
@@ -53,7 +54,6 @@ BuilderScene::BuilderScene()
 , last_frame_time(0)
 , frame_measurement_interval(6)
 , frame_count(0)
-, show_debug_info_(false)
 {
    // load fonts
    this->fonts_.load("retro", "retro.ttf");
@@ -150,7 +150,7 @@ BuilderScene::BuilderScene()
    this->center_dot_ = UtilFactory::inst()->create_graphic(
       center_dot_graphic,
       center_dot_graphic->get_global_bounds(),
-      this->show_debug_info_
+      false
    );
    this->scene_graph_->layer(2)->insert(2, this->center_dot_);
 
@@ -191,7 +191,7 @@ BuilderScene::BuilderScene()
    for (std::vector<std::string>::const_iterator tile_texture_it = tile_textures.begin(); tile_texture_it != tile_textures.end(); ++tile_texture_it) {
       button = new ButtonWidget(*tile_texture_it, sf::Vector2f(x_pos, y_pos), sf::Vector2f(64, 64));
       button->set_background(new SpriteGraphic(*this->textures_.get(*tile_texture_it)));
-      button->on_click(new SetTilesCommand(*this->map_, this->tile_cursor_, *this->textures_.get(*tile_texture_it)));
+      button->on_release(new SetTilesCommand(*this->map_, this->tile_cursor_, *this->textures_.get(*tile_texture_it)));
 
       tile_palette->add(button);
 
@@ -210,6 +210,7 @@ BuilderScene::BuilderScene()
 
    // builder scene gamepad bindings
    pg->set(new ToggleVisibleCommand(this->map_->grid()), Key::G);
+   pg->set(new ToggleDebugInfoCommand(this->scene_graph_, this->fonts_.get("retro")), Key::O);
    pg->set(new ResetCameraCommand(this->map_camera_, this->map_->grid()), Key::R);
    pg->set(new SwitchSceneCommand(this, new TestUIScene()), Key::Escape);
    pg->set(new RemoveTilesCommand(*this->map_, this->tile_cursor_), Key::Delete);
@@ -310,9 +311,6 @@ void BuilderScene::process(Game& game, ResizeInputEvent& e) {
 
 void BuilderScene::process(Game& game, KeyPressInputEvent& e) {
 //   switch (e.key) {
-//   case Key::O:
-//      this->toggle_debug_info();
-//   break;
 //   case Key::S:
 //      Service::get_logger().msg(this->id_, Logger::INFO, "Writing map to file '" + this->map_filename_ + "'");
 //      this->map_->serialize(*this->serializer_);
@@ -329,25 +327,5 @@ void BuilderScene::update_fps(Settings& settings) {
    GraphicsPart* fps_graphic = dynamic_cast<GraphicsPart*>(fps_display_->get("graphics"));
    if (fps_graphic) {
       fps_graphic->get(0)->set_string("FPS: " + std::to_string(this->last_frame_time));
-   }
-}
-
-void BuilderScene::toggle_debug_info() {
-   this->show_debug_info_ = !this->show_debug_info_;
-   Service::get_logger().msg(this->id(), Logger::INFO, "Debug info: " + std::string(this->show_debug_info_ ? "SHOW" : "HIDE"));
-
-   // TODO: can replace this with visitor
-   SceneObject::prefix_iterator it;
-   for (it = this->scene_graph_->begin(); it != this->scene_graph_->end(); ++it) {
-      auto e = dynamic_cast<Entity*>(*it);
-      if (!e) {
-         continue;
-      }
-
-      if (this->show_debug_info_) {
-         e->add(new DebugPart("debug", this->fonts_.get("retro")));
-      } else {
-         e->remove("debug");
-      }
    }
 }

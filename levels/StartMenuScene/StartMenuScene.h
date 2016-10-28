@@ -15,13 +15,6 @@ public:
 
    // input event processing
    virtual void process(Game& game, ResizeInputEvent& e);
-   virtual void process(Game& game, KeyPressInputEvent& e);
-
-protected:
-   bool show_debug_info_;
-
-   // helper methods
-   void toggle_debug_info();
 };
 
 #endif

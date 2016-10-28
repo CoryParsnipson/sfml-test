@@ -127,9 +127,25 @@ public:
       return nullptr;
    }
 
-   // TODO: implement
-   void remove_gamepad(int player_id);
-   void remove_gamepad(Gamepad* gamepad);
+   void remove_gamepad(int player_id) {
+      if (player_id >= (signed int)this->gamepads_.size()) {
+         return;
+      }
+      
+      delete this->gamepads_[player_id];
+      this->gamepads_.erase(this->gamepads_.begin() + player_id);
+   }
+
+   void remove_gamepad(Gamepad* gamepad) {
+      GamepadList::const_iterator it;
+      for (it = this->gamepads_.begin(); it != this->gamepads_.end(); ++it) {
+         if (gamepad == *it) {
+            delete gamepad;
+            this->gamepads_.erase(it);
+            return;
+         }
+      }
+   }
 
    // scene interface
    void load_scene(Scene* scene) {

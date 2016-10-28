@@ -46,11 +46,9 @@ protected:
    int last_frame_time;
    int frame_measurement_interval;
    int frame_count;
-   bool show_debug_info_;
 
    // helper methods
    void update_fps(Settings& settings);
-   void toggle_debug_info();
 };
 
 #endif
