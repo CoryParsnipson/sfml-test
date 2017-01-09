@@ -7,14 +7,13 @@
 #include "sfml.h"
 
 #include "SceneObject.h"
-#include "Serialize.h"
+#include "Serializable.h"
 
 // forward declarations
 class Part;
 
 class Entity
 : public SceneObject
-, public Serialize
 {
 public:
    using PartList = std::map<std::string, Part*>;
@@ -41,9 +40,9 @@ public:
    void remove(const std::string& part_id);
    Part* get(const std::string& part_name);
 
-   // serialize interface
-   virtual Serialize::SerialObj serialize();
-   virtual void deserialize(SerialObj& obj, const TextureAtlas* textures = nullptr);
+   // serializable interface
+   virtual std::string serialize(Serializer& s);
+   virtual void deserialize(Serializer& s, Game& g, Channel& c);
 
    // scene graph interface
    virtual bool intersects(const sf::Vector2i& other);

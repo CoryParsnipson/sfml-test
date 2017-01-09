@@ -50,6 +50,10 @@ public:
    virtual void process(MouseWheelInputEvent& e);
    virtual void process(MouseButtonInputEvent& e);
 
+   // serializable interface
+   virtual std::string serialize(Serializer& s);
+   virtual void deserialize(Serializer& s, Game& g, Channel& c);
+
 protected:
    KeyBinding keys_;
    MouseBinding mouse_buttons_;

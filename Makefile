@@ -25,6 +25,10 @@ DL_INCLUDES = -lsfml-window -lsfml-graphics -lsfml-system
 
 # include paths
 INCLUDE_PATHS = 
+
+INCLUDE_PATHS += $(PROJECT_DIR)/vendor
+INCLUDE_PATHS += $(PROJECT_DIR)/vendor/json
+
 INCLUDE_PATHS += $(PROJECT_DIR)
 INCLUDE_PATHS += $(PROJECT_DIR)/engine
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/Util
@@ -40,7 +44,7 @@ INCLUDE_PATHS += $(PROJECT_DIR)/engine/Command
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/Command/Mouse
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/Scene
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/Entity
-INCLUDE_PATHS += $(PROJECT_DIR)/engine/Builder
+INCLUDE_PATHS += $(PROJECT_DIR)/engine/Channel
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/Serializer
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/Map
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/Factory
@@ -69,7 +73,7 @@ CXX_FILES += $(PROJECT_DIR)/engine/Scene/*.cpp
 CXX_FILES += $(PROJECT_DIR)/engine/Command/*.cpp
 CXX_FILES += $(PROJECT_DIR)/engine/Command/Mouse/*.cpp
 CXX_FILES += $(PROJECT_DIR)/engine/Entity/*.cpp
-CXX_FILES += $(PROJECT_DIR)/engine/Builder/*.cpp
+CXX_FILES += $(PROJECT_DIR)/engine/Channel/*.cpp
 CXX_FILES += $(PROJECT_DIR)/engine/Serializer/*.cpp
 CXX_FILES += $(PROJECT_DIR)/engine/Map/*.cpp
 CXX_FILES += $(PROJECT_DIR)/engine/Factory/*.cpp

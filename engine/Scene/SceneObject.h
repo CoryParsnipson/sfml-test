@@ -5,6 +5,7 @@
 #include "Draw.h"
 #include "Update.h"
 #include "Composite.h"
+#include "Serializable.h"
 #include "SceneGraphVisitor.h"
 
 // ----------------------------------------------------------------------------
@@ -22,6 +23,7 @@ class SceneObject
 : public Draw
 , public Update
 , public Composite<SceneObject, true>
+, public Serializable
 {
 public:
    SceneObject(bool visible = true);
@@ -93,6 +95,10 @@ public:
 
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr);
+
+   // serializable interface
+   virtual std::string serialize(Serializer& s) = 0;
+   virtual void deserialize(Serializer& s, Game& g, Channel& c) = 0;
 
 private:
    bool visible_; // visibility of this node affects children as well

@@ -64,6 +64,10 @@ public:
    virtual void process(MouseWheelInputEvent& e) {}
    virtual void process(MouseButtonInputEvent& e) {}
 
+   // serializable interface
+   virtual std::string serialize(Serializer& s) = 0;
+   virtual void deserialize(Serializer& s, Game& g, Channel& c) = 0;
+
 private:
    friend std::ostream& operator<<(std::ostream& stream, const Gamepad& gamepad) {
       stream << gamepad.to_string();

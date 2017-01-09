@@ -99,33 +99,31 @@ Part* Entity::get(const std::string& part_name) {
    return it->second;
 }
 
-Serialize::SerialObj Entity::serialize() {
-   Serialize::SerialObj obj;
+std::string Entity::serialize(Serializer& s) {
+   Serializer::SerialData data;
 
-   // set type tag
-   obj["type"] = "entity";
+   data["type"] = "entity";
 
-   PartList::const_iterator it;
-   for (it = this->parts_.begin(); it != this->parts_.end(); it++) {
-      Serialize::SerialObj part_obj = it->second->serialize();
-      obj.insert(part_obj.begin(), part_obj.end());
+   PartList::iterator it;
+   for (it = this->parts_.begin(); it != this->parts_.end(); ++it) {
+      data[it->first] = it->second->serialize(s);
    }
 
-   return obj;
+   return s.serialize(data);
 }
 
-void Entity::deserialize(Serialize::SerialObj& obj, const TextureAtlas* textures /* = nullptr */) {
-   // create graphics part if needed
-   if (obj["texture"] != "") {
+void Entity::deserialize(Serializer& s, Game& g, Channel& c) {
+   Serializer::SerialData data = s.deserialize(g, c);
+
+   if (data["graphics"] != "") {
       GraphicsPart* graphics_part = new GraphicsPart();
-      graphics_part->deserialize(obj, textures);
+      graphics_part->deserialize(s, g, data["graphics"]);
       this->add(graphics_part);
    }
 
-   // create physics part if needed
-   if (obj["bounds_width"] != "" && obj["bounds_height"] != "") {
+   if (data["physics"] != "") {
       PhysicsPart* physics_part = new PhysicsPart();
-      physics_part->deserialize(obj, textures);
+      physics_part->deserialize(s, g, data["physics"]);
       this->add(physics_part);
    }
 

@@ -2,7 +2,6 @@
 
 #include "Game.h"
 #include "TextFactory.h"
-#include "TextSerializer.h"
 
 #include "CloseInputEvent.h"
 #include "ResizeInputEvent.h"
@@ -19,47 +18,47 @@ Game::Game()
 , prev_scene_(nullptr)
 , window_("SFML Test", sf::Vector2f(this->settings.default_window_width(), this->settings.default_window_height()))
 {
-   // TODO: probably need to move this into a config class or something
-   Serialize::SerialObj config_line;
-   Serializer* config_reader = new TextSerializer();
-   config_reader->open_infile("config.txt");
+   //// TODO: probably need to move this into a config class or something
+   //Serialize::SerialObj config_line;
+   //Serializer* config_reader = new TextSerializer();
+   //config_reader->open_infile("config.txt");
 
-   while(config_reader->next()) {
-      config_line = config_reader->get();
+   //while(config_reader->next()) {
+   //   config_line = config_reader->get();
 
-      // initialize logger service
-      if (config_line["type"] == "logger") {
-         if (config_line["stream"] == "console") {
-            if (config_line["enable"] == "true") {
-               this->full_logger_.console_start();
-            }
+   //   // initialize logger service
+   //   if (config_line["type"] == "logger") {
+   //      if (config_line["stream"] == "console") {
+   //         if (config_line["enable"] == "true") {
+   //            this->full_logger_.console_start();
+   //         }
 
-            if (config_line["disable_all_tags"] == "true") {
-               this->full_logger_.get_logger("console")->disable_all_tags();
-            }
+   //         if (config_line["disable_all_tags"] == "true") {
+   //            this->full_logger_.get_logger("console")->disable_all_tags();
+   //         }
 
-            if (config_line["set_tag"] != "") {
-               bool setting = (config_line["tag_value"] == "true");
-               this->full_logger_.get_logger("console")->set_tag(config_line["set_tag"], setting);
-            }
+   //         if (config_line["set_tag"] != "") {
+   //            bool setting = (config_line["tag_value"] == "true");
+   //            this->full_logger_.get_logger("console")->set_tag(config_line["set_tag"], setting);
+   //         }
 
-         } else if (config_line["stream"] == "file") {
-            if (config_line["enable"] == "true") {
-               this->full_logger_.file_start("log.txt");
-            }
+   //      } else if (config_line["stream"] == "file") {
+   //         if (config_line["enable"] == "true") {
+   //            this->full_logger_.file_start("log.txt");
+   //         }
 
-            if (config_line["disable_all_tags"] == "true") {
-               this->full_logger_.get_logger("file")->disable_all_tags();
-            }
+   //         if (config_line["disable_all_tags"] == "true") {
+   //            this->full_logger_.get_logger("file")->disable_all_tags();
+   //         }
 
-            if (config_line["set_tag"] != "") {
-               bool setting = (config_line["tag_value"] == "true");
-               this->full_logger_.get_logger("file")->set_tag(config_line["set_tag"], setting);
-            }
+   //         if (config_line["set_tag"] != "") {
+   //            bool setting = (config_line["tag_value"] == "true");
+   //            this->full_logger_.get_logger("file")->set_tag(config_line["set_tag"], setting);
+   //         }
 
-         }
-      }
-   }
+   //      }
+   //   }
+   //}
 
    Service::provide_logger(&this->full_logger_);
 

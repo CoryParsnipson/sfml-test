@@ -166,6 +166,15 @@ void Camera::do_draw(RenderSurface& surface, sf::RenderStates render_states) {
    surface.view(*this->view_);
 }
 
+std::string Camera::serialize(Serializer& s) {
+   // TODO implement me
+   return "";
+}
+
+void Camera::deserialize(Serializer& s, Game& g, Channel& c) {
+   // TODO implement me
+}
+
 // ----------------------------------------------------------------------------
 // free function helper methods
 // ----------------------------------------------------------------------------

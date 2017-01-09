@@ -46,13 +46,11 @@ void ReferencePart::remove(Entity* entity) {
 void ReferencePart::update(Game& game, Scene* scene) {
 }
 
-Serialize::SerialObj ReferencePart::serialize() {
-   Serialize::SerialObj obj;
-
+std::string ReferencePart::serialize(Serializer& s) {
    // TODO: implement
-   return obj;
+   return "";
 }
 
-void ReferencePart::deserialize(Serialize::SerialObj& obj, const TextureAtlas* textures /* = nullptr */) {
+void ReferencePart::deserialize(Serializer& s, Game& g, Channel& c) {
    // TODO: implement
 }

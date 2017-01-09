@@ -73,3 +73,12 @@ void ButtonWidget::on_mouse_out() {
 void ButtonWidget::do_draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    this->background_->draw(surface, render_states);
 }
+
+std::string ButtonWidget::serialize(Serializer& s) {
+   // TODO: implement me
+   return "";
+}
+
+void ButtonWidget::deserialize(Serializer& s, Game& g, std::string d) {
+   // TODO: implement me
+}

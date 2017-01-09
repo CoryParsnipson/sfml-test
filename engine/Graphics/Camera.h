@@ -64,6 +64,10 @@ public:
    // scene graph visitor interface
    virtual void accept(SceneGraphVisitor& visitor);
 
+   // serializable interface
+   virtual std::string serialize(Serializer& s);
+   virtual void deserialize(Serializer& s, Game& g, Channel& c);
+
 private:
    std::string id_;
    float zoom_factor_;

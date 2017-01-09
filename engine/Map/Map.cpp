@@ -21,19 +21,22 @@ std::string Map::to_string() {
    return "[Map]";
 }
 
-void Map::serialize(Serializer& serializer) {
-   // serialize the grid
-   serializer.comment("grid");
-   serializer.set(this->grid_->serialize());
+std::string Map::serialize(Serializer& s) {
+   Serializer::SerialData data;
+   data["grid"] = this->grid_->serialize(s);
+   
+   int i = 0;
+   Map::iterator it;
+   for (it = this->begin(); it != this->end(); ++it) {
+      data["tile_" + std::to_string(i)] = (*it)->serialize(s);
+      ++i;
+   }
 
-   // serialize all tiles
-   serializer.comment("map tiles");
+   return s.serialize(data);
+}
 
-   // TODO: dynamic cast serialize?
-   //Map::TileList::const_iterator it;
-   //for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
-   //   serializer.set((*it)->serialize());
-   //}
+void deserialize(Serializer& s, Game& g, Channel& c) {
+   // TODO: implement me
 }
 
 Grid* Map::grid() {

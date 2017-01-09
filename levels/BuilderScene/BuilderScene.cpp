@@ -118,6 +118,7 @@ BuilderScene::BuilderScene()
    this->scene_graph_->layer(1)->add(this->map_);
 
    this->map_->grid()->visible(false);
+   // TODO: make a way for map to draw grid after all it's child tiles, and remove this from here
    this->scene_graph_->layer(1)->add(this->map_->grid());
 
    delete map_builder;

@@ -169,3 +169,12 @@ void PlayerGamepad::do_draw(RenderSurface& surface, sf::RenderStates render_stat
    this->cursor_->draw(surface, render_states);
    this->cursor_text_->draw(surface, render_states);
 }
+
+std::string PlayerGamepad::serialize(Serializer& s) {
+   // TODO: implement me
+   return "";
+}
+
+void PlayerGamepad::deserialize(Serializer& s, Game& g, Channel& c) {
+   // TODO: implement me
+}

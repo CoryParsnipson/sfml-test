@@ -151,38 +151,32 @@ sf::Vector2f OrthographicGrid::ceil(const sf::Vector2f& pos) {
    );
 }
 
-Serialize::SerialObj OrthographicGrid::serialize() {
-   Serialize::SerialObj obj;
-   sf::Vector2f origin = this->origin();
+std::string OrthographicGrid::serialize(Serializer& s) {
+   Serializer::SerialData data;
+   
+   data["type"] = "grid";
+   data["class"] = "OrthographicGrid";
+   data["id"] = this->id();
+   data["tile_width"] = std::to_string(this->tile_width());
+   data["tile_height"] = std::to_string(this->tile_height());
+   data["origin_x"] = std::to_string((int)this->origin().x);
+   data["origin_y"] = std::to_string((int)this->origin().y);
 
-   obj["type"] = "grid";
-   obj["class"] = "OrthographicGrid";
-   obj["id"] = this->id();
-   obj["tile_width"] = std::to_string(this->tile_width());
-   obj["tile_height"] = std::to_string(this->tile_height());
-   obj["origin_x"] = std::to_string((int)origin.x);
-   obj["origin_y"] = std::to_string((int)origin.y);
-
-   return obj;
+   return s.serialize(data);
 }
 
-void OrthographicGrid::deserialize(Serialize::SerialObj& obj, const TextureAtlas* textures /* = nullptr */) {
-   if (obj["type"] != "grid") {
-      throw std::out_of_range("unknown type token '" + obj["type"] + "'");
-   }
+void OrthographicGrid::deserialize(Serializer& s, Game& g, Channel& c) {
+   Serializer::SerialData data = s.deserialize(g, c);
 
-   if (obj["class"] != "OrthographicGrid") {
-      throw std::out_of_range("wrong class token '" + obj["class"] + "'");
-   }
+   assert(data["type"] == "grid");
+   assert(data["class"] == "OrthographicGrid");
 
-   sf::Vector2f origin(std::stod(obj["origin_x"]), std::stod(obj["origin_y"]));
+   this->id_ = data["id"];
+   this->tile_width(std::stoi(data["tile_width"]));
+   this->tile_height(std::stoi(data["tile_height"]));
+   this->origin(sf::Vector2f(std::stod(data["origin_x"]), std::stod(data["origin_y"])));
 
-   this->id_ = obj["id"];
-   this->tile_width(std::stoi(obj["tile_width"]));
-   this->tile_height(std::stoi(obj["tile_height"]));
-   this->origin(origin);
-
-   Service::get_logger().msg(this->id_, Logger::INFO, "tile width: " + obj["tile_width"] + ", tile_height: " + obj["tile_height"]);
+   Service::get_logger().msg(this->id_, Logger::INFO, "tile width: " + std::to_string(this->tile_width()) + ", tile_height: " + std::to_string(this->tile_height()));
 }
 
 void OrthographicGrid::create_origin_dot() {

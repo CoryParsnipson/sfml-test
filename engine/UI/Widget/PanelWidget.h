@@ -30,6 +30,10 @@ public:
    virtual void on_mouse_in();
    virtual void on_mouse_out();
 
+   // serializable interface
+   virtual std::string serialize(Serializer& s);
+   virtual void deserialize(Serializer& s, Game& g, std::string d);
+
 protected:
    Graphic* panel_;
    SubCanvas surface_; // intermediate drawing surface to clip contents

@@ -11,7 +11,6 @@
 class Grid
 : public SceneObject
 , public Moveable
-, public Serialize
 {
 public:
    Grid(const std::string& id)
@@ -108,9 +107,9 @@ public:
    virtual sf::Vector2f round(const sf::Vector2f& pos) = 0;
    virtual sf::Vector2f ceil(const sf::Vector2f& pos) = 0;
 
-   // serialize interface
-   virtual Serialize::SerialObj serialize() = 0;
-   virtual void deserialize(Serialize::SerialObj& obj, const TextureAtlas* textures = nullptr) = 0;
+   // serializable interface
+   virtual std::string serialize(Serializer& s) = 0;
+   virtual void deserialize(Serializer& s, Game& g, Channel& c) = 0;
 
 protected:
    std::string id_;

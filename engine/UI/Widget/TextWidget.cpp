@@ -89,3 +89,12 @@ void TextWidget::word_wrap() {
 void TextWidget::do_draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
    this->text_->draw(surface, render_states);
 }
+
+std::string TextWidget::serialize(Serializer& s) {
+   // TODO: implement me
+   return "";
+}
+
+void TextWidget::deserialize(Serializer& s, Game& g, std::string d) {
+   // TODO: implement me
+}

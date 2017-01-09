@@ -86,12 +86,11 @@ void DebugPart::update(Game& game, Scene* scene) {
    //}
 }
 
-Serialize::SerialObj DebugPart::serialize() {
-   Serialize::SerialObj obj;
+std::string DebugPart::serialize(Serializer& s) {
    // TODO: implement
-   return obj;
+   return "";
 }
 
-void DebugPart::deserialize(Serialize::SerialObj& obj, const TextureAtlas* textures /* = nullptr */) {
+void DebugPart::deserialize(Serializer& s, Game& g, Channel& c) {
    // TODO: implement
 }

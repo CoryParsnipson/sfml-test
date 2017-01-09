@@ -22,8 +22,8 @@ public:
    virtual void update(Game& game, Scene* scene = nullptr);
 
    // serialize interface
-   virtual Serialize::SerialObj serialize();
-   virtual void deserialize(Serialize::SerialObj& obj, const TextureAtlas* textures = nullptr);
+   virtual std::string serialize(Serializer& s);
+   virtual void deserialize(Serializer& s, Game& g, Channel& c);
 
 protected:
    bool show_text_;

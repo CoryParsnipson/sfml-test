@@ -66,29 +66,21 @@ bool PhysicsPart::intersects(const sf::FloatRect& other) {
 void PhysicsPart::update(Game& game, Scene* scene) {
 }
 
-Serialize::SerialObj PhysicsPart::serialize() {
-   Serialize::SerialObj obj;
+std::string PhysicsPart::serialize(Serializer& s) {
+   Serializer::SerialData data;
 
-   // no need to include type tag in Part serialization
-   obj["pos_x"] = std::to_string(this->bounding_box_.left);
-   obj["pos_y"] = std::to_string(this->bounding_box_.top);
+   data["x"] = std::to_string(this->bounding_box_.left);
+   data["y"] = std::to_string(this->bounding_box_.top);
 
-   obj["bounds_width"] = std::to_string(this->bounding_box_.width);
-   obj["bounds_height"] = std::to_string(this->bounding_box_.height);
+   data["width"] = std::to_string(this->bounding_box_.width);
+   data["height"] = std::to_string(this->bounding_box_.height);
 
-   return obj;
+   return s.serialize(data):
 }
 
-void PhysicsPart::deserialize(Serialize::SerialObj& obj, const TextureAtlas* textures /* = nullptr */) {
-   sf::Vector2f pos;
-   sf::Vector2f size;
+void PhysicsPart::deserialize(Serializer& s, Game& g, Channel& c) {
+   Serializer::SerialData data = s.deserialize(g, c);
 
-   pos.x = std::stod(obj["pos_x"]);
-   pos.y = std::stod(obj["pos_y"]);
-
-   size.x = std::stod(obj["bounds_width"]);
-   size.y = std::stod(obj["bounds_height"]);
-
-   this->set_position(pos);
-   this->set_size(size);
+   this->set_position(sf::Vector2f(std::stod(data["x"]), std::stod(data["y"])));
+   this->set_size(sf::Vector2f(std::stod(data["width"]), std::stod(data["height"])));
 }

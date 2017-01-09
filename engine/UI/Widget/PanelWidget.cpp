@@ -91,3 +91,13 @@ void PanelWidget::do_draw(RenderSurface& surface, sf::RenderStates render_states
    //surface.draw(widget_sprite, render_states);
    this->panel_->draw(surface, render_states);
 }
+
+std::string PanelWidget::serialize(Serializer& s) {
+   // TODO implement me
+   return "";
+}
+
+void PanelWidget::deserialize(Serializer& s, Game& g, std::string d) {
+   // TODO implement me
+}
+

@@ -7,12 +7,12 @@
 
 #include "Draw.h"
 #include "Update.h"
-#include "Serialize.h"
+#include "Serializable.h"
 
 class Part
 : public Draw
 , public Update
-, public Serialize
+, public Serializable
 {
 public:
    Part(std::string id) : id(id) {};
@@ -37,8 +37,8 @@ public:
    virtual void update(Game& game, Scene* scene = nullptr) = 0;
 
    // serialize interface
-   virtual Serialize::SerialObj serialize() = 0;
-   virtual void deserialize(Serialize::SerialObj& obj, const TextureAtlas* textures = nullptr) = 0;
+   virtual std::string serialize(Serializer& s) = 0;
+   virtual void deserialize(Serializer& s, Game& g, Channel& c) = 0;
 
 protected:
    std::string id;

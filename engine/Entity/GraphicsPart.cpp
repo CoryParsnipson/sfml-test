@@ -81,41 +81,35 @@ void GraphicsPart::draw(RenderSurface& surface, sf::RenderStates render_states /
 void GraphicsPart::update(Game& game, Scene* scene) {
 }
 
-Serialize::SerialObj GraphicsPart::serialize() {
-   Serialize::SerialObj obj;
-
+std::string GraphicsPart::serialize(Serializer& s) {
+   Serializer::SerialData data;
+   
    Graphic* sprite = this->get(0);
-   Texture* texture(nullptr);
-   sf::Vector2f pos;
+   Texture* texture;
+
    if (sprite) {
       pos = sprite->get_position();
       texture = sprite->get_texture();
    }
 
-   // don't need to specify type for Part serialization
-   obj["pos_x"] = std::to_string(pos.x);
-   obj["pos_y"] = std::to_string(pos.y);
+   data["texture"] = (texture ? texture->id() : "");
+   data["x"] = pos.x;
+   data["y"] = pos.y;
 
-   if (texture) {
-      obj["texture"] = texture->id();
-   }
-
-   return obj;
+   return s.serialize(data);
 }
 
-void GraphicsPart::deserialize(Serialize::SerialObj& obj, const TextureAtlas* textures /* = nullptr*/) {
-   sf::Vector2f pos(0, 0);
-   pos.x = std::stod(obj["pos_x"]);
-   pos.y = std::stod(obj["pos_y"]);
+void GraphicsPart::deserialize(Serializer& s, Game& g, Channel& c) {
+   Serializer::SerialData data = s.deserialize(g, c);
 
-   Graphic* sprite = nullptr;
+   sf::Vector2f pos;
+   pos.x = data["x"];
+   pos.y = data["y"];
 
-   if (textures && textures->get(obj["texture"])) {
-      sprite = new SpriteGraphic(*textures->get(obj["texture"]));
-   } else {
-      sprite = new SpriteGraphic();
+   if (g.current_scene() && g.current_scene()->textures()->get(data["texture"]) != "") {
+      Graphic* sprite = new SpriteGraphic(*g.current_scene()->textures()->get(data["texture"]));
+      sprite->set_position(pos);
+
+      this->add(sprite);
    }
-   sprite->set_position(pos);
-
-   this->add(sprite);
 }

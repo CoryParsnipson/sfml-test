@@ -45,9 +45,9 @@ public:
    virtual sf::Vector2f round(const sf::Vector2f& pos);
    virtual sf::Vector2f ceil(const sf::Vector2f& pos);
 
-   // serialize interface
-   virtual Serialize::SerialObj serialize();
-   virtual void deserialize(Serialize::SerialObj& obj, const TextureAtlas* textures = nullptr);
+   // serializable interface
+   virtual std::string serialize(Serializer& s);
+   virtual void deserialize(Serializer& s, Game& g, Channel& c);
 
    // scene graph interface
    virtual bool intersects(const sf::Vector2i& other);

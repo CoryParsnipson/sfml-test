@@ -43,6 +43,10 @@ public:
    // scene graph visitor interface
    virtual void accept(SceneGraphVisitor& visitor);
 
+   // serializable interface
+   virtual std::string serialize(Serializer& s) = 0;
+   virtual void deserialize(Serializer& s, Game& g, std::string d) = 0;
+
 private:
    friend std::ostream& operator<<(std::ostream& stream, const Widget& widget);
    std::string to_string() const;

@@ -24,6 +24,10 @@ public:
    virtual bool intersects(const sf::FloatRect& other);
    virtual bool intersects(const SceneObject& other);
 
+   // serializable interface
+   virtual std::string serialize(Serializer& s);
+   virtual void deserialize(Serializer& s, Game& g, std::string d);
+
 protected:
    std::string raw_text_;
 

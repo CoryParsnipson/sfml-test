@@ -180,6 +180,14 @@ public:
       return this->scene_graph_;
    }
 
+   FontAtlas& fonts() {
+      return this->fonts_;
+   }
+
+   TextureAtlas& textures() {
+      return this->textures_;
+   }
+
    // input event processing default implementations
    virtual void process(Game& game, CloseInputEvent& e) {
       game.unload_scene();
