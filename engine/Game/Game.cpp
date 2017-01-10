@@ -59,15 +59,15 @@ Game::Game()
    //      }
    //   }
    //}
+   //
+   //delete config_reader;
+   //config_reader = nullptr;
 
    Service::provide_logger(&this->full_logger_);
 
    // set up input
    Service::provide_input(&this->input_);
    Service::get_input().attach(*this);
-   
-   delete config_reader;
-   config_reader = nullptr;
 }
 
 Game::~Game() {

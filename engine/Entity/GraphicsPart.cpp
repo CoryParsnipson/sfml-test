@@ -3,6 +3,9 @@
 #include "RenderSurface.h"
 #include "Entity.h"
 #include "PhysicsPart.h"
+#include "Texture.h"
+#include "Game.h"
+#include "Scene.h"
 
 GraphicsPart::GraphicsPart(std::string id)
 : Part(id)
@@ -86,6 +89,7 @@ std::string GraphicsPart::serialize(Serializer& s) {
    
    Graphic* sprite = this->get(0);
    Texture* texture;
+   sf::Vector2f pos;
 
    if (sprite) {
       pos = sprite->get_position();
@@ -93,21 +97,21 @@ std::string GraphicsPart::serialize(Serializer& s) {
    }
 
    data["texture"] = (texture ? texture->id() : "");
-   data["x"] = pos.x;
-   data["y"] = pos.y;
+   data["x"] = std::to_string((int)pos.x);
+   data["y"] = std::to_string((int)pos.y);
 
    return s.serialize(data);
 }
 
-void GraphicsPart::deserialize(Serializer& s, Game& g, Channel& c) {
-   Serializer::SerialData data = s.deserialize(g, c);
+void GraphicsPart::deserialize(Serializer& s, Game& g, std::string& d) {
+   Serializer::SerialData data = s.deserialize(g, d);
 
    sf::Vector2f pos;
-   pos.x = data["x"];
-   pos.y = data["y"];
+   pos.x = std::stoi(data["x"]);
+   pos.y = std::stoi(data["y"]);
 
-   if (g.current_scene() && g.current_scene()->textures()->get(data["texture"]) != "") {
-      Graphic* sprite = new SpriteGraphic(*g.current_scene()->textures()->get(data["texture"]));
+   if (g.current_scene() && g.current_scene()->textures().get(data["texture"])) {
+      Graphic* sprite = new SpriteGraphic(*g.current_scene()->textures().get(data["texture"]));
       sprite->set_position(pos);
 
       this->add(sprite);

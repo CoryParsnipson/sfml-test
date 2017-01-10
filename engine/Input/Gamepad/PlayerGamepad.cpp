@@ -175,6 +175,6 @@ std::string PlayerGamepad::serialize(Serializer& s) {
    return "";
 }
 
-void PlayerGamepad::deserialize(Serializer& s, Game& g, Channel& c) {
+void PlayerGamepad::deserialize(Serializer& s, Game& g, std::string& d) {
    // TODO: implement me
 }

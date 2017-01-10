@@ -96,10 +96,6 @@ public:
    // update interface
    virtual void update(Game& game, Scene* scene = nullptr);
 
-   // serializable interface
-   virtual std::string serialize(Serializer& s) = 0;
-   virtual void deserialize(Serializer& s, Game& g, Channel& c) = 0;
-
 private:
    bool visible_; // visibility of this node affects children as well
    bool propagate_event_; // false to stop this node from passing mouse events to parent node

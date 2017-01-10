@@ -1,3 +1,5 @@
+#include <cassert>
+
 #include "OrthographicGrid.h"
 #include "Service.h"
 #include "Draw.h"
@@ -165,8 +167,8 @@ std::string OrthographicGrid::serialize(Serializer& s) {
    return s.serialize(data);
 }
 
-void OrthographicGrid::deserialize(Serializer& s, Game& g, Channel& c) {
-   Serializer::SerialData data = s.deserialize(g, c);
+void OrthographicGrid::deserialize(Serializer& s, Game& g, std::string& d) {
+   Serializer::SerialData data = s.deserialize(g, d);
 
    assert(data["type"] == "grid");
    assert(data["class"] == "OrthographicGrid");

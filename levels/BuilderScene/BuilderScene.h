@@ -5,10 +5,7 @@
 #include "Settings.h"
 
 class Texture;
-
 class Map;
-class MapBuilder;
-class Serializer;
 
 class BuilderScene
 : public Scene
@@ -35,7 +32,6 @@ protected:
    Camera* map_camera_;
    Entity* backdrop_;
    std::string map_filename_;
-   Serializer* serializer_;
 
    // entity pointers (no ownership)
    Entity* center_dot_;

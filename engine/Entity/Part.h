@@ -38,7 +38,7 @@ public:
 
    // serialize interface
    virtual std::string serialize(Serializer& s) = 0;
-   virtual void deserialize(Serializer& s, Game& g, Channel& c) = 0;
+   virtual void deserialize(Serializer& s, Game& g, std::string& d) = 0;
 
 protected:
    std::string id;

@@ -35,7 +35,7 @@ std::string Map::serialize(Serializer& s) {
    return s.serialize(data);
 }
 
-void deserialize(Serializer& s, Game& g, Channel& c) {
+void Map::deserialize(Serializer& s, Game& g, std::string& d) {
    // TODO: implement me
 }
 

@@ -16,17 +16,11 @@ std::string JSONSerializer::serialize(Serializer::SerialData& s) {
    return data.dump(this->tab_width_);
 }
 
-Serializer::SerialData JSONSerializer::deserialize(Game& g, Channel& c) {
-   std::string json_string;
-
+Serializer::SerialData JSONSerializer::deserialize(Game& g, std::string& d) {
    Serializer::SerialData serial_data;
-   nlohmann::json data = json::parse(json_string);
+   nlohmann::json data = nlohmann::json::parse(d);
 
-   // TODO: implement
-   // need to keep receiving from channel until an entire JSON object is obtained
-   // keep excess of last receive
-   
-   for (json::const_iterator it = data.begin(); it != data.end(); ++it) {
+   for (nlohmann::json::const_iterator it = data.begin(); it != data.end(); ++it) {
       serial_data[it.key()] = it.value();
    }
 

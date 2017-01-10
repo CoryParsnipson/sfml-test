@@ -75,11 +75,11 @@ std::string PhysicsPart::serialize(Serializer& s) {
    data["width"] = std::to_string(this->bounding_box_.width);
    data["height"] = std::to_string(this->bounding_box_.height);
 
-   return s.serialize(data):
+   return s.serialize(data);
 }
 
-void PhysicsPart::deserialize(Serializer& s, Game& g, Channel& c) {
-   Serializer::SerialData data = s.deserialize(g, c);
+void PhysicsPart::deserialize(Serializer& s, Game& g, std::string& d) {
+   Serializer::SerialData data = s.deserialize(g, d);
 
    this->set_position(sf::Vector2f(std::stod(data["x"]), std::stod(data["y"])));
    this->set_size(sf::Vector2f(std::stod(data["width"]), std::stod(data["height"])));

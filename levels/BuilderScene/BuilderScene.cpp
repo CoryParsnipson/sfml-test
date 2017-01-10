@@ -20,9 +20,8 @@
 #include "UtilFactory.h"
 #include "TileFactory.h"
 #include "TextFactory.h"
-#include "TextSerializer.h"
-#include "OrthographicMapBuilder.h"
 #include "Grid.h"
+#include "Map.h"
 
 #include "MacroCommand.h"
 #include "DragCommand.h"
@@ -105,23 +104,23 @@ BuilderScene::BuilderScene()
    this->scene_graph_->insert(2, this->hud_camera_); // layer for hud 
 
    // build the map
-   this->serializer_ = new TextSerializer();
-   this->serializer_->open_infile(this->map_filename_);
+   //this->serializer_ = new TextSerializer();
+   //this->serializer_->open_infile(this->map_filename_);
 
-   MapBuilder* map_builder = new OrthographicMapBuilder();
-   map_builder->set_serializer(this->serializer_);
-   map_builder->grid_font(this->fonts_.get("retro"));
-   map_builder->textures(&this->textures_);
-   map_builder->build();
+   //MapBuilder* map_builder = new OrthographicMapBuilder();
+   //map_builder->set_serializer(this->serializer_);
+   //map_builder->grid_font(this->fonts_.get("retro"));
+   //map_builder->textures(&this->textures_);
+   //map_builder->build();
 
-   this->map_ = map_builder->get_map();
+   //this->map_ = map_builder->get_map();
    this->scene_graph_->layer(1)->add(this->map_);
 
    this->map_->grid()->visible(false);
    // TODO: make a way for map to draw grid after all it's child tiles, and remove this from here
    this->scene_graph_->layer(1)->add(this->map_->grid());
 
-   delete map_builder;
+   //delete map_builder;
 
    // create a selection rectangle entity and add it to the scene initally invisible
    Entity* selection_rect = TileFactory::inst()->create_selection_rectangle();
@@ -251,7 +250,7 @@ BuilderScene::BuilderScene()
 }
 
 BuilderScene::~BuilderScene() {
-   delete this->serializer_;
+   //delete this->serializer_;
 }
 
 void BuilderScene::enter(Game& game) {

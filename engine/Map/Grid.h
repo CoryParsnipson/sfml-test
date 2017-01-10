@@ -6,7 +6,6 @@
 #include "sfml.h"
 #include "Input.h"
 #include "SceneObject.h"
-#include "Serialize.h"
 
 class Grid
 : public SceneObject
@@ -109,7 +108,7 @@ public:
 
    // serializable interface
    virtual std::string serialize(Serializer& s) = 0;
-   virtual void deserialize(Serializer& s, Game& g, Channel& c) = 0;
+   virtual void deserialize(Serializer& s, Game& g, std::string& d) = 0;
 
 protected:
    std::string id_;

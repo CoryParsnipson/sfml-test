@@ -51,6 +51,6 @@ std::string ReferencePart::serialize(Serializer& s) {
    return "";
 }
 
-void ReferencePart::deserialize(Serializer& s, Game& g, Channel& c) {
+void ReferencePart::deserialize(Serializer& s, Game& g, std::string& d) {
    // TODO: implement
 }

@@ -32,7 +32,7 @@ public:
 
    // serialize interface
    virtual std::string serialize(Serializer& s);
-   virtual void deserialize(Serializer& s, Game& g, Channel& c);
+   virtual void deserialize(Serializer& s, Game& g, std::string& d);
 
 protected:
    bool solid_; // let's try this...

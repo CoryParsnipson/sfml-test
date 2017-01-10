@@ -15,7 +15,7 @@ public:
    JSONSerializer(int tab_width = 0);
 
    virtual std::string serialize(Serializer::SerialData& s);
-   virtual Serializer::SerialData deserialize(Game& g, Channel& c);
+   virtual Serializer::SerialData deserialize(Game& g, std::string& d);
 
 private:
    int tab_width_;

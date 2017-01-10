@@ -171,7 +171,7 @@ std::string Camera::serialize(Serializer& s) {
    return "";
 }
 
-void Camera::deserialize(Serializer& s, Game& g, Channel& c) {
+void Camera::deserialize(Serializer& s, Game& g, std::string& d) {
    // TODO implement me
 }
 

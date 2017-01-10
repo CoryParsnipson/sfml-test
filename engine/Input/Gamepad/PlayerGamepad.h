@@ -52,7 +52,7 @@ public:
 
    // serializable interface
    virtual std::string serialize(Serializer& s);
-   virtual void deserialize(Serializer& s, Game& g, Channel& c);
+   virtual void deserialize(Serializer& s, Game& g, std::string& d);
 
 protected:
    KeyBinding keys_;

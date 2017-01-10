@@ -112,8 +112,8 @@ std::string Entity::serialize(Serializer& s) {
    return s.serialize(data);
 }
 
-void Entity::deserialize(Serializer& s, Game& g, Channel& c) {
-   Serializer::SerialData data = s.deserialize(g, c);
+void Entity::deserialize(Serializer& s, Game& g, std::string& d) {
+   Serializer::SerialData data = s.deserialize(g, d);
 
    if (data["graphics"] != "") {
       GraphicsPart* graphics_part = new GraphicsPart();

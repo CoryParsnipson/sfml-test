@@ -8,7 +8,6 @@
 
 class Grid;
 class Entity;
-class Serializer;
 
 class Map
 : public SceneObject
@@ -18,11 +17,10 @@ public:
    virtual ~Map();
 
    virtual std::string to_string();
-   virtual void serialize(Serializer& serializer);
 
    // serializable interface
    virtual std::string serialize(Serializer& s);
-   virtual void deserialize(Serializer& s, Game& g, Channel& c);
+   virtual void deserialize(Serializer& s, Game& g, std::string& d);
 
    Grid* grid();
 

@@ -22,7 +22,7 @@ public:
    using SerialData = std::map<std::string, std::string>;
 
    virtual std::string serialize(Serializer::SerialData& s) = 0;
-   virtual Serializer::SerialData deserialize(Game& g, Channel& c) = 0;
+   virtual Serializer::SerialData deserialize(Game& g, std::string& d) = 0;
 };
 
 #endif
