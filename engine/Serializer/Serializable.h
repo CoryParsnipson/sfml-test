@@ -9,6 +9,7 @@
 // forward declarations
 // ----------------------------------------------------------------------------
 class Game;
+class Channel;
 
 // ----------------------------------------------------------------------------
 // Serializable
@@ -20,5 +21,10 @@ class Serializable {
 public:
    virtual std::string serialize(Serializer& s) = 0;
    virtual void deserialize(Serializer& s, Game& g, std::string& d) = 0;
+
+   virtual void deserialize(Serializer&s, Game& g, Channel& c) {
+      std::string data = s.read(c);
+      this->deserialize(s, g, data);
+   }
 };
 #endif

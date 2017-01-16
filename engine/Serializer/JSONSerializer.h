@@ -17,6 +17,8 @@ public:
    virtual std::string serialize(Serializer::SerialData& s);
    virtual Serializer::SerialData deserialize(Game& g, std::string& d);
 
+   virtual std::string read(Channel& c);
+
 private:
    int tab_width_;
 };

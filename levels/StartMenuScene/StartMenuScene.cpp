@@ -17,9 +17,23 @@
 
 #include "PlayerGamepad.h"
 
+#include "FileChannel.h"
+
 StartMenuScene::StartMenuScene()
 : Scene("StartMenuScene")
 {
+   std::string str = "[asdf]";
+
+   Channel* c = new FileChannel("test.txt");
+   c->seek(3);
+   c->send(str);
+   c->flush();
+
+   delete c;
+
+
+
+
    // load fonts
    this->fonts_.load("retro", "retro.ttf");
    

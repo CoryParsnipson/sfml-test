@@ -1,4 +1,5 @@
 #include "JSONSerializer.h"
+#include "Channel.h"
 
 JSONSerializer::JSONSerializer(int tab_width /* = 0 */)
 : tab_width_(tab_width)
@@ -25,4 +26,14 @@ Serializer::SerialData JSONSerializer::deserialize(Game& g, std::string& d) {
    }
 
    return serial_data;
+}
+
+std::string JSONSerializer::read(Channel& c) {
+   // TODO: implement
+   // keep reading lines from channel
+   // count open and close parentheses and stop reading lines when the numbers match
+   // seek channel to just after the last closing parenthesis
+   
+   // return string
+   return "";
 }
