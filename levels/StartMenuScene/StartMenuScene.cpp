@@ -30,6 +30,7 @@ StartMenuScene::StartMenuScene()
    Serializer* s = new JSONSerializer(3);
    Entity* e = new Entity();
    e->add(new PhysicsPart("let's talk about christmas trees", sf::FloatRect(100, 77, 23, 23)));
+   e->add(new PhysicsPart("physics2", sf::FloatRect(10, 20, 1, 1)));
 
    std::string str = e->serialize(*s);
    std::cout << "Entity serialized: " << str << std::endl;

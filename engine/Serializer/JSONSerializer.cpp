@@ -10,7 +10,15 @@ JSONSerializer::~JSONSerializer() {
 }
 
 std::string JSONSerializer::serialize(Serializer::SerialData& s) {
-   nlohmann::json data(s);
+   nlohmann::json data;
+
+   for (Serializer::SerialData::iterator it = s.begin(); it != s.end(); ++it) {
+      if (it->second[0] == '{') {
+         data[it->first] = nlohmann::json::parse(it->second);
+      } else {
+         data[it->first] = it->second;
+      }
+   }
    return data.dump(this->tab_width_);
 }
 
