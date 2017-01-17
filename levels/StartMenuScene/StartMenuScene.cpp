@@ -25,7 +25,7 @@
 StartMenuScene::StartMenuScene()
 : Scene("StartMenuScene")
 {
-   Channel* c = new FileChannel("test.txt");
+   FileChannel* c = new FileChannel("test.txt");
 
    Serializer* s = new JSONSerializer(3);
    Entity* e = new Entity();
@@ -35,12 +35,23 @@ StartMenuScene::StartMenuScene()
    std::string str = e->serialize(*s);
    std::cout << "Entity serialized: " << str << std::endl;
 
+   c->clear(); // delete old file contents
+
    c->seek(0);
+
    bool res = c->send(str);
 
    if (!res) {
       std::cout << "ERROR" << std::endl;
    }
+
+   c->send("abcdefghijklmnopqrstuvwxyz");
+   c->seek(-26, Channel::Offset::End);
+   c->send("123");
+
+   std::string junk;
+   c->receive(junk, 5);
+   std::cout << "junk: " << junk << std::endl << std::endl;
 
    delete c;
    delete s;

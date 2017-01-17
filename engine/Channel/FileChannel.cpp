@@ -2,7 +2,11 @@
 
 #include <iostream>
 
-FileChannel::FileChannel(std::string filename) {
+FileChannel::FileChannel(std::string filename)
+: filename_(filename)
+, was_read_since_last_write_(false)
+, was_written_since_last_read_(false)
+{
    // create file if it does not exist
    this->file_.open(filename, std::fstream::out | std::fstream::app);
    this->file_.close();
@@ -17,6 +21,13 @@ FileChannel::~FileChannel() {
 }
 
 bool FileChannel::send(std::string data) {
+   if (this->was_read_since_last_write_) {
+      // need to do a seekp if this stream was read before this function was called
+      this->seek(0, Channel::Offset::Current);
+      this->was_read_since_last_write_ = false;
+   }
+   this->was_written_since_last_read_ = true;
+
    this->file_.write(data.c_str(), data.length());
    return (bool)this->file_;
 }
@@ -24,6 +35,13 @@ bool FileChannel::send(std::string data) {
 bool FileChannel::receive(std::string& data, unsigned int num_bytes) {
    unsigned int length = std::max(num_bytes, (unsigned int)1);
    char* buffer = new char [length];
+
+   if (this->was_written_since_last_read_) {
+      // need to flush if a write was done on the stream before this function was called
+      this->flush();
+      this->was_written_since_last_read_ = false;
+   }
+   this->was_read_since_last_write_ = true;
 
    this->file_.read(buffer, length);
    data.assign(buffer, this->file_.gcount());
@@ -53,4 +71,13 @@ void FileChannel::seek(int pos, Channel::Offset o /* = Channel::Offset::Beginnin
 
 void FileChannel::flush() {
    this->file_.flush();
+}
+
+void FileChannel::clear() {
+   this->file_.close();
+   
+   this->file_.open(this->filename_, std::fstream::out | std::fstream::trunc);
+   this->file_.close();
+
+   this->file_.open(this->filename_, std::fstream::binary | std::fstream::in | std::fstream::out);
 }
