@@ -2,16 +2,21 @@
 
 #include <iostream>
 
-FileChannel::FileChannel(std::string filename)
-: file_(filename, std::fstream::binary | std::fstream::in | std::fstream::out)
-{
+FileChannel::FileChannel(std::string filename) {
+   // create file if it does not exist
+   this->file_.open(filename, std::fstream::out | std::fstream::app);
+   this->file_.close();
+
+   // now open the file for real
+   this->file_.open(filename, std::fstream::binary | std::fstream::in | std::fstream::out);
 }
 
 FileChannel::~FileChannel() {
+   this->file_.flush();
    this->file_.close();
 }
 
-bool FileChannel::send(std::string& data) {
+bool FileChannel::send(std::string data) {
    this->file_.write(data.c_str(), data.length());
    return (bool)this->file_;
 }

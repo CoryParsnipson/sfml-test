@@ -21,6 +21,9 @@ class Channel;
 class Serializer {
 public:
    using SerialData = std::map<std::string, std::string>;
+   
+   Serializer() {}
+   virtual ~Serializer() {}
 
    virtual std::string serialize(Serializer::SerialData& s) = 0;
    virtual Serializer::SerialData deserialize(Game& g, std::string& d) = 0;

@@ -13,6 +13,7 @@
 class JSONSerializer : public Serializer {
 public:
    JSONSerializer(int tab_width = 0);
+   virtual ~JSONSerializer();
 
    virtual std::string serialize(Serializer::SerialData& s);
    virtual Serializer::SerialData deserialize(Game& g, std::string& d);

@@ -20,7 +20,7 @@ public:
    Channel() {}
    virtual ~Channel() {}
 
-   virtual bool send(std::string& data) = 0;
+   virtual bool send(std::string data) = 0;
    virtual bool receive(std::string& data, unsigned int num_bytes) = 0; 
 
    virtual void seek(int pos, Channel::Offset o = Channel::Offset::Beginning) = 0;

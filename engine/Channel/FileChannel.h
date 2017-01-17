@@ -10,7 +10,7 @@ public:
    FileChannel(std::string filename);
    virtual ~FileChannel();
 
-   virtual bool send(std::string& data);
+   virtual bool send(std::string data);
    virtual bool receive(std::string& data, unsigned int num_bytes);
 
    virtual void seek(int pos, Channel::Offset o = Channel::Offset::Beginning);

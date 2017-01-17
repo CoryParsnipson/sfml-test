@@ -18,18 +18,32 @@
 #include "PlayerGamepad.h"
 
 #include "FileChannel.h"
+#include "JSONSerializer.h"
+#include "Entity.h"
+#include "PhysicsPart.h"
 
 StartMenuScene::StartMenuScene()
 : Scene("StartMenuScene")
 {
-   std::string str = "[asdf]";
-
    Channel* c = new FileChannel("test.txt");
-   c->seek(3);
-   c->send(str);
-   c->flush();
+
+   Serializer* s = new JSONSerializer(3);
+   Entity* e = new Entity();
+   e->add(new PhysicsPart("let's talk about christmas trees", sf::FloatRect(100, 77, 23, 23)));
+
+   std::string str = e->serialize(*s);
+   std::cout << "Entity serialized: " << str << std::endl;
+
+   c->seek(0);
+   bool res = c->send(str);
+
+   if (!res) {
+      std::cout << "ERROR" << std::endl;
+   }
 
    delete c;
+   delete s;
+   delete e;
 
 
 

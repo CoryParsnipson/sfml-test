@@ -6,14 +6,11 @@ JSONSerializer::JSONSerializer(int tab_width /* = 0 */)
 {
 }
 
+JSONSerializer::~JSONSerializer() {
+}
+
 std::string JSONSerializer::serialize(Serializer::SerialData& s) {
-   nlohmann::json data;
-
-   Serializer::SerialData::const_iterator it;
-   for (it = s.begin(); it != s.end(); ++it) {
-      data[it->first] = it->second;
-   }
-
+   nlohmann::json data(s);
    return data.dump(this->tab_width_);
 }
 
