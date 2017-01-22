@@ -25,37 +25,20 @@
 StartMenuScene::StartMenuScene()
 : Scene("StartMenuScene")
 {
+   // TEST
    FileChannel* c = new FileChannel("test.txt");
+   JSONSerializer s(3);
 
-   Serializer* s = new JSONSerializer(3);
-   Entity* e = new Entity();
-   e->add(new PhysicsPart("let's talk about christmas trees", sf::FloatRect(100, 77, 23, 23)));
-   e->add(new PhysicsPart("physics2", sf::FloatRect(10, 20, 1, 1)));
+   std::string data = s.read(*c);
+   
+   std::cout << "data: " << std::endl << data << std::endl << std::endl;
+   std::cout << "========================" << std::endl;
 
-   std::string str = e->serialize(*s);
-   std::cout << "Entity serialized: " << str << std::endl;
+   data = s.read(*c);
 
-   c->clear(); // delete old file contents
-
-   c->seek(0);
-
-   bool res = c->send(str);
-
-   if (!res) {
-      std::cout << "ERROR" << std::endl;
-   }
-
-   c->send("abcdefghijklmnopqrstuvwxyz");
-   c->seek(-26, Channel::Offset::End);
-   c->send("123");
-
-   std::string junk;
-   c->receive(junk, 5);
-   std::cout << "junk: " << junk << std::endl << std::endl;
-
+   std::cout << "data 2: " << std::endl << data << std::endl << std::endl;
    delete c;
-   delete s;
-   delete e;
+   // END TEST
 
 
 

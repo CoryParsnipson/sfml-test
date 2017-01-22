@@ -20,6 +20,10 @@ FileChannel::~FileChannel() {
    this->file_.close();
 }
 
+void FileChannel::clear() {
+   this->file_.clear();
+}
+
 bool FileChannel::send(std::string data) {
    if (this->was_read_since_last_write_) {
       // need to do a seekp if this stream was read before this function was called
@@ -53,6 +57,9 @@ bool FileChannel::receive(std::string& data, unsigned int num_bytes) {
 void FileChannel::seek(int pos, Channel::Offset o /* = Channel::Offset::Beginning */) {
    std::ios_base::seekdir dir;
 
+   // seek will not work if eofbit is set, clear it
+   this->clear();
+
    switch (o) {
    case Channel::Offset::Beginning:
       dir = std::ios_base::beg;
@@ -65,7 +72,6 @@ void FileChannel::seek(int pos, Channel::Offset o /* = Channel::Offset::Beginnin
       break;
    }
 
-   this->file_.seekg(pos, dir);
    this->file_.seekp(pos, dir);
 }
 
@@ -73,7 +79,7 @@ void FileChannel::flush() {
    this->file_.flush();
 }
 
-void FileChannel::clear() {
+void FileChannel::remove() {
    this->file_.close();
    
    this->file_.open(this->filename_, std::fstream::out | std::fstream::trunc);
