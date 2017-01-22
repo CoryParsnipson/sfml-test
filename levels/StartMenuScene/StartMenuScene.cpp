@@ -25,24 +25,6 @@
 StartMenuScene::StartMenuScene()
 : Scene("StartMenuScene")
 {
-   // TEST
-   FileChannel* c = new FileChannel("test.txt");
-   JSONSerializer s(3);
-
-   std::string data = s.read(*c);
-   
-   std::cout << "data: " << std::endl << data << std::endl << std::endl;
-   std::cout << "========================" << std::endl;
-
-   data = s.read(*c);
-
-   std::cout << "data 2: " << std::endl << data << std::endl << std::endl;
-   delete c;
-   // END TEST
-
-
-
-
    // load fonts
    this->fonts_.load("retro", "retro.ttf");
    

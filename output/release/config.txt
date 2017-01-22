@@ -1,9 +1,9 @@
 # config
 
-type: logger, stream: console, enable: true
-type: logger, stream: console, set_tag: Input, tag_value: false
-type: logger, stream: console, set_tag: PhysicsPart, tag_value: false
-type: logger, stream: console, set_tag: ControlPart, tag_value: false
-type: logger, stream: console, set_tag: GraphicsPart, tag_value: false
-type: logger, stream: console, set_tag: TextSerializer, tag_value: false
-type: logger, stream: console, set_tag: PlayerGamepad, tag_value: false
+{ "type": "logger", "stream": "console", "tag": "enable", "enable": "true" }
+{ "type": "logger", "stream": "console", "tag": "Input", "enable": "false" }
+{ "type": "logger", "stream": "console", "tag": "PhysicsPart", "enable": "false" }
+{ "type": "logger", "stream": "console", "tag": "ControlPart", "enable": "false" }
+{ "type": "logger", "stream": "console", "tag": "GraphicsPart", "enable": "false" }
+{ "type": "logger", "stream": "console", "tag": "TextSerializer", "enable": "false" }
+{ "type": "logger", "stream": "console", "tag": "PlayerGamepad", "enable": "false" }
