@@ -26,8 +26,11 @@ class SceneObject
 , public Serializable
 {
 public:
-   SceneObject(bool visible = true);
+   SceneObject(std::string id = "SceneObject", bool visible = true);
    virtual ~SceneObject() = 0;
+
+   void id(std::string id);
+   std::string id() const;
 
    operator std::string() const;
    virtual std::string to_string() const;
@@ -97,6 +100,8 @@ public:
    virtual void update(Game& game, Scene* scene = nullptr);
 
 private:
+   std::string id_;
+
    bool visible_; // visibility of this node affects children as well
    bool propagate_event_; // false to stop this node from passing mouse events to parent node
    friend std::ostream& operator<<(std::ostream& stream, const SceneObject& object);

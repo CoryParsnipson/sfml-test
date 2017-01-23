@@ -6,4 +6,4 @@
 { "type": "logger", "stream": "console", "tag": "ControlPart", "enable": "false" }
 { "type": "logger", "stream": "console", "tag": "GraphicsPart", "enable": "false" }
 { "type": "logger", "stream": "console", "tag": "TextSerializer", "enable": "false" }
-{ "type": "logger", "stream": "console", "tag": "PlayerGamepad", "enable": "false" }
+{ "type": "logger", "stream": "console", "tag": "PlayerGamepad", "enable": "true" }

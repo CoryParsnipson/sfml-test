@@ -42,12 +42,16 @@
 
 #include "PlayerGamepad.h"
 
+#include "FileChannel.h"
+#include "JSONSerializer.h"
+#include "OrthographicGrid.h"
+
 BuilderScene::BuilderScene()
 : Scene("BuilderScene")
-, map_(nullptr)
 , hud_camera_(new Camera("Hud Camera"))
 , map_camera_(new Camera("Map Camera"))
-, map_filename_("pkmn_map_test.txt")
+, map_file_(new FileChannel("pkmn_map_test.txt"))
+, map_(nullptr)
 , center_dot_(nullptr)
 , tile_cursor_(nullptr)
 , last_frame_time(0)
@@ -102,30 +106,6 @@ BuilderScene::BuilderScene()
    // create "map layers" using a new camera
    this->scene_graph_->insert(1, this->map_camera_); // layer for map
    this->scene_graph_->insert(2, this->hud_camera_); // layer for hud 
-
-   // build the map
-   //this->serializer_ = new TextSerializer();
-   //this->serializer_->open_infile(this->map_filename_);
-
-   //MapBuilder* map_builder = new OrthographicMapBuilder();
-   //map_builder->set_serializer(this->serializer_);
-   //map_builder->grid_font(this->fonts_.get("retro"));
-   //map_builder->textures(&this->textures_);
-   //map_builder->build();
-
-   //this->map_ = map_builder->get_map();
-   this->scene_graph_->layer(1)->add(this->map_);
-
-   this->map_->grid()->visible(false);
-   // TODO: make a way for map to draw grid after all it's child tiles, and remove this from here
-   this->scene_graph_->layer(1)->add(this->map_->grid());
-
-   //delete map_builder;
-
-   // create a selection rectangle entity and add it to the scene initally invisible
-   Entity* selection_rect = TileFactory::inst()->create_selection_rectangle();
-   selection_rect->visible(false);
-   this->scene_graph_->layer(2)->insert(1, selection_rect);
 
    // create a tile cursor
    sf::Vector2f nullvect(0, 0);
@@ -200,57 +180,10 @@ BuilderScene::BuilderScene()
       if (x_pos == 10) x_pos = 84;
       else             x_pos = 10;
    }
-
-   // create player gamepad
-   PlayerGamepad* pg = new PlayerGamepad("PlayerGamepad", this->fonts_.get("retro"));
-   this->gamepad(pg);
-
-   DefaultMouseGamepadPreset dmgp(*this->scene_graph_);
-   dmgp.apply(pg);
-
-   // builder scene gamepad bindings
-   pg->set(new ToggleVisibleCommand(this->map_->grid()), Key::G);
-   pg->set(new ToggleDebugInfoCommand(this->scene_graph_, this->fonts_.get("retro")), Key::O);
-   pg->set(new ResetCameraCommand(this->map_camera_, this->map_->grid()), Key::R);
-   pg->set(new SwitchSceneCommand(this, new TestUIScene()), Key::Escape);
-   pg->set(new RemoveTilesCommand(*this->map_, this->tile_cursor_), Key::Delete);
-   pg->set(new RemoveTilesCommand(*this->map_, this->tile_cursor_), Key::Backspace);
-
-   std::shared_ptr<UpdateSelectionRectCommand> usr = std::make_shared<UpdateSelectionRectCommand>(selection_rect);
-
-   DragCommand* drag_map_camera = new DragCommand(pg);
-   DragCommand* drag_grid = new DragCommand(pg);
-
-   MacroCommand* drag_command = new MacroCommand("DragMacroCommand");
-   drag_command->add(drag_map_camera);
-   drag_command->add(drag_grid);
-   drag_command->add(new SetSelectionRectCommand(usr, pg, selection_rect, false));
-   
-   MacroCommand* on_left_mouse_release = new MacroCommand("LeftMouseReleaseCommand");
-   on_left_mouse_release->add(new SetSelectionRectCommand(usr, pg, selection_rect, false, false, true));
-   on_left_mouse_release->add(new SetTileCursorCommand(*this->map_->grid(), usr, this->tile_cursor_));
-
-   MacroCommand* on_right_mouse_click = new MacroCommand("SetDragTargetsMacroCommand");
-   on_right_mouse_click->add(new DragTargetCommand(drag_map_camera, this->map_camera_));
-   on_right_mouse_click->add(new DragTargetCommand(drag_grid, this->map_->grid()));
-
-   MacroCommand* on_right_mouse_release = new MacroCommand("RemoveDragTargetsMacroCommand");
-   on_right_mouse_release->add(new DragTargetCommand(drag_map_camera, nullptr));
-   on_right_mouse_release->add(new DragTargetCommand(drag_grid, nullptr));
-
-   this->map_camera_->clickable(true); // make map camera clickable for tile selection and panning and stuff
-   this->map_camera_->on_left_click(new SetSelectionRectCommand(usr, pg, selection_rect, true, true, false));
-   this->map_camera_->on_left_release(on_left_mouse_release);
-
-   this->map_camera_->on_right_click(on_right_mouse_click);
-   this->map_camera_->on_right_release(on_right_mouse_release);
-
-   this->map_camera_->on_mouse_move(drag_command);
-   this->map_camera_->on_mouse_wheel(new ZoomCommand(this->map_camera_, this->map_->grid(), pg));
 }
 
 BuilderScene::~BuilderScene() {
-   //delete this->serializer_;
+   delete this->map_file_;
 }
 
 void BuilderScene::enter(Game& game) {
@@ -265,8 +198,85 @@ void BuilderScene::enter(Game& game) {
    // change backsplash size
    this->backdrop_->set_size(game.window().size());
 
+   // create map object (if necessary)
+   if (this->map_ == nullptr) {
+      JSONSerializer s;
+
+      this->map_ = new Map();
+      this->scene_graph_->layer(1)->insert(0, this->map_);
+
+      // try to load map file
+      this->map_file_->seek(0);
+      std::string map_data = s.read(*this->map_file_);
+      
+      if (!map_data.empty()) {
+         this->map_->deserialize((Serializer&)(*(&s)), game, map_data);
+      } else {
+         // if map file is not valid, generate empty map
+         this->map_->add(new OrthographicGrid("grid"));
+      };
+
+      // TODO: make a way for map to draw grid after all it's child tiles, and remove this from here
+      this->map_->grid()->visible(false);
+      this->scene_graph_->layer(1)->insert(1, this->map_->grid());
+   }
+
    // set grid size
    this->map_->grid()->size(game.window().size());
+
+   // create player gamepad (if necessary)
+   if (this->gamepad(1) == nullptr) {
+      PlayerGamepad* pg = new PlayerGamepad("PlayerGamepad", this->fonts_.get("retro"));
+      this->gamepad(pg);
+
+      DefaultMouseGamepadPreset dmgp(*this->scene_graph_);
+      dmgp.apply(pg);
+
+      // create a selection rectangle entity and add it to the scene initally invisible
+      Entity* selection_rect = TileFactory::inst()->create_selection_rectangle();
+      selection_rect->visible(false);
+      this->scene_graph_->layer(2)->insert(1, selection_rect);
+
+      // builder scene gamepad bindings
+      pg->set(new ToggleVisibleCommand(this->map_->grid()), Key::G);
+      pg->set(new ToggleDebugInfoCommand(this->scene_graph_, this->fonts_.get("retro")), Key::O);
+      pg->set(new ResetCameraCommand(this->map_camera_, this->map_->grid()), Key::R);
+      pg->set(new SwitchSceneCommand(this, new TestUIScene()), Key::Escape);
+      pg->set(new RemoveTilesCommand(*this->map_, this->tile_cursor_), Key::Delete);
+      pg->set(new RemoveTilesCommand(*this->map_, this->tile_cursor_), Key::Backspace);
+
+      std::shared_ptr<UpdateSelectionRectCommand> usr = std::make_shared<UpdateSelectionRectCommand>(selection_rect);
+
+      DragCommand* drag_map_camera = new DragCommand(pg);
+      DragCommand* drag_grid = new DragCommand(pg);
+
+      MacroCommand* drag_command = new MacroCommand("DragMacroCommand");
+      drag_command->add(drag_map_camera);
+      drag_command->add(drag_grid);
+      drag_command->add(new SetSelectionRectCommand(usr, pg, selection_rect, false));
+      
+      MacroCommand* on_left_mouse_release = new MacroCommand("LeftMouseReleaseCommand");
+      on_left_mouse_release->add(new SetSelectionRectCommand(usr, pg, selection_rect, false, false, true));
+      on_left_mouse_release->add(new SetTileCursorCommand(*this->map_->grid(), usr, this->tile_cursor_));
+
+      MacroCommand* on_right_mouse_click = new MacroCommand("SetDragTargetsMacroCommand");
+      on_right_mouse_click->add(new DragTargetCommand(drag_map_camera, this->map_camera_));
+      on_right_mouse_click->add(new DragTargetCommand(drag_grid, this->map_->grid()));
+
+      MacroCommand* on_right_mouse_release = new MacroCommand("RemoveDragTargetsMacroCommand");
+      on_right_mouse_release->add(new DragTargetCommand(drag_map_camera, nullptr));
+      on_right_mouse_release->add(new DragTargetCommand(drag_grid, nullptr));
+
+      this->map_camera_->clickable(true); // make map camera clickable for tile selection and panning and stuff
+      this->map_camera_->on_left_click(new SetSelectionRectCommand(usr, pg, selection_rect, true, true, false));
+      this->map_camera_->on_left_release(on_left_mouse_release);
+
+      this->map_camera_->on_right_click(on_right_mouse_click);
+      this->map_camera_->on_right_release(on_right_mouse_release);
+
+      this->map_camera_->on_mouse_move(drag_command);
+      this->map_camera_->on_mouse_wheel(new ZoomCommand(this->map_camera_, this->map_->grid(), pg));
+   }
 }
 
 void BuilderScene::exit(Game& game) {

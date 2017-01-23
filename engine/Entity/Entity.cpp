@@ -20,6 +20,10 @@ Entity::~Entity() {
    this->parts_.clear();
 }
 
+std::string Entity::id() {
+   return this->name_;
+}
+
 std::string Entity::to_string() {
    std::string description = "[Entity \"" + this->name_ + "\"";
 
@@ -102,6 +106,7 @@ Part* Entity::get(const std::string& part_name) {
 std::string Entity::serialize(Serializer& s) {
    Serializer::SerialData data;
 
+   data["id"] = this->name_;
    data["type"] = "entity";
 
    PartList::iterator it;

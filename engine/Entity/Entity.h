@@ -21,6 +21,7 @@ public:
    Entity(std::string name = "entity");
    virtual ~Entity();
 
+   std::string id();
    std::string to_string();
 
    void enable_debug_wireframe(bool debug_wireframe);

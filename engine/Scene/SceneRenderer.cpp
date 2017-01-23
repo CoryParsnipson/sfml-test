@@ -1,6 +1,6 @@
 #include <stack>
 #include <tuple>
-#include "assert.h"
+#include <cassert>
 
 #include "SceneRenderer.h"
 #include "SceneObject.h"

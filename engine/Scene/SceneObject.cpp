@@ -3,8 +3,9 @@
 #include "Camera.h"
 #include "Command.h"
 
-SceneObject::SceneObject(bool visible /* = true */)
+SceneObject::SceneObject(std::string id /* = "SceneObject" */, bool visible /* = true */)
 : Composite<SceneObject, true>()
+, id_(id)
 , visible_(visible)
 , propagate_event_(true)
 , clickable_(false)
@@ -23,6 +24,14 @@ SceneObject::SceneObject(bool visible /* = true */)
 }
 
 SceneObject::~SceneObject() {
+}
+
+void SceneObject::id(std::string id) {
+   this->id_ = id;
+}
+
+std::string SceneObject::id() const {
+   return this->id_;
 }
 
 SceneObject::operator std::string() const {

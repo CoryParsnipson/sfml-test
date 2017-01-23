@@ -3,7 +3,7 @@
 #include "JSONSerializer.h"
 #include "Channel.h"
 
-JSONSerializer::JSONSerializer(int tab_width /* = 0 */, int read_chunk_size /* = 100 */)
+JSONSerializer::JSONSerializer(int tab_width /* = -1 */, int read_chunk_size /* = 100 */)
 : tab_width_(tab_width)
 , read_chunk_size_(read_chunk_size)
 {

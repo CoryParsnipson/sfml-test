@@ -12,7 +12,7 @@
 // ----------------------------------------------------------------------------
 class JSONSerializer : public Serializer {
 public:
-   JSONSerializer(int tab_width = 0, int read_chunk_size = 100);
+   JSONSerializer(int tab_width = -1, int read_chunk_size = 100);
    virtual ~JSONSerializer();
 
    virtual std::string serialize(Serializer::SerialData& s);

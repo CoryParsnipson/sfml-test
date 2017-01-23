@@ -9,7 +9,7 @@ const float Camera::ZOOM_FACTOR_MIN = 0.125;
 const float Camera::ZOOM_FACTOR_MAX = 3.0;
 
 Camera::Camera(const std::string& id)
-: SceneObject(true)
+: SceneObject(id, true)
 , id_(id)
 , zoom_factor_(1.0)
 , original_center_(0, 0)
@@ -19,7 +19,7 @@ Camera::Camera(const std::string& id)
 }
 
 Camera::Camera(const std::string& id, const sf::Vector2f& size)
-: SceneObject(true)
+: SceneObject(id, true)
 , id_(id)
 , zoom_factor_(1.0)
 , original_center_(size.x / 2.f, size.y / 2.f)

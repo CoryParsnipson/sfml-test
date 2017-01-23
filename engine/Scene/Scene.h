@@ -61,17 +61,17 @@ public:
    virtual std::string id() { return this->id_; }
 
    void do_enter(Game& game) {
-      // start gamepads from receiving input events
-      for (GamepadList::const_iterator it = this->gamepads_.begin(); it != this->gamepads_.end(); ++it) {
-         Service::get_input().attach(**it);
-      }
-
       // resize all the cameras
       ResizeCameraCommand rc_command(game.window(), this->scene_graph_);
       rc_command.execute();
 
       this->game_ = &game; // set game pointer
       this->enter(game);
+
+      // start gamepads from receiving input events
+      for (GamepadList::const_iterator it = this->gamepads_.begin(); it != this->gamepads_.end(); ++it) {
+         Service::get_input().attach(**it);
+      }
    }
 
    void do_exit(Game& game) {
@@ -110,25 +110,25 @@ public:
          // remove gamepad from gamepad list and replace
          delete this->gamepads_[player_id];
          this->gamepads_[player_id] = gamepad;
-
-         return player_id;
       } else {
-         this->gamepads_.push_back(gamepad);    // add to gamepad list
-         this->scene_graph_->add(gamepad);      // add to scene graph
-
-         return this->gamepads_.size() - 1;
+         player_id = this->gamepads_.size() - 1;
+         this->gamepads_.push_back(gamepad);
       }
+
+      // add to scene graph
+      this->scene_graph_->add(gamepad);
+      return player_id;
    }
 
    Gamepad* gamepad(int player_id) {
-      if (player_id < 1 || player_id > (signed int)this->gamepads_.size()) {
-         return this->gamepads_[player_id + 1];
+      if (player_id < 0 || player_id >= (signed int)this->gamepads_.size()) {
+         return nullptr;
       }
-      return nullptr;
+      return this->gamepads_[player_id];
    }
 
    void remove_gamepad(int player_id) {
-      if (player_id >= (signed int)this->gamepads_.size()) {
+      if (player_id > (signed int)this->gamepads_.size()) {
          return;
       }
       

@@ -4,9 +4,16 @@
 #include "Scene.h"
 #include "Settings.h"
 
+// ----------------------------------------------------------------------------
+// forward declarations
+// ----------------------------------------------------------------------------
+class Channel;
 class Texture;
 class Map;
 
+// ----------------------------------------------------------------------------
+// BuilderScene
+// ----------------------------------------------------------------------------
 class BuilderScene
 : public Scene
 {
@@ -27,11 +34,12 @@ public:
 
 protected:
    // scene fixtures
-   Map* map_;
    Camera* hud_camera_;
    Camera* map_camera_;
    Entity* backdrop_;
-   std::string map_filename_;
+
+   Channel* map_file_;
+   Map* map_;
 
    // entity pointers (no ownership)
    Entity* center_dot_;

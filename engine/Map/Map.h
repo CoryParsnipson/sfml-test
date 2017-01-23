@@ -13,8 +13,10 @@ class Map
 : public SceneObject
 {
 public:
-   Map();
+   Map(std::string id = "map");
    virtual ~Map();
+
+   void id(std::string id);
 
    virtual std::string to_string();
 
@@ -37,6 +39,7 @@ public:
    virtual void accept(SceneGraphVisitor& visitor);
 
 protected:
+   std::string id_;
    Grid* grid_;
 };
 
