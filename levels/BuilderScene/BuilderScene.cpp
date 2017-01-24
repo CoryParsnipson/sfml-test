@@ -39,6 +39,7 @@
 #include "SetTilesCommand.h"
 #include "RemoveTilesCommand.h"
 #include "ToggleDebugInfoCommand.h"
+#include "SerializeCommand.h"
 
 #include "PlayerGamepad.h"
 
@@ -244,6 +245,7 @@ void BuilderScene::enter(Game& game) {
       pg->set(new SwitchSceneCommand(this, new TestUIScene()), Key::Escape);
       pg->set(new RemoveTilesCommand(*this->map_, this->tile_cursor_), Key::Delete);
       pg->set(new RemoveTilesCommand(*this->map_, this->tile_cursor_), Key::Backspace);
+      pg->set(new SerializeCommand(*this->map_, std::make_shared<JSONSerializer>(3), *this->map_file_), Key::S);
 
       std::shared_ptr<UpdateSelectionRectCommand> usr = std::make_shared<UpdateSelectionRectCommand>(selection_rect);
 
@@ -317,15 +319,6 @@ void BuilderScene::process(Game& game, ResizeInputEvent& e) {
 
    // set grid size
    this->map_->grid()->size(game.window().size());
-}
-
-void BuilderScene::process(Game& game, KeyPressInputEvent& e) {
-//   switch (e.key) {
-//   case Key::S:
-//      Service::get_logger().msg(this->id_, Logger::INFO, "Writing map to file '" + this->map_filename_ + "'");
-//      this->map_->serialize(*this->serializer_);
-//   break;
-//   }
 }
 
 void BuilderScene::update_fps(Settings& settings) {

@@ -30,7 +30,6 @@ public:
    // input event processing
    virtual void process(Game& game, CloseInputEvent& e);
    virtual void process(Game& game, ResizeInputEvent& e);
-   virtual void process(Game& game, KeyPressInputEvent& e);
 
 protected:
    // scene fixtures

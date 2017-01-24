@@ -1,0 +1,14 @@
+{
+   "grid": {
+      "class": "OrthographicGrid",
+      "id": "grid",
+      "origin_x": "0",
+      "origin_y": "0",
+      "tile_height": "64",
+      "tile_width": "64",
+      "type": "grid"
+   },
+   "id": "map",
+   "tiles": "null",
+   "type": "map"
+}

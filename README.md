@@ -5,9 +5,6 @@ This was originally going to be a quick isometric tile demo experiment and it ha
 
 Things to do next
 -----------------
-* optimize serialize and serializer interface
-* Serialize map into an xml file instead of reading from handmade text file.
-
 * need to overhaul graphics classes or something because it's very clunky
    * In the scene rendering, entity draw and entity update show most time spent in profiler
    * refactor entity component hierarchy

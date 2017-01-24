@@ -30,7 +30,13 @@ Serializer::SerialData JSONSerializer::deserialize(Game& g, std::string& d) {
    nlohmann::json data = nlohmann::json::parse(d);
 
    for (nlohmann::json::const_iterator it = data.begin(); it != data.end(); ++it) {
-      serial_data[it.key()] = it.value();
+      std::string val = it.value().dump();
+
+      if (!it.value().is_structured()) {
+         val = it.value();
+      }
+
+      serial_data[it.key()] = val;
    }
 
    return serial_data;
