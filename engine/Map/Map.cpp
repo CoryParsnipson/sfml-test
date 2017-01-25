@@ -41,9 +41,11 @@ std::string Map::serialize(Serializer& s) {
    // serialize tiles
    Serializer::SerialData tile_data;
    
+   int i = 0;
    Map::iterator it;
    for (it = this->begin(); it != this->end(); ++it) {
-      tile_data[it->id()] = (*it)->serialize(s);
+      tile_data[it->id() + "_" + std::to_string(i)] = (*it)->serialize(s);
+      ++i;
    }
    data["tiles"] = s.serialize(tile_data);
 

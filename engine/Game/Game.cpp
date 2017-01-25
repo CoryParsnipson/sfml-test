@@ -84,8 +84,6 @@ void Game::unload_scene() {
    assert(!this->prev_scene_);
    this->prev_scene_ = this->scenes_.top();
    Service::get_logger().msg("Game", Logger::INFO, "Unloading scene '" + this->prev_scene_->id() + "'");
-
-   this->scenes_.pop();
 }
 
 Scene* Game::switch_scene(Scene* scene) {
@@ -143,14 +141,18 @@ void Game::main_loop() {
       // check if we need to unload a scene
       if (this->prev_scene_) {
          this->prev_scene_->do_exit(*this);
+
+         assert(this->prev_scene_ = this->scenes_.top());
+         this->scenes_.pop();
+
          delete this->prev_scene_;
          this->prev_scene_ = nullptr;
       }
 
       // check if we need to load a scene
       if (this->next_scene_) {
-         this->next_scene_->do_enter(*this);
          this->scenes_.push(this->next_scene_);
+         this->next_scene_->do_enter(*this);
          this->next_scene_ = nullptr;
       }
 

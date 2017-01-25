@@ -137,50 +137,6 @@ BuilderScene::BuilderScene()
 
    this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", this->fonts_.get("retro"));
    this->scene_graph_->layer(2)->insert(2, this->fps_display_);
-
-   // tile palette
-   Widget* tile_palette = new PanelWidget("Tiles", sf::Vector2f(10, 150), sf::Vector2f(200, 830));
-   this->scene_graph_->layer(2)->add(tile_palette);
-
-   std::vector<std::string> tile_textures;
-   tile_textures.push_back("tile_grass");
-   tile_textures.push_back("tile_worn_grass");
-   tile_textures.push_back("tile_sign");
-   tile_textures.push_back("tile_dirt_ul");
-   tile_textures.push_back("tile_dirt_um");
-   tile_textures.push_back("tile_dirt_ur");
-   tile_textures.push_back("tile_dirt_ml");
-   tile_textures.push_back("tile_dirt_mm");
-   tile_textures.push_back("tile_dirt_mr");
-   tile_textures.push_back("tile_dirt_bl");
-   tile_textures.push_back("tile_dirt_bm");
-   tile_textures.push_back("tile_dirt_br");
-   tile_textures.push_back("tile_water_ul");
-   tile_textures.push_back("tile_water_um");
-   tile_textures.push_back("tile_water_ur");
-   tile_textures.push_back("tile_water_ml");
-   tile_textures.push_back("tile_water_mm");
-   tile_textures.push_back("tile_water_mr");
-   tile_textures.push_back("tile_water_bl");
-   tile_textures.push_back("tile_water_bm");
-   tile_textures.push_back("tile_water_br");
-
-   ButtonWidget* button = nullptr;
-   int x_pos = 10;
-   int y_pos = 10;
-   
-   for (std::vector<std::string>::const_iterator tile_texture_it = tile_textures.begin(); tile_texture_it != tile_textures.end(); ++tile_texture_it) {
-      button = new ButtonWidget(*tile_texture_it, sf::Vector2f(x_pos, y_pos), sf::Vector2f(64, 64));
-      button->set_background(new SpriteGraphic(*this->textures_.get(*tile_texture_it)));
-      button->on_release(new SetTilesCommand(*this->map_, this->tile_cursor_, *this->textures_.get(*tile_texture_it)));
-
-      tile_palette->add(button);
-
-      if (x_pos == 84) y_pos += 74;
-
-      if (x_pos == 10) x_pos = 84;
-      else             x_pos = 10;
-   }
 }
 
 BuilderScene::~BuilderScene() {
@@ -278,6 +234,50 @@ void BuilderScene::enter(Game& game) {
 
       this->map_camera_->on_mouse_move(drag_command);
       this->map_camera_->on_mouse_wheel(new ZoomCommand(this->map_camera_, this->map_->grid(), pg));
+
+      // tile palette
+      Widget* tile_palette = new PanelWidget("Tiles", sf::Vector2f(10, 150), sf::Vector2f(200, 830));
+      this->scene_graph_->layer(2)->add(tile_palette);
+
+      std::vector<std::string> tile_textures;
+      tile_textures.push_back("tile_grass");
+      tile_textures.push_back("tile_worn_grass");
+      tile_textures.push_back("tile_sign");
+      tile_textures.push_back("tile_dirt_ul");
+      tile_textures.push_back("tile_dirt_um");
+      tile_textures.push_back("tile_dirt_ur");
+      tile_textures.push_back("tile_dirt_ml");
+      tile_textures.push_back("tile_dirt_mm");
+      tile_textures.push_back("tile_dirt_mr");
+      tile_textures.push_back("tile_dirt_bl");
+      tile_textures.push_back("tile_dirt_bm");
+      tile_textures.push_back("tile_dirt_br");
+      tile_textures.push_back("tile_water_ul");
+      tile_textures.push_back("tile_water_um");
+      tile_textures.push_back("tile_water_ur");
+      tile_textures.push_back("tile_water_ml");
+      tile_textures.push_back("tile_water_mm");
+      tile_textures.push_back("tile_water_mr");
+      tile_textures.push_back("tile_water_bl");
+      tile_textures.push_back("tile_water_bm");
+      tile_textures.push_back("tile_water_br");
+
+      ButtonWidget* button = nullptr;
+      int x_pos = 10;
+      int y_pos = 10;
+      
+      for (std::vector<std::string>::const_iterator tile_texture_it = tile_textures.begin(); tile_texture_it != tile_textures.end(); ++tile_texture_it) {
+         button = new ButtonWidget(*tile_texture_it, sf::Vector2f(x_pos, y_pos), sf::Vector2f(64, 64));
+         button->set_background(new SpriteGraphic(*this->textures_.get(*tile_texture_it)));
+         button->on_release(new SetTilesCommand(*this->map_, this->tile_cursor_, *this->textures_.get(*tile_texture_it)));
+
+         tile_palette->add(button);
+
+         if (x_pos == 84) y_pos += 74;
+
+         if (x_pos == 10) x_pos = 84;
+         else             x_pos = 10;
+      }
    }
 }
 
