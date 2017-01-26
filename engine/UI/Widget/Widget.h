@@ -52,7 +52,6 @@ private:
    std::string to_string() const;
 
 protected:
-   std::string id_;
    UI::Positioning positioning_;
 };
 

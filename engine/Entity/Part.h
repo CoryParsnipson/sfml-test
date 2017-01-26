@@ -15,10 +15,10 @@ class Part
 , public Serializable
 {
 public:
-   Part(std::string id) : id(id) {};
+   Part(std::string id) : id_(id) {};
    virtual ~Part() {};
 
-   std::string name() { return this->id; };
+   std::string id() { return this->id_; };
 
    virtual void set_position(float x, float y) {}
    virtual void set_position(const sf::Vector2f& pos) {}
@@ -41,7 +41,7 @@ public:
    virtual void deserialize(Serializer& s, Game& g, std::string& d) = 0;
 
 protected:
-   std::string id;
+   std::string id_;
 };
 
 #endif

@@ -18,10 +18,9 @@ class Entity
 public:
    using PartList = std::map<std::string, Part*>;
 
-   Entity(std::string name = "entity");
+   Entity(std::string id = "entity");
    virtual ~Entity();
 
-   std::string id();
    std::string to_string();
 
    void enable_debug_wireframe(bool debug_wireframe);
@@ -39,7 +38,7 @@ public:
    // part management interface
    void add(Part* part);
    void remove(const std::string& part_id);
-   Part* get(const std::string& part_name);
+   Part* get(const std::string& part_id);
 
    // serializable interface
    virtual std::string serialize(Serializer& s);
@@ -61,7 +60,6 @@ protected:
    bool enable_debug_wireframe_;
    bool enable_debug_text_;
 
-   std::string name_;
    PartList parts_;
 
    // scene graph interface hooks

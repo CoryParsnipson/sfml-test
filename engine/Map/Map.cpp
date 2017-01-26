@@ -10,7 +10,7 @@
 #include "Serializer.h"
 
 Map::Map(std::string id /* = "map" */)
-: id_(id)
+: SceneObject(id)
 , grid_(new OrthographicGrid("default grid", 10))
 {
 }
@@ -20,19 +20,15 @@ Map::~Map() {
    this->grid_ = nullptr;
 }
 
-void Map::id(std::string id) {
-   this->id_ = id;
-}
-
 std::string Map::to_string() {
-   return "[Map \"" + this->id_ + "\"]";
+   return "[Map \"" + this->id() + "\"]";
 }
 
 std::string Map::serialize(Serializer& s) {
    Serializer::SerialData data;
 
    // serialize meta data
-   data["id"] = this->id_;
+   data["id"] = this->id();
    data["type"] = "map";
 
    // serialize grid
@@ -41,11 +37,9 @@ std::string Map::serialize(Serializer& s) {
    // serialize tiles
    Serializer::SerialData tile_data;
    
-   int i = 0;
    Map::iterator it;
    for (it = this->begin(); it != this->end(); ++it) {
-      tile_data[it->id() + "_" + std::to_string(i)] = (*it)->serialize(s);
-      ++i;
+      tile_data[it->id()] = (*it)->serialize(s);
    }
    data["tiles"] = s.serialize(tile_data);
 
@@ -74,7 +68,7 @@ void Map::deserialize(Serializer& s, Game& g, std::string& d) {
    // deserialize child entities (tiles, etc)
    Serializer::SerialData tile_data = s.deserialize(g, map_data["tiles"]);
    for (Serializer::SerialData::iterator it = tile_data.begin(); it != tile_data.end(); ++it) {
-      Entity* tile = new Entity(it->first);
+      Entity* tile = new Entity();
       tile->deserialize(s, g, it->second);
       this->add(tile);
    }

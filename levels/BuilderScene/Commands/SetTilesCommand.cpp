@@ -36,6 +36,7 @@ void SetTilesCommand::execute() {
             sf::Vector2f(tile_col, tile_row),
             false
          );
+         tile->id("tile_" + std::to_string(tile_col / this->map_->grid()->tile_height()) + "x" + std::to_string(tile_row / this->map_->grid()->tile_width()));
 
          this->map_->add(tile);
       }

@@ -4,10 +4,10 @@
 #include "PhysicsPart.h"
 #include "GraphicsPart.h"
 
-Entity::Entity(std::string name)
-: enable_debug_wireframe_(true)
+Entity::Entity(std::string id)
+: SceneObject(id)
+, enable_debug_wireframe_(true)
 , enable_debug_text_(false)
-, name_(name)
 {
 }
 
@@ -20,12 +20,8 @@ Entity::~Entity() {
    this->parts_.clear();
 }
 
-std::string Entity::id() {
-   return this->name_;
-}
-
 std::string Entity::to_string() {
-   std::string description = "[Entity \"" + this->name_ + "\"";
+   std::string description = "[Entity \"" + this->id() + "\"";
 
    PhysicsPart* physics = dynamic_cast<PhysicsPart*>(this->get("physics"));
    if (physics) {
@@ -83,8 +79,8 @@ void Entity::set_size(const sf::Vector2f& size) {
 
 void Entity::add(Part* part) {
    // if part name already exists, delete it
-   this->remove(part->name());
-   this->parts_[part->name()] = part;
+   this->remove(part->id());
+   this->parts_[part->id()] = part;
 }
 
 void Entity::remove(const std::string& part_id) {
@@ -95,8 +91,8 @@ void Entity::remove(const std::string& part_id) {
    }
 }
 
-Part* Entity::get(const std::string& part_name) {
-   PartList::const_iterator it = this->parts_.find(part_name);
+Part* Entity::get(const std::string& part_id) {
+   PartList::const_iterator it = this->parts_.find(part_id);
    if (it == this->parts_.end()) {
       return nullptr;
    }
@@ -106,7 +102,7 @@ Part* Entity::get(const std::string& part_name) {
 std::string Entity::serialize(Serializer& s) {
    Serializer::SerialData data;
 
-   data["id"] = this->name_;
+   data["id"] = this->id();
    data["type"] = "entity";
 
    PartList::iterator it;
@@ -119,6 +115,8 @@ std::string Entity::serialize(Serializer& s) {
 
 void Entity::deserialize(Serializer& s, Game& g, std::string& d) {
    Serializer::SerialData data = s.deserialize(g, d);
+
+   this->id(data["id"]);
 
    if (data["graphics"] != "") {
       GraphicsPart* graphics_part = new GraphicsPart();

@@ -12,8 +12,7 @@ std::ostream& operator<<(std::ostream& stream, const Widget& widget) {
 // Widget constructor implementations
 // ----------------------------------------------------------------------------
 Widget::Widget(std::string id /* = "Widget" */)
-: SceneObject()
-, id_(std::move(id))
+: SceneObject(id)
 , positioning_(UI::Positioning::Default)
 {
 }
@@ -45,5 +44,5 @@ Widget::operator std::string() const {
 }
 
 std::string Widget::to_string() const {
-   return "[Widget: " + this->id_ + "]";
+   return "[Widget: " + this->id() + "]";
 }
