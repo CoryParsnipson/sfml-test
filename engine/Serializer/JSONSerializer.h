@@ -16,7 +16,7 @@ public:
    virtual ~JSONSerializer();
 
    virtual std::string serialize(Serializer::SerialData& s);
-   virtual Serializer::SerialData deserialize(Game& g, std::string& d);
+   virtual Serializer::SerialData deserialize(Scene& scene, std::string& d);
 
    virtual std::string read(Channel& c);
 

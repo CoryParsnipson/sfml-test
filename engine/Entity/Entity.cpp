@@ -113,20 +113,20 @@ std::string Entity::serialize(Serializer& s) {
    return s.serialize(data);
 }
 
-void Entity::deserialize(Serializer& s, Game& g, std::string& d) {
-   Serializer::SerialData data = s.deserialize(g, d);
+void Entity::deserialize(Serializer& s, Scene& scene, std::string& d) {
+   Serializer::SerialData data = s.deserialize(scene, d);
 
    this->id(data["id"]);
 
    if (data["graphics"] != "") {
       GraphicsPart* graphics_part = new GraphicsPart();
-      graphics_part->deserialize(s, g, data["graphics"]);
+      graphics_part->deserialize(s, scene, data["graphics"]);
       this->add(graphics_part);
    }
 
    if (data["physics"] != "") {
       PhysicsPart* physics_part = new PhysicsPart();
-      physics_part->deserialize(s, g, data["physics"]);
+      physics_part->deserialize(s, scene, data["physics"]);
       this->add(physics_part);
    }
 

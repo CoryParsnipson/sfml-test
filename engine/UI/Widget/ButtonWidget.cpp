@@ -79,6 +79,6 @@ std::string ButtonWidget::serialize(Serializer& s) {
    return "";
 }
 
-void ButtonWidget::deserialize(Serializer& s, Game& g, std::string& d) {
+void ButtonWidget::deserialize(Serializer& s, Scene& scene, std::string& d) {
    // TODO: implement me
 }

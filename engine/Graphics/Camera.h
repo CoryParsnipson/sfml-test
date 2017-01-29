@@ -66,7 +66,7 @@ public:
 
    // serializable interface
    virtual std::string serialize(Serializer& s);
-   virtual void deserialize(Serializer& s, Game& g, std::string& d);
+   virtual void deserialize(Serializer& s, Scene& scene, std::string& d);
 
 private:
    std::string id_;

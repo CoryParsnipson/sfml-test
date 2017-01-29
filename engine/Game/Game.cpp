@@ -25,9 +25,10 @@ Game::Game()
    Channel* config_file = new FileChannel("config.txt");
    Serializer* config_reader = new JSONSerializer();
 
+   Scene* dummy_scene = new Scene("DummyScene");
    std::string raw_config_line = config_reader->read(*config_file);
    while (!raw_config_line.empty()) {
-      Serializer::SerialData config_line = config_reader->deserialize(*this, raw_config_line);
+      Serializer::SerialData config_line = config_reader->deserialize(*dummy_scene, raw_config_line);
 
       if (config_line["type"] == "logger") {
          if (config_line["tag"] == "enable") {
@@ -47,6 +48,7 @@ Game::Game()
       raw_config_line = config_reader->read(*config_file);
    }
 
+   delete dummy_scene;
    delete config_file;
    delete config_reader;
 

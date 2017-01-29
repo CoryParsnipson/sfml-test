@@ -103,15 +103,15 @@ std::string GraphicsPart::serialize(Serializer& s) {
    return s.serialize(data);
 }
 
-void GraphicsPart::deserialize(Serializer& s, Game& g, std::string& d) {
-   Serializer::SerialData data = s.deserialize(g, d);
+void GraphicsPart::deserialize(Serializer& s, Scene& scene, std::string& d) {
+   Serializer::SerialData data = s.deserialize(scene, d);
 
    sf::Vector2f pos;
    pos.x = std::stoi(data["x"]);
    pos.y = std::stoi(data["y"]);
 
-   if (g.current_scene() && g.current_scene()->textures().get(data["texture"])) {
-      Graphic* sprite = new SpriteGraphic(*g.current_scene()->textures().get(data["texture"]));
+   if (scene.textures().get(data["texture"])) {
+      Graphic* sprite = new SpriteGraphic(*scene.textures().get(data["texture"]));
       sprite->set_position(pos);
 
       this->add(sprite);

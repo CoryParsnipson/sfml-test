@@ -167,8 +167,8 @@ std::string OrthographicGrid::serialize(Serializer& s) {
    return s.serialize(data);
 }
 
-void OrthographicGrid::deserialize(Serializer& s, Game& g, std::string& d) {
-   Serializer::SerialData data = s.deserialize(g, d);
+void OrthographicGrid::deserialize(Serializer& s, Scene& scene, std::string& d) {
+   Serializer::SerialData data = s.deserialize(scene, d);
 
    assert(data["type"] == "grid");
    assert(data["class"] == "OrthographicGrid");

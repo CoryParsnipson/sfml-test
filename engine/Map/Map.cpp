@@ -46,8 +46,8 @@ std::string Map::serialize(Serializer& s) {
    return s.serialize(data);
 }
 
-void Map::deserialize(Serializer& s, Game& g, std::string& d) {
-   Serializer::SerialData map_data = s.deserialize(g, d);
+void Map::deserialize(Serializer& s, Scene& scene, std::string& d) {
+   Serializer::SerialData map_data = s.deserialize(scene, d);
 
    assert(map_data["type"] == "map");
 
@@ -55,21 +55,21 @@ void Map::deserialize(Serializer& s, Game& g, std::string& d) {
    this->id(map_data["id"]);
 
    // deserialize grid
-   Serializer::SerialData grid_data = s.deserialize(g, map_data["grid"]);
+   Serializer::SerialData grid_data = s.deserialize(scene, map_data["grid"]);
 
    if (grid_data["class"] == "OrthographicGrid") {
       Grid* grid = new OrthographicGrid(grid_data["id"]);
-      grid->deserialize(s, g, map_data["grid"]);
+      grid->deserialize(s, scene, map_data["grid"]);
       this->add(grid);
    } else {
       assert(("Received invalid grid class '" + grid_data["class"] + "'") == "");
    }
 
    // deserialize child entities (tiles, etc)
-   Serializer::SerialData tile_data = s.deserialize(g, map_data["tiles"]);
+   Serializer::SerialData tile_data = s.deserialize(scene, map_data["tiles"]);
    for (Serializer::SerialData::iterator it = tile_data.begin(); it != tile_data.end(); ++it) {
       Entity* tile = new Entity();
-      tile->deserialize(s, g, it->second);
+      tile->deserialize(s, scene, it->second);
       this->add(tile);
    }
 }

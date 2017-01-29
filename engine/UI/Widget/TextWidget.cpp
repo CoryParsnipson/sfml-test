@@ -95,6 +95,6 @@ std::string TextWidget::serialize(Serializer& s) {
    return "";
 }
 
-void TextWidget::deserialize(Serializer& s, Game& g, std::string& d) {
+void TextWidget::deserialize(Serializer& s, Scene& scene, std::string& d) {
    // TODO: implement me
 }

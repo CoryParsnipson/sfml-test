@@ -91,6 +91,6 @@ std::string DebugPart::serialize(Serializer& s) {
    return "";
 }
 
-void DebugPart::deserialize(Serializer& s, Game& g, std::string& d) {
+void DebugPart::deserialize(Serializer& s, Scene& scene, std::string& d) {
    // TODO: implement
 }

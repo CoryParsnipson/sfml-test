@@ -97,7 +97,7 @@ std::string PanelWidget::serialize(Serializer& s) {
    return "";
 }
 
-void PanelWidget::deserialize(Serializer& s, Game& g, std::string& d) {
+void PanelWidget::deserialize(Serializer& s, Scene& scene, std::string& d) {
    // TODO implement me
 }
 

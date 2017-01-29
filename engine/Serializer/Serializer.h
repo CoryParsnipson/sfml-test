@@ -9,7 +9,7 @@
 // ----------------------------------------------------------------------------
 // forward declarations
 // ----------------------------------------------------------------------------
-class Game;
+class Scene;
 class Channel;
 
 // ----------------------------------------------------------------------------
@@ -26,7 +26,7 @@ public:
    virtual ~Serializer() {}
 
    virtual std::string serialize(Serializer::SerialData& s) = 0;
-   virtual Serializer::SerialData deserialize(Game& g, std::string& d) = 0;
+   virtual Serializer::SerialData deserialize(Scene& scene, std::string& d) = 0;
 
    // this should use the channel to receive an entire valid string
    virtual std::string read(Channel& c) = 0;

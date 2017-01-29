@@ -25,7 +25,7 @@ std::string JSONSerializer::serialize(Serializer::SerialData& s) {
    return data.dump(this->tab_width_);
 }
 
-Serializer::SerialData JSONSerializer::deserialize(Game& g, std::string& d) {
+Serializer::SerialData JSONSerializer::deserialize(Scene& scene, std::string& d) {
    Serializer::SerialData serial_data;
    nlohmann::json data = nlohmann::json::parse(d);
 
