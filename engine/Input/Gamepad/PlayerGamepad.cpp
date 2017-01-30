@@ -19,6 +19,17 @@ PlayerGamepad::PlayerGamepad(std::string id /* = "PlayerGamepad" */, sf::Font* c
    this->cursor_->set_color(sf::Color::Red);
 
    this->cursor_text_ = TextFactory::inst()->create_text("", cursor_font);
+
+   // iterate through all possible keybindings
+   for (int i = 0; i <= static_cast<int>(Key::Pause); ++i) {
+      this->keys_[static_cast<Key>(i)] = new NullCommand();
+   }
+   
+   // iterate through all possible mouse button combinations
+   for (int i = 0; i <= static_cast<int>(MouseButton::XButton2); ++i) {
+      this->mouse_buttons_[static_cast<MouseButton>(i)][ButtonState::Pressed] = new NullCommand();
+      this->mouse_buttons_[static_cast<MouseButton>(i)][ButtonState::Released] = new NullCommand();
+   }
 }
 
 PlayerGamepad::~PlayerGamepad() {
