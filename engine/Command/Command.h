@@ -39,4 +39,19 @@ protected:
    std::string id_;
 };
 
+// ----------------------------------------------------------------------------
+// NullCommand
+// 
+// This is a command that does not execute anything. This should be used in
+// place of nullptr when expecting a Command pointer.
+// ----------------------------------------------------------------------------
+class NullCommand : public Command {
+public:
+   NullCommand(std::string id = "NullCommand") : Command(id) {}
+   virtual ~NullCommand() {}
+
+   virtual void execute() {}
+   virtual void unexecute() {}
+};
+
 #endif

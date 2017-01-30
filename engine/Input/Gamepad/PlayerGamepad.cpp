@@ -1,3 +1,5 @@
+#include <cassert>
+
 #include "PlayerGamepad.h"
 #include "Game.h"
 #include "Scene.h"
@@ -7,8 +9,8 @@
 
 PlayerGamepad::PlayerGamepad(std::string id /* = "PlayerGamepad" */, sf::Font* cursor_font /* = nullptr */)
 : Gamepad(id)
-, mouse_move_command_(nullptr)
-, mouse_wheel_command_(nullptr)
+, mouse_move_command_(new NullCommand())
+, mouse_wheel_command_(new NullCommand())
 , show_cursor_(true)
 , cursor_(new SpriteGraphic())
 , updated_in_this_tick_(false)
@@ -41,12 +43,12 @@ PlayerGamepad::~PlayerGamepad() {
 }
 
 void PlayerGamepad::set(Command* command, Key keycode) {
-   this->unset(keycode);
+   delete this->keys_[keycode];
    this->keys_[keycode] = command;
 }
 
 void PlayerGamepad::set(Command* command, MouseButton button, ButtonState state /* = ButtonState::Pressed */) {
-   this->unset(button, state);
+   delete this->mouse_buttons_[button][state];
    this->mouse_buttons_[button][state] = command;
 }
 
@@ -68,23 +70,23 @@ void PlayerGamepad::set(Command* command, MouseAction binding) {
 
 void PlayerGamepad::unset(Key keycode) {
    delete this->keys_[keycode];
-   this->keys_[keycode] = nullptr;
+   this->keys_[keycode] = new NullCommand();
 }
 
 void PlayerGamepad::unset(MouseButton button, ButtonState state) {
    delete this->mouse_buttons_[button][state];
-   this->mouse_buttons_[button][state] = nullptr;
+   this->mouse_buttons_[button][state] = new NullCommand();
 }
 
 void PlayerGamepad::unset(MouseAction binding) {
    switch (binding) {
    case MouseAction::Move:
       delete this->mouse_move_command_;
-      this->mouse_move_command_ = nullptr;
+      this->mouse_move_command_ = new NullCommand();
    break;
    case MouseAction::Wheel:
       delete this->mouse_wheel_command_;
-      this->mouse_wheel_command_ = nullptr;
+      this->mouse_wheel_command_ = new NullCommand();
    break;
    default:
       Service::get_logger().msg(this->id_, Logger::ERROR, "Received invalid MouseAction directive.");
@@ -113,11 +115,8 @@ void PlayerGamepad::process(ResizeInputEvent& e) {
 
 void PlayerGamepad::process(KeyPressInputEvent& e) {
    Service::get_logger().msg(Gamepad::id_, Logger::INFO, "Received " + std::string(e));
-
-   Command* c = this->keys_[e.key];
-   if (c) {
-      c->execute();
-   }
+   assert(this->keys_[e.key] != nullptr);
+   this->keys_[e.key]->execute();
 }
 
 void PlayerGamepad::process(MouseMoveInputEvent& e) {
@@ -131,9 +130,8 @@ void PlayerGamepad::process(MouseMoveInputEvent& e) {
    this->cursor_pos_prev_ = this->cursor_pos_;
    this->cursor_pos_ = sf::Vector2f(e.x, e.y);
 
-   if (this->mouse_move_command_) {
-      this->mouse_move_command_->execute();
-   }
+   assert(this->mouse_move_command_ != nullptr);
+   this->mouse_move_command_->execute();
 
    this->updated_in_this_tick_ = true;
 }
@@ -144,9 +142,8 @@ void PlayerGamepad::process(MouseWheelInputEvent& e) {
    // update gamepad wheel delta
    this->wheel_delta_ = e.delta;
 
-   if(this->mouse_wheel_command_) {
-      this->mouse_wheel_command_->execute();
-   }
+   assert(this->mouse_wheel_command_ != nullptr);
+   this->mouse_wheel_command_->execute();
 }
 
 void PlayerGamepad::process(MouseButtonInputEvent& e) {
@@ -156,10 +153,8 @@ void PlayerGamepad::process(MouseButtonInputEvent& e) {
    this->cursor_pos_prev_ = this->cursor_pos_;
    this->cursor_pos_ = sf::Vector2f(e.x, e.y);
 
-   Command* c = this->mouse_buttons_[e.button][e.state];
-   if (c) {
-      c->execute();
-   }
+   assert(this->mouse_buttons_[e.button][e.state] != nullptr);
+   this->mouse_buttons_[e.button][e.state]->execute();
 }
 
 void PlayerGamepad::do_draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
