@@ -74,7 +74,7 @@ void PlayerGamepad::set(Command* command, MouseAction binding) {
       this->mouse_wheel_command_ = command;
    break;
    default:
-      Service::get_logger().msg(this->id_, Logger::ERROR, "Received invalid MouseAction directive.");
+      Game::logger().msg(this->id(), Logger::ERROR, "Received invalid MouseAction directive.");
    break;
    }
 }
@@ -100,7 +100,7 @@ void PlayerGamepad::unset(MouseAction binding) {
       this->mouse_wheel_command_ = new NullCommand();
    break;
    default:
-      Service::get_logger().msg(this->id_, Logger::ERROR, "Received invalid MouseAction directive.");
+      Game::logger().msg(this->id(), Logger::ERROR, "Received invalid MouseAction directive.");
    break;
    }
 }
@@ -117,21 +117,21 @@ void PlayerGamepad::update(Game& game, Scene* scene /* = nullptr */) {
 }
 
 void PlayerGamepad::process(CloseInputEvent& e) {
-   Service::get_logger().msg(Gamepad::id_, Logger::INFO, "Received " + std::string(e));
+   Game::logger().msg(this->id(), Logger::INFO, "Received " + std::string(e));
 }
 
 void PlayerGamepad::process(ResizeInputEvent& e) {
-   Service::get_logger().msg(Gamepad::id_, Logger::INFO, "Received " + std::string(e));
+   Game::logger().msg(this->id(), Logger::INFO, "Received " + std::string(e));
 }
 
 void PlayerGamepad::process(KeyPressInputEvent& e) {
-   Service::get_logger().msg(Gamepad::id_, Logger::INFO, "Received " + std::string(e));
+   Game::logger().msg(this->id(), Logger::INFO, "Received " + std::string(e));
    assert(this->keys_[e.key] != nullptr);
    this->keys_[e.key]->execute();
 }
 
 void PlayerGamepad::process(MouseMoveInputEvent& e) {
-   Service::get_logger().msg(Gamepad::id_, Logger::INFO, "Received " + std::string(e));
+   Game::logger().msg(this->id(), Logger::INFO, "Received " + std::string(e));
 
    if (this->updated_in_this_tick_) {
       return;
@@ -148,7 +148,7 @@ void PlayerGamepad::process(MouseMoveInputEvent& e) {
 }
 
 void PlayerGamepad::process(MouseWheelInputEvent& e) {
-   Service::get_logger().msg(Gamepad::id_, Logger::INFO, "Received " + std::string(e));
+   Game::logger().msg(this->id(), Logger::INFO, "Received " + std::string(e));
 
    // update gamepad wheel delta
    this->wheel_delta_ = e.delta;
@@ -158,7 +158,7 @@ void PlayerGamepad::process(MouseWheelInputEvent& e) {
 }
 
 void PlayerGamepad::process(MouseButtonInputEvent& e) {
-   Service::get_logger().msg(Gamepad::id_, Logger::INFO, "Received " + std::string(e));
+   Game::logger().msg(this->id(), Logger::INFO, "Received " + std::string(e));
 
    // update gamepad position
    this->cursor_pos_prev_ = this->cursor_pos_;

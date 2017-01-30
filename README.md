@@ -19,8 +19,6 @@ Things to do next
 * Consider adding an array to PlayerGamepad that keeps track of which keys/mouse buttons
    are being pressed
 
-* Service locator is pretty ugly. Refactor?
-
 TODO
 ----
 * make everything relative to in game units instead of pixels

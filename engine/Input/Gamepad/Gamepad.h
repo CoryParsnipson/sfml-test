@@ -18,7 +18,7 @@ class Gamepad
 , public InputListener
 {
 public:
-   Gamepad(std::string id) : enable_(true), id_(std::move(id)) {}
+   Gamepad(std::string id) : SceneObject(id), enable_(true) {}
    virtual ~Gamepad() {}
 
    operator std::string() const { return this->to_string(); }
@@ -73,11 +73,10 @@ private:
       stream << gamepad.to_string();
       return stream;
    }
-   std::string to_string() const { return "[Gamepad: " + this->id_ + "]"; }
+   std::string to_string() const { return "[Gamepad: " + this->id() + "]"; }
 
 protected:
    bool enable_;
-   std::string id_;
 
    sf::Vector2f cursor_pos_;
    sf::Vector2f cursor_pos_prev_;

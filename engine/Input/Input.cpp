@@ -26,15 +26,22 @@ void Input::poll_event(Game& game) {
    while (game.poll_event(sfml_event)) {
       switch (sfml_event.type) {
       case sf::Event::Closed:
-         Service::get_logger().msg("Input", Logger::INFO, "Received close event.");
+         Game::logger().msg("Input", Logger::INFO, "Received close event.");
          event = new CloseInputEvent();
          break;
       case sf::Event::Resized:
-         Service::get_logger().msg("Input", Logger::INFO, "Received resize event.");
+         Game::logger().msg("Input", Logger::INFO, "Received resize event.");
          event = new ResizeInputEvent(sfml_event.size.width, sfml_event.size.height);
          break;
       case sf::Event::KeyPressed:
-         Service::get_logger().msg("Input", Logger::INFO, "Received key press event.");
+         Game::logger().msg("Input", Logger::INFO, "Received key press event.");
+
+         // if keycode is unknown, drop event
+         if (sfml_event.key.code == sf::Keyboard::Key::Unknown) {
+            Game::logger().msg("Input", Logger::WARNING, "Dropping key press event with e.key code = -1 (unknown)");
+            continue;
+         }
+
          event = new KeyPressInputEvent(
             static_cast<Key>(sfml_event.key.code), // convert from enum sf::Keyboard::Key to our enum class Key
             sfml_event.key.alt, sfml_event.key.control,
@@ -43,11 +50,11 @@ void Input::poll_event(Game& game) {
          );
          break;
       case sf::Event::MouseMoved:
-         Service::get_logger().msg("Input", Logger::INFO, "Received mouse move event.");
+         Game::logger().msg("Input", Logger::INFO, "Received mouse move event.");
          event = new MouseMoveInputEvent(sfml_event.mouseMove.x, sfml_event.mouseMove.y);
          break;
       case sf::Event::MouseWheelMoved:
-         Service::get_logger().msg("Input", Logger::INFO, "Received mouse wheel event.");
+         Game::logger().msg("Input", Logger::INFO, "Received mouse wheel event.");
          event = new MouseWheelInputEvent(
             sfml_event.mouseWheel.x,
             sfml_event.mouseWheel.y,
@@ -55,7 +62,7 @@ void Input::poll_event(Game& game) {
          );
          break;
       case sf::Event::MouseButtonPressed:
-         Service::get_logger().msg("Input", Logger::INFO, "Received mouse button pressed event.");
+         Game::logger().msg("Input", Logger::INFO, "Received mouse button pressed event.");
          event = new MouseButtonInputEvent(
             static_cast<MouseButton>(sfml_event.mouseButton.button),
             ButtonState::Pressed,
@@ -64,7 +71,7 @@ void Input::poll_event(Game& game) {
          );
          break;
       case sf::Event::MouseButtonReleased:
-         Service::get_logger().msg("Input", Logger::INFO, "Received mouse button released event.");
+         Game::logger().msg("Input", Logger::INFO, "Received mouse button released event.");
          event = new MouseButtonInputEvent(
             static_cast<MouseButton>(sfml_event.mouseButton.button),
             ButtonState::Released,
@@ -73,7 +80,7 @@ void Input::poll_event(Game& game) {
          );
          break;
       default:
-         Service::get_logger().msg("Input", Logger::WARNING, "Input received unknown input event.");
+         Game::logger().msg("Input", Logger::WARNING, "Input received unknown input event.");
          return;
       }
 

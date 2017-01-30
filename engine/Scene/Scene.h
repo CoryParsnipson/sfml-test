@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <cassert>
 
 #include "sfml.h"
 
@@ -40,12 +41,9 @@ public:
    , camera_(new Camera("Camera"))
    , scene_graph_(this->camera_)
    {
-      Service::get_logger().msg(this->id(), Logger::INFO, "Creating new Scene.");
    }
 
    virtual ~Scene() {
-      Service::get_logger().msg(this->id(), Logger::INFO, "Destroying Scene.");
-
       // TODO: need to properly clean up scene objects
       delete this->scene_graph_;
 
@@ -70,14 +68,14 @@ public:
 
       // start gamepads from receiving input events
       for (GamepadList::const_iterator it = this->gamepads_.begin(); it != this->gamepads_.end(); ++it) {
-         Service::get_input().attach(**it);
+        game.input().attach(**it);
       }
    }
 
    void do_exit(Game& game) {
       // stop gamepads from receiving input events
       for (GamepadList::const_iterator it = this->gamepads_.begin(); it != this->gamepads_.end(); ++it) {
-         Service::get_input().detach(**it);
+         game.input().detach(**it);
       }
 
       this->game_ = nullptr; // unset game pointer
@@ -149,29 +147,17 @@ public:
 
    // scene interface
    void load_scene(Scene* scene) {
-      if (!this->game_) {
-         Service::get_logger().msg(this->id(), Logger::ERROR, "Cannot load scene from a scene that is not on top of the game stack.");
-         return;
-      }
-
+      assert(this->game_); // can only load scene from a scene on the top of the game stack
       this->game_->load_scene(scene);
    }
 
    Scene* switch_scene(Scene* scene) {
-      if (!this->game_) {
-         Service::get_logger().msg(this->id(), Logger::ERROR, "Cannot switch scene from a scene that is not on top of the game stack.");
-         return nullptr;
-      }
-
+      assert(this->game_); // can only switch scene from a scene on the top of the game stack
       return this->game_->switch_scene(scene);
    }
 
    Scene* unload_scene() {
-      if (!this->game_) {
-         Service::get_logger().msg(this->id(), Logger::ERROR, "Cannot unload scene that is not on top of the game stack.");
-         return nullptr;
-      }
-
+      assert(this->game_); // can only unload scene from a scene on the top of the game stack
       this->game_->unload_scene();
       return this->game_->current_scene();
    }
@@ -186,6 +172,11 @@ public:
 
    TextureAtlas& textures() {
       return this->textures_;
+   }
+
+   Game& game() {
+      assert(this->game_); // should only be called when this is the top scene
+      return *this->game_;
    }
 
    // input event processing default implementations

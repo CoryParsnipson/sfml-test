@@ -1,5 +1,4 @@
 #include "GraphicsPart.h"
-#include "Service.h"
 #include "RenderSurface.h"
 #include "Entity.h"
 #include "PhysicsPart.h"
@@ -10,11 +9,11 @@
 GraphicsPart::GraphicsPart(std::string id)
 : Part(id)
 {
-   Service::get_logger().msg("GraphicsPart", Logger::INFO, "Creating GraphicsPart");
+   Game::logger().msg("GraphicsPart", Logger::INFO, "Creating GraphicsPart");
 }
 
 GraphicsPart::~GraphicsPart() {
-   Service::get_logger().msg("GraphicsPart", Logger::INFO, "Destroying GraphicsPart");
+   Game::logger().msg("GraphicsPart", Logger::INFO, "Destroying GraphicsPart");
 
    SpriteList::const_iterator sprite_it;
    for (sprite_it = this->sprites_.begin(); sprite_it != this->sprites_.end(); ++sprite_it) {

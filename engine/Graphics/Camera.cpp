@@ -1,5 +1,5 @@
+#include "Game.h"
 #include "Camera.h"
-#include "Service.h"
 #include "RenderSurface.h"
 #include "TextFactory.h"
 #include "FitCameraResizePolicy.h"
@@ -82,7 +82,7 @@ float Camera::get_scale() {
 void Camera::set_scale(float factor) {
    factor = std::max(factor, Camera::ZOOM_FACTOR_MIN);
    factor = std::min(factor, Camera::ZOOM_FACTOR_MAX);
-   Service::get_logger().msg(this->id(), Logger::INFO, "Zoom factor: " + std::to_string(factor));
+   Game::logger().msg(this->id(), Logger::INFO, "Zoom factor: " + std::to_string(factor));
 
    // update viewport size
    this->view_->zoom(factor / this->zoom_factor_);

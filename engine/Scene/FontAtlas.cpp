@@ -1,5 +1,5 @@
 #include "FontAtlas.h"
-#include "Service.h"
+#include "Game.h"
 
 FontAtlas::FontAtlas()
 : Atlas("FontAtlas")
@@ -10,7 +10,7 @@ void FontAtlas::load(std::string font_key, std::string font_filename) {
    sf::Font* font = new sf::Font();
 
    if (!font->loadFromFile(font_filename)) {
-      Service::get_logger().msg(this->id(), Logger::ERROR, "Cannot load font '" + font_filename + "'.");
+      Game::logger().msg(this->id(), Logger::ERROR, "Cannot load font '" + font_filename + "'.");
       return;
    }
    

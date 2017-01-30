@@ -1,5 +1,5 @@
 #include "UpdateSelectionRectCommand.h"
-#include "Service.h"
+#include "Game.h"
 #include "Entity.h"
 #include "UtilFactory.h"
 #include "PhysicsPart.h"
@@ -25,7 +25,7 @@ void UpdateSelectionRectCommand::execute() {
 
    PhysicsPart* srp = dynamic_cast<PhysicsPart*>(this->selection_rect_->get("physics"));
    if (!srp) {
-      Service::get_logger().msg("UpdateSelectionRectCommand", Logger::WARNING, "Selection Rectangle entity does not have physics part!");
+      Game::logger().msg("UpdateSelectionRectCommand", Logger::WARNING, "Selection Rectangle entity does not have physics part!");
       return;
    }
 

@@ -27,7 +27,7 @@ TestUIScene::TestUIScene()
    // load textures
    this->textures_.load("ui_resize_handle", "ui_panel_test.png", sf::IntRect(30, 0, 10, 10));
    this->textures_.load("tile_water_ul", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 64, 64, 64));
-   Service::get_logger().msg(this->id(), Logger::INFO, this->textures_);
+   Game::logger().msg(this->id(), Logger::INFO, this->textures_);
 
    // create camera just for UI
    this->scene_graph_->add(this->ui_camera_);
@@ -72,14 +72,14 @@ TestUIScene::~TestUIScene() {
 }
 
 void TestUIScene::enter(Game& game) {
-   Service::get_logger().msg(this->id_, Logger::INFO, "Entering test UI menu state.");
+   Game::logger().msg(this->id_, Logger::INFO, "Entering test UI menu state.");
 
    // reposition fps display
    this->fps_display_->set_position(game.window().size().x - 60, 0);
 }
 
 void TestUIScene::exit(Game& game) {
-   Service::get_logger().msg(this->id_, Logger::INFO, "Exiting test UI menu state.");
+   Game::logger().msg(this->id_, Logger::INFO, "Exiting test UI menu state.");
 }
 
 void TestUIScene::update(Game& game, Scene* scene) {

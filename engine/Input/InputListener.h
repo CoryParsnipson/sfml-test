@@ -1,7 +1,6 @@
 #ifndef INPUT_LISTENER_H
 #define INPUT_LISTENER_H
 
-#include "Service.h"
 #include "Observer.h"
 
 class InputEvent;

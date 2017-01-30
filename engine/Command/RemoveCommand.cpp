@@ -1,6 +1,6 @@
 #include "RemoveCommand.h"
 #include "SceneObject.h"
-#include "Service.h"
+#include "Game.h"
 
 RemoveCommand::RemoveCommand(SceneObject* scene_graph, SceneObject* scene_object)
 : Command("RemoveCommand")
@@ -35,8 +35,6 @@ void RemoveCommand::execute() {
             }
 
             this->parent_node_->remove(this->scene_object_);
-         } else {
-            Service::get_logger().msg(this->id_, Logger::WARNING, "Will not remove scene_graph root node.");
          }
          return;
       }

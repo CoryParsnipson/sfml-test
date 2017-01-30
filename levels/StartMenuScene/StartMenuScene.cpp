@@ -75,13 +75,13 @@ StartMenuScene::~StartMenuScene() {
 }
 
 void StartMenuScene::enter(Game& game) {
-   Service::get_logger().msg(this->id_, Logger::INFO, "Entering game start menu state.");
+   Game::logger().msg(this->id_, Logger::INFO, "Entering game start menu state.");
    this->camera_->reset_pan();
    this->camera_->move(this->camera_->get_center() - game.window().size());
 }
 
 void StartMenuScene::exit(Game& game) {
-   Service::get_logger().msg(this->id_, Logger::INFO, "Exiting game start menu state.");
+   Game::logger().msg(this->id_, Logger::INFO, "Exiting game start menu state.");
 }
 
 void StartMenuScene::process(Game& game, ResizeInputEvent& e) {

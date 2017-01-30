@@ -1,11 +1,11 @@
 #include "SetTilesCommand.h"
+#include "Game.h"
 #include "Map.h"
 #include "Grid.h"
 #include "Entity.h"
 #include "Texture.h"
 #include "TileFactory.h"
 #include "PhysicsPart.h"
-#include "Service.h"
 
 SetTilesCommand::SetTilesCommand(Map& map, Entity* tile_cursor, Texture& tile_texture)
 : map_(&map)
@@ -24,7 +24,7 @@ void SetTilesCommand::execute() {
 
    PhysicsPart* tc_physics = dynamic_cast<PhysicsPart*>(this->tile_cursor_->get("physics"));
    if (!tc_physics) {
-      Service::get_logger().msg(this->id_, Logger::ERROR, "Tile cursor does not have physics part!");
+      Game::logger().msg(this->id_, Logger::ERROR, "Tile cursor does not have physics part!");
       return;
    }
 

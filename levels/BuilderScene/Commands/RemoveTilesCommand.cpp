@@ -1,5 +1,5 @@
 #include "RemoveTilesCommand.h"
-#include "Service.h"
+#include "Game.h"
 #include "SceneObject.h"
 #include "Map.h"
 #include "Entity.h"
@@ -25,7 +25,7 @@ void RemoveTilesCommand::execute() {
    // get bounds of tile cursor
    PhysicsPart* tc_physics = dynamic_cast<PhysicsPart*>(this->tile_cursor_->get("physics"));
    if (!tc_physics) {
-      Service::get_logger().msg(this->id_, Logger::ERROR, "Tile cursor does not have physics part!");
+      Game::logger().msg(this->id_, Logger::ERROR, "Tile cursor does not have physics part!");
       return;
    }
 

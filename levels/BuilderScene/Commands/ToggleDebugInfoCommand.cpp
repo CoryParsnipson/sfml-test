@@ -1,7 +1,7 @@
 #include "ToggleDebugInfoCommand.h"
+#include "Game.h"
 #include "SceneObject.h"
 #include "Entity.h"
-#include "Service.h"
 
 ToggleDebugInfoCommand::ToggleDebugInfoCommand(SceneObject* scene_graph, sf::Font* font)
 : font_(font)
@@ -16,7 +16,7 @@ void ToggleDebugInfoCommand::execute() {
    }
 
    this->debug_visitor_.show_debug(!this->debug_visitor_.show_debug());
-   Service::get_logger().msg("ToggleDebugInfoCommand", Logger::INFO, "Debug info: " + std::string(this->debug_visitor_.show_debug() ? "SHOW" : "HIDE"));
+   Game::logger().msg("ToggleDebugInfoCommand", Logger::INFO, "Debug info: " + std::string(this->debug_visitor_.show_debug() ? "SHOW" : "HIDE"));
 
    SceneObject::prefix_iterator it;
    for (it = this->scene_graph_->begin(); it != this->scene_graph_->end(); ++it) {

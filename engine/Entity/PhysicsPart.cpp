@@ -1,12 +1,12 @@
 #include "PhysicsPart.h"
-#include "Service.h"
+#include "Game.h"
 
 PhysicsPart::PhysicsPart(std::string id, sf::FloatRect bounding_box)
 : Part(id)
 , solid_(false)
 , bounding_box_(bounding_box)
 {
-   Service::get_logger().msg("PhysicsPart", Logger::INFO, "Creating PhysicsPart '" + id + "'");
+   Game::logger().msg("PhysicsPart", Logger::INFO, "Creating PhysicsPart '" + id + "'");
 }
 
 PhysicsPart::~PhysicsPart() {

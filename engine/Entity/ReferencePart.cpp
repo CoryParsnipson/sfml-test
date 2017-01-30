@@ -1,11 +1,11 @@
 #include "ReferencePart.h"
-#include "Service.h"
+#include "Game.h"
 #include "Entity.h"
 
 ReferencePart::ReferencePart(std::string id)
 : Part(id)
 {
-   Service::get_logger().msg("ReferencePart", Logger::INFO, "Creating ReferencePart");
+   Game::logger().msg("ReferencePart", Logger::INFO, "Creating ReferencePart");
 }
 
 ReferencePart::~ReferencePart() {
@@ -20,7 +20,7 @@ void ReferencePart::add(Entity* entity) {
    entities_t::const_iterator it;
    for (it = this->references_.begin(); it != this->references_.end(); ++it) {
       if (*it == entity) {
-         Service::get_logger().msg("ReferencePart", Logger::WARNING, "Ignoring request to add duplicate reference.");
+         Game::logger().msg("ReferencePart", Logger::WARNING, "Ignoring request to add duplicate reference.");
          return;
       }
    }

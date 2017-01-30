@@ -1,5 +1,5 @@
 #include "DebugPart.h"
-#include "Service.h"
+#include "Game.h"
 #include "Draw.h"
 #include "RenderSurface.h"
 #include "TextFactory.h"
@@ -12,11 +12,11 @@ DebugPart::DebugPart(std::string id /* = "debug" */, sf::Font* debug_font /* = n
 , show_text_(false)
 , pos_text_(new TextGraphic("", debug_font))
 {
-   Service::get_logger().msg("DebugPart", Logger::INFO, "Creating DebugPart");
+   Game::logger().msg("DebugPart", Logger::INFO, "Creating DebugPart");
 }
 
 DebugPart::~DebugPart() {
-   Service::get_logger().msg("DebugPart", Logger::INFO, "Destroying DebugPart");
+   Game::logger().msg("DebugPart", Logger::INFO, "Destroying DebugPart");
 
    delete pos_text_;
 

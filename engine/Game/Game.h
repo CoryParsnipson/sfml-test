@@ -7,7 +7,7 @@
 
 #include "Input.h"
 #include "Settings.h"
-#include "FullLogger.h"
+#include "Logger.h"
 #include "InputListener.h"
 #include "Canvas.h"
 
@@ -17,8 +17,15 @@ class Game
 : public InputListener
 {
 public:
+   // services
+   Input& input();
+   static Logger& logger();
+
 	Game();
 	virtual ~Game();
+
+   // settings
+   Settings settings;
 
    // game flow controls
    void start(); // run main loop
@@ -42,20 +49,17 @@ public:
 
    const Canvas& window() const;
 
-   // settings
-   Settings settings;
-
 private:
+   // services
+   Input* input_;
+   static Logger* logger_;
+
 	// game flow control
 	void main_loop();
 
    Scene* next_scene_;  // if this is not null, it will be placed on the top of scenes_ in the next update
    Scene* prev_scene_;  // a state that is to be unloaded in the next update, should be popped off scenes_
    std::stack<Scene*> scenes_;
-
-   // services
-   FullLogger full_logger_;
-   Input input_;
 
    // graphics
    Canvas window_;

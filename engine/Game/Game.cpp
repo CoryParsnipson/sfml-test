@@ -3,6 +3,8 @@
 #include "Game.h"
 #include "TextFactory.h"
 
+#include "FullLogger.h"
+
 #include "FileChannel.h"
 #include "JSONSerializer.h"
 
@@ -15,8 +17,14 @@
 
 #include "Scene.h"
 
+// ----------------------------------------------------------------------------
+// static member initialization
+// ----------------------------------------------------------------------------
+Logger* Game::logger_ = new FullLogger();
+
 Game::Game()
 : InputListener("Game")
+, input_(new Input())
 , next_scene_(nullptr)
 , prev_scene_(nullptr)
 , window_("SFML Test", sf::Vector2f(this->settings.default_window_width(), this->settings.default_window_height()))
@@ -24,6 +32,8 @@ Game::Game()
    // TODO: probably need to move this into a config class or something
    Channel* config_file = new FileChannel("config.txt");
    Serializer* config_reader = new JSONSerializer();
+
+   FullLogger* logger = dynamic_cast<FullLogger*>(&Game::logger());
 
    Scene* dummy_scene = new Scene("DummyScene");
    std::string raw_config_line = config_reader->read(*config_file);
@@ -33,15 +43,15 @@ Game::Game()
       if (config_line["type"] == "logger") {
          if (config_line["tag"] == "enable") {
             if (config_line["stream"] == "console") {
-               this->full_logger_.console_start();
+               logger->console_start();
             } else if (config_line["stream"] == "file") {
-               this->full_logger_.file_start("log.txt");
+               logger->file_start("log.txt");
             }
          } else if (config_line["tag"] == "disable_all_tags") {
-            this->full_logger_.get_logger(config_line["stream"])->disable_all_tags();
+            logger->get_logger(config_line["stream"])->disable_all_tags();
          } else {
             bool setting = (config_line["enable"] == "true");
-            this->full_logger_.get_logger(config_line["stream"])->set_tag(config_line["tag"], setting);
+            logger->get_logger(config_line["stream"])->set_tag(config_line["tag"], setting);
          }
       }
 
@@ -52,15 +62,26 @@ Game::Game()
    delete config_file;
    delete config_reader;
 
-   Service::provide_logger(&this->full_logger_);
-
    // set up input
-   Service::provide_input(&this->input_);
-   Service::get_input().attach(*this);
+   this->input().attach(*this);
 }
 
 Game::~Game() {
    this->reset();
+
+   // remove from input
+   this->input().detach(*this);
+
+   // destroy logger
+   delete Game::logger_;
+}
+
+Input& Game::input() {
+   return *this->input_;
+}
+
+Logger& Game::logger() {
+   return *Game::logger_;
 }
 
 void Game::start() {
@@ -76,7 +97,7 @@ void Game::reset() {
 }
 
 void Game::load_scene(Scene* scene) {
-   Service::get_logger().msg("Game", Logger::INFO, "Loading scene '" + scene->id() + "'");
+   this->logger().msg("Game", Logger::INFO, "Loading scene '" + scene->id() + "'");
 
    assert(!this->next_scene_);
    this->next_scene_ = scene;
@@ -85,7 +106,7 @@ void Game::load_scene(Scene* scene) {
 void Game::unload_scene() {
    assert(!this->prev_scene_);
    this->prev_scene_ = this->scenes_.top();
-   Service::get_logger().msg("Game", Logger::INFO, "Unloading scene '" + this->prev_scene_->id() + "'");
+   this->logger().msg("Game", Logger::INFO, "Unloading scene '" + this->prev_scene_->id() + "'");
 }
 
 Scene* Game::switch_scene(Scene* scene) {
@@ -133,12 +154,12 @@ const Canvas& Game::window() const {
 void Game::main_loop() {
    while (true) {
       if (this->scenes_.empty() && !this->prev_scene_ && !this->next_scene_) {
-         Service::get_logger().msg("Game", Logger::INFO, "Exiting game loop...");
+         this->logger().msg("Game", Logger::INFO, "Exiting game loop...");
          return;
       }
 
       // poll input
-      Service::get_input().poll_event(*this);
+      this->input().poll_event(*this);
 
       // check if we need to unload a scene
       if (this->prev_scene_) {

@@ -138,7 +138,6 @@ bool Subject<T>::attach(Observer<T>& observer) {
    typename ObserverList<T>::const_iterator it;
    for (it = this->observers_.begin(); it != this->observers_.end(); ++it) {
       if ((*it) == &observer) {
-         //Service::get_logger().msg("Subject", Logger::WARNING, "(id = " + this->id_ + ") Ignoring request to attach observer that is already attached.");
          return false;
       }
    }
@@ -155,7 +154,6 @@ bool Subject<T>::detach(Observer<T>& observer) {
       (*it)->remove(*this);
       this->observers_.erase(it);
    } else {
-      //Service::get_logger().msg("Subject", Logger::WARNING, "Failed to detach " + observer);
       return false;
    }
 

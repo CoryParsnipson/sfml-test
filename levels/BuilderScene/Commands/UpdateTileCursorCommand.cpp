@@ -1,7 +1,7 @@
 #include <memory>
 
 #include "UpdateTileCursorCommand.h"
-#include "Service.h"
+#include "Game.h"
 #include "Grid.h"
 #include "Entity.h"
 #include "PhysicsPart.h"
@@ -25,7 +25,7 @@ void UpdateTileCursorCommand::execute() {
 
    PhysicsPart* tcp = dynamic_cast<PhysicsPart*>(this->tile_cursor_->get("physics"));
    if (!tcp) {
-      Service::get_logger().msg("UpdateTileCursorCommand", Logger::WARNING, "Tile Cursor entity does not have physics part!");
+      Game::logger().msg("UpdateTileCursorCommand", Logger::WARNING, "Tile Cursor entity does not have physics part!");
       return;
    }
 

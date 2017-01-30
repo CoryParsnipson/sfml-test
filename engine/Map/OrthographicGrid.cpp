@@ -1,7 +1,7 @@
 #include <cassert>
 
 #include "OrthographicGrid.h"
-#include "Service.h"
+#include "Game.h"
 #include "Draw.h"
 #include "RenderSurface.h"
 #include "UtilFactory.h"
@@ -178,7 +178,7 @@ void OrthographicGrid::deserialize(Serializer& s, Scene& scene, std::string& d) 
    this->tile_height(std::stoi(data["tile_height"]));
    this->origin(sf::Vector2f(std::stod(data["origin_x"]), std::stod(data["origin_y"])));
 
-   Service::get_logger().msg(this->id_, Logger::INFO, "tile width: " + std::to_string(this->tile_width()) + ", tile_height: " + std::to_string(this->tile_height()));
+   Game::logger().msg(this->id_, Logger::INFO, "tile width: " + std::to_string(this->tile_width()) + ", tile_height: " + std::to_string(this->tile_height()));
 }
 
 void OrthographicGrid::create_origin_dot() {

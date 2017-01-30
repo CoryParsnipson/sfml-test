@@ -84,7 +84,7 @@ BuilderScene::BuilderScene()
    this->textures_.load("tile_water_bl", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 192, 64, 64));
    this->textures_.load("tile_water_bm", "pkmn_tiles_outdoor1.png", sf::IntRect(256, 192, 64, 64));
    this->textures_.load("tile_water_br", "pkmn_tiles_outdoor1.png", sf::IntRect(320, 192, 64, 64));
-   Service::get_logger().msg(this->id(), Logger::INFO, this->textures_);
+   Game::logger().msg(this->id(), Logger::INFO, this->textures_);
 
    sf::VertexArray* backdrop = new sf::VertexArray(sf::TrianglesStrip, 4);
    (*backdrop)[0].position = sf::Vector2f(0, 0);
@@ -262,7 +262,7 @@ BuilderScene::~BuilderScene() {
 }
 
 void BuilderScene::enter(Game& game) {
-   Service::get_logger().msg(this->id_, Logger::INFO, "Entering builder state.");
+   Game::logger().msg(this->id_, Logger::INFO, "Entering builder state.");
 
    // set center dot position
    this->center_dot_->set_position(game.window().size() / 2.f);
@@ -278,7 +278,7 @@ void BuilderScene::enter(Game& game) {
 }
 
 void BuilderScene::exit(Game& game) {
-   Service::get_logger().msg(this->id_, Logger::INFO, "Exiting builder state.");
+   Game::logger().msg(this->id_, Logger::INFO, "Exiting builder state.");
 }
 
 void BuilderScene::update(Game& game, Scene* scene) {

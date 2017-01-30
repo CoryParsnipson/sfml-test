@@ -1,5 +1,5 @@
 #include "TextureAtlas.h"
-#include "Service.h"
+#include "Game.h"
 
 TextureAtlas::TextureAtlas()
 : Atlas("TextureAtlas")
@@ -28,7 +28,7 @@ std::string TextureAtlas::to_string() const {
 
 Texture* TextureAtlas::get_post(std::string k, Texture* item) const {
    if (!item) {
-      Service::get_logger().msg(this->id(), Logger::WARNING, "Cannot find texture with key '" + k + "'. Returning nullptr");
+      Game::logger().msg(this->id(), Logger::WARNING, "Cannot find texture with key '" + k + "'. Returning nullptr");
    }
    return item;
 }
