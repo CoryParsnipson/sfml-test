@@ -13,7 +13,6 @@
 CompositeGraphic::CompositeGraphic(const std::string& id)
 : Graphic2(id)
 , game_(nullptr)
-, scene_(nullptr)
 {
 }
 
@@ -39,9 +38,8 @@ void CompositeGraphic::draw(RenderSurface& surface, sf::RenderStates render_stat
    }
 }
 
-void CompositeGraphic::update(Game& game, Scene* scene /* = nullptr */) {
+void CompositeGraphic::update(Game& game) { 
    this->game_ = &game;
-   this->scene_ = scene;
 
    GraphicList::iterator it;
    for (it = this->children_.begin(); it != this->children_.end(); ++it) {
@@ -239,14 +237,14 @@ void CompositeGraphic::visit(VertexList* graphic) {}
 
 void CompositeGraphic::visit(Sprite* graphic) {
    assert(this->game_ != nullptr);   
-   graphic->update(*this->game_, this->scene_);
+   graphic->update(*this->game_);
 }
 
 void CompositeGraphic::visit(Text* graphic) {}
 
 void CompositeGraphic::visit(CompositeGraphic* graphic) {
    assert(this->game_ != nullptr);   
-   graphic->update(*this->game_, this->scene_);
+   graphic->update(*this->game_);
 }
 
 void CompositeGraphic::visit(Rectangle* graphic) {}

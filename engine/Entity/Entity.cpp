@@ -176,10 +176,10 @@ void Entity::accept(SceneGraphVisitor& visitor) {
    visitor.visit(this);
 }
 
-void Entity::update(Game& game, Scene* scene /* = nullptr */) {
+void Entity::update(Game& game) {
    PartList::const_iterator it;
    for (it = this->parts_.begin(); it != this->parts_.end(); it++) {
-      it->second->update(game, scene);
+      it->second->update(game);
    }
 }
 

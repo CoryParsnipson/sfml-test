@@ -281,8 +281,8 @@ void BuilderScene::exit(Game& game) {
    Game::logger().msg(this->id_, Logger::INFO, "Exiting builder state.");
 }
 
-void BuilderScene::update(Game& game, Scene* scene) {
-   Scene::update(game, scene);
+void BuilderScene::update(Game& game) {
+   Scene::update(game);
 
    // calculate and show FPS
    if (!this->frame_count) {

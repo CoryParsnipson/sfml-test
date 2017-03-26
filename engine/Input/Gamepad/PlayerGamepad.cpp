@@ -105,7 +105,7 @@ void PlayerGamepad::unset(MouseAction binding) {
    }
 }
 
-void PlayerGamepad::update(Game& game, Scene* scene /* = nullptr */) {
+void PlayerGamepad::update(Game& game) {
    sf::Vector2f c = this->cursor_position();
 
    this->cursor_->set_position(c);

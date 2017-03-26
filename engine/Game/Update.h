@@ -2,11 +2,10 @@
 #define UPDATE_H
 
 class Game;
-class Scene;
 
 class Update {
 public:
-   virtual void update(Game& game, Scene* scene = nullptr) = 0;
+   virtual void update(Game& game) = 0;
 };
 
 #endif

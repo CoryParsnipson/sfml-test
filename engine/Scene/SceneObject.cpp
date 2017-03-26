@@ -251,7 +251,7 @@ void SceneObject::draw(RenderSurface& surface, sf::RenderStates render_states /*
    this->do_draw(surface, render_states);
 }
 
-void SceneObject::update(Game& game, Scene* scene /* = nullptr */) {}
+void SceneObject::update(Game& game) {}
 
 void SceneObject::do_draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {}
 

@@ -58,7 +58,7 @@ public:
 
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 
-   virtual void update(Game& game, Scene* scene = nullptr);
+   virtual void update(Game& game);
 
    using Graphic2::position;
    using Graphic2::move;

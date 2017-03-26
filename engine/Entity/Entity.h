@@ -73,7 +73,7 @@ public:
    virtual void accept(SceneGraphVisitor& visitor);
 
    // update interface
-   virtual void update(Game& game, Scene* scene = nullptr);
+   virtual void update(Game& game);
 
 protected:
    bool enable_debug_wireframe_;

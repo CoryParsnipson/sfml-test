@@ -46,7 +46,7 @@ void DebugPart::draw(RenderSurface& surface, sf::RenderStates render_states /* =
    }
 }
 
-void DebugPart::update(Game& game, Scene* scene) {
+void DebugPart::update(Game& game) {
    // TODO: redo this
    //unsigned int graphic_idx = 0;
    //Graphic* g = nullptr;

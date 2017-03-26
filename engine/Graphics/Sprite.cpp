@@ -108,7 +108,7 @@ void Sprite::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf
    surface.draw(*this->drawable_, render_states);
 }
 
-void Sprite::update(Game& game, Scene* scene /* = nullptr */) {
+void Sprite::update(Game& game) {
    assert(this->animation_);
 
    // TODO: update animation here

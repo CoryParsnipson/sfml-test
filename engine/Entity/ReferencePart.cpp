@@ -43,7 +43,7 @@ void ReferencePart::remove(Entity* entity) {
    }
 }
 
-void ReferencePart::update(Game& game, Scene* scene) {
+void ReferencePart::update(Game& game) {
 }
 
 std::string ReferencePart::serialize(Serializer& s) {

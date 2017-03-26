@@ -63,7 +63,7 @@ bool PhysicsPart::intersects(const sf::FloatRect& other) {
    return this->bounding_box_.intersects(other);
 }
 
-void PhysicsPart::update(Game& game, Scene* scene) {
+void PhysicsPart::update(Game& game) {
 }
 
 std::string PhysicsPart::serialize(Serializer& s) {

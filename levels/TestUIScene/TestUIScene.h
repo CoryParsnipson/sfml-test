@@ -21,7 +21,7 @@ public:
    virtual void exit(Game& game);
 
    // update interface
-   virtual void update(Game& game, Scene* scene = nullptr);
+   virtual void update(Game& game);
 
    // command interface
    virtual void process(Game& game, ResizeInputEvent& e);

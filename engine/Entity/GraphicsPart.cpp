@@ -80,7 +80,7 @@ void GraphicsPart::draw(RenderSurface& surface, sf::RenderStates render_states /
    }
 }
 
-void GraphicsPart::update(Game& game, Scene* scene) {
+void GraphicsPart::update(Game& game) {
 }
 
 std::string GraphicsPart::serialize(Serializer& s) {

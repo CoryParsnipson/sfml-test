@@ -97,7 +97,7 @@ public:
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 
    // update interface
-   virtual void update(Game& game, Scene* scene = nullptr);
+   virtual void update(Game& game);
 
 private:
    std::string id_;

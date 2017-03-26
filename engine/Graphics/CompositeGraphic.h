@@ -28,7 +28,7 @@ public:
 
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 
-   virtual void update(Game& game, Scene* scene = nullptr);
+   virtual void update(Game& game);
 
    using Graphic2::position;
    using Graphic2::move;
@@ -85,9 +85,7 @@ private:
    sf::RectangleShape placeholder_;
    GraphicList children_;
    
-   // needed to do update() inside visitor functions (note: don't delete these pointers in the destructor)
-   Game* game_;
-   Scene* scene_;
+   Game* game_; // needed for update() in visitor functions (note: don't delete in destructor)
 };
 
 #endif

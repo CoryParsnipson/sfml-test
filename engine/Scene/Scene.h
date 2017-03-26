@@ -91,10 +91,10 @@ public:
    }
 
    // update interface
-   virtual void update(Game& game, Scene* scene = nullptr) {
+   virtual void update(Game& game) {
       SceneObject::prefix_iterator it;
       for (it = this->scene_graph_->begin(); it != this->scene_graph_->end(); ++it) {
-         (*it)->update(game, (scene ? scene : this));
+         (*it)->update(game);
       }
    }
 

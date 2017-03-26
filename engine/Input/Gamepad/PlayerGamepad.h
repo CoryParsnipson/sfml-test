@@ -40,7 +40,7 @@ public:
    void unset(MouseAction binding);
 
    // update interface
-   virtual void update(Game& game, Scene* scene = nullptr);
+   virtual void update(Game& game);
 
    // input event processing
    virtual void process(CloseInputEvent& e);
