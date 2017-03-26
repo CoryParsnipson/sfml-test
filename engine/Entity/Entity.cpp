@@ -189,3 +189,17 @@ void Entity::do_draw(RenderSurface& surface, sf::RenderStates render_states /* =
       it->second->draw(surface, render_states);
    }
 }
+
+// ----------------------------------------------------------------------------
+// template member specializations
+// ----------------------------------------------------------------------------
+template <>
+GraphicsComponent* Entity::get() {
+   return this->graphics_;
+}
+
+template <>
+void Entity::set(GraphicsComponent* component) {
+   this->graphics_ = component;
+}
+

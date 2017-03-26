@@ -42,6 +42,7 @@ INCLUDE_PATHS += $(PROJECT_DIR)/engine/Graphics
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/Command
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/Command/Mouse
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/Scene
+INCLUDE_PATHS += $(PROJECT_DIR)/engine/Component
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/Entity
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/Channel
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/Serializer

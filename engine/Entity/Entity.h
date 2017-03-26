@@ -3,15 +3,23 @@
 
 #include <map>
 #include <string>
+#include <cassert>
 
 #include "sfml.h"
 
 #include "SceneObject.h"
 #include "Serializable.h"
 
-// forward declarations
+#include "GraphicsComponent.h"
+
+// ----------------------------------------------------------------------------
+// forward declarations 
+// ----------------------------------------------------------------------------
 class Part;
 
+// ----------------------------------------------------------------------------
+// Entity class
+// ----------------------------------------------------------------------------
 class Entity
 : public SceneObject
 {
@@ -40,6 +48,17 @@ public:
    void remove(const std::string& part_id);
    Part* get(const std::string& part_id);
 
+   template <typename ComponentType>
+   ComponentType* get() {
+      // error invalid component type
+      return nullptr;
+   }
+
+   template <typename ComponentType>
+   void set(ComponentType* component) {
+      // error invalid component type
+   }
+
    // serializable interface
    virtual std::string serialize(Serializer& s);
    virtual void deserialize(Serializer& s, Scene& scene, std::string& d);
@@ -61,6 +80,8 @@ protected:
    bool enable_debug_text_;
 
    PartList parts_;
+   
+   GraphicsComponent* graphics_;
 
    // scene graph interface hooks
    virtual void do_draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);

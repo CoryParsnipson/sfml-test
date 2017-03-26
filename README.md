@@ -6,7 +6,6 @@ This was originally going to be a quick isometric tile demo experiment and it ha
 Things to do next
 -----------------
 * Refactor Entity class
-   * need to move some functions into SceneObject (id)
    * need to overhaul graphics classes or something because it's very clunky
       * In the scene rendering, entity draw and entity update show most time spent in profiler
       * refactor entity component hierarchy
@@ -17,7 +16,7 @@ Things to do next
          * need to upgrade graphicscomponent to take in animations capability?
 
 * Consider adding an array to PlayerGamepad that keeps track of which keys/mouse buttons
-   are being pressed
+   are being pressed (this should be InputComponent?)
 
 TODO
 ----
