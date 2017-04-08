@@ -8,6 +8,7 @@ Entity::Entity(std::string id)
 : SceneObject(id)
 , enable_debug_wireframe_(true)
 , enable_debug_text_(false)
+, graphics2_(nullptr)
 {
 }
 
@@ -194,12 +195,11 @@ void Entity::do_draw(RenderSurface& surface, sf::RenderStates render_states /* =
 // template member specializations
 // ----------------------------------------------------------------------------
 template <>
-GraphicsComponent* Entity::get() {
-   return this->graphics_;
+Graphic2* Entity::get() {
+   return this->graphics2_;
 }
 
 template <>
-void Entity::set(GraphicsComponent* component) {
-   this->graphics_ = component;
+void Entity::set(Graphic2* graphic) {
+   this->graphics2_ = graphic;
 }
-

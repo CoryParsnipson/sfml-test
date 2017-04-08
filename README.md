@@ -9,11 +9,10 @@ Things to do next
    * need to overhaul graphics classes or something because it's very clunky
       * In the scene rendering, entity draw and entity update show most time spent in profiler
       * refactor entity component hierarchy
-      * need to redo facade on sfml drawable objects, because it is super bad
    * both of these things below: consider making physics parts composites?
       * need to upgrade physicscomponent to take list of bounding boxes
-      * Work on adding animations
-         * need to upgrade graphicscomponent to take in animations capability?
+   * Work on adding animations
+      * need to upgrade graphicscomponent to take in animations capability?
 
 * Consider adding an array to PlayerGamepad that keeps track of which keys/mouse buttons
    are being pressed (this should be InputComponent?)

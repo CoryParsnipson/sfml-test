@@ -52,8 +52,6 @@ public:
          delete *g_it;
       }
       this->gamepads_.clear();
-      
-      delete this->game_;
    }
 
    virtual std::string id() { return this->id_; }
@@ -192,6 +190,10 @@ public:
    virtual void process(Game& game, MouseMoveInputEvent& e) {}
    virtual void process(Game& game, MouseWheelInputEvent& e) {}
    virtual void process(Game& game, MouseButtonInputEvent& e) {}
+
+   const SceneObject& scene_graph() const {
+      return *this->scene_graph_;
+   }
 
 protected:
    std::string id_;

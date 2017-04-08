@@ -17,6 +17,9 @@
 
 #include "Scene.h"
 
+#include "InputSystem.h"
+#include "GraphicsSystem.h"
+
 // ----------------------------------------------------------------------------
 // static member initialization
 // ----------------------------------------------------------------------------
@@ -64,6 +67,13 @@ Game::Game()
 
    // set up input
    this->input().attach(*this);
+
+   this->systems_.push_back(new GraphicsSystem());
+
+   // initialize systems
+   for (std::vector<System*>::iterator it = this->systems_.begin(); it != this->systems_.end(); ++it) {
+      (*it)->init();
+   }
 }
 
 Game::~Game() {
@@ -151,15 +161,16 @@ const Canvas& Game::window() const {
    return this->window_;
 }
 
+Canvas& Game::window() {
+   return this->window_;
+}
+
 void Game::main_loop() {
    while (true) {
       if (this->scenes_.empty() && !this->prev_scene_ && !this->next_scene_) {
          this->logger().msg("Game", Logger::INFO, "Exiting game loop...");
          return;
       }
-
-      // poll input
-      this->input().poll_event(*this);
 
       // check if we need to unload a scene
       if (this->prev_scene_) {
@@ -189,6 +200,14 @@ void Game::main_loop() {
       // draw
       this->window_.clear(); // clear previous frame contents
       this->scenes_.top()->draw(this->window_);
+
+      // poll input
+      this->input().poll_event(*this);
+
+      // update systems
+      for (std::vector<System*>::iterator it = this->systems_.begin(); it != this->systems_.end(); ++it) {
+         (*it)->update(*this);
+      }
 
       // render scene
       this->window_.update();

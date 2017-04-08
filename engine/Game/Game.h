@@ -10,6 +10,7 @@
 #include "Logger.h"
 #include "InputListener.h"
 #include "Canvas.h"
+#include "System.h"
 
 class Scene;
 
@@ -48,6 +49,7 @@ public:
    bool poll_event(sf::Event& event);
 
    const Canvas& window() const;
+   Canvas& window();
 
 private:
    // services
@@ -63,6 +65,9 @@ private:
 
    // graphics
    Canvas window_;
+
+   // systems
+   std::vector<System*> systems_;
 };
 
 #endif

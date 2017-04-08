@@ -10,7 +10,7 @@
 #include "SceneObject.h"
 #include "Serializable.h"
 
-#include "GraphicsComponent.h"
+#include "Graphic.h"
 
 // ----------------------------------------------------------------------------
 // forward declarations 
@@ -81,7 +81,7 @@ protected:
 
    PartList parts_;
    
-   GraphicsComponent* graphics_;
+   Graphic2* graphics2_;
 
    // scene graph interface hooks
    virtual void do_draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
