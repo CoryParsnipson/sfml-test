@@ -18,6 +18,8 @@ public:
 
    virtual void update(Game& game);
 
+   virtual void accept(SystemVisitor& visitor);
+
 private:
    CameraList cameras_;
 

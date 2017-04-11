@@ -1,6 +1,7 @@
 #include "GraphicsSystem.h"
 #include "Scene.h"
 #include "SceneObject.h"
+#include "SystemVisitor.h"
 
 GraphicsSystem::GraphicsSystem(const std::string& id /* = "GraphicsSystem" */)
 : System(id)
@@ -25,6 +26,10 @@ void GraphicsSystem::update(Game& game) {
    for (SceneObject::prefix_iterator it = scene->scene_graph()->begin(); it != scene->scene_graph()->end(); ++it) {
       (*it)->accept(*this);
    }
+}
+
+void GraphicsSystem::accept(SystemVisitor& visitor) {
+   visitor.visit(this);
 }
 
 void GraphicsSystem::visit(Camera*) {}

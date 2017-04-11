@@ -17,7 +17,6 @@
 
 #include "Scene.h"
 
-#include "InputSystem.h"
 #include "GraphicsSystem.h"
 
 // ----------------------------------------------------------------------------

@@ -5,6 +5,17 @@
 
 #include "Update.h"
 
+// ----------------------------------------------------------------------------
+// forward declarations
+// ----------------------------------------------------------------------------
+class SystemVisitor;
+
+// ----------------------------------------------------------------------------
+// System
+//
+// This is the base class for anything that needs to operate on and/or
+// between Entities and Components.
+// ----------------------------------------------------------------------------
 class System
 : public Update
 {
@@ -21,6 +32,9 @@ public:
    virtual void init() {}
    virtual void update(Game& game) = 0;
    virtual void message() {}
+
+   // visitor interface
+   virtual void accept(SystemVisitor& visitor) = 0;
 
 private:
    std::string id_;
