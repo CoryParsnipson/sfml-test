@@ -1,3 +1,5 @@
+#include <typeinfo>
+
 #include "Entity.h"
 #include "Scene.h"
 #include "Part.h"
@@ -8,7 +10,6 @@ Entity::Entity(std::string id)
 : SceneObject(id)
 , enable_debug_wireframe_(true)
 , enable_debug_text_(false)
-, graphics2_(nullptr)
 {
 }
 
@@ -189,17 +190,4 @@ void Entity::do_draw(RenderSurface& surface, sf::RenderStates render_states /* =
    for (it = this->parts_.begin(); it != this->parts_.end(); it++) {
       it->second->draw(surface, render_states);
    }
-}
-
-// ----------------------------------------------------------------------------
-// template member specializations
-// ----------------------------------------------------------------------------
-template <>
-Graphic2* Entity::get() {
-   return this->graphics2_;
-}
-
-template <>
-void Entity::set(Graphic2* graphic) {
-   this->graphics2_ = graphic;
 }

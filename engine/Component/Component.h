@@ -1,9 +1,17 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
+#include <string>
+
+// ----------------------------------------------------------------------------
+// Component
+//
+// This is the abstract base class for Components that can be added to an
+// Entity.
+// ----------------------------------------------------------------------------
 class Component {
 public:
-   Component(std::string id = "Component")
+   explicit Component(const std::string& id = "Component")
    : id_(id)
    {
    }
@@ -14,13 +22,12 @@ public:
       return this->id_;
    }
 
-   virtual void init() = 0;
-   virtual void reset() = 0;
-
-protected:
    void id(std::string id) {
       this->id_ = id;
    }
+
+   virtual void init() = 0;
+   virtual void reset() = 0;
 
 private:
    std::string id_;

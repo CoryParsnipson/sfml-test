@@ -35,11 +35,11 @@ void GraphicsSystem::accept(SystemVisitor& visitor) {
 void GraphicsSystem::visit(Camera*) {}
 
 void GraphicsSystem::visit(Entity* e) {
-   Graphic2* g = e->get<Graphic2>();
+   //Graphic2* g = e->get<Graphic2>();
 
-   if (g) {
-      g->draw(*this->window_);
-   }
+   //if (g) {
+   //   g->draw(*this->window_);
+   //}
 }
 
 void GraphicsSystem::visit(Map*) {}

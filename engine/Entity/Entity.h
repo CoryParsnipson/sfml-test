@@ -4,8 +4,11 @@
 #include <map>
 #include <string>
 #include <cassert>
+#include <typeindex>
 
 #include "sfml.h"
+
+#include "ObjectPool.h"
 
 #include "SceneObject.h"
 #include "Serializable.h"
@@ -25,6 +28,7 @@ class Entity
 {
 public:
    using PartList = std::map<std::string, Part*>;
+   using ComponentList = std::map<std::type_index, Handle>;
 
    Entity(std::string id = "entity");
    virtual ~Entity();
@@ -48,16 +52,10 @@ public:
    void remove(const std::string& part_id);
    Part* get(const std::string& part_id);
 
-   template <typename ComponentType>
-   ComponentType* get() {
-      // error invalid component type
-      return nullptr;
-   }
-
-   template <typename ComponentType>
-   void set(ComponentType* component) {
-      // error invalid component type
-   }
+   template <typename ComponentType> ComponentType* get();
+   template <typename ComponentType> void set(Handle& handle);
+   template <typename ComponentType> Handle add();
+   template <typename ComponentType> void remove();
 
    // serializable interface
    virtual std::string serialize(Serializer& s);
@@ -80,11 +78,49 @@ protected:
    bool enable_debug_text_;
 
    PartList parts_;
+   ComponentList components_;
    
-   Graphic2* graphics2_;
-
    // scene graph interface hooks
    virtual void do_draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 };
+
+// ----------------------------------------------------------------------------
+// template member specializations
+// ----------------------------------------------------------------------------
+template <typename ComponentType>
+ComponentType* Entity::get() {
+   try {
+      return ComponentType::pool.get(this->components_.at(std::type_index(typeid(ComponentType))));
+   } catch (const std::out_of_range& e) {
+      return nullptr;
+   }
+}
+
+template <typename ComponentType>
+void Entity::set(Handle& handle) {
+   this->components_[std::type_index(typeid(ComponentType))] = handle;
+}
+
+template <typename ComponentType>
+Handle Entity::add() {
+   Handle handle(ComponentType::pool.add());
+
+   this->components_.insert(
+      std::pair<std::type_index, Handle>(
+         std::type_index(typeid(ComponentType)),
+         handle
+      )
+   );
+
+   return handle;
+}
+
+template <typename ComponentType>
+void Entity::remove() {
+   ComponentList::const_iterator it = this->components_.find(std::type_index(typeid(ComponentType)));
+   if (it != this->components_.end()) {
+      this->components_.erase(it);
+   }
+}
 
 #endif

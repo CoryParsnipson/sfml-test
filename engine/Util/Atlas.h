@@ -6,6 +6,7 @@
 #include <string>
 #include <typeinfo>
 #include <utility>
+#include <stdexcept>
 
 #include "sfml.h"
 
