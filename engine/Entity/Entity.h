@@ -9,6 +9,7 @@
 #include "sfml.h"
 
 #include "ObjectPool.h"
+#include "PooledComponent.h"
 
 #include "SceneObject.h"
 #include "Serializable.h"
@@ -52,10 +53,21 @@ public:
    void remove(const std::string& part_id);
    Part* get(const std::string& part_id);
 
-   template <typename ComponentType> ComponentType* get();
-   template <typename ComponentType> void set(Handle& handle);
-   template <typename ComponentType> Handle add();
-   template <typename ComponentType> void remove();
+   template <typename ComponentType,
+             typename = typename std::enable_if<std::is_base_of<PooledComponent<ComponentType>, ComponentType>::value::type> >
+   ComponentType* get();
+
+   template <typename ComponentType,
+             typename = typename std::enable_if<std::is_base_of<PooledComponent<ComponentType>, ComponentType>::value::type> >
+   void set(Handle& handle);
+
+   template <typename ComponentType,
+             typename = typename std::enable_if<std::is_base_of<PooledComponent<ComponentType>, ComponentType>::value::type> >
+   Handle add();
+
+   template <typename ComponentType,
+             typename = typename std::enable_if<std::is_base_of<PooledComponent<ComponentType>, ComponentType>::value::type> >
+   void remove();
 
    // serializable interface
    virtual std::string serialize(Serializer& s);
@@ -79,7 +91,7 @@ protected:
 
    PartList parts_;
    ComponentList components_;
-   
+
    // scene graph interface hooks
    virtual void do_draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 };
@@ -87,7 +99,8 @@ protected:
 // ----------------------------------------------------------------------------
 // template member specializations
 // ----------------------------------------------------------------------------
-template <typename ComponentType>
+template <typename ComponentType,
+          typename = typename std::enable_if<std::is_base_of<PooledComponent<ComponentType>, ComponentType>::value::type> >
 ComponentType* Entity::get() {
    try {
       return ComponentType::pool.get(this->components_.at(std::type_index(typeid(ComponentType))));
@@ -96,12 +109,14 @@ ComponentType* Entity::get() {
    }
 }
 
-template <typename ComponentType>
+template <typename ComponentType,
+          typename = typename std::enable_if<std::is_base_of<PooledComponent<ComponentType>, ComponentType>::value::type> >
 void Entity::set(Handle& handle) {
    this->components_[std::type_index(typeid(ComponentType))] = handle;
 }
 
-template <typename ComponentType>
+template <typename ComponentType,
+          typename = typename std::enable_if<std::is_base_of<PooledComponent<ComponentType>, ComponentType>::value::type> >
 Handle Entity::add() {
    Handle handle(ComponentType::pool.add());
 
@@ -115,7 +130,8 @@ Handle Entity::add() {
    return handle;
 }
 
-template <typename ComponentType>
+template <typename ComponentType,
+          typename = typename std::enable_if<std::is_base_of<PooledComponent<ComponentType>, ComponentType>::value::type> >
 void Entity::remove() {
    ComponentList::const_iterator it = this->components_.find(std::type_index(typeid(ComponentType)));
    if (it != this->components_.end()) {
