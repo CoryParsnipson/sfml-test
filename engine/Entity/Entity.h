@@ -135,6 +135,10 @@ template <typename ComponentType,
 void Entity::remove() {
    ComponentList::const_iterator it = this->components_.find(std::type_index(typeid(ComponentType)));
    if (it != this->components_.end()) {
+      // remove component from it's object pool
+      ComponentType::pool.remove(*it);
+
+      // unattach component from this entity
       this->components_.erase(it);
    }
 }
