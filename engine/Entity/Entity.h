@@ -3,7 +3,6 @@
 
 #include <map>
 #include <string>
-#include <cassert>
 #include <typeindex>
 
 #include "sfml.h"
@@ -53,20 +52,28 @@ public:
    void remove(const std::string& part_id);
    Part* get(const std::string& part_id);
 
-   template <typename ComponentType,
-             typename = typename std::enable_if<std::is_base_of<PooledComponent<ComponentType>, ComponentType>::value::type> >
+   template <
+      typename ComponentType,       
+      typename std::enable_if<std::is_base_of<PooledComponent<ComponentType>, ComponentType>::value>::type*  = nullptr
+   >
    ComponentType* get();
 
-   template <typename ComponentType,
-             typename = typename std::enable_if<std::is_base_of<PooledComponent<ComponentType>, ComponentType>::value::type> >
+   template <
+      typename ComponentType,       
+      typename std::enable_if<std::is_base_of<PooledComponent<ComponentType>, ComponentType>::value>::type*  = nullptr
+   >
    void set(Handle& handle);
 
-   template <typename ComponentType,
-             typename = typename std::enable_if<std::is_base_of<PooledComponent<ComponentType>, ComponentType>::value::type> >
+   template <
+      typename ComponentType,       
+      typename std::enable_if<std::is_base_of<PooledComponent<ComponentType>, ComponentType>::value>::type*  = nullptr
+   >
    Handle add();
 
-   template <typename ComponentType,
-             typename = typename std::enable_if<std::is_base_of<PooledComponent<ComponentType>, ComponentType>::value::type> >
+   template <
+      typename ComponentType,       
+      typename std::enable_if<std::is_base_of<PooledComponent<ComponentType>, ComponentType>::value>::type*  = nullptr
+   >
    void remove();
 
    // serializable interface
@@ -99,8 +106,10 @@ protected:
 // ----------------------------------------------------------------------------
 // template member specializations
 // ----------------------------------------------------------------------------
-template <typename ComponentType,
-          typename = typename std::enable_if<std::is_base_of<PooledComponent<ComponentType>, ComponentType>::value::type> >
+template <
+   typename ComponentType,
+   typename std::enable_if<std::is_base_of<PooledComponent<ComponentType>, ComponentType>::value>::type*  = nullptr
+>
 ComponentType* Entity::get() {
    try {
       return ComponentType::pool.get(this->components_.at(std::type_index(typeid(ComponentType))));
@@ -109,14 +118,18 @@ ComponentType* Entity::get() {
    }
 }
 
-template <typename ComponentType,
-          typename = typename std::enable_if<std::is_base_of<PooledComponent<ComponentType>, ComponentType>::value::type> >
+template <
+   typename ComponentType,
+   typename std::enable_if<std::is_base_of<PooledComponent<ComponentType>, ComponentType>::value>::type*  = nullptr
+>
 void Entity::set(Handle& handle) {
    this->components_[std::type_index(typeid(ComponentType))] = handle;
 }
 
-template <typename ComponentType,
-          typename = typename std::enable_if<std::is_base_of<PooledComponent<ComponentType>, ComponentType>::value::type> >
+template <
+   typename ComponentType,
+   typename std::enable_if<std::is_base_of<PooledComponent<ComponentType>, ComponentType>::value>::type*  = nullptr
+>
 Handle Entity::add() {
    Handle handle(ComponentType::pool.add());
 
@@ -130,8 +143,10 @@ Handle Entity::add() {
    return handle;
 }
 
-template <typename ComponentType,
-          typename = typename std::enable_if<std::is_base_of<PooledComponent<ComponentType>, ComponentType>::value::type> >
+template <
+   typename ComponentType,
+   typename std::enable_if<std::is_base_of<PooledComponent<ComponentType>, ComponentType>::value>::type*  = nullptr
+>
 void Entity::remove() {
    ComponentList::const_iterator it = this->components_.find(std::type_index(typeid(ComponentType)));
    if (it != this->components_.end()) {

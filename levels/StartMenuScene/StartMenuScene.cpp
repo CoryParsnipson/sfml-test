@@ -22,8 +22,6 @@
 #include "Entity.h"
 #include "PhysicsPart.h"
 
-#include "Component1.h"
-
 StartMenuScene::StartMenuScene()
 : Scene("StartMenuScene")
 {
