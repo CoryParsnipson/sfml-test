@@ -4,6 +4,7 @@
 #include <string>
 
 #include "Update.h"
+#include "ObjectPool.h"
 
 // ----------------------------------------------------------------------------
 // forward declarations
@@ -38,6 +39,7 @@ public:
 
 private:
    std::string id_;
+   std::vector<Handle> subscribed_entities_;
 };
 
 #endif

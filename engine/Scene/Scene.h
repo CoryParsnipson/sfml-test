@@ -40,6 +40,7 @@ public:
    : id_(id)
    , camera_(new Camera("Camera"))
    , scene_graph_(this->camera_)
+   , entities_("EntityPool", 20000)
    {
    }
 
@@ -177,6 +178,15 @@ public:
       return *this->game_;
    }
 
+   // entity component system interface
+   Handle create_entity() {
+      return this->entities_.add();
+   }
+
+   Entity* get_entity(Handle handle) {
+      return this->entities_.get(handle);
+   }
+
    // input event processing default implementations
    virtual void process(Game& game, CloseInputEvent& e) {
       game.unload_scene();
@@ -207,6 +217,8 @@ private:
    Game* game_;
    GamepadList gamepads_;
    SceneRenderer renderer_;
+
+   ObjectPool<Entity> entities_;
 };
 
 #endif

@@ -30,6 +30,7 @@ public:
    using PartList = std::map<std::string, Part*>;
    using ComponentList = std::map<std::type_index, Handle>;
 
+   // TODO: make this private (so only the object pool can make them) when Entity conversion is done
    Entity(std::string id = "entity");
    virtual ~Entity();
 
@@ -93,6 +94,9 @@ public:
    virtual void update(Game& game);
 
 protected:
+   // allow Scene class to create entities
+   friend class ObjectPool<Entity>;
+
    bool enable_debug_wireframe_;
    bool enable_debug_text_;
 
