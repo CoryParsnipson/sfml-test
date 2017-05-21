@@ -1,7 +1,16 @@
 #ifndef RECTANGLE_H
 #define RECTANGLE_H
 
-#include "Graphic.h"
+#include <string>
+
+#include "sfml.h"
+
+#include "PooledComponent.h"
+
+// ----------------------------------------------------------------------------
+// forward declarations
+// ----------------------------------------------------------------------------
+class RenderSurface;
 
 // ----------------------------------------------------------------------------
 // Rectangle 
@@ -10,47 +19,42 @@
 // (and squares). You can specify the fill color, outline, and other
 // properties.
 // ----------------------------------------------------------------------------
-class Rectangle : public Graphic2 {
+class Rectangle
+: public PooledComponent<Rectangle>
+{
 public:
    Rectangle();
    Rectangle(const std::string& id, float x = 0, float y = 0, float width = 100, float height = 100);
    Rectangle(const std::string& id, sf::FloatRect rect = sf::FloatRect(0, 0, 100, 100));
    virtual ~Rectangle();
 
-   virtual void init();
-   virtual void reset();
-
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
-
-   using Graphic2::position;
-   using Graphic2::move;
-   using Graphic2::scale;
-   using Graphic2::origin;
 
    virtual sf::FloatRect local_bounds() const;
    virtual sf::FloatRect global_bounds() const;
 
    virtual void position(float x, float y);
+   virtual void position(const sf::Vector2f& pos) { this->position(pos.x, pos.y); }
    virtual const sf::Vector2f& position() const;
 
    virtual void move(float x, float y);
+   virtual void move(const sf::Vector2f& offset) { this->move(offset.x, offset.y); }
 
    virtual void rotation(float angle);
    virtual float rotation() const;
 
    virtual void scale(float x, float y);
+   virtual void scale(const sf::Vector2f& scale) { this->scale(scale.x, scale.y); }
    virtual const sf::Vector2f& scale() const;
 
    virtual void origin(float x, float y);
+   virtual void origin(const sf::Vector2f& factor) { this->origin(factor.x, factor.y); }
    virtual const sf::Vector2f& origin() const;
 
    virtual void color(const sf::Color& color); // gets and sets *fill* color for shapes
    virtual const sf::Color& color() const;
 
    virtual const sf::Transform& transform() const;
-
-   // graphic visitor interface
-   virtual void accept(GraphicVisitor& visitor);
 
    // rectangle shape interface
    void size(float x, float y);

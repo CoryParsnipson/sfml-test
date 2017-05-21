@@ -1,15 +1,24 @@
 #include "Text.h"
 #include "RenderSurface.h"
 
+// ----------------------------------------------------------------------------
+// initialize static members
+// ----------------------------------------------------------------------------
+template <>
+ObjectPool<Text> PooledComponent<Text>::pool("Text Component Pool", 1000);
+
+// ----------------------------------------------------------------------------
+// Text implementation
+// ----------------------------------------------------------------------------
 Text::Text()
-: Graphic2("TextGraphic")
+: PooledComponent<Text>("TextGraphic")
 , string_("TextGraphic")
 , drawable_(new sf::Text())
 {
 }
 
 Text::Text(const std::string& id, const std::string& text, sf::Font* font /* = nullptr */, unsigned int size /* = 12 */)
-: Graphic2(id)
+: PooledComponent<Text>(id)
 , drawable_(new sf::Text())
 {
    this->string(text);
@@ -19,14 +28,6 @@ Text::Text(const std::string& id, const std::string& text, sf::Font* font /* = n
 
 Text::~Text() {
    delete this->drawable_;
-}
-
-void Text::init() {
-   // TODO: implement for pooling
-}
-
-void Text::reset() {
-   // TODO: implement for pooling
 }
 
 void Text::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
@@ -96,10 +97,6 @@ const sf::Color& Text::color() const {
 
 const sf::Transform& Text::transform() const {
    return this->drawable_->getTransform();
-}
-
-void Text::accept(GraphicVisitor& visitor) {
-   visitor.visit(this);
 }
 
 void Text::string(const std::string& s) {

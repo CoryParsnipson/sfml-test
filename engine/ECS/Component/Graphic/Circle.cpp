@@ -1,21 +1,30 @@
 #include "Circle.h"
 #include "RenderSurface.h"
 
+// ----------------------------------------------------------------------------
+// initialize static members
+// ----------------------------------------------------------------------------
+template <>
+ObjectPool<Circle> PooledComponent<Circle>::pool("Circle Component Pool", 50);
+
+// ----------------------------------------------------------------------------
+// Circle implementation
+// ----------------------------------------------------------------------------
 Circle::Circle()
-: Graphic2("CircleGraphic")
+: PooledComponent<Circle>("CircleGraphic")
 , drawable_(new sf::CircleShape())
 {
 }
 
 Circle::Circle(const std::string& id, float radius /* = 10 */, float x /* = 0 */, float y /* = 0 */)
-: Graphic2(id)
+: PooledComponent<Circle>(id)
 , drawable_(new sf::CircleShape(radius))
 {
    this->drawable_->setPosition(x, y);
 }
 
 Circle::Circle(const std::string& id, float radius /* = 10 */, sf::Vector2f pos /* = sf::Vector2f(0, 0) */)
-: Graphic2(id)
+: PooledComponent<Circle>(id)
 , drawable_(new sf::CircleShape(radius))
 {
    this->drawable_->setPosition(pos);
@@ -23,14 +32,6 @@ Circle::Circle(const std::string& id, float radius /* = 10 */, sf::Vector2f pos 
 
 Circle::~Circle() {
    delete this->drawable_;
-}
-
-void Circle::init() {
-   // TODO: implement for pooling
-}
-
-void Circle::reset() {
-   // TODO: implement for pooling
 }
 
 void Circle::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
@@ -91,10 +92,6 @@ const sf::Color& Circle::color() const {
 
 const sf::Transform& Circle::transform() const {
    return this->drawable_->getTransform();
-}
-
-void Circle::accept(GraphicVisitor& visitor) {
-   visitor.visit(this);
 }
 
 void Circle::radius(float radius) {

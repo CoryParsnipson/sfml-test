@@ -3,8 +3,17 @@
 #include "VertexList.h"
 #include "RenderSurface.h"
 
-VertexList::VertexList(const std::string& id, sf::PrimitiveType primitive /* = sf::TrianglesStrip */, unsigned int size /* = 0 */)
-: Graphic2(id)
+// ----------------------------------------------------------------------------
+// initialize static members
+// ----------------------------------------------------------------------------
+template <>
+ObjectPool<VertexList> PooledComponent<VertexList>::pool("VertexList Component Pool", 50);
+
+// ----------------------------------------------------------------------------
+// VertexList implementation
+// ----------------------------------------------------------------------------
+VertexList::VertexList(const std::string& id /* = VertexListGraphic */, sf::PrimitiveType primitive /* = sf::TrianglesStrip */, unsigned int size /* = 0 */)
+: PooledComponent<VertexList>(id)
 , scale_(1.0f, 1.0f)
 , drawable_(new sf::VertexArray(primitive, size))
 {
@@ -12,14 +21,6 @@ VertexList::VertexList(const std::string& id, sf::PrimitiveType primitive /* = s
 
 VertexList::~VertexList() {
    delete this->drawable_;
-}
-
-void VertexList::init() {
-   // TODO implement for pooling
-}
-
-void VertexList::reset() {
-   // TODO implement for pooling
 }
 
 void VertexList::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
@@ -104,10 +105,6 @@ const sf::Color& VertexList::color() const {
 
 const sf::Transform& VertexList::transform() const {
    return this->render_states_.transform;
-}
-
-void VertexList::accept(GraphicVisitor& visitor) {
-   visitor.visit(this);
 }
 
 void VertexList::resize(unsigned int idx) {

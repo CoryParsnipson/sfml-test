@@ -1,7 +1,16 @@
 #ifndef VERTEX_LIST_H
 #define VERTEX_LIST_H
 
-#include "Graphic.h"
+#include <string>
+
+#include "sfml.h"
+
+#include "PooledComponent.h"
+
+// ----------------------------------------------------------------------------
+// forward declarations
+// ----------------------------------------------------------------------------
+class RenderSurface;
 
 // ----------------------------------------------------------------------------
 // VertexList
@@ -9,45 +18,40 @@
 // This is another type of primitive Graphic class that lets you create a
 // renderable graphic by specifying a list of vertices.
 // ----------------------------------------------------------------------------
-class VertexList : public Graphic2 {
+class VertexList
+: public PooledComponent<VertexList>
+{
 public:
-   VertexList(const std::string& id, sf::PrimitiveType primitive = sf::TrianglesStrip, unsigned int size = 0);
+   VertexList(const std::string& id = "VertexListGraphic", sf::PrimitiveType primitive = sf::TrianglesStrip, unsigned int size = 0);
    virtual ~VertexList();
 
-   virtual void init();
-   virtual void reset();
-
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
-
-   using Graphic2::position;
-   using Graphic2::move;
-   using Graphic2::scale;
-   using Graphic2::origin;
 
    virtual sf::FloatRect local_bounds() const;
    virtual sf::FloatRect global_bounds() const;
 
    virtual void position(float x, float y);
+   virtual void position(const sf::Vector2f& pos) { this->position(pos.x, pos.y); }
    virtual const sf::Vector2f& position() const;
 
    virtual void move(float x, float y);
+   virtual void move(const sf::Vector2f& offset) { this->move(offset.x, offset.y); }
 
    virtual void rotation(float angle);
    virtual float rotation() const;
 
    virtual void scale(float x, float y);
+   virtual void scale(const sf::Vector2f& scale) { this->scale(scale.x, scale.y); }
    virtual const sf::Vector2f& scale() const;
 
    virtual void origin(float x, float y);
+   virtual void origin(const sf::Vector2f& factor) { this->origin(factor.x, factor.y); }
    virtual const sf::Vector2f& origin() const;
 
    virtual void color(const sf::Color& color);
    virtual const sf::Color& color() const;
 
    virtual const sf::Transform& transform() const;
-
-   // graphic visitor interface
-   virtual void accept(GraphicVisitor& visitor);
 
    // vertex manipulation interface
    void resize(unsigned int idx);

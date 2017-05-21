@@ -5,6 +5,12 @@
 #include "Texture.h"
 
 // ----------------------------------------------------------------------------
+// initialize static members
+// ----------------------------------------------------------------------------
+template <>
+ObjectPool<Sprite> PooledComponent<Sprite>::pool("Sprite Component Pool", 20000);
+
+// ----------------------------------------------------------------------------
 // Animation implementation
 // ----------------------------------------------------------------------------
 Animation::Animation(const std::string& id /* = "Animation" */)
@@ -60,7 +66,7 @@ unsigned int Animation::get_duration(int idx) const {
 // Sprite implementation
 // ----------------------------------------------------------------------------
 Sprite::Sprite(const std::string& id /* = "Sprite" */)
-: Graphic2(id)
+: PooledComponent<Sprite>(id)
 , drawable_(new sf::Sprite())
 , default_animation_(id + " Default Animation")
 , cur_idx(0)
@@ -71,7 +77,7 @@ Sprite::Sprite(const std::string& id /* = "Sprite" */)
 }
 
 Sprite::Sprite(const std::string& id, Texture& texture)
-: Graphic2(id)
+: PooledComponent<Sprite>(id)
 , drawable_(new sf::Sprite(texture.get_texture()))
 , default_animation_(id + " Default Animation")
 , cur_idx(0)
@@ -82,7 +88,7 @@ Sprite::Sprite(const std::string& id, Texture& texture)
 }
 
 Sprite::Sprite(const std::string& id, Texture& texture, const sf::IntRect& texture_rect)
-: Graphic2(id)
+: PooledComponent<Sprite>(id)
 , drawable_(new sf::Sprite(texture.get_texture(), texture_rect))
 , default_animation_(id + "Default Animation")
 , cur_idx(0)
@@ -94,14 +100,6 @@ Sprite::Sprite(const std::string& id, Texture& texture, const sf::IntRect& textu
 
 Sprite::~Sprite() {
    delete this->drawable_;
-}
-
-void Sprite::init() {
-   // TODO: implement for pooling
-}
-
-void Sprite::reset() {
-   // TODO: implement for pooling
 }
 
 void Sprite::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
@@ -168,10 +166,6 @@ const sf::Color& Sprite::color() const {
 
 const sf::Transform& Sprite::transform() const {
    return this->drawable_->getTransform();
-}
-
-void Sprite::accept(GraphicVisitor& visitor) {
-   visitor.visit(this);
 }
 
 void Sprite::animation(Animation* animation) {

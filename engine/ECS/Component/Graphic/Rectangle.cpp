@@ -1,14 +1,23 @@
 #include "Rectangle.h"
 #include "RenderSurface.h"
 
+// ----------------------------------------------------------------------------
+// initialize static members
+// ----------------------------------------------------------------------------
+template <>
+ObjectPool<Rectangle> PooledComponent<Rectangle>::pool("Rectangle Component Pool", 50);
+
+// ----------------------------------------------------------------------------
+// Rectangle implementation
+// ----------------------------------------------------------------------------
 Rectangle::Rectangle()
-: Graphic2("RectangleGraphic")
+: PooledComponent<Rectangle>("RectangleGraphic")
 , drawable_(new sf::RectangleShape())
 {
 }
 
 Rectangle::Rectangle(const std::string& id, float x /* = 0 */, float y /* = 0 */, float width /* = 100 */, float height /* = 100 */)
-: Graphic2(id)
+: PooledComponent<Rectangle>(id)
 , drawable_(new sf::RectangleShape())
 {
    this->drawable_->setSize(sf::Vector2f(width, height));
@@ -16,7 +25,7 @@ Rectangle::Rectangle(const std::string& id, float x /* = 0 */, float y /* = 0 */
 }
 
 Rectangle::Rectangle(const std::string& id, sf::FloatRect rect /* = sf::FloatRect(0, 0, 100, 100) */)
-: Graphic2(id)
+: PooledComponent<Rectangle>(id)
 , drawable_(new sf::RectangleShape())
 {
    this->drawable_->setSize(sf::Vector2f(rect.width, rect.height));
@@ -25,14 +34,6 @@ Rectangle::Rectangle(const std::string& id, sf::FloatRect rect /* = sf::FloatRec
 
 Rectangle::~Rectangle() {
    delete this->drawable_;
-}
-
-void Rectangle::init() {
-   // TODO: implement for pooling
-}
-
-void Rectangle::reset() {
-   // TODO: implement for pooling
 }
 
 void Rectangle::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
@@ -93,10 +94,6 @@ const sf::Color& Rectangle::color() const {
 
 const sf::Transform& Rectangle::transform() const {
    return this->drawable_->getTransform();
-}
-
-void Rectangle::accept(GraphicVisitor& visitor) {
-   visitor.visit(this);
 }
 
 void Rectangle::size(float x, float y) {

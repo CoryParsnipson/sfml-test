@@ -26,9 +26,6 @@ public:
       this->id_ = id;
    }
 
-   virtual void init() = 0;
-   virtual void reset() = 0;
-
 private:
    std::string id_;
 };
