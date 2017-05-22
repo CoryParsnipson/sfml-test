@@ -186,7 +186,11 @@ public:
    Entity* get_entity(Handle handle) {
       return this->entities_.get(handle);
    }
-
+   
+   std::vector<Handle> entities() const {
+      return this->entities_.get_active_handles();
+   }
+   
    // input event processing default implementations
    virtual void process(Game& game, CloseInputEvent& e) {
       game.unload_scene();

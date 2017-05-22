@@ -135,6 +135,14 @@ public:
    const std::string& id() const;
    void id(const std::string& id);
 
+   bool allow_all() const {
+      return this->allow_all();
+   }
+
+   void allow_all(bool allow_policy) {
+      this->allow_all_ = allow_policy;
+   }
+
    // public interface to add expressions
    template <typename ...Components>
    EntityFilter& all_of() {
@@ -159,6 +167,8 @@ public:
 
 private:
    std::string id_;
+
+   bool allow_all_; // if this is true, filter returns true no matter what
 
    std::set<Expression*> all_of_;
    std::set<Expression*> one_of_;

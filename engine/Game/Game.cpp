@@ -17,8 +17,6 @@
 
 #include "Scene.h"
 
-#include "GraphicsSystem.h"
-
 // ----------------------------------------------------------------------------
 // static member initialization
 // ----------------------------------------------------------------------------
@@ -67,11 +65,9 @@ Game::Game()
    // set up input
    this->input().attach(*this);
 
-   this->systems_.push_back(new GraphicsSystem());
-
    // initialize systems
    for (std::vector<System*>::iterator it = this->systems_.begin(); it != this->systems_.end(); ++it) {
-      (*it)->init();
+      (*it)->init(*this);
    }
 }
 

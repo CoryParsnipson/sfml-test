@@ -78,6 +78,9 @@ public:
    Handle add();
    void remove(const Handle& handle);
 
+   std::vector<ObjectType*> get_active_objects() const;
+   std::vector<Handle> get_active_handles() const;
+
    operator std::string() const;
 
 private:
@@ -255,6 +258,45 @@ void ObjectPool<ObjectType>::remove(const Handle& handle) {
       // silently fail
       return;
    }
+}
+
+template <typename ObjectType>
+std::vector<ObjectType*> ObjectPool<ObjectType>::get_active_objects() const {
+   std::vector<ObjectType*> active;
+
+   if (this->pool_.empty() || this->num_entries_active_ == 0) {
+      return active;
+   }
+
+   // NOTE: this loop can be circumvented with the addition of an "active list"
+   for (typename std::vector<Entry>::const_iterator it = this->pool_.begin(); it != this->pool_.end(); ++it) {
+      if ((*it).active_) {
+         active.push_back(&((*it).data_));
+      }
+   }
+
+   return active;
+}
+
+template <typename ObjectType>
+std::vector<Handle> ObjectPool<ObjectType>::get_active_handles() const {
+   std::vector<Handle> active;
+
+   if (this->pool_.empty() || this->num_entries_active_ == 0) {
+      return active;
+   }
+
+   // NOTE: this loop can be circumvented with the addition of an "active list"
+   int idx = 0;
+   for (typename std::vector<Entry>::const_iterator it = this->pool_.begin(); it != this->pool_.end(); ++it) {
+      if ((*it).active_) {
+         active.push_back(Handle(idx, (*it).version_));
+      }
+
+      ++idx;
+   }
+
+   return active;
 }
 
 template <typename ObjectType>
