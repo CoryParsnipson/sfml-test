@@ -7,6 +7,7 @@
 
 System::System(const std::string& id /* = "System" */)
 : id_(id)
+, enabled_(true)
 , filter_(id + "EntityFilter")
 {
 }
@@ -28,6 +29,18 @@ EntityFilter& System::filter() {
 
 bool System::filter(Entity& e) const {
    return this->filter_.filter(e);
+}
+
+void System::enable() {
+   this->enabled_ = true;
+}
+
+void System::disable() {
+   this->enabled_ = false;
+}
+
+bool System::is_enabled() {
+   return this->enabled_;
 }
 
 void System::init(Game& game) {
@@ -55,6 +68,10 @@ void System::init(Game& game) {
 }
 
 void System::update(Game& game) {
+   if (!this->is_enabled()) {
+      return;
+   }
+
    this->pre_update(game);
 
    // call on_update for each subscribed entity
@@ -74,5 +91,9 @@ void System::update(Game& game) {
 }
 
 void System::message() {
+   if (!this->is_enabled()) {
+      return;
+   }
+
    // TODO: expand this stub
 }

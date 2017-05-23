@@ -32,6 +32,11 @@ public:
    EntityFilter& filter(); // get a reference to entity filter itself 
    bool filter(Entity& e) const; // use the entity filter to filter an entity
 
+   void enable();
+   void disable();
+
+   bool is_enabled() const;
+
    void init(Game& game);
    void update(Game& game);
    void message();
@@ -40,6 +45,7 @@ public:
 
 private:
    std::string id_;
+   bool enabled_;
    EntityFilter filter_;
    std::vector<Handle> entities_;
 
