@@ -54,7 +54,13 @@ public:
    Sprite(const std::string& id = "Sprite");
    Sprite(const std::string& id, Texture& texture);
    Sprite(const std::string& id, Texture& texture, const sf::IntRect& texture_rect);
+   
+   Sprite(const Sprite& other);
+
    virtual ~Sprite();
+
+   Sprite& operator=(const Sprite& other);
+   void swap(Sprite& other);
 
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 

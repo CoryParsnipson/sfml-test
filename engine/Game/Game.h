@@ -10,7 +10,6 @@
 #include "Logger.h"
 #include "InputListener.h"
 #include "Canvas.h"
-#include "System.h"
 
 class Scene;
 
@@ -65,9 +64,6 @@ private:
 
    // graphics
    Canvas window_;
-
-   // systems
-   std::vector<System*> systems_;
 };
 
 #endif

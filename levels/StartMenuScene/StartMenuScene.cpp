@@ -22,6 +22,12 @@
 #include "Entity.h"
 #include "PhysicsPart.h"
 
+#include "Circle.h"
+#include "Rectangle.h"
+#include "Sprite.h"
+
+#include "GraphicSystem.h"
+
 StartMenuScene::StartMenuScene()
 : Scene("StartMenuScene")
 {
@@ -69,6 +75,8 @@ StartMenuScene::StartMenuScene()
    pg->set(new SwitchSceneCommand(this, new BuilderScene()), Key::Space);
    pg->set(new SwitchSceneCommand(this, new BuilderScene()), Key::Return);
    pg->set(new SwitchSceneCommand(this, new TestUIScene()), Key::Escape);
+
+   this->textures_.load("tile_sign", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 0, 64, 64));
 }
 
 StartMenuScene::~StartMenuScene() {
@@ -78,6 +86,36 @@ void StartMenuScene::enter(Game& game) {
    Game::logger().msg(this->id_, Logger::INFO, "Entering game start menu state.");
    this->camera_->reset_pan();
    this->camera_->move(this->camera_->get_center() - game.window().size());
+   
+   GraphicSystem* gs = new GraphicSystem("GraphicSystem", game.window());
+   gs->camera()->resize(game.window().size()); // scene automatically resizes the cameras in the scene graph
+   gs->camera()->reset_pan();
+   gs->camera()->move(gs->camera()->get_center() - game.window().size());
+
+   // add some new entities
+   Entity* e = this->get_entity(this->create_entity());
+   e->add<Circle>();
+
+   Circle* c = e->get<Circle>();
+   c->position(10, 10);
+   //c->color(sf::Color::Blue);
+   //c->radius(24);
+   
+   e = this->get_entity(this->create_entity());
+   e->add<Sprite>();
+
+   //Rectangle* r = e->get<Rectangle>();
+   //r->position(100, 100);
+   //r->color(sf::Color::Red);
+   //r->size(50, 25);
+   
+   Sprite* s = e->get<Sprite>();
+   s->id("Active Sprite 1");
+   s->position(10, 10);
+   s->texture(*this->textures_.get("tile_sign"));
+
+   // add graphics system
+   this->add_system(gs);
 }
 
 void StartMenuScene::exit(Game& game) {

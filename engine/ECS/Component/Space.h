@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "sfml.h"
+
 #include "PooledComponent.h"
 
 // ----------------------------------------------------------------------------
@@ -16,7 +18,17 @@ public:
    explicit Space(const std::string& id = "Space Component");
    virtual ~Space();
    
+   Space* parent();
+
+   sf::Transform global_transform();
+   sf::Transform local_transform(); // does not query parent pointers
+
    // TODO: fill this out, it's just a stub right now
+private:
+   Handle parent_;
+   
+   sf::RenderStates transform_;
+   std::vector<Handle> children_;
 };
 
 #endif

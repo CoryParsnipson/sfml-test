@@ -20,7 +20,7 @@ public:
    static ObjectPool<PooledObjectType> pool;
 
    explicit PooledComponent(const std::string& id = "PooledComponent");
-   virtual ~PooledComponent() {};
+   virtual ~PooledComponent() {}
 };
 
 // -----------------------------------------------------------------------------

@@ -39,7 +39,7 @@ void System::disable() {
    this->enabled_ = false;
 }
 
-bool System::is_enabled() {
+bool System::is_enabled() const {
    return this->enabled_;
 }
 

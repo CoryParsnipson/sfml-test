@@ -1,4 +1,5 @@
 #include <cassert>
+#include <algorithm>
 
 #include "Sprite.h"
 #include "RenderSurface.h"
@@ -67,6 +68,7 @@ unsigned int Animation::get_duration(int idx) const {
 // ----------------------------------------------------------------------------
 Sprite::Sprite(const std::string& id /* = "Sprite" */)
 : PooledComponent<Sprite>(id)
+, texture_(nullptr)
 , drawable_(new sf::Sprite())
 , default_animation_(id + " Default Animation")
 , cur_idx(0)
@@ -78,6 +80,7 @@ Sprite::Sprite(const std::string& id /* = "Sprite" */)
 
 Sprite::Sprite(const std::string& id, Texture& texture)
 : PooledComponent<Sprite>(id)
+, texture_(&texture)
 , drawable_(new sf::Sprite(texture.get_texture()))
 , default_animation_(id + " Default Animation")
 , cur_idx(0)
@@ -89,8 +92,9 @@ Sprite::Sprite(const std::string& id, Texture& texture)
 
 Sprite::Sprite(const std::string& id, Texture& texture, const sf::IntRect& texture_rect)
 : PooledComponent<Sprite>(id)
+, texture_(&texture)
 , drawable_(new sf::Sprite(texture.get_texture(), texture_rect))
-, default_animation_(id + "Default Animation")
+, default_animation_(id + " Default Animation")
 , cur_idx(0)
 , remaining_frame_duration_(0)
 , animation_(&this->default_animation_)
@@ -98,8 +102,35 @@ Sprite::Sprite(const std::string& id, Texture& texture, const sf::IntRect& textu
    this->default_animation_.add(this->drawable_->getTextureRect(), 0);
 }
 
+Sprite::Sprite(const Sprite& other)
+: PooledComponent<Sprite>(other.id())
+, texture_(other.texture_)
+, drawable_(new sf::Sprite(*other.drawable_))
+, default_animation_(other.id() + " Default Animation")
+, cur_idx(other.cur_idx)
+, remaining_frame_duration_(other.remaining_frame_duration_)
+, animation_(&this->default_animation_)
+{
+   this->default_animation_.add(this->drawable_->getTextureRect(), 0);
+}
+
 Sprite::~Sprite() {
    delete this->drawable_;
+}
+
+Sprite& Sprite::operator=(const Sprite& other) {
+   Sprite tmp(other);
+   this->swap(tmp);
+   return *this;
+}
+
+void Sprite::swap(Sprite& other) {
+   this->texture_ = other.texture_;
+   std::swap(*this->drawable_, *other.drawable_);
+   this->default_animation_ = other.default_animation_;
+   std::swap(this->cur_idx, other.cur_idx);
+   std::swap(this->remaining_frame_duration_, other.remaining_frame_duration_);
+   this->animation_ = &this->default_animation_;
 }
 
 void Sprite::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
@@ -166,6 +197,15 @@ const sf::Color& Sprite::color() const {
 
 const sf::Transform& Sprite::transform() const {
    return this->drawable_->getTransform();
+}
+
+void Sprite::texture(Texture& texture) {
+   this->texture_ = &texture;
+   this->drawable_->setTexture(texture.get_texture(), true);
+}
+
+const Texture* Sprite::texture() const {
+   return this->texture_;
 }
 
 void Sprite::animation(Animation* animation) {

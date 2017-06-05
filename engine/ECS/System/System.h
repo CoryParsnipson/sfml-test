@@ -11,7 +11,6 @@
 // forward declarations
 // ----------------------------------------------------------------------------
 class Game;
-class SystemVisitor;
 
 // ----------------------------------------------------------------------------
 // System
@@ -40,8 +39,6 @@ public:
    void init(Game& game);
    void update(Game& game);
    void message();
-
-   virtual void accept(SystemVisitor& visitor) = 0;
 
 private:
    std::string id_;

@@ -29,6 +29,8 @@
 #include "RemoveCommand.h"
 #include "ResizeCameraCommand.h"
 
+#include "System.h"
+
 class Scene
 : public Draw
 , public Update
@@ -53,6 +55,12 @@ public:
          delete *g_it;
       }
       this->gamepads_.clear();
+
+      // clean up Systems
+      for (std::vector<System*>::const_iterator it = this->systems_.begin(); it != this->systems_.end(); ++it) {
+         delete *it;
+      }
+      this->systems_.clear();
    }
 
    virtual std::string id() { return this->id_; }
@@ -93,6 +101,11 @@ public:
    virtual void update(Game& game) {
       SceneObject::prefix_iterator it;
       for (it = this->scene_graph_->begin(); it != this->scene_graph_->end(); ++it) {
+         (*it)->update(game);
+      }
+
+      // update systems
+      for (std::vector<System*>::iterator it = this->systems_.begin(); it != this->systems_.end(); ++it) {
          (*it)->update(game);
       }
    }
@@ -190,6 +203,26 @@ public:
    std::vector<Handle> entities() const {
       return this->entities_.get_active_handles();
    }
+
+   void add_system(System* system, int priority = -1) {
+      assert(this->game_ != nullptr);
+
+      if (!system) {
+         this->game_->logger().msg(this->id(), Logger::WARNING, "In add_system(), ignoring nullptr system argument.");
+         return;
+      }
+
+      // don't forget to initialize system
+      system->init(*this->game_);
+
+      if (priority < 0 || static_cast<unsigned int>(priority) >= this->systems_.size()) {
+         this->systems_.push_back(system);
+         this->game_->logger().msg(this->id(), Logger::INFO, "Adding system '" + system->id() + "' to end of systems vector.");
+      } else {
+         this->systems_.insert(this->systems_.begin() + priority, system);
+         this->game_->logger().msg(this->id(), Logger::INFO, "Adding system '" + system->id() + "' to position " + std::to_string(priority) + " of systems vector.");
+      }
+   }
    
    // input event processing default implementations
    virtual void process(Game& game, CloseInputEvent& e) {
@@ -223,6 +256,7 @@ private:
    SceneRenderer renderer_;
 
    ObjectPool<Entity> entities_;
+   std::vector<System*> systems_;
 };
 
 #endif

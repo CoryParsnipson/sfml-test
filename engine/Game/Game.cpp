@@ -65,10 +65,6 @@ Game::Game()
    // set up input
    this->input().attach(*this);
 
-   // initialize systems
-   for (std::vector<System*>::iterator it = this->systems_.begin(); it != this->systems_.end(); ++it) {
-      (*it)->init(*this);
-   }
 }
 
 Game::~Game() {
@@ -190,19 +186,16 @@ void Game::main_loop() {
       }
 
       // update
-      this->scenes_.top()->update(*this);
+      //this->scenes_.top()->update(*this);
 
       // draw
       this->window_.clear(); // clear previous frame contents
-      this->scenes_.top()->draw(this->window_);
+      //this->scenes_.top()->draw(this->window_);
+
+      this->scenes_.top()->update(*this); // delete
 
       // poll input
       this->input().poll_event(*this);
-
-      // update systems
-      for (std::vector<System*>::iterator it = this->systems_.begin(); it != this->systems_.end(); ++it) {
-         (*it)->update(*this);
-      }
 
       // render scene
       this->window_.update();
