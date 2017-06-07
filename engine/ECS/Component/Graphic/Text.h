@@ -22,9 +22,12 @@ class Text
 : public PooledComponent<Text>
 {
 public:
-   Text();
-   Text(const std::string& id, const std::string& text, sf::Font* font = nullptr, unsigned int size = 12);
+   explicit Text(const std::string& id = "Text", const std::string& text = "", sf::Font* font = nullptr, unsigned int size = 12);
+   explicit Text(const Text& other);
    virtual ~Text();
+
+   Text& operator=(const Text& other);
+   void swap(Text& other);   
 
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 
@@ -71,7 +74,7 @@ public:
 
 private:
    std::string string_;
-   sf::Text* drawable_;
+   sf::Text drawable_;
 
    sf::Vector2f position_;
 };

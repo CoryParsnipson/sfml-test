@@ -51,12 +51,10 @@ class Sprite
 : public PooledComponent<Sprite>
 {
 public:
-   Sprite(const std::string& id = "Sprite");
+   explicit Sprite(const std::string& id = "Sprite");
    Sprite(const std::string& id, Texture& texture);
    Sprite(const std::string& id, Texture& texture, const sf::IntRect& texture_rect);
-   
-   Sprite(const Sprite& other);
-
+   explicit Sprite(const Sprite& other);
    virtual ~Sprite();
 
    Sprite& operator=(const Sprite& other);

@@ -186,13 +186,11 @@ void Game::main_loop() {
       }
 
       // update
-      //this->scenes_.top()->update(*this);
+      this->scenes_.top()->update(*this);
 
       // draw
       this->window_.clear(); // clear previous frame contents
-      //this->scenes_.top()->draw(this->window_);
-
-      this->scenes_.top()->update(*this); // delete
+      this->scenes_.top()->draw(this->window_);
 
       // poll input
       this->input().poll_event(*this);

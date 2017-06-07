@@ -97,17 +97,18 @@ void StartMenuScene::enter(Game& game) {
    e->add<Circle>();
 
    Circle* c = e->get<Circle>();
-   c->position(10, 10);
-   //c->color(sf::Color::Blue);
-   //c->radius(24);
+   c->position(-10, -10);
+   c->color(sf::Color::Blue);
+   c->radius(24);
    
    e = this->get_entity(this->create_entity());
    e->add<Sprite>();
+   e->add<Rectangle>();
 
-   //Rectangle* r = e->get<Rectangle>();
-   //r->position(100, 100);
-   //r->color(sf::Color::Red);
-   //r->size(50, 25);
+   Rectangle* r = e->get<Rectangle>();
+   r->position(100, 100);
+   r->color(sf::Color::Red);
+   r->size(50, 25);
    
    Sprite* s = e->get<Sprite>();
    s->id("Active Sprite 1");

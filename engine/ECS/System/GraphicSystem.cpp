@@ -32,7 +32,7 @@ Camera* GraphicSystem::camera(unsigned int idx /* = 0 */) const {
 
 void GraphicSystem::on_init(Game& game) {
    this->filter().one_of<Circle, Rectangle, Sprite, Text, VertexList>();
-   //this->filter_.all_of<Space/*, Position (???)*/>();
+   //this->filter_.all_of<Space/*, Position (???)*/>(); // TODO
 }
 
 void GraphicSystem::on_update(Game& game, Entity& e) {
@@ -46,9 +46,9 @@ void GraphicSystem::on_update(Game& game, Entity& e) {
       // apply this camera
       (*camera)->draw(*this->surface_);
 
-//      if (circle != nullptr) {
-//         circle->draw(*this->surface_);
-//      }
+      if (circle != nullptr) {
+         circle->draw(*this->surface_);
+      }
 
       if (rectangle != nullptr) {
          rectangle->draw(*this->surface_);
@@ -62,8 +62,8 @@ void GraphicSystem::on_update(Game& game, Entity& e) {
          text->draw(*this->surface_);
       }
 
-//      if (vertexlist != nullptr) {
-//         vertexlist->draw(*this->surface_);
-//      }
+      if (vertexlist != nullptr) {
+         vertexlist->draw(*this->surface_);
+      }
    }
 }

@@ -22,10 +22,13 @@ class Circle
 : public PooledComponent<Circle>
 {
 public:
-   Circle();
-   Circle(const std::string& id, float radius = 10, float x = 0, float y = 0);
+   explicit Circle(const std::string& id = "Circle", float radius = 10, float x = 0, float y = 0);
    Circle(const std::string& id, float radius = 10, sf::Vector2f pos = sf::Vector2f(0, 0));
+   explicit Circle(const Circle& other);
    virtual ~Circle();
+
+   Circle& operator=(const Circle& other);
+   void swap(Circle& other);
 
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 
@@ -66,7 +69,7 @@ public:
    float outline_thickness() const;
 
 private:
-   sf::CircleShape* drawable_;
+   sf::CircleShape drawable_;
 };
 
 #endif

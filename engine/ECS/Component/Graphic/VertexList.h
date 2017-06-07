@@ -22,8 +22,12 @@ class VertexList
 : public PooledComponent<VertexList>
 {
 public:
-   VertexList(const std::string& id = "VertexListGraphic", sf::PrimitiveType primitive = sf::TrianglesStrip, unsigned int size = 0);
+   explicit VertexList(const std::string& id = "VertexListGraphic", sf::PrimitiveType primitive = sf::TrianglesStrip, unsigned int size = 0);
+   VertexList(const VertexList& other);
    virtual ~VertexList();
+
+   VertexList& operator=(const VertexList& other);
+   void swap(VertexList& other);
 
    virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 
@@ -76,7 +80,7 @@ private:
    sf::Vector2f scale_;
    sf::RenderStates render_states_;
 
-   sf::VertexArray* drawable_;
+   sf::VertexArray drawable_;
 };
 
 #endif

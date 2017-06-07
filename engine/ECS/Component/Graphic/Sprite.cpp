@@ -124,6 +124,8 @@ Sprite& Sprite::operator=(const Sprite& other) {
 }
 
 void Sprite::swap(Sprite& other) {
+   std::swap(static_cast<PooledComponent<Sprite>&>(*this), static_cast<PooledComponent<Sprite>&>(other));
+
    this->texture_ = other.texture_;
    std::swap(this->drawable_, other.drawable_);
    this->default_animation_ = other.default_animation_;
