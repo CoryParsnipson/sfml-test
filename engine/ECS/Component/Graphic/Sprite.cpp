@@ -69,53 +69,52 @@ unsigned int Animation::get_duration(int idx) const {
 Sprite::Sprite(const std::string& id /* = "Sprite" */)
 : PooledComponent<Sprite>(id)
 , texture_(nullptr)
-, drawable_(new sf::Sprite())
+, drawable_()
 , default_animation_(id + " Default Animation")
 , cur_idx(0)
 , remaining_frame_duration_(0)
 , animation_(&this->default_animation_)
 {
-   this->default_animation_.add(this->drawable_->getTextureRect(), 0);
+   this->default_animation_.add(this->drawable_.getTextureRect(), 0);
 }
 
 Sprite::Sprite(const std::string& id, Texture& texture)
 : PooledComponent<Sprite>(id)
 , texture_(&texture)
-, drawable_(new sf::Sprite(texture.get_texture()))
+, drawable_(texture.get_texture())
 , default_animation_(id + " Default Animation")
 , cur_idx(0)
 , remaining_frame_duration_(0)
 , animation_(&this->default_animation_)
 {
-   this->default_animation_.add(this->drawable_->getTextureRect(), 0);
+   this->default_animation_.add(this->drawable_.getTextureRect(), 0);
 }
 
 Sprite::Sprite(const std::string& id, Texture& texture, const sf::IntRect& texture_rect)
 : PooledComponent<Sprite>(id)
 , texture_(&texture)
-, drawable_(new sf::Sprite(texture.get_texture(), texture_rect))
+, drawable_(texture.get_texture(), texture_rect)
 , default_animation_(id + " Default Animation")
 , cur_idx(0)
 , remaining_frame_duration_(0)
 , animation_(&this->default_animation_)
 {
-   this->default_animation_.add(this->drawable_->getTextureRect(), 0);
+   this->default_animation_.add(this->drawable_.getTextureRect(), 0);
 }
 
 Sprite::Sprite(const Sprite& other)
 : PooledComponent<Sprite>(other.id())
 , texture_(other.texture_)
-, drawable_(new sf::Sprite(*other.drawable_))
+, drawable_(other.drawable_)
 , default_animation_(other.id() + " Default Animation")
 , cur_idx(other.cur_idx)
 , remaining_frame_duration_(other.remaining_frame_duration_)
 , animation_(&this->default_animation_)
 {
-   this->default_animation_.add(this->drawable_->getTextureRect(), 0);
+   this->default_animation_.add(this->drawable_.getTextureRect(), 0);
 }
 
 Sprite::~Sprite() {
-   delete this->drawable_;
 }
 
 Sprite& Sprite::operator=(const Sprite& other) {
@@ -126,7 +125,7 @@ Sprite& Sprite::operator=(const Sprite& other) {
 
 void Sprite::swap(Sprite& other) {
    this->texture_ = other.texture_;
-   std::swap(*this->drawable_, *other.drawable_);
+   std::swap(this->drawable_, other.drawable_);
    this->default_animation_ = other.default_animation_;
    std::swap(this->cur_idx, other.cur_idx);
    std::swap(this->remaining_frame_duration_, other.remaining_frame_duration_);
@@ -134,7 +133,7 @@ void Sprite::swap(Sprite& other) {
 }
 
 void Sprite::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
-   surface.draw(*this->drawable_, render_states);
+   surface.draw(this->drawable_, render_states);
 }
 
 void Sprite::update(Game& game) {
@@ -144,64 +143,64 @@ void Sprite::update(Game& game) {
 }
 
 sf::FloatRect Sprite::local_bounds() const {
-   return this->drawable_->getLocalBounds();
+   return this->drawable_.getLocalBounds();
 }
 
 sf::FloatRect Sprite::global_bounds() const {
-   return this->drawable_->getGlobalBounds();
+   return this->drawable_.getGlobalBounds();
 }
 
 void Sprite::position(float x, float y) {
-   this->drawable_->setPosition(x, y);
+   this->drawable_.setPosition(x, y);
 }
 
 const sf::Vector2f& Sprite::position() const {
-   return this->drawable_->getPosition();
+   return this->drawable_.getPosition();
 }
 
 void Sprite::move(float x, float y) {
-   this->drawable_->move(x, y);
+   this->drawable_.move(x, y);
 }
 
 void Sprite::rotation(float angle) {
-   this->drawable_->setRotation(angle);
+   this->drawable_.setRotation(angle);
 }
 
 float Sprite::rotation() const {
-   return this->drawable_->getRotation();
+   return this->drawable_.getRotation();
 }
 
 void Sprite::scale(float x, float y) {
-   this->drawable_->setScale(x, y);
+   this->drawable_.setScale(x, y);
 }
 
 const sf::Vector2f& Sprite::scale() const {
-   return this->drawable_->getScale();
+   return this->drawable_.getScale();
 }
 
 void Sprite::origin(float x, float y) {
-   this->drawable_->setOrigin(x, y);
+   this->drawable_.setOrigin(x, y);
 }
 
 const sf::Vector2f& Sprite::origin() const {
-   return this->drawable_->getOrigin();
+   return this->drawable_.getOrigin();
 }
 
 void Sprite::color(const sf::Color& color) {
-   this->drawable_->setColor(color);
+   this->drawable_.setColor(color);
 }
 
 const sf::Color& Sprite::color() const {
-   return this->drawable_->getColor();
+   return this->drawable_.getColor();
 }
 
 const sf::Transform& Sprite::transform() const {
-   return this->drawable_->getTransform();
+   return this->drawable_.getTransform();
 }
 
 void Sprite::texture(Texture& texture) {
    this->texture_ = &texture;
-   this->drawable_->setTexture(texture.get_texture(), true);
+   this->drawable_.setTexture(texture.get_texture(), true);
 }
 
 const Texture* Sprite::texture() const {

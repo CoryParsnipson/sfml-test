@@ -101,7 +101,7 @@ public:
 
 private:
    Texture* texture_;
-   sf::Sprite* drawable_;
+   sf::Sprite drawable_;
    Animation default_animation_;
 
    int cur_idx;
