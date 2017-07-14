@@ -24,7 +24,7 @@ class Circle
 public:
    explicit Circle(const std::string& id = "Circle", float radius = 10, float x = 0, float y = 0);
    Circle(const std::string& id, float radius = 10, sf::Vector2f pos = sf::Vector2f(0, 0));
-   explicit Circle(const Circle& other);
+   Circle(const Circle& other);
    virtual ~Circle();
 
    Circle& operator=(const Circle& other);

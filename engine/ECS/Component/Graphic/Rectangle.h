@@ -25,7 +25,7 @@ class Rectangle
 public:
    explicit Rectangle(const std::string& id = "Rectangle", float x = 0, float y = 0, float width = 100, float height = 100);
    Rectangle(const std::string& id, sf::FloatRect rect = sf::FloatRect(0, 0, 100, 100));
-   explicit Rectangle(const Rectangle& other);
+   Rectangle(const Rectangle& other);
    virtual ~Rectangle();
    
    Rectangle& operator=(const Rectangle& other);

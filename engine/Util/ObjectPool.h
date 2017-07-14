@@ -13,6 +13,7 @@
 #include <cassert>
 #include <iostream>
 #include <stdexcept>
+#include <functional>
 
 // -----------------------------------------------------------------------------
 // ObjectPool handle
@@ -60,9 +61,11 @@ private:
 template <typename ObjectType>
 class ObjectPool {
 public:
+   using EntryAllocator = std::function<ObjectType()>;
+
    static const unsigned int default_size = 1000;
 
-   ObjectPool(const std::string& id = "ObjectPool", unsigned int size = ObjectPool::default_size);
+   ObjectPool(const std::string& id = "ObjectPool", unsigned int size = ObjectPool::default_size, const EntryAllocator& allocator = [](){ return ObjectType(); });
    ~ObjectPool();
 
    void reset();
@@ -107,6 +110,8 @@ private:
    unsigned int num_entries_active_;
 
    std::vector<Entry> pool_;
+
+   EntryAllocator allocator_;
 };
 
 // -----------------------------------------------------------------------------
@@ -141,9 +146,10 @@ ObjectPool<ObjectType>::Entry::~Entry() {
 // ObjectPool implementation
 // -----------------------------------------------------------------------------
 template <typename ObjectType>
-ObjectPool<ObjectType>::ObjectPool(const std::string& id /* = "ObjectPool" */, unsigned int size /* = ObjectPool::default_size */)
+ObjectPool<ObjectType>::ObjectPool(const std::string& id /* = "ObjectPool" */, unsigned int size /* = ObjectPool::default_size */, const EntryAllocator& allocator /* = [](){ return ObjectType(); } */)
 : id_(id)
 , pool_(size)
+, allocator_(allocator)
 {
    this->reset();
 }
@@ -162,8 +168,7 @@ void ObjectPool<ObjectType>::reset() {
       (*it).active_ = false;
       (*it).version_ = 0;
       (*it).next_free_index_ = next_free_index;
-
-      (*it).data_ = ObjectType();
+      (*it).data_ = this->allocator_();
 
       ++next_free_index;
    }
@@ -250,7 +255,7 @@ void ObjectPool<ObjectType>::remove(const Handle& handle) {
 
       entry.active_ = false;
       entry.next_free_index_ = this->first_free_index_;
-      entry.data_ = ObjectType();
+      entry.data_ = this->allocator_();
 
       this->first_free_index_ = handle.index();
       --this->num_entries_active_;

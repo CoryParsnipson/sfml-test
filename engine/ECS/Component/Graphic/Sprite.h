@@ -54,7 +54,7 @@ public:
    explicit Sprite(const std::string& id = "Sprite");
    Sprite(const std::string& id, Texture& texture);
    Sprite(const std::string& id, Texture& texture, const sf::IntRect& texture_rect);
-   explicit Sprite(const Sprite& other);
+   Sprite(const Sprite& other);
    virtual ~Sprite();
 
    Sprite& operator=(const Sprite& other);
