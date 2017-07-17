@@ -5,10 +5,7 @@ This was originally going to be a quick isometric tile demo experiment and it ha
 
 Things to do next
 -----------------
-* Refactor Entity class
-   * need to overhaul graphics classes or something because it's very clunky
-      * In the scene rendering, entity draw and entity update show most time spent in profiler
-      * refactor entity component hierarchy
+* Create new components
    * both of these things below: consider making physics parts composites?
       * need to upgrade physicscomponent to take list of bounding boxes
    * Work on adding animations
