@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 #include <cassert>
 
 #include "sfml.h"
@@ -29,6 +30,8 @@
 #include "RemoveCommand.h"
 #include "ResizeCameraCommand.h"
 
+#include "ComponentManager.h"
+
 #include "System.h"
 
 class Scene
@@ -42,7 +45,7 @@ public:
    : id_(id)
    , camera_(new Camera("Camera"))
    , scene_graph_(this->camera_)
-   , entities_("EntityPool", 20000)
+   , entities_(id + "EntityPool", 20000, [this](){ return Entity("entity", &this->components_); })
    {
    }
 
@@ -256,6 +259,7 @@ private:
    SceneRenderer renderer_;
 
    ObjectPool<Entity> entities_;
+   ComponentManager components_;
    std::vector<System*> systems_;
 };
 

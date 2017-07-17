@@ -5,23 +5,17 @@
 #include "RenderSurface.h"
 
 // ----------------------------------------------------------------------------
-// initialize static members
-// ----------------------------------------------------------------------------
-template <>
-ObjectPool<VertexList> PooledComponent<VertexList>::pool("VertexList Component Pool", 50);
-
-// ----------------------------------------------------------------------------
 // VertexList implementation
 // ----------------------------------------------------------------------------
 VertexList::VertexList(const std::string& id /* = VertexListGraphic */, sf::PrimitiveType primitive /* = sf::TrianglesStrip */, unsigned int size /* = 0 */)
-: PooledComponent<VertexList>(id)
+: Component(id)
 , scale_(1.0f, 1.0f)
 , drawable_(primitive, size)
 {
 }
 
 VertexList::VertexList(const VertexList& other)
-: PooledComponent<VertexList>(other.id())
+: Component(other.id())
 , rotation_(other.rotation_)
 , size_(other.size_)
 , position_(other.position_)
@@ -41,7 +35,7 @@ VertexList& VertexList::operator=(const VertexList& other) {
 }
 
 void VertexList::swap(VertexList& other) {
-   std::swap(static_cast<PooledComponent<VertexList>&>(*this), static_cast<PooledComponent<VertexList>&>(other));
+   std::swap(static_cast<Component&>(*this), static_cast<Component&>(other));
 
    std::swap(this->rotation_, other.rotation_);
    std::swap(this->size_, other.size_);

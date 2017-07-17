@@ -1,4 +1,5 @@
 #include <typeinfo>
+#include <algorithm>
 
 #include "Entity.h"
 #include "Scene.h"
@@ -6,10 +7,19 @@
 #include "PhysicsPart.h"
 #include "GraphicsPart.h"
 
-Entity::Entity(std::string id)
+Entity::Entity(std::string id /* = "entity" */, ComponentManager* component_manager /* = nullptr */)
 : SceneObject(id)
 , enable_debug_wireframe_(true)
 , enable_debug_text_(false)
+, component_manager_(component_manager)
+{
+}
+
+Entity::Entity(const Entity& other)
+: SceneObject(other.id())
+, enable_debug_wireframe_(other.enable_debug_wireframe_)
+, enable_debug_text_(other.enable_debug_text_)
+, component_manager_(other.component_manager_)
 {
 }
 
@@ -20,6 +30,22 @@ Entity::~Entity() {
       delete it->second;
    }
    this->parts_.clear();
+}
+
+Entity& Entity::operator=(const Entity& other) {
+   Entity tmp(other);
+   this->swap(tmp);
+   return *this;
+}
+
+void Entity::swap(Entity& other) {
+   std::swap(this->enable_debug_wireframe_, other.enable_debug_wireframe_);
+   std::swap(this->enable_debug_text_, other.enable_debug_text_);
+
+   this->component_manager_ = other.component_manager_; // shallow copy this
+
+   std::swap(this->parts_, other.parts_);
+   std::swap(this->components_, other.components_);
 }
 
 std::string Entity::to_string() {

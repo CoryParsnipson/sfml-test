@@ -23,7 +23,7 @@
 class Handle {
 public:
    Handle(unsigned int index, unsigned int version) : index_(index), version_(version) {}
-   Handle(unsigned int raw) : index_(raw >> 8), version_(raw & 0xFF) {}
+   Handle(unsigned int raw = 0) : index_(raw >> 8), version_(raw & 0xFF) {}
 
    Handle& operator=(const Handle& other) {
       if (&other == this) {
@@ -41,12 +41,28 @@ public:
       this->version_ = 0;
    }
 
+   bool valid() const {
+      return this->version_ != 0;
+   }
+
    unsigned int index() const { return this->index_; }
    unsigned int version() const { return this->version_; }
 
 private:
    unsigned int index_ : 24;
    unsigned int version_ : 8;
+};
+
+// -----------------------------------------------------------------------------
+// ObjectPoolBase
+//
+// This is a mostly empty base class for ObjectPool for polymorphic storage
+// of ObjectPools
+// -----------------------------------------------------------------------------
+class ObjectPoolBase {
+public:
+   virtual ~ObjectPoolBase() {
+   }
 };
 
 // -----------------------------------------------------------------------------
@@ -59,14 +75,14 @@ private:
 // data type or have a default constructor.
 // -----------------------------------------------------------------------------
 template <typename ObjectType>
-class ObjectPool {
+class ObjectPool final : public ObjectPoolBase {
 public:
    using EntryAllocator = std::function<ObjectType()>;
 
    static const unsigned int default_size = 1000;
 
    ObjectPool(const std::string& id = "ObjectPool", unsigned int size = ObjectPool::default_size, const EntryAllocator& allocator = [](){ return ObjectType(); });
-   ~ObjectPool();
+   virtual ~ObjectPool();
 
    void reset();
 
@@ -84,12 +100,14 @@ public:
    std::vector<ObjectType*> get_active_objects() const;
    std::vector<Handle> get_active_handles() const;
 
+   void resize(unsigned int size);
+
    operator std::string() const;
 
 private:
    class Entry {
    public:
-      Entry(unsigned int next_free_index = default_size);
+      Entry(unsigned int next_free_index = default_size, ObjectType data = ObjectType());
       Entry(const Entry& other);
       ~Entry();
 
@@ -121,11 +139,11 @@ private:
 // items.
 // -----------------------------------------------------------------------------
 template <typename ObjectType>
-ObjectPool<ObjectType>::Entry::Entry(unsigned int next_free_index /* = default_size */)
+ObjectPool<ObjectType>::Entry::Entry(unsigned int next_free_index /* = default_size */, ObjectType data /* = ObjectType() */)
 : active_(false)
 , version_(0)
 , next_free_index_(next_free_index)
-, data_()
+, data_(data)
 {
 }
 
@@ -147,8 +165,9 @@ ObjectPool<ObjectType>::Entry::~Entry() {
 // -----------------------------------------------------------------------------
 template <typename ObjectType>
 ObjectPool<ObjectType>::ObjectPool(const std::string& id /* = "ObjectPool" */, unsigned int size /* = ObjectPool::default_size */, const EntryAllocator& allocator /* = [](){ return ObjectType(); } */)
-: id_(id)
-, pool_(size)
+: ObjectPoolBase()
+, id_(id)
+, pool_(size, Entry(size, allocator()))
 , allocator_(allocator)
 {
    this->reset();
@@ -302,6 +321,32 @@ std::vector<Handle> ObjectPool<ObjectType>::get_active_handles() const {
    }
 
    return active;
+}
+
+template <typename ObjectType>
+void ObjectPool<ObjectType>::resize(unsigned int size) {
+   // update first free index (if necessary)
+   if (size < this->size() && this->first_free_index_ > size) {
+      int idx = 0;
+      for (typename std::vector<Entry>::const_iterator it = this->pool_.begin(); it != this->pool_.end(); ++it) {
+         if (!(*it)->active_) {
+            this->first_free_index_ = idx;
+            break;
+         }
+         ++idx;
+      }
+   }
+   
+   // update active entries record (if necessary)
+   if (size < this->size()) {
+      for (typename std::vector<Entry>::const_iterator it = this->pool_.begin() + size; it != this->pool_.end(); ++it) {
+         if ((*it)->active_) {
+            --this->num_entries_active_;
+         }
+      }
+   }
+
+   this->pool_.resize(size, this->allocator_());
 }
 
 template <typename ObjectType>

@@ -6,12 +6,6 @@
 #include "Texture.h"
 
 // ----------------------------------------------------------------------------
-// initialize static members
-// ----------------------------------------------------------------------------
-template <>
-ObjectPool<Sprite> PooledComponent<Sprite>::pool("Sprite Component Pool", 20000);
-
-// ----------------------------------------------------------------------------
 // Animation implementation
 // ----------------------------------------------------------------------------
 Animation::Animation(const std::string& id /* = "Animation" */)
@@ -67,7 +61,7 @@ unsigned int Animation::get_duration(int idx) const {
 // Sprite implementation
 // ----------------------------------------------------------------------------
 Sprite::Sprite(const std::string& id /* = "Sprite" */)
-: PooledComponent<Sprite>(id)
+: Component(id)
 , texture_(nullptr)
 , drawable_()
 , default_animation_(id + " Default Animation")
@@ -79,7 +73,7 @@ Sprite::Sprite(const std::string& id /* = "Sprite" */)
 }
 
 Sprite::Sprite(const std::string& id, Texture& texture)
-: PooledComponent<Sprite>(id)
+: Component(id)
 , texture_(&texture)
 , drawable_(texture.get_texture())
 , default_animation_(id + " Default Animation")
@@ -91,7 +85,7 @@ Sprite::Sprite(const std::string& id, Texture& texture)
 }
 
 Sprite::Sprite(const std::string& id, Texture& texture, const sf::IntRect& texture_rect)
-: PooledComponent<Sprite>(id)
+: Component(id)
 , texture_(&texture)
 , drawable_(texture.get_texture(), texture_rect)
 , default_animation_(id + " Default Animation")
@@ -103,7 +97,7 @@ Sprite::Sprite(const std::string& id, Texture& texture, const sf::IntRect& textu
 }
 
 Sprite::Sprite(const Sprite& other)
-: PooledComponent<Sprite>(other.id())
+: Component(other.id())
 , texture_(other.texture_)
 , drawable_(other.drawable_)
 , default_animation_(other.id() + " Default Animation")
@@ -124,7 +118,7 @@ Sprite& Sprite::operator=(const Sprite& other) {
 }
 
 void Sprite::swap(Sprite& other) {
-   std::swap(static_cast<PooledComponent<Sprite>&>(*this), static_cast<PooledComponent<Sprite>&>(other));
+   std::swap(static_cast<Component&>(*this), static_cast<Component&>(other));
 
    this->texture_ = other.texture_;
    std::swap(this->drawable_, other.drawable_);

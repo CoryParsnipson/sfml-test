@@ -5,7 +5,7 @@
 
 #include "sfml.h"
 
-#include "PooledComponent.h"
+#include "Component.h"
 
 // ----------------------------------------------------------------------------
 // forward declarations
@@ -19,7 +19,7 @@ class RenderSurface;
 // renderable graphic by specifying a list of vertices.
 // ----------------------------------------------------------------------------
 class VertexList
-: public PooledComponent<VertexList>
+: public Component
 {
 public:
    explicit VertexList(const std::string& id = "VertexListGraphic", sf::PrimitiveType primitive = sf::TrianglesStrip, unsigned int size = 0);

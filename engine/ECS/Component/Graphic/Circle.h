@@ -5,7 +5,7 @@
 
 #include "sfml.h"
 
-#include "PooledComponent.h"
+#include "Component.h"
 
 // ----------------------------------------------------------------------------
 // forward declarations
@@ -19,7 +19,7 @@ class RenderSurface;
 // You can specify the fill color, outline, and other properties.
 // ----------------------------------------------------------------------------
 class Circle
-: public PooledComponent<Circle>
+: public Component
 {
 public:
    explicit Circle(const std::string& id = "Circle", float radius = 10, float x = 0, float y = 0);

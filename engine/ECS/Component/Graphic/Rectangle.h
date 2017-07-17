@@ -5,7 +5,7 @@
 
 #include "sfml.h"
 
-#include "PooledComponent.h"
+#include "Component.h"
 
 // ----------------------------------------------------------------------------
 // forward declarations
@@ -20,7 +20,7 @@ class RenderSurface;
 // properties.
 // ----------------------------------------------------------------------------
 class Rectangle
-: public PooledComponent<Rectangle>
+: public Component
 {
 public:
    explicit Rectangle(const std::string& id = "Rectangle", float x = 0, float y = 0, float width = 100, float height = 100);

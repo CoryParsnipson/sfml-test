@@ -4,30 +4,24 @@
 #include "RenderSurface.h"
 
 // ----------------------------------------------------------------------------
-// initialize static members
-// ----------------------------------------------------------------------------
-template <>
-ObjectPool<Circle> PooledComponent<Circle>::pool("Circle Component Pool", 50);
-
-// ----------------------------------------------------------------------------
 // Circle implementation
 // ----------------------------------------------------------------------------
 Circle::Circle(const std::string& id /* = Circle */, float radius /* = 10 */, float x /* = 0 */, float y /* = 0 */)
-: PooledComponent<Circle>(id)
+: Component(id)
 , drawable_(radius)
 {
    this->drawable_.setPosition(x, y);
 }
 
 Circle::Circle(const std::string& id, float radius /* = 10 */, sf::Vector2f pos /* = sf::Vector2f(0, 0) */)
-: PooledComponent<Circle>(id)
+: Component(id)
 , drawable_(radius)
 {
    this->drawable_.setPosition(pos);
 }
 
 Circle::Circle(const Circle& other)
-: PooledComponent<Circle>(other.id())
+: Component(other.id())
 , drawable_(other.drawable_)
 {
 }
@@ -42,7 +36,7 @@ Circle& Circle::operator=(const Circle& other) {
 }
 
 void Circle::swap(Circle& other) {
-   std::swap(static_cast<PooledComponent<Circle>&>(*this), static_cast<PooledComponent<Circle>&>(other));
+   std::swap(static_cast<Component&>(*this), static_cast<Component&>(other));
    std::swap(this->drawable_, other.drawable_);
 }
 

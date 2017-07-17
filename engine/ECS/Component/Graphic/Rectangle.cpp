@@ -4,16 +4,10 @@
 #include "RenderSurface.h"
 
 // ----------------------------------------------------------------------------
-// initialize static members
-// ----------------------------------------------------------------------------
-template <>
-ObjectPool<Rectangle> PooledComponent<Rectangle>::pool("Rectangle Component Pool", 50);
-
-// ----------------------------------------------------------------------------
 // Rectangle implementation
 // ----------------------------------------------------------------------------
 Rectangle::Rectangle(const std::string& id /* = "Rectangle" */, float x /* = 0 */, float y /* = 0 */, float width /* = 100 */, float height /* = 100 */)
-: PooledComponent<Rectangle>(id)
+: Component(id)
 , drawable_()
 {
    this->drawable_.setSize(sf::Vector2f(width, height));
@@ -21,7 +15,7 @@ Rectangle::Rectangle(const std::string& id /* = "Rectangle" */, float x /* = 0 *
 }
 
 Rectangle::Rectangle(const std::string& id, sf::FloatRect rect /* = sf::FloatRect(0, 0, 100, 100) */)
-: PooledComponent<Rectangle>(id)
+: Component(id)
 , drawable_()
 {
    this->drawable_.setSize(sf::Vector2f(rect.width, rect.height));
@@ -29,7 +23,7 @@ Rectangle::Rectangle(const std::string& id, sf::FloatRect rect /* = sf::FloatRec
 }
 
 Rectangle::Rectangle(const Rectangle& other)
-: PooledComponent<Rectangle>(other.id())
+: Component(other.id())
 , drawable_(other.drawable_)
 {
 }
@@ -44,7 +38,7 @@ Rectangle& Rectangle::operator=(const Rectangle& other) {
 }
 
 void Rectangle::swap(Rectangle& other) {
-   std::swap(static_cast<PooledComponent<Rectangle>&>(*this), static_cast<PooledComponent<Rectangle>&>(other));
+   std::swap(static_cast<Component&>(*this), static_cast<Component&>(other));
    std::swap(this->drawable_, other.drawable_);
 }
 

@@ -5,7 +5,7 @@
 
 #include "sfml.h"
 
-#include "PooledComponent.h"
+#include "Component.h"
 
 // ----------------------------------------------------------------------------
 // forward declarations
@@ -19,7 +19,7 @@ class RenderSurface;
 // text.
 // ----------------------------------------------------------------------------
 class Text
-: public PooledComponent<Text>
+: public Component
 {
 public:
    explicit Text(const std::string& id = "Text", const std::string& text = "", sf::Font* font = nullptr, unsigned int size = 12);

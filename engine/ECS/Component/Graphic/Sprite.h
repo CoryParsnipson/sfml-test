@@ -8,7 +8,7 @@
 #include "sfml.h"
 
 #include "Update.h"
-#include "PooledComponent.h"
+#include "Component.h"
 
 // ----------------------------------------------------------------------------
 // forward declarations
@@ -48,7 +48,7 @@ private:
 // This is a primitive Graphic class that has a reference to a texture.
 // ----------------------------------------------------------------------------
 class Sprite
-: public PooledComponent<Sprite>
+: public Component
 {
 public:
    explicit Sprite(const std::string& id = "Sprite");

@@ -4,16 +4,10 @@
 #include "RenderSurface.h"
 
 // ----------------------------------------------------------------------------
-// initialize static members
-// ----------------------------------------------------------------------------
-template <>
-ObjectPool<Text> PooledComponent<Text>::pool("Text Component Pool", 1000);
-
-// ----------------------------------------------------------------------------
 // Text implementation
 // ----------------------------------------------------------------------------
 Text::Text(const std::string& id /* = "Text" */, const std::string& text /* = "" */, sf::Font* font /* = nullptr */, unsigned int size /* = 12 */)
-: PooledComponent<Text>(id)
+: Component(id)
 , drawable_()
 {
    this->string(text);
@@ -22,7 +16,7 @@ Text::Text(const std::string& id /* = "Text" */, const std::string& text /* = ""
 }
 
 Text::Text(const Text& other)
-: PooledComponent<Text>(other.id())
+: Component(other.id())
 , string_(other.string_)
 , drawable_(other.drawable_)
 , position_(other.position_)
@@ -39,7 +33,7 @@ Text& Text::operator=(const Text& other) {
 }
 
 void Text::swap(Text& other) {
-   std::swap(static_cast<PooledComponent<Text>&>(*this), static_cast<PooledComponent<Text>&>(other));
+   std::swap(static_cast<Component&>(*this), static_cast<Component&>(other));
    std::swap(this->string_, other.string_);
    std::swap(this->drawable_, other.drawable_);
    std::swap(this->position_, other.position_);
