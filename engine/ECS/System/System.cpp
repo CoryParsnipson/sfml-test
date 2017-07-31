@@ -8,7 +8,9 @@
 System::System(const std::string& id /* = "System" */)
 : id_(id)
 , enabled_(true)
+, mailbox_(id + "Mailbox")
 , filter_(id + "EntityFilter")
+, scene_(nullptr)
 {
 }
 
@@ -64,6 +66,10 @@ void System::init(Game& game) {
       );
    }
 
+   // get the scene pointer
+   assert(this->scene_ == nullptr);
+   this->scene_ = scene;
+
    this->post_init(game);
 }
 
@@ -73,6 +79,9 @@ void System::update(Game& game) {
    }
 
    this->pre_update(game);
+
+   // handle any queued up messages
+   this->mailbox_.process_queue();
 
    // call on_update for each subscribed entity
    Scene* scene = game.current_scene();
@@ -90,10 +99,7 @@ void System::update(Game& game) {
    this->post_update(game);
 }
 
-void System::message() {
-   if (!this->is_enabled()) {
-      return;
-   }
-
-   // TODO: expand this stub
+void System::send_message_helper(std::shared_ptr<Message> message) {
+   assert(this->scene_ != nullptr);
+   this->scene_->handle_message(message);
 }

@@ -33,7 +33,14 @@
 #include "ComponentManager.h"
 
 #include "System.h"
+#include "Mailbox.h"
 
+// ----------------------------------------------------------------------------
+// Scene
+//
+// This is the "world" that all entities, systems, and components live in.
+// This is a discrete container to organize game play and "levels" with.
+// ----------------------------------------------------------------------------
 class Scene
 : public Draw
 , public Update
@@ -226,7 +233,13 @@ public:
          this->game_->logger().msg(this->id(), Logger::INFO, "Adding system '" + system->id() + "' to position " + std::to_string(priority) + " of systems vector.");
       }
    }
-   
+
+   void handle_message(std::shared_ptr<Message> msg) {
+      for (std::vector<System*>::const_iterator it = this->systems_.begin(); it != this->systems_.end(); ++it) {
+         (*it)->receive_message(msg);
+      }
+   }
+
    // input event processing default implementations
    virtual void process(Game& game, CloseInputEvent& e) {
       game.unload_scene();

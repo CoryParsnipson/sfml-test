@@ -18,7 +18,16 @@
 // ----------------------------------------------------------------------------
 class Message {
 public:
+   Message(bool async = false) : async_(async) {}
+   virtual ~Message() {}
+
    virtual std::type_index type() const { return std::type_index(typeid(*this)); }
+
+   void async(bool async) { this->async_ = async; }
+   bool async() { return this->async_; }
+
+private:
+   bool async_;
 };
 
 #include <iostream> 
