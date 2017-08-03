@@ -87,73 +87,42 @@ private:
    // ----------------------------------------------------------------------------
    // forward declarations
    // ----------------------------------------------------------------------------
-   class MessageHandler;
+   class HandlerEntry;
 
    // ----------------------------------------------------------------------------
    // aliases
    // ----------------------------------------------------------------------------
-   using MessageHandlers = std::map<std::type_index, MessageHandler>;
+   using MessageHandlers = std::map<std::type_index, std::shared_ptr<HandlerEntry>>;
 
    // ----------------------------------------------------------------------------
-   // MessageHandler
+   // HandlerEntry 
    //
    // This is a wrapper class that erases std::function<void(MsgT&)> types.
    // ----------------------------------------------------------------------------
-   class MessageHandler {
+   class HandlerEntry {
    public:
-      template <
-         typename MsgT,
-         typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr
-      >
-      MessageHandler(MessageHandlerT<MsgT> const& handler) : ptr(new FtnTypeImpl<MsgT>(handler)) {}
+      virtual void operator()(Message& msg) {}
+   };
 
-      template <
-         typename MsgT,
-         typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr
-      >
-      MessageHandler(const MessageHandler& other) : ptr(new FtnTypeImpl<MsgT>(other.ptr)) {}
+   // ----------------------------------------------------------------------------
+   // HandlerEntryImpl
+   //
+   // This actually contains the different function types
+   // ----------------------------------------------------------------------------
+   template <
+      typename MsgT,
+      typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr
+   >
+   class HandlerEntryImpl : public HandlerEntry {
+   public:
+      HandlerEntryImpl(MessageHandlerT<MsgT> const& handler) : handler_(handler) {}
 
-      ~MessageHandler() {}
-   
-      void operator()(Message& message) {
-         return this->ptr->operator()(message);
+      virtual void operator()(Message& msg) {
+         handler_.operator()(static_cast<MsgT&>(msg));
       }
-   
+
    private:
-      // -------------------------------------------------------------------------
-      // FtnType
-      //
-      // Internal class used to create polymorphic base class of different
-      // std::function<T> types.
-      // -------------------------------------------------------------------------
-      class FtnType {
-      public:
-         virtual ~FtnType() {}
-         virtual void operator()(Message& msg) = 0;
-      };
-   
-      // -------------------------------------------------------------------------
-      // FtnTypeImpl
-      //
-      // This actually contains the different functions
-      // -------------------------------------------------------------------------
-      template <
-         typename MsgT,
-         typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr
-      >
-      class FtnTypeImpl : public FtnType {
-      public:
-         FtnTypeImpl(MessageHandlerT<MsgT> const& handler) : handler_(handler) {}
-   
-         virtual void operator()(Message& msg) {
-            handler_.operator()(static_cast<MsgT&>(msg));
-         }
-      
-      private:
-         MessageHandlerT<MsgT> handler_;
-      };
-   
-      FtnType* ptr;
+      MessageHandlerT<MsgT> handler_;
    };
 
    void handle_message(MessagePtr message);
@@ -171,7 +140,8 @@ template <
    typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr
 >
 void Mailbox::handle(MessageHandlerT<MsgT> const& handler) {
-   this->handlers_.insert(MessageHandlers::value_type(std::type_index(typeid(MsgT)), handler));
+   std::shared_ptr<HandlerEntry> entry = std::make_shared<HandlerEntryImpl<MsgT>>(handler);
+   this->handlers_.insert(MessageHandlers::value_type(std::type_index(typeid(MsgT)), entry));
 }
 
 template <

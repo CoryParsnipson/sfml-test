@@ -30,6 +30,6 @@ void Mailbox::process_queue() {
 void Mailbox::handle_message(MessagePtr message) {
    MessageHandlers::iterator it = this->handlers_.find(message->type());
    if (it != this->handlers_.end()) {
-      it->second(*message);
+      (*it->second)(*message);
    }
 }
