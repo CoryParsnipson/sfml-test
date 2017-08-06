@@ -48,10 +48,26 @@ public:
    unsigned int index() const { return this->index_; }
    unsigned int version() const { return this->version_; }
 
+   bool operator ==(const Handle& other) const {
+      return this->index_ == other.index_ && this->version_ == other.version_;
+   }
+
+   bool operator !=(const Handle& other) const {
+      return this->index_ != other.index_ || this->version_ != other.version_;
+   }
+
+   std::string str() const {
+      return "[Handle - idx " + std::to_string(this->index_) + ", ver " + std::to_string(this->version_) + "]";
+   }
+
 private:
    unsigned int index_ : 24;
    unsigned int version_ : 8;
 };
+
+// -----------------------------------------------------------------------------
+// Handle class member functions
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // ObjectPoolBase

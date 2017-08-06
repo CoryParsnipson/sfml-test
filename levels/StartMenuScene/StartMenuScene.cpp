@@ -27,6 +27,7 @@
 #include "Sprite.h"
 
 #include "GraphicSystem.h"
+#include "SpatialSystem.h"
 
 StartMenuScene::StartMenuScene()
 : Scene("StartMenuScene")
@@ -117,6 +118,8 @@ void StartMenuScene::enter(Game& game) {
 
    // add graphics system
    this->add_system(gs);
+
+   this->add_system(new SpatialSystem());
 }
 
 void StartMenuScene::exit(Game& game) {

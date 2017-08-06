@@ -18,10 +18,20 @@ class Space : public Component {
 public:
    explicit Space(const std::string& id = "Space Component");
    virtual ~Space();
-   
-   // TODO: fill this out, it's just a stub right now
+
+   Handle parent() const;
+   void parent(Handle parent);
+
+   Handle add(unsigned int idx) const;
+   void add(Handle child, int idx = -1);
+
+   void remove(Handle child);
+   void remove(unsigned int idx);
+
 private:
    sf::RenderStates transform_;
+
+   Handle parent_;
    std::vector<Handle> children_;
 };
 

@@ -30,10 +30,14 @@
 #include "RemoveCommand.h"
 #include "ResizeCameraCommand.h"
 
+#include "Space.h"
+
 #include "ComponentManager.h"
 
 #include "System.h"
 #include "Mailbox.h"
+
+#include "AddToEntityMessage.h"
 
 // ----------------------------------------------------------------------------
 // Scene
@@ -81,12 +85,18 @@ public:
       rc_command.execute();
 
       this->game_ = &game; // set game pointer
-      this->enter(game);
+
+      // TODO: setup default systems?
+
+      // create scene graph root entity
+      this->scene_graph_handle_ = this->create_entity();
 
       // start gamepads from receiving input events
       for (GamepadList::const_iterator it = this->gamepads_.begin(); it != this->gamepads_.end(); ++it) {
         game.input().attach(**it);
       }
+
+      this->enter(game);
    }
 
    void do_exit(Game& game) {
@@ -203,7 +213,18 @@ public:
 
    // entity component system interface
    Handle create_entity() {
-      return this->entities_.add();
+      Handle handle = this->entities_.add();
+
+      // add Spatial component, every Entity should always have one
+      assert(this->get_entity(handle) != nullptr);
+      this->get_entity(handle)->add<Space>();
+
+      // now add spatial component to scene graph root
+      if (this->scene_graph_handle_ != Handle() && this->scene_graph_handle_ != handle) {
+        this->handle_message(std::make_shared<AddToEntityMessage>(this->scene_graph_handle_, handle));
+      }
+
+      return handle;
    }
 
    Entity* get_entity(Handle handle) {
@@ -258,6 +279,13 @@ public:
       return *this->scene_graph_;
    }
 
+   Space& space() {
+      assert(this->get_entity(this->scene_graph_handle_));
+      assert(this->get_entity(this->scene_graph_handle_)->get<Space>());
+
+      return *this->get_entity(this->scene_graph_handle_)->get<Space>();
+   }
+
 protected:
    std::string id_;
    Camera* camera_;
@@ -274,6 +302,8 @@ private:
    ObjectPool<Entity> entities_;
    ComponentManager components_;
    std::vector<System*> systems_;
+
+   Handle scene_graph_handle_;
 };
 
 #endif

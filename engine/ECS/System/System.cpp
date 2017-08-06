@@ -99,6 +99,15 @@ void System::update(Game& game) {
    this->post_update(game);
 }
 
+Scene& System::scene() {
+   assert(this->scene_ != nullptr);
+   return *this->scene_;
+}
+
+Mailbox& System::mailbox() {
+   return this->mailbox_;
+}
+
 void System::send_message_helper(std::shared_ptr<Message> message) {
    assert(this->scene_ != nullptr);
    this->scene_->handle_message(message);

@@ -65,6 +65,10 @@ public:
    >
    void send_message_async(Args&&... args);
 
+protected:
+   Scene& scene();
+   Mailbox& mailbox();
+
 private:
    std::string id_;
    bool enabled_;

@@ -57,7 +57,7 @@ public:
       typename MsgT,
       typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr
    >
-   void handle(MessageHandlerT<MsgT> const& handler);
+   void handle(const MessageHandlerT<MsgT>& handler);
 
    template <
       typename MsgT,
@@ -114,7 +114,7 @@ private:
    >
    class HandlerEntryImpl : public HandlerEntry {
    public:
-      HandlerEntryImpl(MessageHandlerT<MsgT> const& handler) : handler_(handler) {}
+      HandlerEntryImpl(const MessageHandlerT<MsgT>& handler) : handler_(handler) {}
 
       virtual void operator()(Message& msg) {
          handler_.operator()(static_cast<MsgT&>(msg));
@@ -138,7 +138,7 @@ template <
    typename MsgT,
    typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr
 >
-void Mailbox::handle(MessageHandlerT<MsgT> const& handler) {
+void Mailbox::handle(const MessageHandlerT<MsgT>& handler) {
    std::shared_ptr<HandlerEntry> entry = std::make_shared<HandlerEntryImpl<MsgT>>(handler);
    this->handlers_.insert(MessageHandlers::value_type(std::type_index(typeid(MsgT)), entry));
 }
