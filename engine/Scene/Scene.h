@@ -221,7 +221,7 @@ public:
 
       // now add spatial component to scene graph root
       if (this->scene_graph_handle_ != Handle() && this->scene_graph_handle_ != handle) {
-        this->handle_message(std::make_shared<AddToEntityMessage>(this->scene_graph_handle_, handle));
+        this->send_message_async<AddToEntityMessage>(this->scene_graph_handle_, handle);
       }
 
       return handle;
@@ -252,12 +252,6 @@ public:
       } else {
          this->systems_.insert(this->systems_.begin() + priority, system);
          this->game_->logger().msg(this->id(), Logger::INFO, "Adding system '" + system->id() + "' to position " + std::to_string(priority) + " of systems vector.");
-      }
-   }
-
-   void handle_message(std::shared_ptr<Message> msg) {
-      for (std::vector<System*>::const_iterator it = this->systems_.begin(); it != this->systems_.end(); ++it) {
-         (*it)->receive_message(msg);
       }
    }
 
@@ -294,6 +288,21 @@ protected:
    FontAtlas fonts_;
    TextureAtlas textures_;
 
+   // use this to broadcast messages to Systems from Scene
+   template <
+      typename MsgT,
+      typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
+      typename... Args
+   >
+   void send_message(Args&&... args);
+
+   template <
+      typename MsgT,
+      typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
+      typename... Args
+   >
+   void send_message_async(Args&&... args);
+
 private:
    Game* game_;
    GamepadList gamepads_;
@@ -304,6 +313,39 @@ private:
    std::vector<System*> systems_;
 
    Handle scene_graph_handle_;
+
+   // broadcast a message to all systems in the scene; this method is called by System
+   friend class System;
+   void handle_message(std::shared_ptr<Message> msg) {
+      for (std::vector<System*>::const_iterator it = this->systems_.begin(); it != this->systems_.end(); ++it) {
+         (*it)->receive_message(msg);
+      }
+   }
 };
+
+// ----------------------------------------------------------------------------
+// template member declarations
+// ----------------------------------------------------------------------------
+template <
+   typename MsgT,
+   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
+   typename... Args
+>
+void Scene::send_message(Args&&... args) {
+   std::shared_ptr<MsgT> message = std::make_shared<MsgT>(std::forward<Args>(args)...);
+   this->handle_message(message);
+}
+
+template <
+   typename MsgT,
+   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
+   typename... Args
+>
+void Scene::send_message_async(Args&&... args) {
+   std::shared_ptr<MsgT> message = std::make_shared<MsgT>(std::forward<Args>(args)...);
+   message->async(true);
+
+   this->handle_message(message);
+}
 
 #endif
