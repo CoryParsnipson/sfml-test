@@ -136,7 +136,7 @@ public:
    void id(const std::string& id);
 
    bool allow_all() const {
-      return this->allow_all();
+      return this->allow_all_;
    }
 
    void allow_all(bool allow_policy) {
