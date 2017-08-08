@@ -262,7 +262,7 @@ BuilderScene::~BuilderScene() {
 }
 
 void BuilderScene::enter(Game& game) {
-   Game::logger().msg(this->id_, Logger::INFO, "Entering builder state.");
+   Game::logger().msg(this->id(), Logger::INFO, "Entering builder state.");
 
    // set center dot position
    this->center_dot_->set_position(game.window().size() / 2.f);
@@ -278,7 +278,7 @@ void BuilderScene::enter(Game& game) {
 }
 
 void BuilderScene::exit(Game& game) {
-   Game::logger().msg(this->id_, Logger::INFO, "Exiting builder state.");
+   Game::logger().msg(this->id(), Logger::INFO, "Exiting builder state.");
 }
 
 void BuilderScene::update(Game& game) {

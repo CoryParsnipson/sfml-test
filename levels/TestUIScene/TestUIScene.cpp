@@ -72,14 +72,14 @@ TestUIScene::~TestUIScene() {
 }
 
 void TestUIScene::enter(Game& game) {
-   Game::logger().msg(this->id_, Logger::INFO, "Entering test UI menu state.");
+   Game::logger().msg(this->id(), Logger::INFO, "Entering test UI menu state.");
 
    // reposition fps display
    this->fps_display_->set_position(game.window().size().x - 60, 0);
 }
 
 void TestUIScene::exit(Game& game) {
-   Game::logger().msg(this->id_, Logger::INFO, "Exiting test UI menu state.");
+   Game::logger().msg(this->id(), Logger::INFO, "Exiting test UI menu state.");
 }
 
 void TestUIScene::update(Game& game) {

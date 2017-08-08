@@ -53,9 +53,9 @@ public:
    using GamepadList = std::vector<Gamepad*>;
 
    Scene(std::string id)
-   : id_(id)
-   , camera_(new Camera("Camera"))
+   : camera_(new Camera("Camera"))
    , scene_graph_(this->camera_)
+   , id_(id)
    , entities_(id + "EntityPool", 20000, [this](){ return Entity("entity", &this->components_); })
    {
    }
@@ -281,7 +281,6 @@ public:
    }
 
 protected:
-   std::string id_;
    Camera* camera_;
    SceneObject* scene_graph_;
 
@@ -304,6 +303,8 @@ protected:
    void send_message_async(Args&&... args);
 
 private:
+   std::string id_;
+
    Game* game_;
    GamepadList gamepads_;
    SceneRenderer renderer_;
