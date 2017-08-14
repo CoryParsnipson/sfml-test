@@ -1,16 +1,21 @@
 #include <cassert>
 #include <algorithm>
+#include <functional>
 
 #include "System.h"
 #include "Game.h"
 #include "Scene.h"
 
+#include "EntityCreatedMessage.h"
+#include "AddToEntityMessage.h"
+#include "RemoveFromEntityMessage.h"
+
 System::System(const std::string& id /* = "System" */)
 : id_(id)
 , enabled_(true)
+, scene_(nullptr)
 , mailbox_(id + "Mailbox")
 , filter_(id + "EntityFilter")
-, scene_(nullptr)
 {
 }
 
@@ -46,29 +51,27 @@ bool System::is_enabled() const {
 }
 
 void System::init(Game& game) {
+   assert(this->scene_ == nullptr);
+   this->scene_ = game.current_scene();
+
+   if (!this->scene_) {
+      game.logger().msg(this->id(), Logger::WARNING, "Trying to initialize system when Game has no loaded scenes. Skipping.");
+      return;
+   }
+
    this->pre_init(game);
    this->on_init(game);
 
    // filter should be initialized by now, generate subscribed entities list
-   Scene* scene = game.current_scene();
-   if (scene) {
-      std::vector<Handle> entities_from_scene = scene->entities();
+   std::vector<Handle> entities_from_scene = this->scene_->entities();
+   std::for_each(entities_from_scene.begin(), entities_from_scene.end(),
+      std::bind(&System::filter_entity, this, std::placeholders::_1)
+   );
 
-      std::for_each(entities_from_scene.begin(), entities_from_scene.end(),
-         [&](Handle& h) {
-            Entity* e = scene->get_entity(h);
-            assert(e != nullptr);
-
-            if (this->filter(*e)) {
-               this->entities_.push_back(h);
-            }
-         }
-      );
-   }
-
-   // get the scene pointer
-   assert(this->scene_ == nullptr);
-   this->scene_ = scene;
+   // add some reasonable defaults to certain message types
+   this->mailbox().handle<EntityCreatedMessage>([this](EntityCreatedMessage& msg) {
+      this->filter_entity(msg.entity);
+   });
 
    this->post_init(game);
 }
@@ -108,7 +111,34 @@ Mailbox& System::mailbox() {
    return this->mailbox_;
 }
 
+const std::vector<Handle>& System::subscribed_entities() {
+   return this->entities_;
+}
+
+int System::on_add_entity(Handle entity) {
+   return -1;
+}
+
 void System::send_message_helper(std::shared_ptr<Message> message) {
    assert(this->scene_ != nullptr);
    this->scene_->handle_message(message);
+}
+
+void System::add_entity(Handle entity) {
+   int idx = this->on_add_entity(entity);
+
+   if (idx < 0 || static_cast<unsigned int>(idx) >= this->entities_.size()) {
+      this->entities_.push_back(entity);
+   } else {
+      this->entities_.insert(this->entities_.begin() + idx, entity);
+   }
+}
+
+void System::filter_entity(Handle entity) {
+   assert(this->scene_ != nullptr);
+
+   Entity* e = this->scene_->get_entity(entity);
+   if (e != nullptr && this->filter(*e)) {
+      this->add_entity(entity);
+   }
 }

@@ -37,6 +37,7 @@
 #include "System.h"
 #include "Mailbox.h"
 
+#include "EntityCreatedMessage.h"
 #include "AddToEntityMessage.h"
 
 // ----------------------------------------------------------------------------
@@ -214,6 +215,9 @@ public:
    // entity component system interface
    Handle create_entity() {
       Handle handle = this->entities_.add();
+
+      // let Systems know a new Entity has been made
+      this->send_message_async<EntityCreatedMessage>(handle);
 
       // add Spatial component, every Entity should always have one
       assert(this->get_entity(handle) != nullptr);

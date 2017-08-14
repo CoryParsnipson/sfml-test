@@ -68,16 +68,17 @@ public:
 protected:
    Scene& scene();
    Mailbox& mailbox();
+   const std::vector<Handle>& subscribed_entities();
 
 private:
    std::string id_;
    bool enabled_;
 
+   Scene* scene_;
+
    Mailbox mailbox_;
    EntityFilter filter_;
    std::vector<Handle> entities_;
-
-   Scene* scene_;
 
    // System interface hooks
    virtual void pre_init(Game& game) {}
@@ -88,8 +89,12 @@ private:
    virtual void on_update(Game& game, Entity& e) = 0;
    virtual void post_update(Game& game) {}
 
+   virtual int on_add_entity(Handle entity);
+
    // helpers
    void send_message_helper(std::shared_ptr<Message> message);
+   void add_entity(Handle entity);
+   void filter_entity(Handle entity);
 };
 
 // ----------------------------------------------------------------------------
