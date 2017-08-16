@@ -90,7 +90,7 @@ public:
       // TODO: setup default systems?
 
       // create scene graph root entity
-      this->scene_graph_handle_ = this->create_entity();
+      this->root_ = this->create_entity();
 
       // start gamepads from receiving input events
       for (GamepadList::const_iterator it = this->gamepads_.begin(); it != this->gamepads_.end(); ++it) {
@@ -224,8 +224,8 @@ public:
       this->get_entity(handle)->add<Space>();
 
       // now add spatial component to scene graph root
-      if (this->scene_graph_handle_ != Handle() && this->scene_graph_handle_ != handle) {
-        this->send_message_async<AddToEntityMessage>(this->scene_graph_handle_, handle);
+      if (this->root_ != Handle() && this->root_ != handle) {
+        this->send_message_async<AddToEntityMessage>(this->root_, handle);
       }
 
       return handle;
@@ -278,10 +278,10 @@ public:
    }
 
    Space& space() {
-      assert(this->get_entity(this->scene_graph_handle_));
-      assert(this->get_entity(this->scene_graph_handle_)->get<Space>());
+      assert(this->get_entity(this->root_));
+      assert(this->get_entity(this->root_)->get<Space>());
 
-      return *this->get_entity(this->scene_graph_handle_)->get<Space>();
+      return *this->get_entity(this->root_)->get<Space>();
    }
 
 protected:
@@ -317,7 +317,7 @@ private:
    ComponentManager components_;
    std::vector<System*> systems_;
 
-   Handle scene_graph_handle_;
+   Handle root_;
 
    // broadcast a message to all systems in the scene; this method is called by System
    friend class System;
