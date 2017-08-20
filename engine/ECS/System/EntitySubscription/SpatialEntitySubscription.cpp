@@ -38,7 +38,7 @@ void SpatialEntitySubscription::for_each(std::function<void(Handle)> entity_hand
          Space* space = e->get<Space>();
          assert(space != nullptr);
 
-         for (unsigned int i = space->num_children() - 1; i > 0; --i) {
+         for (int i = space->num_children() - 1; i >= 0; --i) {
             entities_to_visit.push_back(space->get(i));
          }
 
