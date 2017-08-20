@@ -48,3 +48,14 @@ void Space::remove(unsigned int idx) {
       this->children_.erase(this->children_.begin() + idx);
    }
 }
+
+Handle Space::get(unsigned int idx) const {
+   if (idx < 0 || idx >= this->children_.size()) {
+      return Handle();
+   }
+   return this->children_[idx];
+}
+
+unsigned int Space::num_children() const {
+   return this->children_.size();
+}

@@ -284,6 +284,10 @@ public:
       return *this->get_entity(this->root_)->get<Space>();
    }
 
+   Handle space_handle() {
+      return this->root_;
+   }
+
 protected:
    Camera* camera_;
    SceneObject* scene_graph_;

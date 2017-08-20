@@ -7,9 +7,10 @@
 #include "Sprite.h"
 #include "Text.h"
 #include "VertexList.h"
+#include "SpatialEntitySubscription.h"
 
 GraphicSystem::GraphicSystem(const std::string& id, RenderSurface& surface) 
-: System(id)
+: System(id, new SpatialEntitySubscription(id + "EntitySubscription"))
 , surface_(&surface)
 {
    // provide a default camera
@@ -31,8 +32,8 @@ Camera* GraphicSystem::camera(unsigned int idx /* = 0 */) const {
 }
 
 void GraphicSystem::on_init(Game& game) {
-   this->filter().one_of<Circle, Rectangle, Sprite, Text, VertexList>();
-   //this->filter_.all_of<Space/*, Position (???)*/>(); // TODO
+   this->subscribe_to().one_of<Circle, Rectangle, Sprite, Text, VertexList>();
+   //this->subscribe_to().all_of<Space/*, Position (???)*/>(); // TODO
 }
 
 void GraphicSystem::on_update(Game& game, Entity& e) {

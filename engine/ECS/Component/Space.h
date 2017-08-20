@@ -28,6 +28,10 @@ public:
    void remove(Handle child);
    void remove(unsigned int idx);
 
+   Handle get(unsigned int idx) const;
+
+   unsigned int num_children() const;
+
 private:
    sf::RenderStates transform_;
 

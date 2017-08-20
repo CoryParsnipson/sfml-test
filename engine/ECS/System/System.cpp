@@ -10,12 +10,12 @@
 #include "AddToEntityMessage.h"
 #include "RemoveFromEntityMessage.h"
 
-System::System(const std::string& id /* = "System" */)
+System::System(const std::string& id /* = "System" */, EntitySubscription* sub /* = new BaseEntitySubscription() */)
 : id_(id)
 , enabled_(true)
 , scene_(nullptr)
 , mailbox_(id + "Mailbox")
-, filter_(id + "EntityFilter")
+, subscription_(sub)
 {
 }
 
@@ -28,14 +28,6 @@ void System::id(const std::string& id) {
 
 const std::string& System::id() const {
    return this->id_;
-}
-
-EntityFilter& System::filter() {
-   return this->filter_;
-}
-
-bool System::filter(Entity& e) const {
-   return this->filter_.filter(e);
 }
 
 void System::enable() {
@@ -53,6 +45,7 @@ bool System::is_enabled() const {
 void System::init(Game& game) {
    assert(this->scene_ == nullptr);
    this->scene_ = game.current_scene();
+   this->subscription_->scene(*game.current_scene());
 
    if (!this->scene_) {
       game.logger().msg(this->id(), Logger::WARNING, "Trying to initialize system when Game has no loaded scenes. Skipping.");
@@ -62,15 +55,12 @@ void System::init(Game& game) {
    this->pre_init(game);
    this->on_init(game);
 
-   // filter should be initialized by now, generate subscribed entities list
-   std::vector<Handle> entities_from_scene = this->scene_->entities();
-   std::for_each(entities_from_scene.begin(), entities_from_scene.end(),
-      std::bind(&System::filter_entity, this, std::placeholders::_1)
-   );
+   // filter in subscription list should be initialized in pre_init() or on_init()
+   this->subscription_->init(); 
 
    // add some reasonable defaults to certain message types
    this->mailbox().handle<EntityCreatedMessage>([this](EntityCreatedMessage& msg) {
-      this->filter_entity(msg.entity);
+      this->subscription().add(msg.entity);
    });
 
    this->post_init(game);
@@ -81,23 +71,21 @@ void System::update(Game& game) {
       return;
    }
 
+   assert(this->scene_ != nullptr);
+
    this->pre_update(game);
 
    // handle any queued up messages
    this->mailbox_.process_queue();
 
-   // call on_update for each subscribed entity
-   Scene* scene = game.current_scene();
-   if (scene) {
-      std::for_each(this->entities_.begin(), this->entities_.end(), 
-         [&](Handle& h) {
-            Entity* e = scene->get_entity(h);
-            if (e) {
-               this->on_update(game, *e);
-            }
-         }
-      );
-   }
+   // perform system update on all subscribed entities
+   std::function<void(Handle)> handle_on_update = [&](Handle h) {
+      Entity* e = this->scene_->get_entity(h);
+      if (e) {
+         this->on_update(game, *e);
+      }
+   };
+   this->subscription_->for_each(handle_on_update);
 
    this->post_update(game);
 }
@@ -111,34 +99,15 @@ Mailbox& System::mailbox() {
    return this->mailbox_;
 }
 
-const std::vector<Handle>& System::subscribed_entities() {
-   return this->entities_;
+EntitySubscription& System::subscription() {
+   return *this->subscription_;
 }
 
-int System::on_add_entity(Handle entity) {
-   return -1;
+EntityFilter& System::subscribe_to() {
+   return this->subscription_->filter();
 }
 
 void System::send_message_helper(std::shared_ptr<Message> message) {
    assert(this->scene_ != nullptr);
    this->scene_->handle_message(message);
-}
-
-void System::add_entity(Handle entity) {
-   int idx = this->on_add_entity(entity);
-
-   if (idx < 0 || static_cast<unsigned int>(idx) >= this->entities_.size()) {
-      this->entities_.push_back(entity);
-   } else {
-      this->entities_.insert(this->entities_.begin() + idx, entity);
-   }
-}
-
-void System::filter_entity(Handle entity) {
-   assert(this->scene_ != nullptr);
-
-   Entity* e = this->scene_->get_entity(entity);
-   if (e != nullptr && this->filter(*e)) {
-      this->add_entity(entity);
-   }
 }

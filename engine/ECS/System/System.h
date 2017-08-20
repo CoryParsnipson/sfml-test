@@ -7,7 +7,7 @@
 
 #include "Update.h"
 #include "ObjectPool.h"
-#include "EntityFilter.h"
+#include "BaseEntitySubscription.h"
 
 #include "Mailbox.h"
 
@@ -16,6 +16,7 @@
 // ----------------------------------------------------------------------------
 class Game;
 class Scene;
+class EntityFilter;
 
 // ----------------------------------------------------------------------------
 // System
@@ -27,14 +28,11 @@ class System
 : public Update
 {
 public:
-   System(const std::string& id = "System");
+   System(const std::string& id = "System", EntitySubscription* sub = new BaseEntitySubscription());
    virtual ~System();
 
    void id(const std::string& id);
    const std::string& id() const;
-
-   EntityFilter& filter(); // get a reference to entity filter itself 
-   bool filter(Entity& e) const; // use the entity filter to filter an entity
 
    void enable();
    void disable();
@@ -68,7 +66,9 @@ public:
 protected:
    Scene& scene();
    Mailbox& mailbox();
-   const std::vector<Handle>& subscribed_entities();
+   EntitySubscription& subscription();
+
+   EntityFilter& subscribe_to();
 
 private:
    std::string id_;
@@ -77,8 +77,7 @@ private:
    Scene* scene_;
 
    Mailbox mailbox_;
-   EntityFilter filter_;
-   std::vector<Handle> entities_;
+   EntitySubscription* subscription_;
 
    // System interface hooks
    virtual void pre_init(Game& game) {}
@@ -89,12 +88,8 @@ private:
    virtual void on_update(Game& game, Entity& e) = 0;
    virtual void post_update(Game& game) {}
 
-   virtual int on_add_entity(Handle entity);
-
    // helpers
    void send_message_helper(std::shared_ptr<Message> message);
-   void add_entity(Handle entity);
-   void filter_entity(Handle entity);
 };
 
 // ----------------------------------------------------------------------------
