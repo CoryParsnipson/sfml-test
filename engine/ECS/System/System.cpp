@@ -20,6 +20,7 @@ System::System(const std::string& id /* = "System" */, EntitySubscription* sub /
 }
 
 System::~System() {
+   delete this->subscription_;
 }
 
 void System::id(const std::string& id) {
