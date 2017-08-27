@@ -21,6 +21,12 @@ TestUIScene::TestUIScene()
 , frame_measurement_interval(6)
 , frame_count(0)
 {
+}
+
+TestUIScene::~TestUIScene() {
+}
+
+void TestUIScene::init(Game& game) {
    // load fonts
    this->fonts_.load("retro", "retro.ttf");
    
@@ -66,9 +72,6 @@ TestUIScene::TestUIScene()
    //pg->set(new WidgetEventCommand(WidgetOp::MouseMove, this->scene_graph_, pg), MouseAction::Move);
 
    pg->set(new SwitchSceneCommand(this, nullptr), Key::Space);
-}
-
-TestUIScene::~TestUIScene() {
 }
 
 void TestUIScene::enter(Game& game) {

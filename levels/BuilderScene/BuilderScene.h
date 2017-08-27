@@ -21,6 +21,7 @@ public:
    BuilderScene();
    virtual ~BuilderScene();
 
+   virtual void init(Game& game);
    virtual void enter(Game& game);
    virtual void exit(Game& game);
 

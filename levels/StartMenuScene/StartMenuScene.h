@@ -10,6 +10,7 @@ public:
    StartMenuScene();
    ~StartMenuScene();
 
+   virtual void init(Game& game);
    virtual void enter(Game& game);
    virtual void exit(Game& game);
 

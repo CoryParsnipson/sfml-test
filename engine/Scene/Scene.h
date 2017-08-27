@@ -57,6 +57,7 @@ public:
    : camera_(new Camera("Camera"))
    , scene_graph_(this->camera_)
    , id_(id)
+   , is_initialized_(false)
    , entities_(id + "EntityPool", 20000, [this](){ return Entity("entity", &this->components_); })
    {
    }
@@ -79,19 +80,26 @@ public:
    }
 
    virtual std::string id() { return this->id_; }
+   bool is_initialized() const { return this->is_initialized_; }
 
-   void do_enter(Game& game) {
+   void do_init(Game& game) {
       // resize all the cameras
       ResizeCameraCommand rc_command(game.window(), this->scene_graph_);
       rc_command.execute();
 
       this->game_ = &game; // set game pointer
 
-      // TODO: setup default systems?
-
       // create scene graph root entity
       this->root_ = this->create_entity();
+      this->get_entity(this->root_)->id(this->id() + "RootEntity");
+      this->get_entity(this->root_)->get<Space>()->id("RootSpaceComponent");
 
+      this->init(game);
+
+      this->is_initialized_ = true;
+   }
+
+   void do_enter(Game& game) {
       // start gamepads from receiving input events
       for (GamepadList::const_iterator it = this->gamepads_.begin(); it != this->gamepads_.end(); ++it) {
         game.input().attach(**it);
@@ -110,6 +118,7 @@ public:
       this->exit(game);
    }
 
+   virtual void init(Game& game) {}
    virtual void enter(Game& game) {}
    virtual void exit(Game& game) {}
 
@@ -312,6 +321,7 @@ protected:
 
 private:
    std::string id_;
+   bool is_initialized_;
 
    Game* game_;
    GamepadList gamepads_;

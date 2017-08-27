@@ -177,6 +177,12 @@ void Game::main_loop() {
       // check if we need to load a scene
       if (this->next_scene_) {
          this->scenes_.push(this->next_scene_);
+
+         // initialize scene if this is the first time we're loading it
+         if (!this->next_scene_->is_initialized()) {
+            this->next_scene_->do_init(*this);
+         }
+
          this->next_scene_->do_enter(*this);
          this->next_scene_ = nullptr;
       }

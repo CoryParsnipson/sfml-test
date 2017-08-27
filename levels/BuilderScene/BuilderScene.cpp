@@ -59,6 +59,13 @@ BuilderScene::BuilderScene()
 , frame_measurement_interval(6)
 , frame_count(0)
 {
+}
+
+BuilderScene::~BuilderScene() {
+   delete this->map_file_;
+}
+
+void BuilderScene::init(Game& game) {
    // load fonts
    this->fonts_.load("retro", "retro.ttf");
    
@@ -255,10 +262,6 @@ BuilderScene::BuilderScene()
 
    this->map_camera_->on_mouse_move(drag_command);
    this->map_camera_->on_mouse_wheel(new ZoomCommand(this->map_camera_, this->map_->grid(), pg));
-}
-
-BuilderScene::~BuilderScene() {
-   delete this->map_file_;
 }
 
 void BuilderScene::enter(Game& game) {

@@ -32,6 +32,12 @@
 StartMenuScene::StartMenuScene()
 : Scene("StartMenuScene")
 {
+}
+
+StartMenuScene::~StartMenuScene() {
+}
+
+void StartMenuScene::init(Game& game) {
    // load fonts
    this->fonts_.load("retro", "retro.ttf");
    
@@ -78,9 +84,6 @@ StartMenuScene::StartMenuScene()
    pg->set(new SwitchSceneCommand(this, new TestUIScene()), Key::Escape);
 
    this->textures_.load("tile_sign", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 0, 64, 64));
-}
-
-StartMenuScene::~StartMenuScene() {
 }
 
 void StartMenuScene::enter(Game& game) {
