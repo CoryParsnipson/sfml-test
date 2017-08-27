@@ -11,26 +11,18 @@
 #include "SpatialEntitySubscription.h"
 #include "Scene.h"
 
-GraphicSystem::GraphicSystem(const std::string& id, RenderSurface& surface) 
+GraphicSystem::GraphicSystem(const std::string& id, RenderSurface& surface, std::shared_ptr<Camera> camera)
 : System(id, new SpatialEntitySubscription(id + "EntitySubscription"))
 , surface_(&surface)
+, camera_(camera)
 {
-   // provide a default camera
-   this->cameras_.push_back(new Camera("Main Camera"));
 }
 
 GraphicSystem::~GraphicSystem() {
-   for (std::vector<Camera*>::const_iterator it = this->cameras_.begin(); it != this->cameras_.end(); ++it) {
-      delete *it;
-   }
-   this->cameras_.clear();
 }
 
-Camera* GraphicSystem::camera(unsigned int idx /* = 0 */) const {
-   if (idx >= this->cameras_.size()) {
-      return nullptr;
-   }
-   return this->cameras_[idx];
+std::shared_ptr<Camera> GraphicSystem::camera() const {
+   return this->camera_;
 }
 
 void GraphicSystem::on_init(Game& game) {
@@ -48,29 +40,26 @@ void GraphicSystem::on_update(Game& game, Entity& e) {
    sf::RenderStates states;
    states.transform = this->global_transform(e);
 
-   for (std::vector<Camera*>::const_iterator camera = this->cameras_.begin(); camera != this->cameras_.end(); ++camera) {
-      // apply this camera
-      (*camera)->draw(*this->surface_);
+   this->camera_->draw(*this->surface_); // apply the camera
 
-      if (circle != nullptr) {
-         circle->draw(*this->surface_, states);
-      }
+   if (circle != nullptr) {
+      circle->draw(*this->surface_, states);
+   }
 
-      if (rectangle != nullptr) {
-         rectangle->draw(*this->surface_, states);
-      }
+   if (rectangle != nullptr) {
+      rectangle->draw(*this->surface_, states);
+   }
 
-      if (sprite != nullptr) {
-         sprite->draw(*this->surface_, states);
-      }
+   if (sprite != nullptr) {
+      sprite->draw(*this->surface_, states);
+   }
 
-      if (text != nullptr) {
-         text->draw(*this->surface_, states);
-      }
+   if (text != nullptr) {
+      text->draw(*this->surface_, states);
+   }
 
-      if (vertexlist != nullptr) {
-         vertexlist->draw(*this->surface_, states);
-      }
+   if (vertexlist != nullptr) {
+      vertexlist->draw(*this->surface_, states);
    }
 }
 

@@ -2,6 +2,7 @@
 #define GRAPHIC_SYSTEM_H
 
 #include <vector>
+#include <memory>
 
 #include "System.h"
 
@@ -19,14 +20,14 @@ class RenderSurface;
 // ----------------------------------------------------------------------------
 class GraphicSystem : public System {
 public:
-   GraphicSystem(const std::string& id, RenderSurface& surface);
+   GraphicSystem(const std::string& id, RenderSurface& surface, std::shared_ptr<Camera> camera);
    virtual ~GraphicSystem();
 
-   Camera* camera(unsigned int idx = 0) const;
+   std::shared_ptr<Camera> camera() const;
 
 private:
    RenderSurface* surface_;
-   std::vector<Camera*> cameras_;
+   std::shared_ptr<Camera> camera_;
 
    virtual void on_init(Game& game);
    virtual void on_update(Game& game, Entity& e);

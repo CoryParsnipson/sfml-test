@@ -88,7 +88,7 @@ void StartMenuScene::enter(Game& game) {
    this->camera_->reset_pan();
    this->camera_->move(this->camera_->get_center() - game.window().size());
    
-   GraphicSystem* gs = new GraphicSystem("GraphicSystem", game.window());
+   GraphicSystem* gs = new GraphicSystem("GraphicSystem", game.window(), std::make_shared<Camera>("Main Camera"));
    gs->camera()->resize(game.window().size()); // scene automatically resizes the cameras in the scene graph
    gs->camera()->reset_pan();
    gs->camera()->move(gs->camera()->get_center() - game.window().size());
