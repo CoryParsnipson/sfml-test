@@ -32,6 +32,9 @@ public:
 
    unsigned int num_children() const;
 
+   sf::RenderStates& states();
+   void states(sf::RenderStates states);
+
 private:
    sf::RenderStates transform_;
 

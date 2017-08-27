@@ -59,3 +59,11 @@ Handle Space::get(unsigned int idx) const {
 unsigned int Space::num_children() const {
    return this->children_.size();
 }
+
+sf::RenderStates& Space::states() {
+   return this->transform_;
+}
+
+void Space::states(sf::RenderStates states) {
+   this->transform_ = states;
+}

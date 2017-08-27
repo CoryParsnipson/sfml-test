@@ -30,6 +30,9 @@ private:
 
    virtual void on_init(Game& game);
    virtual void on_update(Game& game, Entity& e);
+
+   sf::Transform local_transform(Entity& e);
+   sf::Transform global_transform(Entity& e);
 };
 
 #endif
