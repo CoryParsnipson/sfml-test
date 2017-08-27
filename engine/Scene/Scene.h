@@ -39,6 +39,7 @@
 
 #include "EntityCreatedMessage.h"
 #include "AddToEntityMessage.h"
+#include "ResizeCameraMessage.h"
 
 // ----------------------------------------------------------------------------
 // Scene
@@ -95,6 +96,8 @@ public:
       // resize all the cameras
       ResizeCameraCommand rc_command(game.window(), this->scene_graph_);
       rc_command.execute();
+
+      this->send_message_async<ResizeCameraMessage>(game.window().size());
 
       this->is_initialized_ = true;
    }
@@ -277,6 +280,8 @@ public:
       // resize all the cameras
       ResizeCameraCommand rc_command(game.window(), this->scene_graph_);
       rc_command.execute();
+
+      this->send_message_async<ResizeCameraMessage>(game.window().size());
    }
    virtual void process(Game& game, MouseMoveInputEvent& e) {}
    virtual void process(Game& game, MouseWheelInputEvent& e) {}

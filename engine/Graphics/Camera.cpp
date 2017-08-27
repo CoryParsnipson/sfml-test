@@ -63,6 +63,10 @@ const std::shared_ptr<CameraResizePolicy>& Camera::policy() {
 
 void Camera::resize(sf::Vector2f size) {
    if (this->resize_policy_) {
+      Game::logger().msg(this->id(), Logger::INFO, "Resizing from "
+         + std::to_string((int)this->get_size().x) + "x" + std::to_string((int)this->get_size().y)
+         + " to " + std::to_string((int)size.x) + "x" + std::to_string((int)size.y));
+
       this->resize_policy_->resize(*this, size);
    }
 }

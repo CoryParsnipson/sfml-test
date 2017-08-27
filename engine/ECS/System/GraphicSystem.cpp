@@ -10,6 +10,7 @@
 #include "Space.h"
 #include "SpatialEntitySubscription.h"
 #include "Scene.h"
+#include "ResizeCameraMessage.h"
 
 GraphicSystem::GraphicSystem(const std::string& id, RenderSurface& surface, std::shared_ptr<Camera> camera)
 : System(id, new SpatialEntitySubscription(id + "EntitySubscription"))
@@ -28,6 +29,11 @@ std::shared_ptr<Camera> GraphicSystem::camera() const {
 void GraphicSystem::on_init(Game& game) {
    this->subscribe_to().one_of<Circle, Rectangle, Sprite, Text, VertexList>();
    this->subscribe_to().all_of<Space>();
+
+   // handle resize messages
+   this->mailbox().handle<ResizeCameraMessage>([this](ResizeCameraMessage& msg) {
+      this->camera_->resize(sf::Vector2f(msg.width, msg.height));
+   });
 }
 
 void GraphicSystem::on_update(Game& game, Entity& e) {

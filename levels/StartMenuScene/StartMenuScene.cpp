@@ -84,45 +84,57 @@ void StartMenuScene::init(Game& game) {
    pg->set(new SwitchSceneCommand(this, new TestUIScene()), Key::Escape);
 
    this->textures_.load("tile_sign", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 0, 64, 64));
-}
-
-void StartMenuScene::enter(Game& game) {
-   Game::logger().msg(this->id(), Logger::INFO, "Entering game start menu state.");
-   this->camera_->reset_pan();
-   this->camera_->move(this->camera_->get_center() - game.window().size());
    
    GraphicSystem* gs = new GraphicSystem("GraphicSystem", game.window(), std::make_shared<Camera>("Main Camera"));
    gs->camera()->resize(game.window().size()); // scene automatically resizes the cameras in the scene graph
    gs->camera()->reset_pan();
    gs->camera()->move(gs->camera()->get_center() - game.window().size());
 
-   // add some new entities
-   Entity* e = this->get_entity(this->create_entity());
-   e->add<Circle>();
-
-   Circle* c = e->get<Circle>();
-   c->position(-10, -10);
-   c->color(sf::Color::Blue);
-   c->radius(24);
-   
-   e = this->get_entity(this->create_entity());
-   e->add<Sprite>();
-   e->add<Rectangle>();
-
-   Rectangle* r = e->get<Rectangle>();
-   r->position(100, 100);
-   r->color(sf::Color::Red);
-   r->size(50, 25);
-   
-   Sprite* s = e->get<Sprite>();
-   s->id("Active Sprite 1");
-   s->position(10, 10);
-   s->texture(*this->textures_.get("tile_sign"));
-
    // add graphics system
    this->add_system(gs);
 
    this->add_system(new SpatialSystem());
+
+   // test out the graphics system
+   Handle e1 = this->create_entity();
+   Handle e2 = this->create_entity();
+   Handle e3 = this->create_entity();
+
+   this->send_message_async<AddToEntityMessage>(e1, e2);
+   this->send_message_async<AddToEntityMessage>(e1, e3);
+
+   Entity* entity1 = this->get_entity(e1);
+   Entity* entity2 = this->get_entity(e2);
+   Entity* entity3 = this->get_entity(e3);
+
+   entity1->id("Rectangle Entity");
+   entity2->id("Left Circle Entity");
+   entity3->id("Right Circle Entity");
+
+   entity1->add<Rectangle>();
+   entity2->add<Circle>();
+   entity3->add<Circle>();
+
+   Rectangle* shaft = entity1->get<Rectangle>();
+   shaft->position(-100, -70);
+   shaft->size(400, 150);
+   shaft->color(sf::Color::Red);
+
+   Circle* right_ball = entity2->get<Circle>();
+   right_ball->position(-200, 0);
+   right_ball->radius(100);
+   right_ball->color(sf::Color::Blue);
+
+   Circle* left_ball = entity3->get<Circle>();
+   left_ball->position(-200, -200);
+   left_ball->radius(100);
+   left_ball->color(sf::Color::Blue);
+}
+
+void StartMenuScene::enter(Game& game) {
+   Game::logger().msg(this->id(), Logger::INFO, "Entering game start menu state.");
+   this->camera_->reset_pan();
+   this->camera_->move(this->camera_->get_center() - game.window().size());
 }
 
 void StartMenuScene::exit(Game& game) {
