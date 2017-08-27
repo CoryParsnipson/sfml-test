@@ -83,10 +83,6 @@ public:
    bool is_initialized() const { return this->is_initialized_; }
 
    void do_init(Game& game) {
-      // resize all the cameras
-      ResizeCameraCommand rc_command(game.window(), this->scene_graph_);
-      rc_command.execute();
-
       this->game_ = &game; // set game pointer
 
       // create scene graph root entity
@@ -95,6 +91,10 @@ public:
       this->get_entity(this->root_)->get<Space>()->id("RootSpaceComponent");
 
       this->init(game);
+
+      // resize all the cameras
+      ResizeCameraCommand rc_command(game.window(), this->scene_graph_);
+      rc_command.execute();
 
       this->is_initialized_ = true;
    }
