@@ -46,6 +46,7 @@ INCLUDE_PATHS += $(PROJECT_DIR)/engine/ECS/Messaging
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/ECS/Messaging/Message
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/ECS/Component
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/ECS/Component/Graphic
+INCLUDE_PATHS += $(PROJECT_DIR)/engine/ECS/Component/Map
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/ECS/Entity
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/ECS/System
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/ECS/System/EntitySubscription
@@ -60,8 +61,8 @@ INCLUDE_PATHS += $(PROJECT_DIR)/engine/UI
 INCLUDE_PATHS += $(PROJECT_DIR)/levels
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/StartMenuScene
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderScene
-INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderScene/Entities
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderScene/Commands
+INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderScene/Entities
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/TestUIScene
 
 CXX_FILES =
@@ -79,6 +80,7 @@ CXX_FILES += $(PROJECT_DIR)/engine/Command/Mouse/*.cpp
 CXX_FILES += $(PROJECT_DIR)/engine/ECS/Messaging/*.cpp
 CXX_FILES += $(PROJECT_DIR)/engine/ECS/Component/*.cpp
 CXX_FILES += $(PROJECT_DIR)/engine/ECS/Component/Graphic/*.cpp
+CXX_FILES += $(PROJECT_DIR)/engine/ECS/Component/Map/*.cpp
 CXX_FILES += $(PROJECT_DIR)/engine/ECS/Entity/*.cpp
 CXX_FILES += $(PROJECT_DIR)/engine/ECS/System/*.cpp
 CXX_FILES += $(PROJECT_DIR)/engine/ECS/System/EntitySubscription/*.cpp
@@ -91,8 +93,8 @@ CXX_FILES += $(PROJECT_DIR)/engine/UI/Compositor/*.cpp
 
 CXX_FILES += $(PROJECT_DIR)/levels/StartMenuScene/*.cpp
 CXX_FILES += $(PROJECT_DIR)/levels/BuilderScene/*.cpp
-CXX_FILES += $(PROJECT_DIR)/levels/BuilderScene/Entities/*.cpp
 CXX_FILES += $(PROJECT_DIR)/levels/BuilderScene/Commands/*.cpp
+CXX_FILES += $(PROJECT_DIR)/levels/BuilderScene/Entities/*.cpp
 CXX_FILES += $(PROJECT_DIR)/levels/TestUIScene/*.cpp
 
 .PHONY: profiler debug release
