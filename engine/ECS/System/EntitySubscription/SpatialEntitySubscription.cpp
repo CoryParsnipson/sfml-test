@@ -16,6 +16,10 @@ void SpatialEntitySubscription::init() {
    this->root_ = this->scene().space_handle();
 }
 
+void SpatialEntitySubscription::clear() {
+   this->root_ = Handle();
+}
+
 void SpatialEntitySubscription::add(Handle entity) {
    // empty
 }

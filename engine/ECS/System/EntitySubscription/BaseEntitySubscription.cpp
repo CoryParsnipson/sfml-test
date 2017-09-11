@@ -17,6 +17,10 @@ void BaseEntitySubscription::init() {
    );
 }
 
+void BaseEntitySubscription::clear() {
+   this->entities_.clear();
+}
+
 void BaseEntitySubscription::add(Handle entity) {
    if (this->filter(entity)) {
       this->entities_.push_back(entity);

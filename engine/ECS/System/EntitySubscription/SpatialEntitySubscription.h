@@ -15,6 +15,7 @@ public:
    virtual ~SpatialEntitySubscription();
 
    virtual void init();
+   virtual void clear();
 
    virtual void add(Handle entity);
    virtual void remove(Handle entity);

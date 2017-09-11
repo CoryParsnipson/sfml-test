@@ -68,31 +68,3 @@ void GraphicSystem::on_update(Game& game, Entity& e) {
       vertexlist->draw(*this->surface_, states);
    }
 }
-
-sf::Transform GraphicSystem::local_transform(Entity& e) {
-   Space* space = e.get<Space>();
-   if (space != nullptr) {
-      return space->states().transform;
-   }
-
-   return sf::Transform();
-}
-
-sf::Transform GraphicSystem::global_transform(Entity& e) {
-   sf::Transform g_transform = sf::Transform();
-   Space* space = e.get<Space>();
-   Entity* entity = &e;
-
-   while (space != nullptr) {
-      g_transform *= space->states().transform;
-
-      entity = this->scene().get_entity(space->parent());
-      if (entity != nullptr) {
-         space = entity->get<Space>();
-      } else {
-         break;
-      }
-   }
-
-   return g_transform;
-}

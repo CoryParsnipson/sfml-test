@@ -7,10 +7,11 @@
 #include "PhysicsPart.h"
 #include "GraphicsPart.h"
 
-Entity::Entity(std::string id /* = "entity" */, ComponentManager* component_manager /* = nullptr */)
+Entity::Entity(std::string id /* = "entity" */, Scene* scene /* = nullptr */, ComponentManager* component_manager /* = nullptr */)
 : SceneObject(id)
 , enable_debug_wireframe_(true)
 , enable_debug_text_(false)
+, scene_(scene)
 , component_manager_(component_manager)
 {
 }
@@ -19,6 +20,7 @@ Entity::Entity(const Entity& other)
 : SceneObject(other.id())
 , enable_debug_wireframe_(other.enable_debug_wireframe_)
 , enable_debug_text_(other.enable_debug_text_)
+, scene_(other.scene_)
 , component_manager_(other.component_manager_)
 {
 }
@@ -42,6 +44,7 @@ void Entity::swap(Entity& other) {
    std::swap(this->enable_debug_wireframe_, other.enable_debug_wireframe_);
    std::swap(this->enable_debug_text_, other.enable_debug_text_);
 
+   this->scene_ = other.scene_; // shallow copy this
    this->component_manager_ = other.component_manager_; // shallow copy this
 
    std::swap(this->parts_, other.parts_);
@@ -209,6 +212,16 @@ void Entity::update(Game& game) {
    for (it = this->parts_.begin(); it != this->parts_.end(); it++) {
       it->second->update(game);
    }
+}
+
+void Entity::send_component_added_message() {
+   assert(this->scene_);
+   this->scene_->send_message_async<ComponentAddedMessage>();
+}
+
+void Entity::send_component_removed_message() {
+   assert(this->scene_);
+   this->scene_->send_message_async<ComponentRemovedMessage>();
 }
 
 void Entity::do_draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {

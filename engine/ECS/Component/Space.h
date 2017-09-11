@@ -35,7 +35,11 @@ public:
    sf::RenderStates& states();
    void states(sf::RenderStates states);
 
+   bool visible() const;
+   void visible(bool visible);
+
 private:
+   bool visible_;
    sf::RenderStates transform_;
 
    Handle parent_;

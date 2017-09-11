@@ -59,7 +59,7 @@ public:
    , scene_graph_(this->camera_)
    , id_(id)
    , is_initialized_(false)
-   , entities_(id + "EntityPool", 20000, [this](){ return Entity("entity", &this->components_); })
+   , entities_(id + "EntityPool", 20000, [this](){ return Entity("entity", this, &this->components_); })
    {
    }
 
@@ -325,6 +325,8 @@ protected:
    void send_message_async(Args&&... args);
 
 private:
+   friend class Entity;
+
    std::string id_;
    bool is_initialized_;
 

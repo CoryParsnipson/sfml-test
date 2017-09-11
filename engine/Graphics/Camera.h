@@ -34,14 +34,16 @@ public:
    void resize(sf::Vector2f size);
 
    // view interface
-   sf::Vector2f get_size();
+   sf::Vector2f get_size() const;
    void set_size(const sf::Vector2f& size);
 
    float get_scale();
    void set_scale(float factor);
 
-   const sf::Vector2f& get_center();
+   const sf::Vector2f& get_center() const;
    void set_center(const sf::Vector2f& center);
+
+   sf::FloatRect bounds() const;
 
    // moveable interface
    virtual void move(const sf::Vector2f& delta);

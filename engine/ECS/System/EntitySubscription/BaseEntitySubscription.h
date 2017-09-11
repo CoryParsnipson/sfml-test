@@ -17,6 +17,7 @@ public:
    virtual ~BaseEntitySubscription();
 
    virtual void init();
+   virtual void clear();
 
    virtual void add(Handle entity);
    virtual void remove(Handle entity);

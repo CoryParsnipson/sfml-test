@@ -2,6 +2,7 @@
 
 Space::Space(const std::string& id /* = "Space Component" */)
 : Component(id)
+, visible_(true)
 {
 }
 
@@ -66,4 +67,12 @@ sf::RenderStates& Space::states() {
 
 void Space::states(sf::RenderStates states) {
    this->transform_ = states;
+}
+
+bool Space::visible() const {
+   return this->visible_;
+}
+
+void Space::visible(bool visible) {
+   this->visible_ = visible;
 }

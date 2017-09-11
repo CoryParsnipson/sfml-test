@@ -22,8 +22,8 @@
 // -----------------------------------------------------------------------------
 class Handle {
 public:
+   Handle() : index_(0), version_(0) {}
    Handle(unsigned int index, unsigned int version) : index_(index), version_(version) {}
-   Handle(unsigned int raw = 0) : index_(raw >> 8), version_(raw & 0xFF) {}
 
    Handle& operator=(const Handle& other) {
       if (&other == this) {
@@ -61,8 +61,8 @@ public:
    }
 
 private:
-   unsigned int index_ : 24;
-   unsigned int version_ : 8;
+   unsigned int index_;
+   unsigned int version_;
 };
 
 // -----------------------------------------------------------------------------

@@ -7,6 +7,9 @@
 
 #include "sfml.h"
 
+#include "ComponentAddedMessage.h"
+#include "ComponentRemovedMessage.h"
+
 #include "ComponentManager.h"
 #include "ObjectPool.h"
 #include "Component.h"
@@ -30,7 +33,7 @@ public:
    using ComponentList = std::map<std::type_index, Handle>;
 
    // TODO: make this private (so only the object pool can make them) when Entity conversion is done
-   explicit Entity(std::string id = "entity", ComponentManager* component_manager = nullptr);
+   explicit Entity(std::string id = "entity", Scene* scene = nullptr, ComponentManager* component_manager = nullptr);
    Entity(const Entity& other);
    virtual ~Entity();
 
@@ -96,17 +99,22 @@ public:
    // update interface
    virtual void update(Game& game);
 
-protected:
+private:
    // allow Scene class to create entities
    friend class ObjectPool<Entity>;
 
    bool enable_debug_wireframe_;
    bool enable_debug_text_;
 
+   Scene* scene_;
    ComponentManager* component_manager_;
 
    PartList parts_;
    ComponentList components_;
+
+   // helpers
+   void send_component_added_message();
+   void send_component_removed_message();
 
    // scene graph interface hooks
    virtual void do_draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
@@ -140,14 +148,12 @@ template <
 >
 Handle Entity::add() {
    assert(this->component_manager_);
+
+   // get a component from the pool and add to this entity
    Handle handle(this->component_manager_->add<ComponentType>());
-   
-   this->components_.insert(
-      std::pair<std::type_index, Handle>(
-         std::type_index(typeid(ComponentType)),
-         handle
-      )
-   );
+   this->components_[std::type_index(typeid(ComponentType))] = handle;
+
+   this->send_component_added_message();
 
    return handle;
 }
@@ -160,10 +166,12 @@ void Entity::remove() {
    ComponentList::const_iterator it = this->components_.find(std::type_index(typeid(ComponentType)));
    if (it != this->components_.end()) {
       assert(this->component_manager_);
-      this->component_manager_->remove<ComponentType>(*it);
 
       // unattach component from this entity
+      this->component_manager_->remove<ComponentType>(*it);
       this->components_.erase(it);
+
+      this->send_component_removed_message();
    }
 }
 

@@ -32,6 +32,7 @@ public:
    void scene(Scene& scene);
 
    virtual void init() = 0;
+   virtual void clear() = 0;
 
    virtual void add(Handle entity) = 0;
    virtual void remove(Handle entity) = 0;

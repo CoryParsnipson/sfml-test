@@ -71,7 +71,7 @@ void Camera::resize(sf::Vector2f size) {
    }
 }
 
-sf::Vector2f Camera::get_size() {
+sf::Vector2f Camera::get_size() const {
    return this->view_->getSize() / this->zoom_factor_;
 }
 
@@ -96,7 +96,7 @@ void Camera::set_scale(float factor) {
    this->zoom_factor_ = factor;
 }
 
-const sf::Vector2f& Camera::get_center() {
+const sf::Vector2f& Camera::get_center() const {
    return this->view_->getCenter();
 }
 
@@ -111,6 +111,10 @@ void Camera::set_center(const sf::Vector2f& center) {
 
    // update original center
    this->original_center_ = center;
+}
+
+sf::FloatRect Camera::bounds() const {
+   return sf::FloatRect(this->get_center() - this->get_size() / 2.f, this->get_size());
 }
 
 void Camera::move(const sf::Vector2f& delta) {

@@ -70,6 +70,9 @@ protected:
 
    EntityFilter& subscribe_to();
 
+   sf::Transform local_transform(Entity& e);
+   sf::Transform global_transform(Entity& e);
+
 private:
    std::string id_;
    bool enabled_;

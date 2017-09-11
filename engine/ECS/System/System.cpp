@@ -1,5 +1,4 @@
 #include <cassert>
-#include <algorithm>
 #include <functional>
 
 #include "System.h"
@@ -9,6 +8,8 @@
 #include "EntityCreatedMessage.h"
 #include "AddToEntityMessage.h"
 #include "RemoveFromEntityMessage.h"
+#include "ComponentAddedMessage.h"
+#include "ComponentRemovedMessage.h"
 
 System::System(const std::string& id /* = "System" */, EntitySubscription* sub /* = new BaseEntitySubscription() */)
 : id_(id)
@@ -64,6 +65,16 @@ void System::init(Game& game) {
       this->subscription().add(msg.entity);
    });
 
+   this->mailbox().handle<ComponentAddedMessage>([this](ComponentAddedMessage& msg) {
+      this->subscription().clear();
+      this->subscription().init();
+   });
+
+   this->mailbox().handle<ComponentRemovedMessage>([this](ComponentRemovedMessage& msg) {
+      this->subscription().clear();
+      this->subscription().init();
+   });
+
    this->post_init(game);
 }
 
@@ -106,6 +117,34 @@ EntitySubscription& System::subscription() {
 
 EntityFilter& System::subscribe_to() {
    return this->subscription_->filter();
+}
+
+sf::Transform System::local_transform(Entity& e) {
+   Space* space = e.get<Space>();
+   if (space != nullptr) {
+      return space->states().transform;
+   }
+
+   return sf::Transform();
+}
+
+sf::Transform System::global_transform(Entity& e) {
+   sf::Transform g_transform = sf::Transform();
+   Space* space = e.get<Space>();
+   Entity* entity = &e;
+
+   while (space != nullptr) {
+      g_transform *= space->states().transform;
+
+      entity = this->scene().get_entity(space->parent());
+      if (entity != nullptr) {
+         space = entity->get<Space>();
+      } else {
+         break;
+      }
+   }
+
+   return g_transform;
 }
 
 void System::send_message_helper(std::shared_ptr<Message> message) {
