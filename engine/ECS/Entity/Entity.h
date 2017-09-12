@@ -17,6 +17,8 @@
 #include "SceneObject.h"
 #include "Serializable.h"
 
+#include "Mailbox.h"
+
 // ----------------------------------------------------------------------------
 // forward declarations 
 // ----------------------------------------------------------------------------
@@ -83,6 +85,21 @@ public:
    >
    void remove();
 
+   // messaging interface
+   template <
+      typename MsgT,
+      typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
+      typename... Args
+   >
+   void send_message(Args&&... args);
+
+   template <
+      typename MsgT,
+      typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
+      typename... Args
+   >
+   void send_message_async(Args&&... args);
+
    // serializable interface
    virtual std::string serialize(Serializer& s);
    virtual void deserialize(Serializer& s, Scene& scene, std::string& d);
@@ -113,8 +130,7 @@ private:
    ComponentList components_;
 
    // helpers
-   void send_component_added_message();
-   void send_component_removed_message();
+   void send_message_helper(std::shared_ptr<Message> message);
 
    // scene graph interface hooks
    virtual void do_draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
@@ -153,7 +169,7 @@ Handle Entity::add() {
    Handle handle(this->component_manager_->add<ComponentType>());
    this->components_[std::type_index(typeid(ComponentType))] = handle;
 
-   this->send_component_added_message();
+   this->send_message_async<ComponentAddedMessage>();
 
    return handle;
 }
@@ -171,8 +187,30 @@ void Entity::remove() {
       this->component_manager_->remove<ComponentType>(*it);
       this->components_.erase(it);
 
-      this->send_component_removed_message();
+      this->send_message_async<ComponentRemovedMessage>();
    }
+}
+
+template <
+   typename MsgT,
+   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
+   typename... Args
+>
+void Entity::send_message(Args&&... args) {
+   std::shared_ptr<MsgT> message = std::make_shared<MsgT>(std::forward<Args>(args)...);
+   this->send_message_helper(message);
+}
+
+template <
+   typename MsgT,
+   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
+   typename... Args
+>
+void Entity::send_message_async(Args&&... args) {
+   std::shared_ptr<MsgT> message = std::make_shared<MsgT>(std::forward<Args>(args)...);
+   message->async(true);
+
+   this->send_message_helper(message);
 }
 
 #endif

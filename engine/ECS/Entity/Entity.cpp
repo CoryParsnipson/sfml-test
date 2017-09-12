@@ -214,14 +214,9 @@ void Entity::update(Game& game) {
    }
 }
 
-void Entity::send_component_added_message() {
+void Entity::send_message_helper(std::shared_ptr<Message> message) {
    assert(this->scene_);
-   this->scene_->send_message_async<ComponentAddedMessage>();
-}
-
-void Entity::send_component_removed_message() {
-   assert(this->scene_);
-   this->scene_->send_message_async<ComponentRemovedMessage>();
+   this->scene_->handle_message(message);
 }
 
 void Entity::do_draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {

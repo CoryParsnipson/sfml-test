@@ -302,6 +302,13 @@ public:
       return this->root_;
    }
 
+   // broadcast a message to all systems in the scene; this method is called by System
+   void handle_message(std::shared_ptr<Message> msg) {
+      for (std::vector<System*>::const_iterator it = this->systems_.begin(); it != this->systems_.end(); ++it) {
+         (*it)->receive_message(msg);
+      }
+   }
+
 protected:
    Camera* camera_;
    SceneObject* scene_graph_;
@@ -325,8 +332,6 @@ protected:
    void send_message_async(Args&&... args);
 
 private:
-   friend class Entity;
-
    std::string id_;
    bool is_initialized_;
 
@@ -339,14 +344,6 @@ private:
    std::vector<System*> systems_;
 
    Handle root_;
-
-   // broadcast a message to all systems in the scene; this method is called by System
-   friend class System;
-   void handle_message(std::shared_ptr<Message> msg) {
-      for (std::vector<System*>::const_iterator it = this->systems_.begin(); it != this->systems_.end(); ++it) {
-         (*it)->receive_message(msg);
-      }
-   }
 };
 
 // ----------------------------------------------------------------------------
