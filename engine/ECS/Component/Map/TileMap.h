@@ -4,10 +4,16 @@
 #include <vector>
 #include <string>
 
+#include <boost/variant.hpp>
+
 #include "sfml.h"
 
 #include "Component.h"
+#include "Circle.h"
+#include "Rectangle.h"
 #include "Sprite.h"
+#include "Text.h"
+#include "VertexList.h"
 
 // ----------------------------------------------------------------------------
 // TileMap
@@ -17,7 +23,7 @@
 // ----------------------------------------------------------------------------
 class TileMap : public Component {
 public:
-   using Tile = Sprite;
+   using TileType = boost::variant<Circle, Rectangle, Sprite, Text, VertexList>;
 
    explicit TileMap(const std::string& id = "TileMap Component");
    TileMap(const TileMap& other);
@@ -26,13 +32,16 @@ public:
    TileMap& operator=(const TileMap& other);
    void swap(TileMap& other);
 
-   Tile* get(const sf::Vector2f& pos);
-   void set(Tile tile);
+   TileType* get(const sf::Vector2f& pos);
+   void set(TileType tile);
 
-   std::vector<Tile*> find(const sf::FloatRect& search_area);
+   std::vector<TileType*> find(const sf::FloatRect& search_area);
 
 private:
-   std::vector<Tile> tiles_;
+   std::vector<TileType> tiles_;
+
+   sf::Vector2f get_position_from_tile(TileType& tile);
+   sf::FloatRect get_global_bounds_from_tile(TileType& tile);
 };
 
 #endif
