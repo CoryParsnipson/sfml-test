@@ -2,6 +2,7 @@
 #define COMPONENT_H
 
 #include <string>
+#include <stdexcept>
 
 #include "Serializable.h"
 
@@ -36,8 +37,13 @@ public:
    }
 
    // serialize interface
-   virtual std::string serialize(Serializer& s) { return ""; }
-   virtual void deserialize(Serializer& s, Scene& scene, std::string& d) {}
+   virtual std::string serialize(Serializer& s) {
+      throw std::runtime_error("Children of Component need to implement custom serialize()");
+   }
+
+   virtual void deserialize(Serializer& s, Scene& scene, std::string& d) {
+      throw std::runtime_error("Children of Component need to implement custom deserialize()");
+   }
 
 private:
    std::string id_;
