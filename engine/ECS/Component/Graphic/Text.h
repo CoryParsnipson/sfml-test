@@ -72,6 +72,10 @@ public:
 
    unsigned int em_width() const;
 
+   // serialize interface
+   virtual std::string serialize(Serializer& s);
+   virtual void deserialize(Serializer& s, Scene& scene, std::string& d);
+
 private:
    std::string string_;
    sf::Text drawable_;

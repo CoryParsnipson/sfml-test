@@ -37,6 +37,10 @@ public:
 
    std::vector<TileType*> find(const sf::FloatRect& search_area);
 
+   // serialize interface
+   virtual std::string serialize(Serializer& s);
+   virtual void deserialize(Serializer& s, Scene& scene, std::string& d);
+
 private:
    std::vector<TileType> tiles_;
 

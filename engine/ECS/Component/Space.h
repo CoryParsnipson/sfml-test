@@ -17,7 +17,11 @@
 class Space : public Component {
 public:
    explicit Space(const std::string& id = "Space Component");
+   Space(const Space& other);
    virtual ~Space();
+
+   Space& operator=(const Space& other);
+   void swap(Space& other);
 
    Handle parent() const;
    void parent(Handle parent);
@@ -37,6 +41,10 @@ public:
 
    bool visible() const;
    void visible(bool visible);
+
+   // serialize interface
+   virtual std::string serialize(Serializer& s);
+   virtual void deserialize(Serializer& s, Scene& scene, std::string& d);
 
 private:
    bool visible_;

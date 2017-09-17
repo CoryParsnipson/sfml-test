@@ -2,6 +2,7 @@
 #include <algorithm>
 
 #include "Sprite.h"
+#include "Scene.h"
 #include "RenderSurface.h"
 #include "Texture.h"
 
@@ -213,4 +214,34 @@ void Sprite::animation(Animation* animation) {
 
 const Animation& Sprite::animation() const {
    return *this->animation_;
+}
+
+std::string Sprite::serialize(Serializer& s) {
+   Serializer::SerialData data;
+
+   sf::Vector2f pos = this->position();
+
+   data["type"] = "Sprite";
+
+   data["id"] = this->id();
+   data["texture"] = (this->texture_ ? this->texture_->id() : "");
+   data["x"] = std::to_string(static_cast<int>(pos.x));
+   data["y"] = std::to_string(static_cast<int>(pos.y));
+
+   // TODO: serialize other properties
+   return s.serialize(data);
+}
+
+void Sprite::deserialize(Serializer& s, Scene& scene, std::string& d) {
+   Serializer::SerialData data = s.deserialize(scene, d);
+
+   this->id(data["id"]);
+   this->position(std::stoi(data["x"]), std::stoi(data["y"]));
+
+   Texture* texture = scene.textures().get(data["texture"]);
+   if (texture) {
+      this->texture(*texture);
+   }
+
+   // TODO: restore other properties
 }

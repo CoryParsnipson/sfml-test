@@ -6,8 +6,31 @@ Space::Space(const std::string& id /* = "Space Component" */)
 {
 }
 
+Space::Space(const Space& other)
+: Component(other.id())
+, visible_(other.visible_)
+, transform_(other.transform_)
+, parent_(other.parent_)
+, children_(other.children_)
+{
+}
+
 Space::~Space() {
    this->children_.clear();
+}
+
+Space& Space::operator=(const Space& other) {
+   Space tmp(other);
+   this->swap(tmp);
+   return *this;
+}
+
+void Space::swap(Space& other) {
+   std::swap(static_cast<Component&>(*this), static_cast<Component&>(other));
+   std::swap(this->visible_, other.visible_);
+   std::swap(this->transform_, other.transform_);
+   std::swap(this->parent_, other.parent_);
+   std::swap(this->children_, other.children_);
 }
 
 Handle Space::parent() const {
@@ -75,4 +98,13 @@ bool Space::visible() const {
 
 void Space::visible(bool visible) {
    this->visible_ = visible;
+}
+
+std::string Space::serialize(Serializer& s) {
+   // TODO: figure out solution to serializing handles?
+   return "";
+}
+
+void Space::deserialize(Serializer& s, Scene& scene, std::string& d) {
+   // TODO: figure out solution to serializing handles?
 }

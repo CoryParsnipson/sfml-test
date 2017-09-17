@@ -92,6 +92,68 @@ sf::FloatRect TileMap::get_global_bounds_from_tile(TileType& tile) {
    }
 
    throw std::domain_error("Received invalid tile type: " + std::string(tile.type().name()));
+}
 
-   return sf::FloatRect(0, 0, 0, 0);
+std::string TileMap::serialize(Serializer& s) {
+   Serializer::SerialData data;
+
+   data["type"] = "TileMap";
+   data["id"] = this->id();
+   
+   data["num_tiles"] = std::to_string(this->tiles_.size());
+
+   for (unsigned int i = 0; i < this->tiles_.size(); ++i) {
+      TileType& tile(this->tiles_[i]);
+
+      if (tile.type() == typeid(Circle)) {
+         data["tile_" + std::to_string(i)] = boost::get<Circle>(tile).serialize(s);
+      } else if (tile.type() == typeid(Rectangle)) {
+         data["tile_" + std::to_string(i)] = boost::get<Rectangle>(tile).serialize(s);
+      } else if (tile.type() == typeid(Sprite)) {
+         data["tile_" + std::to_string(i)] = boost::get<Sprite>(tile).serialize(s);
+      } else if (tile.type() == typeid(Text)) {
+         data["tile_" + std::to_string(i)] = boost::get<Text>(tile).serialize(s);
+      } else if (tile.type() == typeid(VertexList)) {
+         data["tile_" + std::to_string(i)] = boost::get<VertexList>(tile).serialize(s);
+      } else {
+         throw std::domain_error("Received invalid tile type: " + std::string(tile.type().name()));
+      }
+   }
+
+   return s.serialize(data);
+}
+
+void TileMap::deserialize(Serializer& s, Scene& scene, std::string& d) {
+   Serializer::SerialData data = s.deserialize(scene, d);
+
+   this->id(data["id"]);
+   this->tiles_.resize(std::stoi(data["num_tiles"]));
+
+   for (unsigned int i = 0; i < this->tiles_.size(); ++i) {
+      Serializer::SerialData tile_data = s.deserialize(scene, data["tile_" + std::to_string(i)]);
+
+      if (tile_data["type"] == "Circle") {
+         Circle c;
+         c.deserialize(s, scene, data["tile_" + std::to_string(i)]);
+         this->set(c);
+      } else if (tile_data["type"] == "Rectangle") {
+         Rectangle r;
+         r.deserialize(s, scene, data["tile_" + std::to_string(i)]);
+         this->set(r);
+      } else if (tile_data["type"] == "Sprite") {
+         Sprite sprite;
+         sprite.deserialize(s, scene, data["tile_" + std::to_string(i)]);
+         this->set(sprite);
+      } else if (tile_data["type"] == "Text") {
+         Text t;
+         t.deserialize(s, scene, data["tile_" + std::to_string(i)]);
+         this->set(t);
+      } else if (tile_data["type"] == "VertexList") {
+         VertexList v;
+         v.deserialize(s, scene, data["tile_" + std::to_string(i)]);
+         this->set(v);
+      } else {
+         throw std::domain_error("Received invalid tile type: " + tile_data["type"]);
+      }
+   }
 }

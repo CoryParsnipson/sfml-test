@@ -68,6 +68,10 @@ public:
    void outline_thickness(float thickness);
    float outline_thickness() const;
 
+   // serialize interface
+   virtual std::string serialize(Serializer& s);
+   virtual void deserialize(Serializer& s, Scene& scene, std::string& d);
+
 private:
    sf::CircleShape drawable_;
 };

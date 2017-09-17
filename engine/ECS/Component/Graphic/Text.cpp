@@ -167,3 +167,51 @@ unsigned int Text::em_width() const {
 
    return em.getLocalBounds().width;
 }
+
+std::string Text::serialize(Serializer& s) {
+   Serializer::SerialData data;
+
+   int color = this->color().r;
+   color |= this->color().g << 8;
+   color |= this->color().b << 16;
+   color |= this->color().a << 24;
+
+   data["type"] = "Text";
+
+   data["id"] = this->id();
+   data["x"] = std::to_string(this->position().x);
+   data["y"] = std::to_string(this->position().y);
+   data["rotation"] = std::to_string(this->rotation());
+   data["origin_x"] = std::to_string(this->origin().x);
+   data["origin_y"] = std::to_string(this->origin().y);
+   data["color"] = std::to_string(color);
+   data["text"] = this->string();
+   //data["font"]  // TODO: make font serializable
+   data["font_size"] = std::to_string(this->font_size());
+   data["style"] = std::to_string(static_cast<int>(this->style()));
+
+   return s.serialize(data);
+}
+
+void Text::deserialize(Serializer& s, Scene& scene, std::string& d) {
+   Serializer::SerialData data = s.deserialize(scene, d);
+
+   int raw_color = std::stoi(data["color"]);
+
+   int color_r = raw_color && 0xFF;
+   int color_g = (raw_color && 0xFF00) >> 8;
+   int color_b = (raw_color && 0xFF0000) >> 16;
+   int color_a = (raw_color && 0xFF000000) >> 24;
+
+   sf::Color color(color_r, color_g, color_b, color_a);
+   
+   this->id(data["id"]);
+   this->position(std::stof(data["x"]), std::stof(data["y"]));
+   this->rotation(std::stof(data["rotation"]));
+   this->origin(std::stof(data["origin_x"]), std::stof(data["origin_y"]));
+   this->color(color);
+   this->string(data["text"]);
+   // TODO: deserialize font
+   this->font_size(std::stoi(data["font_size"]));
+   this->style(static_cast<sf::Text::Style>(std::stoi(data["style"])));
+}

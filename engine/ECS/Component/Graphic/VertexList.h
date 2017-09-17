@@ -73,6 +73,10 @@ public:
    void vertex_texture_coord(unsigned int idx, const sf::Vector2f& texture_coord);
    const sf::Vector2f& vertex_texture_coord(unsigned int idx) const;
 
+   // serialize interface
+   virtual std::string serialize(Serializer& s);
+   virtual void deserialize(Serializer& s, Scene& scene, std::string& d);
+
 private:
    float rotation_;
    sf::Vector2f size_;

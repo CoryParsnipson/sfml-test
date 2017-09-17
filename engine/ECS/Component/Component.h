@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "Serializable.h"
+
 // ----------------------------------------------------------------------------
 // Component
 //
@@ -11,12 +13,19 @@
 // ----------------------------------------------------------------------------
 class Component {
 public:
-   explicit Component(const std::string& id = "Component")
-   : id_(id)
-   {
+   explicit Component(const std::string& id = "Component") : id_(id) {}
+   Component(const Component& other) : id_(other.id_) {}
+   virtual ~Component() {}
+
+   Component& operator=(const Component& other) {
+      Component tmp(other);
+      this->swap(tmp);
+      return *this;
    }
 
-   virtual ~Component() {}
+   void swap(Component& other) {
+      std::swap(this->id_, other.id_);
+   }
 
    const std::string& id() const {
       return this->id_;
@@ -25,6 +34,10 @@ public:
    void id(std::string id) {
       this->id_ = id;
    }
+
+   // serialize interface
+   virtual std::string serialize(Serializer& s) { return ""; }
+   virtual void deserialize(Serializer& s, Scene& scene, std::string& d) {}
 
 private:
    std::string id_;

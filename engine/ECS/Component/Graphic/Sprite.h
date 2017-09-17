@@ -97,6 +97,10 @@ public:
    void animation(Animation* animation);
    const Animation& animation() const;
 
+   // serialize interface
+   virtual std::string serialize(Serializer& s);
+   virtual void deserialize(Serializer& s, Scene& scene, std::string& d);
+
 private:
    Texture* texture_;
    sf::Sprite drawable_;
