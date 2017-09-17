@@ -219,10 +219,10 @@ void VertexList::deserialize(Serializer& s, Scene& scene, std::string& d) {
 
    int raw_color = std::stoi(data["color"]);
 
-   int color_r = raw_color && 0xFF;
-   int color_g = (raw_color && 0xFF00) >> 8;
-   int color_b = (raw_color && 0xFF0000) >> 16;
-   int color_a = (raw_color && 0xFF000000) >> 24;
+   int color_r = raw_color & 0xFF;
+   int color_g = (raw_color & 0xFF00) >> 8;
+   int color_b = (raw_color & 0xFF0000) >> 16;
+   int color_a = (raw_color & 0xFF000000) >> 24;
 
    sf::Color color(color_r, color_g, color_b, color_a);
 
@@ -239,10 +239,10 @@ void VertexList::deserialize(Serializer& s, Scene& scene, std::string& d) {
    for (unsigned int i = 0; i < this->drawable_.getVertexCount(); ++i) {
       int raw_v_color = std::stoi(data["vertex_" + std::to_string(i) + "_color"]);
 
-      int v_color_r = raw_v_color && 0xFF;
-      int v_color_g = (raw_v_color && 0xFF00) >> 8;
-      int v_color_b = (raw_v_color && 0xFF0000) >> 16;
-      int v_color_a = (raw_v_color && 0xFF000000) >> 24;
+      int v_color_r = raw_v_color & 0xFF;
+      int v_color_g = (raw_v_color & 0xFF00) >> 8;
+      int v_color_b = (raw_v_color & 0xFF0000) >> 16;
+      int v_color_a = (raw_v_color & 0xFF000000) >> 24;
 
       sf::Color v_color(v_color_r, v_color_g, v_color_b, v_color_a);
 

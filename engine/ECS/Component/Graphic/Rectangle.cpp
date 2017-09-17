@@ -169,15 +169,15 @@ void Rectangle::deserialize(Serializer& s, Scene& scene, std::string& d) {
    int raw_color = std::stoi(data["color"]);
    int raw_outline_color = std::stoi(data["outline_color"]);
 
-   int color_r = raw_color && 0xFF;
-   int color_g = (raw_color && 0xFF00) >> 8;
-   int color_b = (raw_color && 0xFF0000) >> 16;
-   int color_a = (raw_color && 0xFF000000) >> 24;
+   int color_r = raw_color & 0xFF;
+   int color_g = (raw_color & 0xFF00) >> 8;
+   int color_b = (raw_color & 0xFF0000) >> 16;
+   int color_a = (raw_color & 0xFF000000) >> 24;
 
-   int outline_color_r = raw_outline_color && 0xFF;
-   int outline_color_g = (raw_outline_color && 0xFF00) >> 8;
-   int outline_color_b = (raw_outline_color && 0xFF0000) >> 16;
-   int outline_color_a = (raw_outline_color && 0xFF000000) >> 24;
+   int outline_color_r = raw_outline_color & 0xFF;
+   int outline_color_g = (raw_outline_color & 0xFF00) >> 8;
+   int outline_color_b = (raw_outline_color & 0xFF0000) >> 16;
+   int outline_color_a = (raw_outline_color & 0xFF000000) >> 24;
 
    sf::Color color(color_r, color_g, color_b, color_a);
    sf::Color outline_color(outline_color_r, outline_color_g, outline_color_b, outline_color_a);

@@ -5,6 +5,7 @@ This was originally going to be a quick isometric tile demo experiment and it ha
 
 Things to do next
 -----------------
+* Encapsulate sf::Font and sf::Color into wrapper classes (for serialization and stuff)
 * Create new components
    * both of these things below: consider making physics parts composites?
       * need to upgrade physicscomponent to take list of bounding boxes

@@ -126,10 +126,10 @@ std::string TileMap::serialize(Serializer& s) {
 void TileMap::deserialize(Serializer& s, Scene& scene, std::string& d) {
    Serializer::SerialData data = s.deserialize(scene, d);
 
+   this->tiles_.clear();
    this->id(data["id"]);
-   this->tiles_.resize(std::stoi(data["num_tiles"]));
 
-   for (unsigned int i = 0; i < this->tiles_.size(); ++i) {
+   for (int i = 0; i < std::stoi(data["num_tiles"]); ++i) {
       Serializer::SerialData tile_data = s.deserialize(scene, data["tile_" + std::to_string(i)]);
 
       if (tile_data["type"] == "Circle") {
