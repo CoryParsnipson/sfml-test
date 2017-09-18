@@ -1,4 +1,4 @@
-#include "GraphicSystem.h"
+#include "GraphicalSystem.h"
 #include "RenderSurface.h"
 #include "Game.h"
 #include "Camera.h"
@@ -12,31 +12,34 @@
 #include "Scene.h"
 #include "ResizeCameraMessage.h"
 
-GraphicSystem::GraphicSystem(const std::string& id, RenderSurface& surface, std::shared_ptr<Camera> camera)
+GraphicalSystem::GraphicalSystem(const std::string& id, RenderSurface& surface, std::shared_ptr<Camera> camera)
 : System(id, new SpatialEntitySubscription(id + "EntitySubscription"))
 , surface_(&surface)
 , camera_(camera)
 {
-}
-
-GraphicSystem::~GraphicSystem() {
-}
-
-std::shared_ptr<Camera> GraphicSystem::camera() const {
-   return this->camera_;
-}
-
-void GraphicSystem::on_init(Game& game) {
-   this->subscribe_to().one_of<Circle, Rectangle, Sprite, Text, VertexList>();
-   this->subscribe_to().all_of<Space>();
-
    // handle resize messages
    this->mailbox().handle<ResizeCameraMessage>([this](ResizeCameraMessage& msg) {
       this->camera_->resize(sf::Vector2f(msg.width, msg.height));
    });
 }
 
-void GraphicSystem::on_update(Game& game, Entity& e) {
+GraphicalSystem::~GraphicalSystem() {
+}
+
+std::shared_ptr<Camera> GraphicalSystem::camera() const {
+   return this->camera_;
+}
+
+RenderSurface* GraphicalSystem::surface() const {
+   return this->surface_;
+}
+
+void GraphicalSystem::on_init(Game& game) {
+   this->subscribe_to().one_of<Circle, Rectangle, Sprite, Text, VertexList>();
+   this->subscribe_to().all_of<Space>();
+}
+
+void GraphicalSystem::on_update(Game& game, Entity& e) {
    Circle* circle = e.get<Circle>();
    Rectangle* rectangle = e.get<Rectangle>();
    Sprite* sprite = e.get<Sprite>();

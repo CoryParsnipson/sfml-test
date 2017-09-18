@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-#include "System.h"
+#include "GraphicalSystem.h"
 
 // ----------------------------------------------------------------------------
 // forward declarations
@@ -15,19 +15,17 @@ class RenderSurface;
 // ----------------------------------------------------------------------------
 // MapSystem
 //
-// This system is responsible for updating the map
+// This system works on TileMap components. TileMap components store an array
+// of graphics that can be used to create backgrounds and maps.
 // ----------------------------------------------------------------------------
-class MapSystem : public System {
+class MapSystem : public GraphicalSystem {
 public:
    MapSystem(const std::string& id, RenderSurface& surface, std::shared_ptr<Camera> camera);
    virtual ~MapSystem();
 
+private:
    virtual void on_init(Game& game);
    virtual void on_update(Game& game, Entity& e);
-
-private:
-   RenderSurface* surface_;
-   std::shared_ptr<Camera> camera_;
 };
 
 #endif

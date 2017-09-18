@@ -26,7 +26,7 @@
 #include "Rectangle.h"
 #include "Sprite.h"
 
-#include "GraphicSystem.h"
+#include "GraphicalSystem.h"
 #include "SpatialSystem.h"
 
 StartMenuScene::StartMenuScene()
@@ -85,7 +85,7 @@ void StartMenuScene::init(Game& game) {
 
    this->textures_.load("tile_sign", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 0, 64, 64));
    
-   GraphicSystem* gs = new GraphicSystem("GraphicSystem", game.window(), std::make_shared<Camera>("Main Camera"));
+   GraphicalSystem* gs = new GraphicalSystem("GraphicalSystem", game.window(), std::make_shared<Camera>("Main Camera"));
    gs->camera()->resize(game.window().size()); // scene automatically resizes the cameras in the scene graph
    gs->camera()->reset_pan();
    gs->camera()->move(gs->camera()->get_center() - game.window().size());

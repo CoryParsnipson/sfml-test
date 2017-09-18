@@ -66,7 +66,9 @@ public:
 protected:
    Scene& scene();
    Mailbox& mailbox();
+
    EntitySubscription& subscription();
+   void subscription(EntitySubscription* subscription);
 
    EntityFilter& subscribe_to();
 

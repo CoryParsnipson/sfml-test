@@ -5,7 +5,6 @@
 #include "Game.h"
 #include "Scene.h"
 
-#include "EntityCreatedMessage.h"
 #include "AddToEntityMessage.h"
 #include "RemoveFromEntityMessage.h"
 #include "ComponentAddedMessage.h"
@@ -61,10 +60,6 @@ void System::init(Game& game) {
    this->subscription_->init(); 
 
    // add some reasonable defaults to certain message types
-   this->mailbox().handle<EntityCreatedMessage>([this](EntityCreatedMessage& msg) {
-      this->subscription().add(msg.entity);
-   });
-
    this->mailbox().handle<ComponentAddedMessage>([this](ComponentAddedMessage& msg) {
       this->subscription().clear();
       this->subscription().init();
@@ -113,6 +108,16 @@ Mailbox& System::mailbox() {
 
 EntitySubscription& System::subscription() {
    return *this->subscription_;
+}
+
+void System::subscription(EntitySubscription* subscription) {
+   if (!subscription) {
+      Game::logger().msg(this->id(), Logger::WARNING, "Setting EntitySubscription to null pointer.");
+      return;
+   }
+   
+   delete this->subscription_;
+   this->subscription_ = subscription;
 }
 
 EntityFilter& System::subscribe_to() {

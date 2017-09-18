@@ -13,17 +13,18 @@ class Camera;
 class RenderSurface;
 
 // ----------------------------------------------------------------------------
-// GraphicSystem
+// GraphicalSystem
 //
-// This system is enabled by default and renders all objects with graphics
-// components to the specified window.
+// Systems that draw graphics to the screen should inherit from this system.
+// GraphicalSystem provides a camera and a camera resize message handler.
 // ----------------------------------------------------------------------------
-class GraphicSystem : public System {
+class GraphicalSystem : public System {
 public:
-   GraphicSystem(const std::string& id, RenderSurface& surface, std::shared_ptr<Camera> camera);
-   virtual ~GraphicSystem();
+   GraphicalSystem(const std::string& id, RenderSurface& surface, std::shared_ptr<Camera> camera);
+   virtual ~GraphicalSystem();
 
    std::shared_ptr<Camera> camera() const;
+   RenderSurface* surface() const;
 
 private:
    RenderSurface* surface_;
