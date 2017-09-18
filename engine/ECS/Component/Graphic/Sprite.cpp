@@ -219,29 +219,45 @@ const Animation& Sprite::animation() const {
 std::string Sprite::serialize(Serializer& s) {
    Serializer::SerialData data;
 
-   sf::Vector2f pos = this->position();
+   int color = this->color().r;
+   color |= this->color().g << 8;
+   color |= this->color().b << 16;
+   color |= this->color().a << 24;
 
    data["type"] = "Sprite";
 
    data["id"] = this->id();
+   data["x"] = std::to_string(this->position().x);
+   data["y"] = std::to_string(this->position().y);
+   data["rotation"] = std::to_string(this->rotation());
+   data["origin_x"] = std::to_string(this->origin().x);
+   data["origin_y"] = std::to_string(this->origin().y);
+   data["color"] = std::to_string(color);
    data["texture"] = (this->texture_ ? this->texture_->id() : "");
-   data["x"] = std::to_string(static_cast<int>(pos.x));
-   data["y"] = std::to_string(static_cast<int>(pos.y));
 
-   // TODO: serialize other properties
    return s.serialize(data);
 }
 
 void Sprite::deserialize(Serializer& s, Scene& scene, std::string& d) {
    Serializer::SerialData data = s.deserialize(scene, d);
 
+   int raw_color = std::stoi(data["color"]);
+
+   int color_r = raw_color & 0xFF;
+   int color_g = (raw_color & 0xFF00) >> 8;
+   int color_b = (raw_color & 0xFF0000) >> 16;
+   int color_a = (raw_color & 0xFF000000) >> 24;
+
+   sf::Color color(color_r, color_g, color_b, color_a);
+
    this->id(data["id"]);
-   this->position(std::stoi(data["x"]), std::stoi(data["y"]));
+   this->position(std::stof(data["x"]), std::stof(data["y"]));
+   this->rotation(std::stof(data["rotation"]));
+   this->origin(std::stof(data["origin_x"]), std::stof(data["origin_y"]));
+   this->color(color);
 
    Texture* texture = scene.textures().get(data["texture"]);
    if (texture) {
       this->texture(*texture);
    }
-
-   // TODO: restore other properties
 }
