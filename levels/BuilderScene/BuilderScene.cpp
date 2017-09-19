@@ -47,6 +47,10 @@
 #include "JSONSerializer.h"
 #include "OrthographicGrid.h"
 
+#include "Sprite.h"
+#include "TileMap.h"
+#include "MapSystem.h"
+
 BuilderScene::BuilderScene()
 : Scene("BuilderScene")
 , hud_camera_(new Camera("Hud Camera"))
@@ -67,31 +71,31 @@ BuilderScene::~BuilderScene() {
 
 void BuilderScene::init(Game& game) {
    // load fonts
-   this->fonts_.load("retro", "retro.ttf");
+   this->fonts().load("retro", "retro.ttf");
    
    // load textures
-   this->textures_.load("tile_grass", "pkmn_tiles_outdoor1.png", sf::IntRect(0, 0, 64, 64));
-   this->textures_.load("tile_worn_grass", "pkmn_tiles_outdoor1.png", sf::IntRect(64, 0, 64, 64));
-   this->textures_.load("tile_sign", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 0, 64, 64));
-   this->textures_.load("tile_dirt_ul", "pkmn_tiles_outdoor1.png", sf::IntRect(0, 64, 64, 64));
-   this->textures_.load("tile_dirt_um", "pkmn_tiles_outdoor1.png", sf::IntRect(64, 64, 64, 64));
-   this->textures_.load("tile_dirt_ur", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 64, 64, 64));
-   this->textures_.load("tile_dirt_ml", "pkmn_tiles_outdoor1.png", sf::IntRect(0, 128, 64, 64));
-   this->textures_.load("tile_dirt_mm", "pkmn_tiles_outdoor1.png", sf::IntRect(64, 128, 64, 64));
-   this->textures_.load("tile_dirt_mr", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 128, 64, 64));
-   this->textures_.load("tile_dirt_bl", "pkmn_tiles_outdoor1.png", sf::IntRect(0, 192, 64, 64));
-   this->textures_.load("tile_dirt_bm", "pkmn_tiles_outdoor1.png", sf::IntRect(64, 192, 64, 64));
-   this->textures_.load("tile_dirt_br", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 192, 64, 64));
-   this->textures_.load("tile_water_ul", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 64, 64, 64));
-   this->textures_.load("tile_water_um", "pkmn_tiles_outdoor1.png", sf::IntRect(256, 64, 64, 64));
-   this->textures_.load("tile_water_ur", "pkmn_tiles_outdoor1.png", sf::IntRect(320, 64, 64, 64));
-   this->textures_.load("tile_water_ml", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 128, 64, 64));
-   this->textures_.load("tile_water_mm", "pkmn_tiles_outdoor1.png", sf::IntRect(256, 128, 64, 64));
-   this->textures_.load("tile_water_mr", "pkmn_tiles_outdoor1.png", sf::IntRect(320, 128, 64, 64));
-   this->textures_.load("tile_water_bl", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 192, 64, 64));
-   this->textures_.load("tile_water_bm", "pkmn_tiles_outdoor1.png", sf::IntRect(256, 192, 64, 64));
-   this->textures_.load("tile_water_br", "pkmn_tiles_outdoor1.png", sf::IntRect(320, 192, 64, 64));
-   Game::logger().msg(this->id(), Logger::INFO, this->textures_);
+   this->textures().load("tile_grass", "pkmn_tiles_outdoor1.png", sf::IntRect(0, 0, 64, 64));
+   this->textures().load("tile_worn_grass", "pkmn_tiles_outdoor1.png", sf::IntRect(64, 0, 64, 64));
+   this->textures().load("tile_sign", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 0, 64, 64));
+   this->textures().load("tile_dirt_ul", "pkmn_tiles_outdoor1.png", sf::IntRect(0, 64, 64, 64));
+   this->textures().load("tile_dirt_um", "pkmn_tiles_outdoor1.png", sf::IntRect(64, 64, 64, 64));
+   this->textures().load("tile_dirt_ur", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 64, 64, 64));
+   this->textures().load("tile_dirt_ml", "pkmn_tiles_outdoor1.png", sf::IntRect(0, 128, 64, 64));
+   this->textures().load("tile_dirt_mm", "pkmn_tiles_outdoor1.png", sf::IntRect(64, 128, 64, 64));
+   this->textures().load("tile_dirt_mr", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 128, 64, 64));
+   this->textures().load("tile_dirt_bl", "pkmn_tiles_outdoor1.png", sf::IntRect(0, 192, 64, 64));
+   this->textures().load("tile_dirt_bm", "pkmn_tiles_outdoor1.png", sf::IntRect(64, 192, 64, 64));
+   this->textures().load("tile_dirt_br", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 192, 64, 64));
+   this->textures().load("tile_water_ul", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 64, 64, 64));
+   this->textures().load("tile_water_um", "pkmn_tiles_outdoor1.png", sf::IntRect(256, 64, 64, 64));
+   this->textures().load("tile_water_ur", "pkmn_tiles_outdoor1.png", sf::IntRect(320, 64, 64, 64));
+   this->textures().load("tile_water_ml", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 128, 64, 64));
+   this->textures().load("tile_water_mm", "pkmn_tiles_outdoor1.png", sf::IntRect(256, 128, 64, 64));
+   this->textures().load("tile_water_mr", "pkmn_tiles_outdoor1.png", sf::IntRect(320, 128, 64, 64));
+   this->textures().load("tile_water_bl", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 192, 64, 64));
+   this->textures().load("tile_water_bm", "pkmn_tiles_outdoor1.png", sf::IntRect(256, 192, 64, 64));
+   this->textures().load("tile_water_br", "pkmn_tiles_outdoor1.png", sf::IntRect(320, 192, 64, 64));
+   Game::logger().msg(this->id(), Logger::INFO, this->textures());
 
    sf::VertexArray* backdrop = new sf::VertexArray(sf::TrianglesStrip, 4);
    (*backdrop)[0].position = sf::Vector2f(0, 0);
@@ -144,12 +148,12 @@ void BuilderScene::init(Game& game) {
 
    // UI elements
    // textboxes
-   this->scene_graph_->layer(2)->add(new TextWidget("Text Widget 1", "SFML_Test", sf::Vector2f(0, 0), this->fonts_.get("retro")));
-   this->scene_graph_->layer(2)->add(new TextWidget("Text Widget 2", "r: reset pan position", sf::Vector2f(0, 15), this->fonts_.get("retro")));
-   this->scene_graph_->layer(2)->add(new TextWidget("Text Widget 3", "g: toggle grid visibility", sf::Vector2f(0, 30), this->fonts_.get("retro")));
-   this->scene_graph_->layer(2)->add(new TextWidget("Text Widget 4", "o: toggle entity hitboxes", sf::Vector2f(0, 45), this->fonts_.get("retro")));
-   this->scene_graph_->layer(2)->add(new TextWidget("Text Widget 5", "del: remove tiles at selection", sf::Vector2f(0, 60), this->fonts_.get("retro")));
-   this->scene_graph_->layer(2)->add(new TextWidget("Text Widget 6", "r-click: click and drag to pan", sf::Vector2f(0, 75), this->fonts_.get("retro")));
+   this->scene_graph_->layer(2)->add(new TextWidget("Text Widget 1", "SFML_Test", sf::Vector2f(0, 0), this->fonts().get("retro")));
+   this->scene_graph_->layer(2)->add(new TextWidget("Text Widget 2", "r: reset pan position", sf::Vector2f(0, 15), this->fonts().get("retro")));
+   this->scene_graph_->layer(2)->add(new TextWidget("Text Widget 3", "g: toggle grid visibility", sf::Vector2f(0, 30), this->fonts().get("retro")));
+   this->scene_graph_->layer(2)->add(new TextWidget("Text Widget 4", "o: toggle entity hitboxes", sf::Vector2f(0, 45), this->fonts().get("retro")));
+   this->scene_graph_->layer(2)->add(new TextWidget("Text Widget 5", "del: remove tiles at selection", sf::Vector2f(0, 60), this->fonts().get("retro")));
+   this->scene_graph_->layer(2)->add(new TextWidget("Text Widget 6", "r-click: click and drag to pan", sf::Vector2f(0, 75), this->fonts().get("retro")));
 
    // tile palette
    Widget* tile_palette = new PanelWidget("Tiles", sf::Vector2f(10, 150), sf::Vector2f(200, 830));
@@ -184,8 +188,8 @@ void BuilderScene::init(Game& game) {
    
    for (std::vector<std::string>::const_iterator tile_texture_it = tile_textures.begin(); tile_texture_it != tile_textures.end(); ++tile_texture_it) {
       button = new ButtonWidget(*tile_texture_it, sf::Vector2f(x_pos, y_pos), sf::Vector2f(64, 64));
-      button->set_background(new SpriteGraphic(*this->textures_.get(*tile_texture_it)));
-      button->on_release(new SetTilesCommand(*this->map_, this->tile_cursor_, *this->textures_.get(*tile_texture_it)));
+      button->set_background(new SpriteGraphic(*this->textures().get(*tile_texture_it)));
+      button->on_release(new SetTilesCommand(*this->map_, this->tile_cursor_, *this->textures().get(*tile_texture_it)));
 
       tile_palette->add(button);
 
@@ -207,11 +211,11 @@ void BuilderScene::init(Game& game) {
    );
    this->scene_graph_->layer(2)->insert(2, this->center_dot_);
 
-   this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", this->fonts_.get("retro"));
+   this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", this->fonts().get("retro"));
    this->scene_graph_->layer(2)->insert(2, this->fps_display_);
 
    // player gamepad config
-   PlayerGamepad* pg = new PlayerGamepad("PlayerGamepad", this->fonts_.get("retro"));
+   PlayerGamepad* pg = new PlayerGamepad("PlayerGamepad", this->fonts().get("retro"));
    this->gamepad(pg);
 
    DefaultMouseGamepadPreset dmgp(*this->scene_graph_);
@@ -224,7 +228,7 @@ void BuilderScene::init(Game& game) {
 
    // builder scene gamepad bindings
    pg->set(new ToggleVisibleCommand(this->map_->grid()), Key::G);
-   pg->set(new ToggleDebugInfoCommand(this->scene_graph_, this->fonts_.get("retro")), Key::O);
+   pg->set(new ToggleDebugInfoCommand(this->scene_graph_, this->fonts().get("retro")), Key::O);
    pg->set(new ResetCameraCommand(this->map_camera_, this->map_->grid()), Key::R);
    pg->set(new SwitchSceneCommand(this, new TestUIScene()), Key::Escape);
    pg->set(new RemoveTilesCommand(*this->map_, this->tile_cursor_), Key::Delete);
@@ -262,6 +266,48 @@ void BuilderScene::init(Game& game) {
 
    this->map_camera_->on_mouse_move(drag_command);
    this->map_camera_->on_mouse_wheel(new ZoomCommand(this->map_camera_, this->map_->grid(), pg));
+
+   // TEST MAP SYSTEM
+   MapSystem* ms = new MapSystem("MapSystem", game.window(), std::make_shared<Camera>("Main Camera"));
+   this->add_system(ms);
+
+   // create a map
+   Handle e1 = this->create_entity();
+   Entity* map_root = this->get_entity(e1);
+   map_root->id("MapRoot");
+   map_root->add<TileMap>();
+
+   FileChannel tm_chan("tilemap_test.txt");
+
+   tm_chan.seek(0);
+   std::string tilemap_data = s.read(tm_chan);
+
+   // try to load tile map data
+   if (!tilemap_data.empty()) {
+      map_root->get<TileMap>()->deserialize(static_cast<Serializer&>(s), *this, tilemap_data);
+   } else {
+      // set some tiles down
+      Sprite s1("tile1", *this->textures().get("tile_sign"));
+      Sprite s2("tile2", *this->textures().get("tile_worn_grass"));
+      Sprite s3("tile3", *this->textures().get("tile_grass"));
+      Sprite s4("tile4", *this->textures().get("tile_water_mm"));
+      Rectangle s5("tile5", 100, 228, 64, 64);
+
+      s1.position(100, 100);
+      s2.position(164, 100);
+      s3.position(100, 164);
+      s4.position(164, 164);
+      s5.color(sf::Color::Green);
+      
+      map_root->get<TileMap>()->set(s1);
+      map_root->get<TileMap>()->set(s2);
+      map_root->get<TileMap>()->set(s3);
+      map_root->get<TileMap>()->set(s4);
+      map_root->get<TileMap>()->set(s5);
+   }
+
+   TileMap* tm = map_root->get<TileMap>();
+   Game::logger().msg(this->id(), Logger::INFO, "TileMap " + tm->id() + " serialized: " + tm->serialize(s));
 }
 
 void BuilderScene::enter(Game& game) {

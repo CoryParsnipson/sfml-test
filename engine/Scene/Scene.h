@@ -313,9 +313,6 @@ protected:
    Camera* camera_;
    SceneObject* scene_graph_;
 
-   FontAtlas fonts_;
-   TextureAtlas textures_;
-
    // use this to broadcast messages to Systems from Scene
    template <
       typename MsgT,
@@ -338,6 +335,9 @@ private:
    Game* game_;
    GamepadList gamepads_;
    SceneRenderer renderer_;
+
+   FontAtlas fonts_;
+   TextureAtlas textures_;
 
    ObjectPool<Entity> entities_;
    ComponentManager components_;

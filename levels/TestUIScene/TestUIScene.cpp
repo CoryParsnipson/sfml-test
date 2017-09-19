@@ -28,12 +28,12 @@ TestUIScene::~TestUIScene() {
 
 void TestUIScene::init(Game& game) {
    // load fonts
-   this->fonts_.load("retro", "retro.ttf");
+   this->fonts().load("retro", "retro.ttf");
    
    // load textures
-   this->textures_.load("ui_resize_handle", "ui_panel_test.png", sf::IntRect(30, 0, 10, 10));
-   this->textures_.load("tile_water_ul", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 64, 64, 64));
-   Game::logger().msg(this->id(), Logger::INFO, this->textures_);
+   this->textures().load("ui_resize_handle", "ui_panel_test.png", sf::IntRect(30, 0, 10, 10));
+   this->textures().load("tile_water_ul", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 64, 64, 64));
+   Game::logger().msg(this->id(), Logger::INFO, this->textures());
 
    // create camera just for UI
    this->scene_graph_->add(this->ui_camera_);
@@ -42,30 +42,30 @@ void TestUIScene::init(Game& game) {
    this->scene_graph_->add(
       TextFactory::inst()->create_text_entity(
          "Test UI Scene",
-         this->fonts_.get("retro"),
+         this->fonts().get("retro"),
          sf::Vector2f(0, 0),
          12
    ));
 
-   this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", this->fonts_.get("retro"));
+   this->fps_display_ = TextFactory::inst()->create_text_entity("FPS: ", this->fonts().get("retro"));
    this->scene_graph_->add(this->fps_display_);
 
    // test widget
    this->widget_ = new PanelWidget("Test Panel 1", sf::Vector2f(100, 100), sf::Vector2f(300, 200));
    this->scene_graph_->layer(0)->add(this->widget_);
 
-   Widget* tw = new TextWidget("Text Widget 1", "TEST TEST TEST TEST TEST TEST TEST TEST TEST", sf::Vector2f(0, 0), this->fonts_.get("retro"));
+   Widget* tw = new TextWidget("Text Widget 1", "TEST TEST TEST TEST TEST TEST TEST TEST TEST", sf::Vector2f(0, 0), this->fonts().get("retro"));
    tw->set_size(sf::Vector2f(300, 200));
    this->widget_->add(tw);
    
    ButtonWidget* bw = new ButtonWidget("Button Widget 1", sf::Vector2f(10, 30), sf::Vector2f(30, 15));
-   bw->set_background(new SpriteGraphic(*this->textures_.get("tile_water_ul")));
+   bw->set_background(new SpriteGraphic(*this->textures().get("tile_water_ul")));
    this->widget_->add(bw);
 
    bw->on_left_click(new MoveCommand(this->ui_camera_, sf::Vector2f(10, 50)));
 
    // create player controls
-   PlayerGamepad* pg = new PlayerGamepad("PlayerGamepad", this->fonts_.get("retro"));
+   PlayerGamepad* pg = new PlayerGamepad("PlayerGamepad", this->fonts().get("retro"));
    this->gamepad(pg);
    
    //pg->set(new WidgetEventCommand(WidgetOp::MouseClick, this->scene_graph_, pg), MouseButton::Left);

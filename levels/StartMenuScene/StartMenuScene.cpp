@@ -39,12 +39,12 @@ StartMenuScene::~StartMenuScene() {
 
 void StartMenuScene::init(Game& game) {
    // load fonts
-   this->fonts_.load("retro", "retro.ttf");
+   this->fonts().load("retro", "retro.ttf");
    
    // populate entities
    SceneObject* node = TextFactory::inst()->create_text_entity(
       "SFML TEST",
-      this->fonts_.get("retro"),
+      this->fonts().get("retro"),
       sf::Vector2f(0, 0),
       36,
       TextFactory::ALIGN::CENTER,
@@ -55,7 +55,7 @@ void StartMenuScene::init(Game& game) {
 
    node = TextFactory::inst()->create_text_entity(
       "main menu",
-      this->fonts_.get("retro"),
+      this->fonts().get("retro"),
       sf::Vector2f(0, 45),
       12,
       TextFactory::ALIGN::CENTER,
@@ -66,7 +66,7 @@ void StartMenuScene::init(Game& game) {
 
    node = TextFactory::inst()->create_text_entity(
       "(Press SPACE or ENTER)",
-      this->fonts_.get("retro"),
+      this->fonts().get("retro"),
       sf::Vector2f(0, 60),
       12,
       TextFactory::ALIGN::CENTER,
@@ -75,15 +75,15 @@ void StartMenuScene::init(Game& game) {
    );
    this->scene_graph_->add(node);
 
-   PlayerGamepad* pg = new PlayerGamepad("PlayerGamepad", this->fonts_.get("retro"));
+   PlayerGamepad* pg = new PlayerGamepad("PlayerGamepad", this->fonts().get("retro"));
    this->gamepad(pg);
 
-   pg->set(new ToggleDebugInfoCommand(this->scene_graph_, this->fonts_.get("retro")), Key::O);
+   pg->set(new ToggleDebugInfoCommand(this->scene_graph_, this->fonts().get("retro")), Key::O);
    pg->set(new SwitchSceneCommand(this, new BuilderScene()), Key::Space);
    pg->set(new SwitchSceneCommand(this, new BuilderScene()), Key::Return);
    pg->set(new SwitchSceneCommand(this, new TestUIScene()), Key::Escape);
 
-   this->textures_.load("tile_sign", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 0, 64, 64));
+   this->textures().load("tile_sign", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 0, 64, 64));
    
    GraphicalSystem* gs = new GraphicalSystem("GraphicalSystem", game.window(), std::make_shared<Camera>("Main Camera"));
    gs->camera()->resize(game.window().size()); // scene automatically resizes the cameras in the scene graph
