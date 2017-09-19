@@ -46,7 +46,6 @@ bool System::is_enabled() const {
 void System::init(Game& game) {
    assert(this->scene_ == nullptr);
    this->scene_ = game.current_scene();
-   this->subscription_->scene(*game.current_scene());
 
    if (!this->scene_) {
       game.logger().msg(this->id(), Logger::WARNING, "Trying to initialize system when Game has no loaded scenes. Skipping.");
@@ -57,17 +56,17 @@ void System::init(Game& game) {
    this->on_init(game);
 
    // filter in subscription list should be initialized in pre_init() or on_init()
-   this->subscription_->init(); 
+   this->subscription_->init(*this); 
 
    // add some reasonable defaults to certain message types
    this->mailbox().handle<ComponentAddedMessage>([this](ComponentAddedMessage& msg) {
       this->subscription().clear();
-      this->subscription().init();
+      this->subscription().init(*this);
    });
 
    this->mailbox().handle<ComponentRemovedMessage>([this](ComponentRemovedMessage& msg) {
       this->subscription().clear();
-      this->subscription().init();
+      this->subscription().init(*this);
    });
 
    this->post_init(game);
@@ -92,7 +91,7 @@ void System::update(Game& game) {
          this->on_update(game, *e);
       }
    };
-   this->subscription_->for_each(handle_on_update);
+   this->subscription_->for_each(*this, handle_on_update);
 
    this->post_update(game);
 }

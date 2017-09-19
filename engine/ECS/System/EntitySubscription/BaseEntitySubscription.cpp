@@ -1,4 +1,5 @@
 #include "Scene.h"
+#include "System.h"
 #include "BaseEntitySubscription.h"
 
 BaseEntitySubscription::BaseEntitySubscription(const std::string& id /* = "BaseEntitySubscription" */)
@@ -10,19 +11,19 @@ BaseEntitySubscription::~BaseEntitySubscription() {
    this->entities_.clear();
 }
 
-void BaseEntitySubscription::init() {
-   std::vector<Handle> entities_from_scene = this->scene().entities();
-   std::for_each(entities_from_scene.begin(), entities_from_scene.end(),
-      std::bind(&BaseEntitySubscription::add, this, std::placeholders::_1)
-   );
+void BaseEntitySubscription::init(System& system) {
+   std::vector<Handle> entities_from_scene = this->scene(system).entities();
+   for (std::vector<Handle>::iterator it = entities_from_scene.begin(); it != entities_from_scene.end(); ++it) {
+      this->add(system, *it);
+   }
 }
 
 void BaseEntitySubscription::clear() {
    this->entities_.clear();
 }
 
-void BaseEntitySubscription::add(Handle entity) {
-   if (this->filter(entity)) {
+void BaseEntitySubscription::add(System& system, Handle entity) {
+   if (this->filter(system, entity)) {
       this->entities_.push_back(entity);
    }
 }
@@ -37,6 +38,6 @@ void BaseEntitySubscription::remove(Handle entity) {
    }
 }
 
-void BaseEntitySubscription::for_each(std::function<void(Handle)> entity_handler) {
+void BaseEntitySubscription::for_each(System& system, std::function<void(Handle)> entity_handler) {
    std::for_each(this->entities_.begin(), this->entities_.end(), entity_handler);
 }

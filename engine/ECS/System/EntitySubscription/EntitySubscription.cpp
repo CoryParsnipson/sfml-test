@@ -1,6 +1,7 @@
 #include <cassert>
 
 #include "Scene.h"
+#include "System.h"
 #include "EntitySubscription.h"
 
 EntitySubscription::EntitySubscription(const std::string& id /* = "EntitySubscription" */)
@@ -19,18 +20,11 @@ EntityFilter& EntitySubscription::filter() {
    return this->filter_;
 }
 
-bool EntitySubscription::filter(Handle entity) {
-   assert(this->scene_ != nullptr);
-
-   Entity* e = this->scene_->get_entity(entity);
+bool EntitySubscription::filter(System& system, Handle entity) {
+   Entity* e = this->scene(system).get_entity(entity);
    return this->filter().filter(*e);
 }
 
-Scene& EntitySubscription::scene() const {
-   assert(this->scene_ != nullptr);
-   return *this->scene_;
-}
-
-void EntitySubscription::scene(Scene& scene) {
-   this->scene_ = &scene;
+Scene& EntitySubscription::scene(System& system) const {
+   return system.scene();
 }

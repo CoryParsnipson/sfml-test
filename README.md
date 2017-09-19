@@ -6,6 +6,8 @@ This was originally going to be a quick isometric tile demo experiment and it ha
 Things to do next
 -----------------
 * Encapsulate sf::Font and sf::Color into wrapper classes (for serialization and stuff)
+* Consider having Entities keep track of their own handle -> useful for ComponentAddedMessage and other things
+* Add "Handle root" to System class to constrain them to a specific section of the scene graph?
 * Create new components
    * both of these things below: consider making physics parts composites?
       * need to upgrade physicscomponent to take list of bounding boxes

@@ -64,6 +64,8 @@ public:
    void send_message_async(Args&&... args);
 
 protected:
+   friend Scene& EntitySubscription::scene(System& system) const;
+
    Scene& scene();
    Mailbox& mailbox();
 

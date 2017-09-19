@@ -12,15 +12,15 @@ SpatialEntitySubscription::SpatialEntitySubscription(const std::string& id /* = 
 SpatialEntitySubscription::~SpatialEntitySubscription() {
 }
 
-void SpatialEntitySubscription::init() {
-   this->root_ = this->scene().space_handle();
+void SpatialEntitySubscription::init(System& system) {
+   // empty
 }
 
 void SpatialEntitySubscription::clear() {
-   this->root_ = Handle();
+   // empty
 }
 
-void SpatialEntitySubscription::add(Handle entity) {
+void SpatialEntitySubscription::add(System& system, Handle entity) {
    // empty
 }
 
@@ -28,16 +28,16 @@ void SpatialEntitySubscription::remove(Handle entity) {
    // empty
 }
 
-void SpatialEntitySubscription::for_each(std::function<void(Handle)> entity_handler) {
+void SpatialEntitySubscription::for_each(System& system, std::function<void(Handle)> entity_handler) {
    std::vector<Handle> entities_to_visit;
-   entities_to_visit.push_back(this->root_);
+   entities_to_visit.push_back(this->scene(system).space_handle());
 
    // do a preorder traversal of scene graph
    while (!entities_to_visit.empty()) {
       Handle current = entities_to_visit.back();
       entities_to_visit.pop_back();
 
-      Entity* e = this->scene().get_entity(current);
+      Entity* e = this->scene(system).get_entity(current);
       if (e != nullptr) {
          Space* space = e->get<Space>();
          assert(space != nullptr);
@@ -46,7 +46,7 @@ void SpatialEntitySubscription::for_each(std::function<void(Handle)> entity_hand
             entities_to_visit.push_back(space->get(i));
          }
 
-         if (this->filter(current)) {
+         if (this->filter(system, current)) {
             entity_handler(current);
          }
       }

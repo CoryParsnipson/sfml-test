@@ -16,13 +16,13 @@ public:
    BaseEntitySubscription(const std::string& id = "BaseEntitySubscription");
    virtual ~BaseEntitySubscription();
 
-   virtual void init();
+   virtual void init(System& system);
    virtual void clear();
 
-   virtual void add(Handle entity);
+   virtual void add(System& system, Handle entity);
    virtual void remove(Handle entity);
 
-   virtual void for_each(std::function<void(Handle)> entity_handler);
+   virtual void for_each(System& system, std::function<void(Handle)> entity_handler);
 
 private:
    std::vector<Handle> entities_;

@@ -12,6 +12,7 @@
 // ----------------------------------------------------------------------------
 class Game;
 class Scene;
+class System;
 
 // ----------------------------------------------------------------------------
 // EntitySubscription
@@ -26,23 +27,20 @@ public:
    const std::string& id() const;
 
    EntityFilter& filter();
-   bool filter(Handle entity);
+   bool filter(System& system, Handle entity);
 
-   Scene& scene() const;
-   void scene(Scene& scene);
-
-   virtual void init() = 0;
+   virtual void init(System& system) = 0;
    virtual void clear() = 0;
 
-   virtual void add(Handle entity) = 0;
+   virtual void add(System& system, Handle entity) = 0;
    virtual void remove(Handle entity) = 0;
 
-   virtual void for_each(std::function<void(Handle)> entity_handler) = 0;
+   virtual void for_each(System& system, std::function<void(Handle)> entity_handler) = 0;
+
+   Scene& scene(System& system) const;
 
 private:
    std::string id_;
-   Scene* scene_;
-
    EntityFilter filter_;
 };
 
