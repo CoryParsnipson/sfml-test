@@ -3,10 +3,12 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 #include <SFML/Window.hpp>
 
 #include "Observer.h"
+#include "InputDevice.h"
 
 class Game;
 class InputEvent;
@@ -63,11 +65,19 @@ class Input
 : public Subject<InputEvent>
 {
 public:
+   using DeviceId = unsigned short int;
+
+   static std::vector<std::string> KeyStr;
+
    Input(std::string id = "Input");
+   ~Input();
 
    virtual void poll_event(Game& game);
 
-protected:
+   void add_device(InputDevice* device);
+
+private:
+   std::map<DeviceId, InputDevice*> devices_;
 };
 
 #endif

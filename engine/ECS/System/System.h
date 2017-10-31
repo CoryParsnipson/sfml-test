@@ -41,7 +41,6 @@ public:
 
    void init(Game& game);
    void update(Game& game);
-   void message();
 
    template <
       typename MsgT,
