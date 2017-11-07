@@ -7,9 +7,7 @@ EntityFilter::EntityFilter(const std::string& id /* = "EntityFilter" */)
 }
 
 EntityFilter::~EntityFilter() {
-   this->all_of_.clear();
-   this->one_of_.clear();
-   this->none_of_.clear();
+   this->filter_expressions_.clear();
 }
 
 const std::string& EntityFilter::id() const {
@@ -24,19 +22,11 @@ bool EntityFilter::filter(Entity& e) const {
    bool filter_result = true;
 
    // if the filter is "empty", and allow all is set, be permissive (return true no matter what)
-   if (this->all_of_.empty() && this->one_of_.empty() && this->none_of_.empty()) {
+   if (this->filter_expressions_.empty()) {
       return this->allow_all();
    }
 
-   for (std::set<Expression*>::const_iterator it = this->all_of_.begin(); it != this->all_of_.end(); ++it) {
-      filter_result &= (*it)->filter(e);
-   }
-
-   for (std::set<Expression*>::const_iterator it = this->one_of_.begin(); it != this->one_of_.end(); ++it) {
-      filter_result &= (*it)->filter(e);
-   }
-
-   for (std::set<Expression*>::const_iterator it = this->none_of_.begin(); it != this->none_of_.end(); ++it) {
+   for (std::set<Expression*>::const_iterator it = this->filter_expressions_.begin(); it != this->filter_expressions_.end(); ++it) {
       filter_result &= (*it)->filter(e);
    }
 

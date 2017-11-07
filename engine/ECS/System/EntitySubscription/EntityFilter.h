@@ -146,19 +146,19 @@ public:
    // public interface to add expressions
    template <typename ...Components>
    EntityFilter& all_of() {
-      this->all_of_.insert(new And<Components...>());
+      this->filter_expressions_.insert(new And<Components...>());
       return *this;
    }
 
    template <typename ...Components>
    EntityFilter& one_of() {
-      this->one_of_.insert(new Or<Components...>());
+      this->filter_expressions_.insert(new Or<Components...>());
       return *this;
    }
    
    template <typename ...Components>
    EntityFilter& none_of() {
-      this->none_of_.insert(new Not<Components...>());
+      this->filter_expressions_.insert(new Not<Components...>());
       return *this;
    }
 
@@ -167,12 +167,8 @@ public:
 
 private:
    std::string id_;
-
    bool allow_all_; // if this is true, filter returns true no matter what
-
-   std::set<Expression*> all_of_;
-   std::set<Expression*> one_of_;
-   std::set<Expression*> none_of_;
+   std::set<Expression*> filter_expressions_;
 };
 
 #endif
