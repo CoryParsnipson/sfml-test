@@ -59,7 +59,7 @@ public:
 
    private:
       // child interface
-      virtual bool evaluate(Entity& e, bool has_token, bool in_result) = 0;
+      virtual bool evaluate(bool has_token, bool in_result) = 0;
 
       // private helper methods for folding tuples
       template <size_t N>
@@ -67,12 +67,12 @@ public:
 
       template <size_t N, typename std::enable_if<(N > 1)>::type* = nullptr>
       bool traverse_tuple(Entity& e, bool in_result) {
-         return this->traverse_tuple<N - 1>(e, evaluate(e, e.get<TokenType<N - 1>>() != nullptr, in_result));
+         return this->traverse_tuple<N - 1>(e, evaluate(e.get<TokenType<N - 1>>() != nullptr, in_result));
       }
 
       template <size_t N, typename std::enable_if<(N == 1)>::type* = nullptr>
       bool traverse_tuple(Entity& e, bool in_result) {
-         return evaluate(e, e.get<TokenType<N - 1>>() != nullptr, in_result);
+         return evaluate(e.get<TokenType<N - 1>>() != nullptr, in_result);
       }
    };
 
@@ -87,7 +87,7 @@ public:
    public:
       And() : ExpressionTuple<Tokens...>(true) {}
 
-      virtual bool evaluate(Entity& e, bool has_token, bool in_result) {
+      virtual bool evaluate(bool has_token, bool in_result) {
          return has_token && in_result;
       }
    };
@@ -104,7 +104,7 @@ public:
    public:
       Or() : ExpressionTuple<Tokens...>(false) {}
    
-      virtual bool evaluate(Entity& e, bool has_token, bool in_result) {
+      virtual bool evaluate(bool has_token, bool in_result) {
          return has_token || in_result;
       }
    };
@@ -121,7 +121,7 @@ public:
    public:
       Not() : ExpressionTuple<Tokens...>(true) {}
    
-      virtual bool evaluate(Entity& e, bool has_token, bool in_result) {
+      virtual bool evaluate(bool has_token, bool in_result) {
          return !has_token && in_result;
       }
    };
