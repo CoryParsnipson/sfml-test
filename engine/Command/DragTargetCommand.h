@@ -1,7 +1,7 @@
 #ifndef DRAG_TARGET_COMMAND_H
 #define DRAG_TARGET_COMMAND_H
 
-#include "Input.h"
+#include "InputManager.h"
 #include "Command.h"
 
 // ----------------------------------------------------------------------------

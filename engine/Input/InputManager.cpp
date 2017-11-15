@@ -1,5 +1,5 @@
 #include "Game.h"
-#include "Input.h"
+#include "InputManager.h"
 #include "InputEvent.h"
 #include "CloseInputEvent.h"
 #include "ResizeInputEvent.h"
@@ -11,7 +11,7 @@
 // ----------------------------------------------------------------------------
 // static member initialization
 // ----------------------------------------------------------------------------
-std::vector<std::string> Input::KeyStr = {
+std::vector<std::string> InputManager::KeyStr = {
    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
    "Num0", "Num1", "Num2", "Num3", "Num4", "Num5", "Num6", "Num7", "Num8", "Num9",
    "Escape", "LCtrl", "LShift", "LAlt", "LSystem", "RCtrl", "RShift", "RAlt", "RSystem", "Menu",
@@ -25,14 +25,14 @@ std::vector<std::string> Input::KeyStr = {
 };
 
 // ----------------------------------------------------------------------------
-// Input class constructors
+// InputManager class constructors
 // ----------------------------------------------------------------------------
-Input::Input(std::string id /* = "Input" */)
+InputManager::InputManager(std::string id /* = "InputManager" */)
 : Subject<InputEvent>(id)
 {
 }
 
-Input::~Input() {
+InputManager::~InputManager() {
    for (std::map<DeviceId, InputDevice*>::const_iterator it = this->devices_.begin(); it != this->devices_.end(); ++it) {
       delete it->second;
    }
@@ -40,28 +40,40 @@ Input::~Input() {
 }
 
 // ----------------------------------------------------------------------------
-// Input class method implementations 
+// InputManager class method implementations 
 // ----------------------------------------------------------------------------
-void Input::poll_event(Game& game) {
+void InputManager::poll_event(Game& game) {
    sf::Event sfml_event;
    InputEvent* event = nullptr;
 
    while (game.poll_event(sfml_event)) {
       switch (sfml_event.type) {
       case sf::Event::Closed:
-         Game::logger().msg("Input", Logger::INFO, "Received close event.");
+         Game::logger().msg("InputManager", Logger::INFO, "Received close event.");
          event = new CloseInputEvent();
          break;
+      case sf::Event::LostFocus:
+         Game::logger().msg("InputManager", Logger::INFO, "Received LostFocus event.");
+         continue; // TODO: create input event for this?
+      case sf::Event::GainedFocus:
+         Game::logger().msg("InputManager", Logger::INFO, "Received GainedFocus event.");
+         continue; // TODO: create input event for this?
+      case sf::Event::MouseEntered:
+         Game::logger().msg("InputManager", Logger::INFO, "Received MouseEntered event.");
+         continue; // TODO: create input event for this?
+      case sf::Event::MouseLeft:
+         Game::logger().msg("InputManager", Logger::INFO, "Received MouseLeft event.");
+         continue; // TODO: create input event for this?
       case sf::Event::Resized:
-         Game::logger().msg("Input", Logger::INFO, "Received resize event.");
+         Game::logger().msg("InputManager", Logger::INFO, "Received resize event.");
          event = new ResizeInputEvent(sfml_event.size.width, sfml_event.size.height);
          break;
       case sf::Event::KeyPressed:
-         Game::logger().msg("Input", Logger::INFO, "Received key press event.");
+         Game::logger().msg("InputManager", Logger::INFO, "Received key press event.");
 
          // if keycode is unknown, drop event
          if (sfml_event.key.code == sf::Keyboard::Key::Unknown) {
-            Game::logger().msg("Input", Logger::WARNING, "Dropping key press event with e.key code = -1 (unknown)");
+            Game::logger().msg("InputManager", Logger::WARNING, "Dropping key press event with e.key code = -1 (unknown)");
             continue;
          }
 
@@ -73,11 +85,11 @@ void Input::poll_event(Game& game) {
          );
          break;
       case sf::Event::MouseMoved:
-         Game::logger().msg("Input", Logger::INFO, "Received mouse move event.");
+         Game::logger().msg("InputManager", Logger::INFO, "Received mouse move event.");
          event = new MouseMoveInputEvent(sfml_event.mouseMove.x, sfml_event.mouseMove.y);
          break;
       case sf::Event::MouseWheelMoved:
-         Game::logger().msg("Input", Logger::INFO, "Received mouse wheel event.");
+         Game::logger().msg("InputManager", Logger::INFO, "Received mouse wheel event.");
          event = new MouseWheelInputEvent(
             sfml_event.mouseWheel.x,
             sfml_event.mouseWheel.y,
@@ -85,7 +97,7 @@ void Input::poll_event(Game& game) {
          );
          break;
       case sf::Event::MouseButtonPressed:
-         Game::logger().msg("Input", Logger::INFO, "Received mouse button pressed event.");
+         Game::logger().msg("InputManager", Logger::INFO, "Received mouse button pressed event.");
          event = new MouseButtonInputEvent(
             static_cast<MouseButton>(sfml_event.mouseButton.button),
             ButtonState::Pressed,
@@ -94,7 +106,7 @@ void Input::poll_event(Game& game) {
          );
          break;
       case sf::Event::MouseButtonReleased:
-         Game::logger().msg("Input", Logger::INFO, "Received mouse button released event.");
+         Game::logger().msg("InputManager", Logger::INFO, "Received mouse button released event.");
          event = new MouseButtonInputEvent(
             static_cast<MouseButton>(sfml_event.mouseButton.button),
             ButtonState::Released,
@@ -103,7 +115,7 @@ void Input::poll_event(Game& game) {
          );
          break;
       default:
-         Game::logger().msg("Input", Logger::WARNING, "Input received unknown input event.");
+         Game::logger().msg("InputManager", Logger::WARNING, "InputManager received unknown input event. (type = " + std::to_string(sfml_event.type) + ")");
          return;
       }
 
@@ -111,9 +123,9 @@ void Input::poll_event(Game& game) {
    }
 }
 
-void Input::add_device(InputDevice* device) {
+void InputManager::add_device(InputDevice* device) {
    if (device == nullptr) {
-      Game::logger().msg("Input", Logger::INFO, "Received nullptr device, not adding.");
+      Game::logger().msg("InputManager", Logger::INFO, "Received nullptr device, not adding.");
       return;
    }
 

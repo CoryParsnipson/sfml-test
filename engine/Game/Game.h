@@ -5,7 +5,7 @@
 
 #include "sfml.h"
 
-#include "Input.h"
+#include "InputManager.h"
 #include "Settings.h"
 #include "Logger.h"
 #include "InputListener.h"
@@ -18,7 +18,7 @@ class Game
 {
 public:
    // services
-   Input& input();
+   InputManager& input_manager();
    static Logger& logger();
 
 	Game();
@@ -52,7 +52,7 @@ public:
 
 private:
    // services
-   Input* input_;
+   InputManager* input_manager_;
    static Logger* logger_;
 
 	// game flow control

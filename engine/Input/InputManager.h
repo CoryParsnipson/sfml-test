@@ -1,5 +1,5 @@
-#ifndef INPUT_H
-#define INPUT_H
+#ifndef INPUT_MANAGER_H
+#define INPUT_MANAGER_H
 
 #include <string>
 #include <vector>
@@ -56,12 +56,12 @@ public:
 };
 
 // ----------------------------------------------------------------------------
-// Input 
+// InputManager
 // 
 // This class hooks into the SFML input events and converts them to InputEvent
 // objects and then broadcasts them to all attached InputEvent.
 // ----------------------------------------------------------------------------
-class Input
+class InputManager
 : public Subject<InputEvent>
 {
 public:
@@ -69,8 +69,8 @@ public:
 
    static std::vector<std::string> KeyStr;
 
-   Input(std::string id = "Input");
-   ~Input();
+   InputManager(std::string id = "InputManager");
+   ~InputManager();
 
    virtual void poll_event(Game& game);
 

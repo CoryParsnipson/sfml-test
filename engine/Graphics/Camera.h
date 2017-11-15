@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-#include "Input.h"
+#include "InputManager.h"
 #include "SceneObject.h"
 #include "CameraResizePolicy.h"
 

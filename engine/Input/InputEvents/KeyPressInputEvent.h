@@ -1,7 +1,7 @@
 #ifndef KEY_PRESS_INPUT_EVENT_H
 #define KEY_PRESS_INPUT_EVENT_H
 
-#include "Input.h"
+#include "InputManager.h"
 #include "InputEvent.h"
 #include "InputListener.h"
 

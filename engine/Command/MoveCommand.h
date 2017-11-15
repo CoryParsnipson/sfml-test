@@ -5,7 +5,7 @@
 
 #include "sfml.h"
 
-#include "Input.h"
+#include "InputManager.h"
 #include "Command.h"
 
 // ----------------------------------------------------------------------------

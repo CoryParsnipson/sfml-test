@@ -4,7 +4,7 @@
 #include <string>
 
 #include "sfml.h"
-#include "Input.h"
+#include "InputManager.h"
 #include "SceneObject.h"
 
 class Grid

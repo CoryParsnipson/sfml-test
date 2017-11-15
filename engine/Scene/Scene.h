@@ -105,7 +105,7 @@ public:
    void do_enter(Game& game) {
       // start gamepads from receiving input events
       for (GamepadList::const_iterator it = this->gamepads_.begin(); it != this->gamepads_.end(); ++it) {
-        game.input().attach(**it);
+        game.input_manager().attach(**it);
       }
 
       this->enter(game);
@@ -114,7 +114,7 @@ public:
    void do_exit(Game& game) {
       // stop gamepads from receiving input events
       for (GamepadList::const_iterator it = this->gamepads_.begin(); it != this->gamepads_.end(); ++it) {
-         game.input().detach(**it);
+         game.input_manager().detach(**it);
       }
 
       this->game_ = nullptr; // unset game pointer

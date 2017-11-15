@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "KeyPressInputEvent.h"
-#include "Input.h"
+#include "InputManager.h"
 
 // ----------------------------------------------------------------------------
 // Keyboard
@@ -122,7 +122,7 @@ public:
 
    // input event processing
    virtual void process(KeyPressInputEvent& e) {
-      this->get(Input::KeyStr[static_cast<int>(e.key)]).position(1);
+      this->get(InputManager::KeyStr[static_cast<int>(e.key)]).position(1);
    }
 };
 

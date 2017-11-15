@@ -8,6 +8,9 @@
 #include "FileChannel.h"
 #include "JSONSerializer.h"
 
+#include "Mouse.h"
+#include "Keyboard.h"
+
 #include "CloseInputEvent.h"
 #include "ResizeInputEvent.h"
 #include "KeyPressInputEvent.h"
@@ -24,7 +27,7 @@ Logger* Game::logger_ = new FullLogger();
 
 Game::Game()
 : InputListener("Game")
-, input_(new Input())
+, input_manager_(new InputManager())
 , next_scene_(nullptr)
 , prev_scene_(nullptr)
 , window_("SFML Test", sf::Vector2f(this->settings.default_window_width(), this->settings.default_window_height()))
@@ -63,22 +66,24 @@ Game::Game()
    delete config_reader;
 
    // set up input
-   this->input().attach(*this);
+   this->input_manager().attach(*this);
 
+   this->input_manager().add_device(new Mouse());
+   this->input_manager().add_device(new Keyboard());
 }
 
 Game::~Game() {
    this->reset();
 
    // remove from input
-   this->input().detach(*this);
+   this->input_manager().detach(*this);
 
    // destroy logger
    delete Game::logger_;
 }
 
-Input& Game::input() {
-   return *this->input_;
+InputManager& Game::input_manager() {
+   return *this->input_manager_;
 }
 
 Logger& Game::logger() {
@@ -199,7 +204,7 @@ void Game::main_loop() {
       this->scenes_.top()->draw(this->window_);
 
       // poll input
-      this->input().poll_event(*this);
+      this->input_manager().poll_event(*this);
 
       // render scene
       this->window_.update();

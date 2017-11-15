@@ -5,7 +5,7 @@
 #include "MouseMoveInputEvent.h"
 #include "MouseWheelInputEvent.h"
 #include "MouseButtonInputEvent.h"
-#include "Input.h"
+#include "InputManager.h"
 
 // ----------------------------------------------------------------------------
 // Mouse
