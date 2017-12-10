@@ -36,6 +36,7 @@ INCLUDE_PATHS += $(PROJECT_DIR)/engine/Logger
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/Game
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/Input/InputEvents
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/Input/InputDevices
+INCLUDE_PATHS += $(PROJECT_DIR)/engine/Input/Intents
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/Input/Gamepad
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/Input/GamepadPreset
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/Input

@@ -2,6 +2,7 @@
 #define SYSTEM_H
 
 #include <string>
+#include <memory>
 #include <cassert>
 #include <utility>
 

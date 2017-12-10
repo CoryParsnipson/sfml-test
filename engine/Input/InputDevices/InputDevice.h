@@ -15,6 +15,10 @@
 // ----------------------------------------------------------------------------
 class InputDevice : public InputListener {
 public:
+   using DeviceId = unsigned int;
+   using ElementId = std::string;
+   using ElementMap = std::map<ElementId, InputElement*>;
+
    InputDevice(const std::string& name)
    : name_(name)
    {
@@ -22,14 +26,14 @@ public:
    }
 
    virtual ~InputDevice() {
-      for (std::map<std::string, InputElement*>::const_iterator it = this->elements_.begin(); it != this->elements_.end(); ++it) {
+      for (ElementMap::const_iterator it = this->elements_.begin(); it != this->elements_.end(); ++it) {
          delete it->second;
       }
       this->elements_.clear();
    }
 
-   unsigned int device_id() const { return this->device_id_; }
-   void device_id(unsigned int device_id) { this->device_id_ = device_id; }
+   DeviceId device_id() const { return this->device_id_; }
+   void device_id(DeviceId device_id) { this->device_id_ = device_id; }
 
    const std::string& name() const { return this->name_; }
    void name(const std::string& name) { this->name_ = name; }
@@ -37,7 +41,7 @@ public:
    std::string to_string() const {
       std::string info = "[InputDevice - \"" + this->name() + "\"]\n";
 
-      for (std::map<std::string, InputElement*>::const_iterator it = this->elements_.begin(); it != this->elements_.end(); ++it) {
+      for (ElementMap::const_iterator it = this->elements_.begin(); it != this->elements_.end(); ++it) {
          info += "  " + it->second->to_string() + "\n";
       }
       
@@ -45,7 +49,7 @@ public:
       return info;
    }
 
-   InputElement& get(const std::string& element_name) {
+   InputElement& get(const ElementId& element_name) {
       InputElement* element = this->elements_[element_name];
 
       assert(element != nullptr);
@@ -61,21 +65,21 @@ public:
    virtual void process(MouseButtonInputEvent& e) {}
 
 protected:
-   void add_button(const std::string& name) {
+   void add_button(const ElementId& name) {
       this->elements_[name] = new Button(name);
    }
 
-   void add_axis(const std::string& name) {
+   void add_axis(const ElementId& name) {
       this->elements_[name] = new Axis(name);
    }
 
 private:
-   static unsigned int next_device_id;
+   static DeviceId next_device_id;
 
-   unsigned int device_id_;
+   DeviceId device_id_;
    std::string name_;
 
-   std::map<std::string, InputElement*> elements_;
+   ElementMap elements_;
 };
 
 #endif

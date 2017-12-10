@@ -132,3 +132,12 @@ void InputManager::add_device(InputDevice* device) {
    this->devices_[device->device_id()] = device;
    this->attach(*device);
 }
+
+InputDevice* InputManager::get_device(DeviceId device_id) {
+   std::map<DeviceId, InputDevice*>::const_iterator it = this->devices_.find(device_id);
+   if (it != this->devices_.end()) {
+      return it->second;
+   }
+
+   return nullptr;
+}
