@@ -9,7 +9,6 @@
 
 #include "Component.h"
 #include "InputDevice.h"
-#include "InputMap.h"
 #include "Intent.h"
 
 // ----------------------------------------------------------------------------
@@ -23,7 +22,7 @@ public:
    using IntentMapping = std::map<std::type_index, IntentPtr>;
 
    Input(const std::string& id = "InputComponent") : Component(id) {}
-   Input(const Input& other) : id_(other.id_), map_(other.map_) {}
+   Input(const Input& other) : Component(other), map_(other.map_) {}
    virtual ~Input() {}
 
    Input& operator=(const Input& other) {
@@ -33,28 +32,28 @@ public:
    }
 
    void swap(Input& other) {
-      Component::swap();
+      Component::swap(other);
 
       std::swap(this->map_, other.map_);
    }
 
    template <
       typename IntentT,
-      typename std::enable_if<std::is_base_of<Intent, MsgT>::value>::type* = nullptr
+      typename std::enable_if<std::is_base_of<Intent, IntentT>::value>::type* = nullptr
    >
-   InputElementPtr get() {
+   IntentPtr get() {
       IntentMapping::const_iterator it = this->map_.find(std::type_index(typeid(IntentT)));
 
       if (it != this->map_.end()) {
          assert(it->second != nullptr);
-         return it->second->element();
+         return it->second;
       }
-      return intentptr;
+      return nullptr;
    }
 
    template <
       typename IntentT,
-      typename std::enable_if<std::is_base_of<Intent, MsgT>::value>::type* = nullptr,
+      typename std::enable_if<std::is_base_of<Intent, IntentT>::value>::type* = nullptr,
       typename... IntentConstructorArgs
    >
    void set(IntentConstructorArgs&&... intent_args) {

@@ -14,6 +14,7 @@
 #include "CloseInputEvent.h"
 #include "ResizeInputEvent.h"
 #include "KeyPressInputEvent.h"
+#include "KeyReleaseInputEvent.h"
 #include "MouseMoveInputEvent.h"
 #include "MouseWheelInputEvent.h"
 #include "MouseButtonInputEvent.h"
@@ -134,6 +135,10 @@ void Game::process(ResizeInputEvent& e) {
 }
 
 void Game::process(KeyPressInputEvent& e) {
+   this->scenes_.top()->process(*this, e);
+}
+
+void Game::process(KeyReleaseInputEvent& e) {
    this->scenes_.top()->process(*this, e);
 }
 

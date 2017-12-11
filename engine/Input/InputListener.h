@@ -7,6 +7,7 @@ class InputEvent;
 class CloseInputEvent;
 class ResizeInputEvent;
 class KeyPressInputEvent;
+class KeyReleaseInputEvent;
 class MouseMoveInputEvent;
 class MouseWheelInputEvent;
 class MouseButtonInputEvent;
@@ -25,6 +26,7 @@ public:
    virtual void process(CloseInputEvent& e) = 0;
    virtual void process(ResizeInputEvent& e) = 0;
    virtual void process(KeyPressInputEvent& e) = 0;
+   virtual void process(KeyReleaseInputEvent& e) = 0;
    virtual void process(MouseMoveInputEvent& e) = 0;
    virtual void process(MouseWheelInputEvent& e) = 0;
    virtual void process(MouseButtonInputEvent& e) = 0;

@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <string>
+#include <memory>
 #include <map>
 
 #include "InputElement.h"
@@ -17,7 +18,7 @@ class InputDevice : public InputListener {
 public:
    using DeviceId = unsigned int;
    using ElementId = std::string;
-   using ElementMap = std::map<ElementId, InputElement*>;
+   using ElementMap = std::map<ElementId, InputElementPtr>;
 
    InputDevice(const std::string& name)
    : name_(name)
@@ -26,9 +27,6 @@ public:
    }
 
    virtual ~InputDevice() {
-      for (ElementMap::const_iterator it = this->elements_.begin(); it != this->elements_.end(); ++it) {
-         delete it->second;
-      }
       this->elements_.clear();
    }
 
@@ -49,28 +47,30 @@ public:
       return info;
    }
 
-   InputElement& get(const ElementId& element_name) {
-      InputElement* element = this->elements_[element_name];
+   InputElementPtr get(const ElementId& element_name) {
+      InputElementPtr element = this->elements_[element_name];
 
       assert(element != nullptr);
-      return *element;
+      assert(element->name() == element_name);
+      return element;
    }
 
    // input event processing
    virtual void process(CloseInputEvent& e) {}
    virtual void process(ResizeInputEvent& e) {}
    virtual void process(KeyPressInputEvent& e) {}
+   virtual void process(KeyReleaseInputEvent& e) {}
    virtual void process(MouseMoveInputEvent& e) {}
    virtual void process(MouseWheelInputEvent& e) {}
    virtual void process(MouseButtonInputEvent& e) {}
 
 protected:
    void add_button(const ElementId& name) {
-      this->elements_[name] = new Button(name);
+      this->elements_[name] = std::make_shared<Button>(name);
    }
 
    void add_axis(const ElementId& name) {
-      this->elements_[name] = new Axis(name);
+      this->elements_[name] = std::make_shared<Axis>(name);
    }
 
 private:

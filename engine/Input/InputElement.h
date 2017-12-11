@@ -9,11 +9,15 @@
 // forward declarations
 // ----------------------------------------------------------------------------
 class InputElement;
+class Axis;
+class Button;
 
 // ----------------------------------------------------------------------------
 // typedefs
 // ----------------------------------------------------------------------------
 typedef std::shared_ptr<InputElement> InputElementPtr;
+typedef std::shared_ptr<Axis> AxisPtr;
+typedef std::shared_ptr<Button> ButtonPtr;
 
 // ----------------------------------------------------------------------------
 // InputElement

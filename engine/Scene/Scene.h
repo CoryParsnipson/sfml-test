@@ -11,6 +11,7 @@
 #include "CloseInputEvent.h"
 #include "ResizeInputEvent.h"
 #include "KeyPressInputEvent.h"
+#include "KeyReleaseInputEvent.h"
 #include "MouseMoveInputEvent.h"
 #include "MouseWheelInputEvent.h"
 #include "MouseButtonInputEvent.h"
@@ -276,6 +277,7 @@ public:
       game.unload_scene();
    }
    virtual void process(Game& game, KeyPressInputEvent& e) {}
+   virtual void process(Game& game, KeyReleaseInputEvent& e) {}
    virtual void process(Game& game, ResizeInputEvent& e) {
       // resize all the cameras
       ResizeCameraCommand rc_command(game.window(), this->scene_graph_);

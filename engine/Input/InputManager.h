@@ -76,6 +76,7 @@ public:
 
    void add_device(InputDevice* device);
    InputDevice* get_device(DeviceId device_id);
+   // list_devices // TODO
 
 private:
    std::map<DeviceId, InputDevice*> devices_;

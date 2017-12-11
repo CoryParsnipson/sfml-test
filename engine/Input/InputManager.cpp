@@ -4,6 +4,7 @@
 #include "CloseInputEvent.h"
 #include "ResizeInputEvent.h"
 #include "KeyPressInputEvent.h"
+#include "KeyReleaseInputEvent.h"
 #include "MouseMoveInputEvent.h"
 #include "MouseWheelInputEvent.h"
 #include "MouseButtonInputEvent.h"
@@ -78,6 +79,22 @@ void InputManager::poll_event(Game& game) {
          }
 
          event = new KeyPressInputEvent(
+            static_cast<Key>(sfml_event.key.code), // convert from enum sf::Keyboard::Key to our enum class Key
+            sfml_event.key.alt, sfml_event.key.control,
+            sfml_event.key.shift,
+            sfml_event.key.system
+         );
+         break;
+      case sf::Event::KeyReleased:
+         Game::logger().msg("InputManager", Logger::INFO, "Received key release event.");
+
+         // if keycode is unknown, drop event
+         if (sfml_event.key.code == sf::Keyboard::Key::Unknown) {
+            Game::logger().msg("InputManager", Logger::WARNING, "Dropping key release event with e.key code = -1 (unknown)");
+            continue;
+         }
+
+         event = new KeyReleaseInputEvent(
             static_cast<Key>(sfml_event.key.code), // convert from enum sf::Keyboard::Key to our enum class Key
             sfml_event.key.alt, sfml_event.key.control,
             sfml_event.key.shift,

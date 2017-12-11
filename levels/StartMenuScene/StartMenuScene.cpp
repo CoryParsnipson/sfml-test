@@ -26,8 +26,13 @@
 #include "Rectangle.h"
 #include "Sprite.h"
 
+#include "Input.h"
+#include "MoveLeftIntent.h"
+#include "MoveRightIntent.h"
+
 #include "GraphicalSystem.h"
 #include "SpatialSystem.h"
+#include "PlayerInputSystem.h"
 
 StartMenuScene::StartMenuScene()
 : Scene("StartMenuScene")
@@ -95,6 +100,8 @@ void StartMenuScene::init(Game& game) {
 
    this->add_system(new SpatialSystem());
 
+   this->add_system(new PlayerInputSystem());
+
    // test out the graphics system
    Handle e1 = this->create_entity();
    Handle e2 = this->create_entity();
@@ -129,6 +136,10 @@ void StartMenuScene::init(Game& game) {
    left_ball->position(-200, -200);
    left_ball->radius(100);
    left_ball->color(sf::Color::Blue);
+
+   entity1->add<Input>();
+   entity1->get<Input>()->set<MoveLeftIntent>(1, game.input_manager().get_device(1)->get("Left"));
+   entity1->get<Input>()->set<MoveRightIntent>(1, game.input_manager().get_device(1)->get("Right"));
 }
 
 void StartMenuScene::enter(Game& game) {

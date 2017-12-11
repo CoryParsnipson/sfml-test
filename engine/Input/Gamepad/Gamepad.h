@@ -60,6 +60,7 @@ public:
    virtual void process(CloseInputEvent& e) {}
    virtual void process(ResizeInputEvent& e) {}
    virtual void process(KeyPressInputEvent& e) {}
+   virtual void process(KeyReleaseInputEvent& e) {}
    virtual void process(MouseMoveInputEvent& e) {}
    virtual void process(MouseWheelInputEvent& e) {}
    virtual void process(MouseButtonInputEvent& e) {}

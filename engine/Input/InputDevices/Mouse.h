@@ -31,36 +31,36 @@ public:
    virtual ~Mouse() {}
 
    virtual void process(MouseMoveInputEvent& e) {
-      this->get("PositionX").position(e.x);
-      this->get("PositionY").position(e.y);
+      this->get("PositionX")->position(e.x);
+      this->get("PositionY")->position(e.y);
    }
 
    virtual void process(MouseWheelInputEvent& e) {
-      this->get("PositionX").position(e.x);
-      this->get("PositionY").position(e.y);
+      this->get("PositionX")->position(e.x);
+      this->get("PositionY")->position(e.y);
       
-      this->get("Wheel").position(e.delta);
+      this->get("Wheel")->position(e.delta);
    }
 
    virtual void process(MouseButtonInputEvent& e) {
-      this->get("PositionX").position(e.x);
-      this->get("PositionY").position(e.y);
+      this->get("PositionX")->position(e.x);
+      this->get("PositionY")->position(e.y);
 
       switch(e.button) {
       case MouseButton::Left:
-         this->get("Left").position(e.state == ButtonState::Pressed ? 1 : 0);
+         this->get("Left")->position(e.state == ButtonState::Pressed ? 1 : 0);
          break;
       case MouseButton::Right:
-         this->get("Right").position(e.state == ButtonState::Pressed ? 1 : 0);
+         this->get("Right")->position(e.state == ButtonState::Pressed ? 1 : 0);
          break;
       case MouseButton::Middle:
-         this->get("Middle").position(e.state == ButtonState::Pressed ? 1 : 0);
+         this->get("Middle")->position(e.state == ButtonState::Pressed ? 1 : 0);
          break;
       case MouseButton::XButton1:
-         this->get("XButton1").position(e.state == ButtonState::Pressed ? 1 : 0);
+         this->get("XButton1")->position(e.state == ButtonState::Pressed ? 1 : 0);
          break;
       case MouseButton::XButton2:
-         this->get("XButton2").position(e.state == ButtonState::Pressed ? 1 : 0);
+         this->get("XButton2")->position(e.state == ButtonState::Pressed ? 1 : 0);
          break;
       default:
          Game::logger().msg(this->name(), Logger::WARNING,
