@@ -1,7 +1,7 @@
 # config
 
 { "type": "logger", "stream": "console", "tag": "enable", "enable": "true" }
-{ "type": "logger", "stream": "console", "tag": "Input", "enable": "false" }
+{ "type": "logger", "stream": "console", "tag": "InputManager", "enable": "false" }
 { "type": "logger", "stream": "console", "tag": "PhysicsPart", "enable": "false" }
 { "type": "logger", "stream": "console", "tag": "ControlPart", "enable": "false" }
 { "type": "logger", "stream": "console", "tag": "GraphicsPart", "enable": "false" }

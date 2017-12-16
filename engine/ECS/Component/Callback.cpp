@@ -26,6 +26,14 @@ void Callback::swap(Callback& other) {
    std::swap(this->callbacks_, other.callbacks_);
 }
 
+sf::Vector2f Callback::prev_mouse_pos() const {
+   return this->prev_mouse_pos_;
+}
+
+void Callback::prev_mouse_pos(sf::Vector2f pos) {
+   this->prev_mouse_pos_ = pos;
+}
+
 void Callback::mouse_in(Callback::CallbackT callback) {
    this->callbacks_[CallbackKey::MOUSE_IN] = callback;
 }

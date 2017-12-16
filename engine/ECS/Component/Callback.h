@@ -5,6 +5,8 @@
 #include <string>
 #include <functional>
 
+#include "sfml.h"
+
 #include "Component.h"
 
 // ----------------------------------------------------------------------------
@@ -33,6 +35,9 @@ public:
    Callback& operator=(const Callback& other);
    void swap(Callback& other);
 
+   sf::Vector2f prev_mouse_pos() const;
+   void prev_mouse_pos(sf::Vector2f pos);
+
    void mouse_in(CallbackT callback);
    void mouse_in();
 
@@ -58,6 +63,7 @@ public:
    void right_release();
 
 private:
+   sf::Vector2f prev_mouse_pos_;
    Callbacks callbacks_;
 };
 

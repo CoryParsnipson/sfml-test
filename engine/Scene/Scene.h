@@ -93,13 +93,6 @@ public:
       this->get_entity(this->root_)->get<Space>()->id("RootSpaceComponent");
 
       this->init(game);
-
-      // resize all the cameras
-      ResizeCameraCommand rc_command(game.window(), this->scene_graph_);
-      rc_command.execute();
-
-      this->send_message_async<ResizeCameraMessage>(game.window().size());
-
       this->is_initialized_ = true;
    }
 
@@ -108,6 +101,13 @@ public:
       for (GamepadList::const_iterator it = this->gamepads_.begin(); it != this->gamepads_.end(); ++it) {
         game.input_manager().attach(**it);
       }
+
+      // resize all the cameras
+      ResizeCameraCommand rc_command(game.window(), this->scene_graph_);
+      rc_command.execute();
+
+      // tell all graphical based systems to resize their cameras
+      this->send_message_async<ResizeCameraMessage>(game.window().size());
 
       this->enter(game);
    }

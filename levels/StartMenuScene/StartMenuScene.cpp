@@ -1,5 +1,6 @@
 #include "StartMenuScene.h"
 #include "BuilderScene.h"
+#include "BuilderSceneECS.h"
 #include "TestUIScene.h"
 
 #include "UtilFactory.h"
@@ -85,7 +86,7 @@ void StartMenuScene::init(Game& game) {
 
    pg->set(new ToggleDebugInfoCommand(this->scene_graph_, this->fonts().get("retro")), Key::O);
    pg->set(new SwitchSceneCommand(this, new BuilderScene()), Key::Space);
-   pg->set(new SwitchSceneCommand(this, new BuilderScene()), Key::Return);
+   pg->set(new SwitchSceneCommand(this, new BuilderSceneECS()), Key::Return);
    pg->set(new SwitchSceneCommand(this, new TestUIScene()), Key::Escape);
 
    this->textures().load("tile_sign", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 0, 64, 64));

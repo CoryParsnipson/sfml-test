@@ -6,7 +6,7 @@
 #include "AddToEntityMessage.h"
 #include "RemoveFromEntityMessage.h"
 
-SpatialSystem::SpatialSystem(const std::string& id /**/)
+SpatialSystem::SpatialSystem(const std::string& id /* = "SpatialSystem" */)
 : System(id)
 {
 }
