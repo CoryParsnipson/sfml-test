@@ -39,5 +39,15 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
       if (new_pos != prev_pos) {
          e.get<Callback>()->mouse_move();
       }
+
+      // mouse wheel calculation
+
+      // left click calculation
+
+      // right click calculation
+      
+      // left release calculation
+      
+      // right release calculation
    }
 }
