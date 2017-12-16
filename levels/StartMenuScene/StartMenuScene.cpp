@@ -25,8 +25,8 @@
 #include "Circle.h"
 #include "Rectangle.h"
 #include "Sprite.h"
+#include "Callback.h"
 
-#include "Input.h"
 #include "MoveLeftIntent.h"
 #include "MoveRightIntent.h"
 
@@ -127,6 +127,11 @@ void StartMenuScene::init(Game& game) {
    shaft->size(400, 150);
    shaft->color(sf::Color::Red);
 
+   entity1->add<Callback>();
+   entity1->get<Callback>()->mouse_in([&, entity1] () {
+      Game::logger().msg(entity1->id(), Logger::INFO, "POOP");
+   });
+
    Circle* right_ball = entity2->get<Circle>();
    right_ball->position(-200, 0);
    right_ball->radius(100);
@@ -137,9 +142,11 @@ void StartMenuScene::init(Game& game) {
    left_ball->radius(100);
    left_ball->color(sf::Color::Blue);
 
-   entity1->add<Input>();
-   entity1->get<Input>()->set<MoveLeftIntent>(1, game.input_manager().get_device(1)->get("Left"));
-   entity1->get<Input>()->set<MoveRightIntent>(1, game.input_manager().get_device(1)->get("Right"));
+   game.add_player(1);
+
+   game.get_player(1).name("Player1");
+   game.get_player(1).bindings().set<MoveLeftIntent>(1, game.input_manager().get_device(1)->get("Left"));
+   game.get_player(1).bindings().set<MoveRightIntent>(1, game.input_manager().get_device(1)->get("Right"));
 }
 
 void StartMenuScene::enter(Game& game) {

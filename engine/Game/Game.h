@@ -1,12 +1,14 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <map>
 #include <stack>
 
 #include "sfml.h"
 
 #include "InputManager.h"
 #include "Settings.h"
+#include "Player.h"
 #include "Logger.h"
 #include "InputListener.h"
 #include "Canvas.h"
@@ -17,12 +19,18 @@ class Game
 : public InputListener
 {
 public:
+   using Players = std::map<Player::PlayerId, Player*>;
+
    // services
    InputManager& input_manager();
    static Logger& logger();
 
 	Game();
 	virtual ~Game();
+
+   // profiles
+   Player& add_player(Player::PlayerId id);
+   Player& get_player(Player::PlayerId id);
 
    // settings
    Settings settings;
@@ -55,6 +63,9 @@ private:
    // services
    InputManager* input_manager_;
    static Logger* logger_;
+
+   // player profiles
+   Players players_;
 
 	// game flow control
 	void main_loop();

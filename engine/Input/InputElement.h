@@ -26,7 +26,7 @@ typedef std::shared_ptr<Button> ButtonPtr;
 // ----------------------------------------------------------------------------
 class InputElement {
 public:
-   InputElement(const std::string& name) : name_(name) {}
+   InputElement(const std::string& name) : name_(name), position_(0) {}
    virtual ~InputElement() {}
 
    const std::string& name() const { return this->name_; }

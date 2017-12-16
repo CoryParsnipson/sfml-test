@@ -1,5 +1,5 @@
-#ifndef INPUT_H
-#define INPUT_H
+#ifndef INPUT_BINDING_H
+#define INPUT_BINDING_H
 
 #include <map>
 #include <string>
@@ -7,35 +7,30 @@
 #include <typeinfo>
 #include <typeindex>
 
-#include "Component.h"
-#include "InputDevice.h"
 #include "Intent.h"
 
 // ----------------------------------------------------------------------------
-// Input
+// InputBinding
 //
-// This is an input component. It contains a mapping between Intents and
-// elements from InputDevices.
+// This class is a mapping between Intent class types and Intents. Use this
+// to abstract lower level InputDevice elements (KeyA, Up, MouseClick, etc)
+// to higher level "intents" (left, right, jump, shoot, etc).
 // ----------------------------------------------------------------------------
-class Input : public Component {
+class InputBinding {
 public:
    using IntentMapping = std::map<std::type_index, IntentPtr>;
 
-   Input(const std::string& id = "InputComponent") : Component(id) {}
-   Input(const Input& other) : Component(other), map_(other.map_) {}
-   virtual ~Input() {}
-
-   Input& operator=(const Input& other) {
-      Input tmp(other);
-      this->swap(tmp);
-      return *this;
+   InputBinding(const std::string& id = "InputBinding")
+   : id_(id)
+   {
    }
 
-   void swap(Input& other) {
-      Component::swap(other);
-
-      std::swap(this->map_, other.map_);
+   ~InputBinding() {
+      this->map_.clear();
    }
+
+   std::string id() const;
+   void id(const std::string& id);
 
    template <
       typename IntentT,
@@ -62,6 +57,7 @@ public:
    }
 
 private:
+   std::string id_;
    IntentMapping map_;
 };
 

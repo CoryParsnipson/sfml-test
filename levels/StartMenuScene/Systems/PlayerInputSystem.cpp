@@ -1,9 +1,9 @@
 #include "PlayerInputSystem.h"
 #include "Game.h"
 #include "Logger.h"
-#include "Input.h"
 #include "InputElement.h"
 #include "Rectangle.h"
+#include "Callback.h"
 #include "MoveLeftIntent.h"
 #include "MoveRightIntent.h"
 
@@ -14,12 +14,12 @@ PlayerInputSystem::~PlayerInputSystem() {
 }
 
 void PlayerInputSystem::on_init(Game& game) {
-   this->subscribe_to().all_of<Input, Rectangle>();
+   this->subscribe_to().all_of<Rectangle>();
 }
 
 void PlayerInputSystem::on_update(Game& game, Entity& e) {
-   InputElementPtr move_left_button = e.get<Input>()->get<MoveLeftIntent>()->element();
-   InputElementPtr move_right_button = e.get<Input>()->get<MoveRightIntent>()->element();
+   InputElementPtr move_left_button = game.get_player(1).bindings().get<MoveLeftIntent>()->element();
+   InputElementPtr move_right_button = game.get_player(1).bindings().get<MoveRightIntent>()->element();
 
    if(move_left_button && move_left_button->is_pressed()) {
       Game::logger().msg(this->id(), Logger::INFO, "MoveLeftIntent is active.");

@@ -79,6 +79,12 @@ Game::~Game() {
    // remove from input
    this->input_manager().detach(*this);
 
+   // destroy player profiles
+   for (Players::const_iterator it = this->players_.begin(); it != this->players_.end(); ++it) {
+      delete it->second;
+   }
+   this->players_.clear();
+
    // destroy logger
    delete Game::logger_;
 }
@@ -89,6 +95,19 @@ InputManager& Game::input_manager() {
 
 Logger& Game::logger() {
    return *Game::logger_;
+}
+
+Player& Game::add_player(Player::PlayerId id) {
+   Players::iterator it = this->players_.find(id);
+   if (it == this->players_.end()) {
+      this->players_[id] = new Player(id);
+   }
+
+   return *(this->players_[id]);
+}
+
+Player& Game::get_player(Player::PlayerId id) {
+   return *(this->players_.at(id));
 }
 
 void Game::start() {
