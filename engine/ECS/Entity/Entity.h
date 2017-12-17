@@ -75,9 +75,10 @@ public:
 
    template <
       typename ComponentType,       
+      typename... ComponentArgs,
       typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*  = nullptr
    >
-   Handle add();
+   Handle add(ComponentArgs&&... args);
 
    template <
       typename ComponentType,       
@@ -160,13 +161,14 @@ void Entity::set(Handle& handle) {
 
 template <
    typename ComponentType,
+   typename... ComponentArgs,
    typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*  = nullptr
 >
-Handle Entity::add() {
+Handle Entity::add(ComponentArgs&&... args) {
    assert(this->component_manager_);
 
    // get a component from the pool and add to this entity
-   Handle handle(this->component_manager_->add<ComponentType>());
+   Handle handle(this->component_manager_->add<ComponentType>(args...));
    this->components_[std::type_index(typeid(ComponentType))] = handle;
 
    this->send_message_async<ComponentAddedMessage>();

@@ -87,8 +87,7 @@ void BuilderSceneECS::init(Game& game) {
    mouse_cursor->get<Text>()->color(sf::Color::White);
    mouse_cursor->get<Text>()->font(this->fonts().get("retro"));
 
-   mouse_cursor->add<PlayerProfile>();
-   mouse_cursor->get<PlayerProfile>()->player_id(1);
+   mouse_cursor->add<PlayerProfile>("PlayerProfile Component", 1);
 
    // define mouse cursor behavior
    mouse_cursor->add<Callback>();

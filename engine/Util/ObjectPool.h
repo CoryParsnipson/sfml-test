@@ -85,10 +85,8 @@ public:
 // ObjectPool base
 //
 // To create a pool, derive from this class and specify the object that should
-// be pooled.
-//
-// This implementation requires the pooled object to either be a primitive
-// data type or have a default constructor.
+// be pooled. Use the allocator parameter to specify what kind of default
+// object to construct.
 // -----------------------------------------------------------------------------
 template <typename ObjectType>
 class ObjectPool final : public ObjectPoolBase {
@@ -110,7 +108,7 @@ public:
    ObjectType* get(Handle& handle);
    bool get(Handle& handle, ObjectType*& out);
 
-   Handle add();
+   template <typename... ComponentArgs> Handle add(ComponentArgs&&... args);
    void remove(const Handle& handle);
 
    std::vector<ObjectType*> get_active_objects() const;
@@ -254,7 +252,8 @@ bool ObjectPool<ObjectType>::get(Handle& handle, ObjectType*& out) {
 }
 
 template <typename ObjectType>
-Handle ObjectPool<ObjectType>::add() {
+template <typename... ComponentArgs>
+Handle ObjectPool<ObjectType>::add(ComponentArgs&&... args) {
    unsigned int new_index = this->first_free_index_;
 
    assert(new_index < this->size());
@@ -273,6 +272,10 @@ Handle ObjectPool<ObjectType>::add() {
       ++this->pool_[new_index].version_;
    }
 
+   // initialize a new object
+   this->pool_[new_index].data_.~ObjectType();
+   new (&this->pool_[new_index].data_) ObjectType(args...);
+
    // TODO: implement some sort of customizable resize policy
    assert(this->num_entries_active() <= this->size());
 
@@ -290,7 +293,6 @@ void ObjectPool<ObjectType>::remove(const Handle& handle) {
 
       entry.active_ = false;
       entry.next_free_index_ = this->first_free_index_;
-      entry.data_ = this->allocator_();
 
       this->first_free_index_ = handle.index();
       --this->num_entries_active_;

@@ -227,7 +227,7 @@ public:
 
    // entity component system interface
    Handle create_entity() {
-      Handle handle = this->entities_.add();
+      Handle handle = this->entities_.add("entity", this, &this->components_);
 
       // let Systems know a new Entity has been made
       this->send_message_async<EntityCreatedMessage>(handle);

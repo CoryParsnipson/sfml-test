@@ -12,7 +12,7 @@
 // ----------------------------------------------------------------------------
 class PlayerProfile : public Component {
 public:
-   explicit PlayerProfile(const std::string& id = "PlayerProfile Component");
+   explicit PlayerProfile(const std::string& id = "PlayerProfile Component", Player::PlayerId player_id = 0);
    PlayerProfile(const PlayerProfile& other);
    virtual ~PlayerProfile();
    

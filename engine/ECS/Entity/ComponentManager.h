@@ -40,9 +40,10 @@ public:
 
    template <
       typename ComponentType,
+      typename... ComponentArgs,
       typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*  = nullptr
    >
-   Handle add();
+   Handle add(ComponentArgs&&... args);
 
    template <
       typename ComponentType,
@@ -91,16 +92,17 @@ ComponentType* ComponentManager::get(Handle handle) {
 
 template <
    typename ComponentType,
+   typename... ComponentArgs,
    typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*  = nullptr
 >
-Handle ComponentManager::add() {
+Handle ComponentManager::add(ComponentArgs&&... args) {
    ObjectPoolBasePtr& pool_ptr = this->components_[std::type_index(typeid(ComponentType))];
 
    if (!pool_ptr) {
       this->create_pool<ComponentType>();
    }
 
-   return static_cast<ObjectPool<ComponentType>*>(pool_ptr.get())->add();
+   return static_cast<ObjectPool<ComponentType>*>(pool_ptr.get())->add(args...);
 }
 
 template <

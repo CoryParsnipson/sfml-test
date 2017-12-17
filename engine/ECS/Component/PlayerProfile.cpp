@@ -1,8 +1,8 @@
 #include "PlayerProfile.h"
 
-PlayerProfile::PlayerProfile(const std::string& id /* = "PlayerProfile Component" */)
+PlayerProfile::PlayerProfile(const std::string& id /* = "PlayerProfile Component" */, Player::PlayerId player_id /* = 0 */)
 : Component(id)
-, player_id_(0)
+, player_id_(player_id)
 {
 }
 
