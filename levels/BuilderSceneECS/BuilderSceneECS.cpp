@@ -76,21 +76,17 @@ void BuilderSceneECS::init(Game& game) {
    Entity* mouse_cursor = this->get_entity(this->create_entity());
    mouse_cursor->id("MouseCursorEntity");
 
-   mouse_cursor->add<Rectangle>();
-   mouse_cursor->get<Rectangle>()->position(0, 0);
-   mouse_cursor->get<Rectangle>()->size(6, 6);
+   mouse_cursor->add<Rectangle>("MouseCursorRectangle", 0, 0, 6, 6);
    mouse_cursor->get<Rectangle>()->color(sf::Color::Red);
 
-   mouse_cursor->add<Text>();
+   mouse_cursor->add<Text>("MouseCursorText", "", this->fonts().get("retro"), 12);
    mouse_cursor->get<Text>()->position(0, 10);
-   mouse_cursor->get<Text>()->font_size(12);
    mouse_cursor->get<Text>()->color(sf::Color::White);
-   mouse_cursor->get<Text>()->font(this->fonts().get("retro"));
 
-   mouse_cursor->add<PlayerProfile>("PlayerProfile Component", 1);
+   mouse_cursor->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
 
    // define mouse cursor behavior
-   mouse_cursor->add<Callback>();
+   mouse_cursor->add<Callback>("MouseCursorCallback");
    mouse_cursor->get<Callback>()->mouse_move([mouse_cursor, &game] () {
       sf::Vector2f new_pos;
 
