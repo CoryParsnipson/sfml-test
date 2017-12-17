@@ -14,9 +14,7 @@
 #include "MouseXIntent.h"
 #include "MouseYIntent.h"
 
-#include "SpatialSystem.h"
 #include "GraphicalSystem.h"
-#include "CallbackSystem.h"
 
 BuilderSceneECS::BuilderSceneECS()
 : Scene("BuilderSceneECS")
@@ -61,16 +59,10 @@ void BuilderSceneECS::init(Game& game) {
    game.get_player(1).bindings().set<MouseXIntent>(0, game.input_manager().get_device(0)->get("PositionX"));
    game.get_player(1).bindings().set<MouseYIntent>(0, game.input_manager().get_device(0)->get("PositionY"));
 
-   // add in GraphicalSystem (this probably should go in Scene.h or something...)
+   // add in GraphicalSystem (this probably should go in Scene.h or something?)
    GraphicalSystem* gs = new GraphicalSystem("GraphicalSystem", game.window(), std::make_shared<Camera>("Main Camera"));
    gs->camera()->reset_pan();
    this->add_system(gs);
-
-   // add in SpatialSystem (this probably should go in Scene.h or something...)
-   this->add_system(new SpatialSystem());
-
-   // add in CallbackSystem (this probably should go in Scene.h or something...)
-   this->add_system(new CallbackSystem());
 
    // create mouse cursor
    Entity* mouse_cursor = this->get_entity(this->create_entity());
@@ -94,6 +86,9 @@ void BuilderSceneECS::init(Game& game) {
       new_pos.y = game.get_player(1).bindings().get<MouseYIntent>()->element()->position();
 
       mouse_cursor->get<Rectangle>()->position(new_pos);
+   });
+
+   mouse_cursor->get<Callback>()->mouse_wheel([] () {
    });
 
    mouse_cursor->get<Callback>()->left_click([] () {

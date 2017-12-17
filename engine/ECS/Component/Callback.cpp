@@ -58,6 +58,14 @@ void Callback::mouse_move() {
    this->callbacks_[CallbackKey::MOUSE_MOVE]();
 }
 
+void Callback::mouse_wheel(Callback::CallbackT callback) {
+   this->callbacks_[CallbackKey::MOUSE_WHEEL] = callback;
+}
+
+void Callback::mouse_wheel() {
+   this->callbacks_[CallbackKey::MOUSE_WHEEL]();
+}
+
 void Callback::left_click(Callback::CallbackT callback) {
    this->callbacks_[CallbackKey::LEFT_CLICK] = callback;
 }

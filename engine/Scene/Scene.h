@@ -38,6 +38,9 @@
 #include "System.h"
 #include "Mailbox.h"
 
+#include "SpatialSystem.h"
+#include "CallbackSystem.h"
+
 #include "EntityCreatedMessage.h"
 #include "AddToEntityMessage.h"
 #include "ResizeCameraMessage.h"
@@ -91,6 +94,10 @@ public:
       this->root_ = this->create_entity();
       this->get_entity(this->root_)->id(this->id() + "RootEntity");
       this->get_entity(this->root_)->get<Space>()->id("RootSpaceComponent");
+
+      // add some default systems
+      this->add_system(new SpatialSystem());
+      this->add_system(new CallbackSystem());
 
       this->init(game);
       this->is_initialized_ = true;
