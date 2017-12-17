@@ -220,12 +220,24 @@ void Game::main_loop() {
          continue;
       }
 
-      // update
-      this->scenes_.top()->update(*this);
+      // ------------
+      // Need to change these lines to see new ECS system updates
 
       // draw
       this->window_.clear(); // clear previous frame contents
-      this->scenes_.top()->draw(this->window_);
+
+      // update
+      this->scenes_.top()->update(*this);
+
+      // ------------
+
+// TODO: uncomment this for old behavior
+//      // update
+//      this->scenes_.top()->update(*this);
+//
+//      // draw
+//      this->window_.clear(); // clear previous frame contents
+//      this->scenes_.top()->draw(this->window_);
 
       // poll input
       this->input_manager().poll_event(*this);
