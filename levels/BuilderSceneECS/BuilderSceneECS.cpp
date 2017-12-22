@@ -6,6 +6,8 @@
 #include "Text.h"
 #include "Rectangle.h"
 #include "Callback.h"
+#include "Clickable.h"
+#include "Collision.h"
 #include "Entity.h"
 #include "PlayerProfile.h"
 
@@ -13,8 +15,11 @@
 
 #include "MouseXIntent.h"
 #include "MouseYIntent.h"
+#include "LeftClickIntent.h"
+#include "RightClickIntent.h"
 
 #include "GraphicalSystem.h"
+#include "VisualDebugSystem.h"
 
 BuilderSceneECS::BuilderSceneECS()
 : Scene("BuilderSceneECS")
@@ -58,15 +63,22 @@ void BuilderSceneECS::init(Game& game) {
    game.add_player(1);
    game.get_player(1).bindings().set<MouseXIntent>(0, game.input_manager().get_device(0)->get("PositionX"));
    game.get_player(1).bindings().set<MouseYIntent>(0, game.input_manager().get_device(0)->get("PositionY"));
+   game.get_player(1).bindings().set<LeftClickIntent>(0, game.input_manager().get_device(0)->get("Left"));
+   game.get_player(1).bindings().set<RightClickIntent>(0, game.input_manager().get_device(0)->get("Right"));
 
    // add in GraphicalSystem (this probably should go in Scene.h or something?)
    GraphicalSystem* gs = new GraphicalSystem("GraphicalSystem", game.window(), std::make_shared<Camera>("Main Camera"));
    gs->camera()->reset_pan();
    this->add_system(gs);
 
+   this->add_system(new VisualDebugSystem("VisualDebugSystem", game.window(), gs->camera()));
+
    // create mouse cursor
    Entity* mouse_cursor = this->get_entity(this->create_entity());
    mouse_cursor->id("MouseCursorEntity");
+
+   mouse_cursor->add<Clickable>("MouseCursorClickable");
+   mouse_cursor->add<Collision>("MouseCursorCollision", sf::FloatRect(0, 0, 6, 6));
 
    mouse_cursor->add<Rectangle>("MouseCursorRectangle", 0, 0, 6, 6);
    mouse_cursor->get<Rectangle>()->color(sf::Color::Red);
@@ -85,22 +97,31 @@ void BuilderSceneECS::init(Game& game) {
       new_pos.x = game.get_player(1).bindings().get<MouseXIntent>()->element()->position();
       new_pos.y = game.get_player(1).bindings().get<MouseYIntent>()->element()->position();
 
-      mouse_cursor->get<Rectangle>()->position(new_pos);
+      mouse_cursor->get<Rectangle>()->position(new_pos - sf::Vector2f(3, 3));
+
+      Collision* c = mouse_cursor->get<Collision>();
+      if (c) {
+         c->volume(new_pos - sf::Vector2f(3, 3), sf::Vector2f(6, 6));
+      }
    });
 
    mouse_cursor->get<Callback>()->mouse_wheel([] () {
    });
 
    mouse_cursor->get<Callback>()->left_click([] () {
+      Game::logger().msg("asdf", Logger::INFO, "LEFT CLICK");
    });
 
    mouse_cursor->get<Callback>()->left_release([] () {
+      Game::logger().msg("asdf", Logger::INFO, "LEFT RELEASE");
    });
 
    mouse_cursor->get<Callback>()->right_click([] () {
+      Game::logger().msg("asdf", Logger::INFO, "RIGHT CLICK");
    });
 
    mouse_cursor->get<Callback>()->right_release([] () {
+      Game::logger().msg("asdf", Logger::INFO, "RIGHT RELEASE");
    });
 }
 

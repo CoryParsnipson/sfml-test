@@ -3,6 +3,15 @@
 Callback::Callback(const std::string& id /* = "Callback Component" */)
 : Component(id)
 {
+   // initialize all callback functions with null callbacks
+   this->callbacks_[CallbackKey::MOUSE_IN] = [] () {};
+   this->callbacks_[CallbackKey::MOUSE_OUT] = [] () {};
+   this->callbacks_[CallbackKey::MOUSE_MOVE] = [] () {};
+   this->callbacks_[CallbackKey::MOUSE_WHEEL] = [] () {};
+   this->callbacks_[CallbackKey::LEFT_CLICK] = [] () {};
+   this->callbacks_[CallbackKey::RIGHT_CLICK] = [] () {};
+   this->callbacks_[CallbackKey::LEFT_RELEASE] = [] () {};
+   this->callbacks_[CallbackKey::RIGHT_RELEASE] = [] () {};
 }
 
 Callback::Callback(const Callback& other)

@@ -18,11 +18,15 @@ public:
    Clickable& operator=(const Clickable& other);
    void swap(Clickable& other);
 
-   bool is_clicked() const;
-   void is_clicked(bool is_clicked);
+   bool is_left_clicked() const;
+   void is_left_clicked(bool is_clicked);
+
+   bool is_right_clicked() const;
+   void is_right_clicked(bool is_clicked);
    
 private:
-   bool is_clicked_;
+   bool is_left_clicked_;
+   bool is_right_clicked_;
 };
 
 #endif
