@@ -69,9 +69,15 @@ void BuilderSceneECS::init(Game& game) {
    game.get_player(1).bindings().set<RightClickIntent>(0, game.input_manager().get_device(0)->get("Right"));
 
    // add in GraphicalSystem (this probably should go in Scene.h or something?)
-   GraphicalSystem* gs = new GraphicalSystem("GraphicalSystem", game.window(), std::make_shared<Camera>("Main Camera"));
+   GraphicalSystem* gs = new GraphicalSystem("GraphicalSystem", game.window(), std::make_shared<Camera>("Left Camera"));
    gs->camera()->reset_pan();
+   gs->camera()->set_viewport(sf::FloatRect(0.f, 0.f, 0.5f, 1.f));
    this->add_system(gs);
+
+   GraphicalSystem* gs2 = new GraphicalSystem("GraphicalSystem", game.window(), std::make_shared<Camera>("Right Camera"));
+   gs2->camera()->reset_pan();
+   gs2->camera()->set_viewport(sf::FloatRect(0.5f, 0.f, 0.5f, 1.f));
+   this->add_system(gs2);
 
    this->add_system(new VisualDebugSystem("VisualDebugSystem", game.window(), gs->camera()));
 

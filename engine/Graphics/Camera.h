@@ -4,14 +4,23 @@
 #include <memory>
 #include <string>
 
-#include "Component.h"
 #include "InputManager.h"
 #include "SceneObject.h"
 #include "CameraResizePolicy.h"
 
+// ----------------------------------------------------------------------------
+// typedefs
+// ----------------------------------------------------------------------------
+typedef std::shared_ptr<Camera> CameraPtr;
+
+// ----------------------------------------------------------------------------
+// Camera
+//
+// This class lets the user manipulate the viewport and view into the game
+// graphics.
+// ----------------------------------------------------------------------------
 class Camera
-: public Component
-, public SceneObject
+: public SceneObject
 , public Moveable
 {
 public:

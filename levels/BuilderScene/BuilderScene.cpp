@@ -49,7 +49,7 @@
 
 #include "Sprite.h"
 #include "TileMap.h"
-#include "MapSystem.h"
+#include "GraphicalSystem.h"
 
 BuilderScene::BuilderScene()
 : Scene("BuilderScene")
@@ -267,9 +267,7 @@ void BuilderScene::init(Game& game) {
    this->map_camera_->on_mouse_move(drag_command);
    this->map_camera_->on_mouse_wheel(new ZoomCommand(this->map_camera_, this->map_->grid(), pg));
 
-   // TEST MAP SYSTEM
-   MapSystem* ms = new MapSystem("MapSystem", game.window(), std::make_shared<Camera>("Main Camera"));
-   this->add_system(ms);
+   this->add_system(new GraphicalSystem("MapSystem", game.window(), std::make_shared<Camera>("Main Camera")));
 
    // create a map
    Handle e1 = this->create_entity();

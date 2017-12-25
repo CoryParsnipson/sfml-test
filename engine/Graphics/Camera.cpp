@@ -9,8 +9,7 @@ const float Camera::ZOOM_FACTOR_MIN = 0.125;
 const float Camera::ZOOM_FACTOR_MAX = 3.0;
 
 Camera::Camera(const std::string& id)
-: Component(id)
-, SceneObject(id, true)
+: SceneObject(id, true)
 , id_(id)
 , zoom_factor_(1.0)
 , original_center_(0, 0)
@@ -20,8 +19,7 @@ Camera::Camera(const std::string& id)
 }
 
 Camera::Camera(const std::string& id, const sf::Vector2f& size)
-: Component(id)
-, SceneObject(id, true)
+: SceneObject(id, true)
 , id_(id)
 , zoom_factor_(1.0)
 , original_center_(size.x / 2.f, size.y / 2.f)
@@ -31,8 +29,7 @@ Camera::Camera(const std::string& id, const sf::Vector2f& size)
 }
 
 Camera::Camera(const Camera& other)
-: Component(other.id())
-, SceneObject(other.id(), other.visible())
+: SceneObject(other.id(), other.visible())
 , id_(other.id())
 , zoom_factor_(other.zoom_factor_)
 , original_center_(other.original_center_)
@@ -52,7 +49,6 @@ Camera& Camera::operator=(const Camera& other) {
 }
 
 void Camera::swap(Camera& other) {
-   std::swap(static_cast<Component&>(*this), static_cast<Component&>(other));
    std::swap(this->id_, other.id_);
    std::swap(this->zoom_factor_, other.zoom_factor_);
    std::swap(this->original_center_, other.original_center_);
@@ -91,10 +87,6 @@ const std::shared_ptr<CameraResizePolicy>& Camera::policy() {
 
 void Camera::resize(sf::Vector2f size) {
    if (this->resize_policy_) {
-      Game::logger().msg(this->id(), Logger::INFO, "Resizing from "
-         + std::to_string((int)this->get_size().x) + "x" + std::to_string((int)this->get_size().y)
-         + " to " + std::to_string((int)size.x) + "x" + std::to_string((int)size.y));
-
       this->resize_policy_->resize(*this, size);
    }
 }

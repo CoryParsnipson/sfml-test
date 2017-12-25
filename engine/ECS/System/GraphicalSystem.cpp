@@ -1,18 +1,22 @@
+#include <algorithm>
+
+#include <boost/variant.hpp>
+
 #include "GraphicalSystem.h"
 #include "RenderSurface.h"
 #include "Game.h"
-#include "Camera.h"
 #include "Circle.h"
 #include "Rectangle.h"
 #include "Sprite.h"
 #include "Text.h"
 #include "VertexList.h"
+#include "TileMap.h"
 #include "Space.h"
 #include "SpatialEntitySubscription.h"
 #include "Scene.h"
 #include "ResizeCameraMessage.h"
 
-GraphicalSystem::GraphicalSystem(const std::string& id, RenderSurface& surface, std::shared_ptr<Camera> camera)
+GraphicalSystem::GraphicalSystem(const std::string& id, RenderSurface& surface, CameraPtr camera)
 : System(id, new SpatialEntitySubscription(id + "EntitySubscription"))
 , surface_(&surface)
 , camera_(camera)
@@ -26,7 +30,7 @@ GraphicalSystem::GraphicalSystem(const std::string& id, RenderSurface& surface, 
 GraphicalSystem::~GraphicalSystem() {
 }
 
-std::shared_ptr<Camera> GraphicalSystem::camera() const {
+CameraPtr GraphicalSystem::camera() const {
    return this->camera_;
 }
 
@@ -35,7 +39,7 @@ RenderSurface* GraphicalSystem::surface() const {
 }
 
 void GraphicalSystem::on_init(Game& game) {
-   this->subscribe_to().one_of<Circle, Rectangle, Sprite, Text, VertexList>();
+   this->subscribe_to().one_of<Circle, Rectangle, Sprite, Text, VertexList, TileMap>();
    this->subscribe_to().all_of<Space>();
 }
 
@@ -45,6 +49,7 @@ void GraphicalSystem::on_update(Game& game, Entity& e) {
    Sprite* sprite = e.get<Sprite>();
    Text* text = e.get<Text>();
    VertexList* vertexlist = e.get<VertexList>();
+   TileMap* tilemap = e.get<TileMap>();
 
    sf::RenderStates states;
    states.transform = this->global_transform(e);
@@ -69,5 +74,26 @@ void GraphicalSystem::on_update(Game& game, Entity& e) {
 
    if (vertexlist != nullptr) {
       vertexlist->draw(*this->surface_, states);
+   }
+
+   if (tilemap != nullptr) {
+      std::vector<TileMap::TileType*> tiles = tilemap->find(this->camera()->bounds());
+
+      // draw map tiles
+      std::for_each(tiles.begin(), tiles.end(),
+         [&] (TileMap::TileType* tile) {
+            if (tile->type() == typeid(Circle)) {
+               boost::get<Circle>(*tile).draw(*this->surface(), states);
+            } else if (tile->type() == typeid(Rectangle)) {
+               boost::get<Rectangle>(*tile).draw(*this->surface(), states);
+            } else if (tile->type() == typeid(Sprite)) {
+               boost::get<Sprite>(*tile).draw(*this->surface(), states);
+            } else if (tile->type() == typeid(Text)) {
+               boost::get<Text>(*tile).draw(*this->surface(), states);
+            } else if (tile->type() == typeid(VertexList)) {
+               boost::get<VertexList>(*tile).draw(*this->surface(), states);
+            }
+         }
+      );
    }
 }

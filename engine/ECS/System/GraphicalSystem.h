@@ -5,11 +5,11 @@
 #include <memory>
 
 #include "System.h"
+#include "Camera.h"
 
 // ----------------------------------------------------------------------------
 // forward declarations
 // ----------------------------------------------------------------------------
-class Camera;
 class RenderSurface;
 
 // ----------------------------------------------------------------------------
@@ -20,15 +20,15 @@ class RenderSurface;
 // ----------------------------------------------------------------------------
 class GraphicalSystem : public System {
 public:
-   GraphicalSystem(const std::string& id, RenderSurface& surface, std::shared_ptr<Camera> camera);
+   GraphicalSystem(const std::string& id, RenderSurface& surface, CameraPtr camera);
    virtual ~GraphicalSystem();
 
-   std::shared_ptr<Camera> camera() const;
+   CameraPtr camera() const;
    RenderSurface* surface() const;
 
 private:
    RenderSurface* surface_;
-   std::shared_ptr<Camera> camera_;
+   CameraPtr camera_;
 
    virtual void on_init(Game& game);
    virtual void on_update(Game& game, Entity& e);
