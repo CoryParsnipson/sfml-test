@@ -36,6 +36,7 @@ public:
    void swap(Camera& other);
 
    const std::string& id() const;
+   void id(std::string id);
    virtual std::string to_string() const;
 
    void reset_pan();

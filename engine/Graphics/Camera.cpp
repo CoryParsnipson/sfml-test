@@ -60,6 +60,10 @@ const std::string& Camera::id() const {
    return this->id_;
 }
 
+void Camera::id(std::string id) {
+   this->id_ = id;
+}
+
 std::string Camera::to_string() const {
    return "[Camera: " + this->id() + "]";
 }

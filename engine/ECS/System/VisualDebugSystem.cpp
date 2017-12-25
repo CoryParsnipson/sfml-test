@@ -19,6 +19,8 @@ void VisualDebugSystem::on_init(Game& game) {
 void VisualDebugSystem::on_update(Game& game, Entity& e) {
    Collision* c = e.get<Collision>();
    if (c) {
+      this->camera()->draw(*this->surface()); // apply the camera
+
       sf::RectangleShape r;
       r.setFillColor(sf::Color(124, 160, 210, 200));
       r.setOutlineColor(sf::Color(210, 124, 124, 200));

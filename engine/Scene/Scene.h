@@ -40,6 +40,7 @@
 
 #include "SpatialSystem.h"
 #include "CallbackSystem.h"
+#include "GraphicalSystem.h"
 
 #include "EntityCreatedMessage.h"
 #include "AddToEntityMessage.h"
@@ -98,6 +99,7 @@ public:
       // add some default systems
       this->add_system(new SpatialSystem());
       this->add_system(new CallbackSystem());
+      this->add_system(new GraphicalSystem("GraphicalSystem", game.window(), std::make_shared<Camera>("Default Camera")));
 
       this->init(game);
       this->is_initialized_ = true;
@@ -277,6 +279,16 @@ public:
          this->systems_.insert(this->systems_.begin() + priority, system);
          this->game_->logger().msg(this->id(), Logger::INFO, "Adding system '" + system->id() + "' to position " + std::to_string(priority) + " of systems vector.");
       }
+   }
+
+   System* get_system(std::string id) const {
+      for (std::vector<System*>::const_iterator it = this->systems_.begin(); it != this->systems_.end(); ++it) {
+         if ((*it)->id() == id) {
+            return *it;
+         }
+      }
+
+      return nullptr;
    }
 
    // input event processing default implementations

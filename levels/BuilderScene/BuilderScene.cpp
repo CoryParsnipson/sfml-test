@@ -1,5 +1,4 @@
 #include "BuilderScene.h"
-#include "TestUIScene.h"
 
 #include "Game.h"
 
@@ -230,7 +229,6 @@ void BuilderScene::init(Game& game) {
    pg->set(new ToggleVisibleCommand(this->map_->grid()), Key::G);
    pg->set(new ToggleDebugInfoCommand(this->scene_graph_, this->fonts().get("retro")), Key::O);
    pg->set(new ResetCameraCommand(this->map_camera_, this->map_->grid()), Key::R);
-   pg->set(new SwitchSceneCommand(this, new TestUIScene()), Key::Escape);
    pg->set(new RemoveTilesCommand(*this->map_, this->tile_cursor_), Key::Delete);
    pg->set(new RemoveTilesCommand(*this->map_, this->tile_cursor_), Key::Backspace);
    pg->set(new SerializeCommand(*this->map_, std::make_shared<JSONSerializer>(3), *this->map_file_), Key::S);
@@ -266,8 +264,6 @@ void BuilderScene::init(Game& game) {
 
    this->map_camera_->on_mouse_move(drag_command);
    this->map_camera_->on_mouse_wheel(new ZoomCommand(this->map_camera_, this->map_->grid(), pg));
-
-   this->add_system(new GraphicalSystem("MapSystem", game.window(), std::make_shared<Camera>("Main Camera")));
 
    // create a map
    Handle e1 = this->create_entity();

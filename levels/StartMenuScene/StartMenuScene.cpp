@@ -1,7 +1,6 @@
 #include "StartMenuScene.h"
 #include "BuilderScene.h"
 #include "BuilderSceneECS.h"
-#include "TestUIScene.h"
 
 #include "UtilFactory.h"
 #include "TextFactory.h"
@@ -87,19 +86,15 @@ void StartMenuScene::init(Game& game) {
    pg->set(new ToggleDebugInfoCommand(this->scene_graph_, this->fonts().get("retro")), Key::O);
    pg->set(new SwitchSceneCommand(this, new BuilderScene()), Key::Space);
    pg->set(new SwitchSceneCommand(this, new BuilderSceneECS()), Key::Return);
-   pg->set(new SwitchSceneCommand(this, new TestUIScene()), Key::Escape);
 
    this->textures().load("tile_sign", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 0, 64, 64));
    
-   GraphicalSystem* gs = new GraphicalSystem("GraphicalSystem", game.window(), std::make_shared<Camera>("Main Camera"));
-   gs->camera()->resize(game.window().size()); // scene automatically resizes the cameras in the scene graph
-   gs->camera()->reset_pan();
-   gs->camera()->move(gs->camera()->get_center() - game.window().size());
-
-   // add graphics system
-   this->add_system(gs);
-
-   this->add_system(new SpatialSystem());
+   GraphicalSystem* gs = dynamic_cast<GraphicalSystem*>(this->get_system("GraphicalSystem"));
+   if (gs) {
+      gs->camera()->resize(game.window().size());
+      gs->camera()->reset_pan();
+      gs->camera()->move(gs->camera()->get_center() - game.window().size());
+   }
 
    this->add_system(new PlayerInputSystem());
 
