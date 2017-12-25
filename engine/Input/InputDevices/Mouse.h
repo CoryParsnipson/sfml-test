@@ -39,7 +39,7 @@ public:
       this->get("PositionX")->position(e.x);
       this->get("PositionY")->position(e.y);
       
-      this->get("Wheel")->position(e.delta);
+      this->get("Wheel")->position(this->get("Wheel")->position() + e.delta);
    }
 
    virtual void process(MouseButtonInputEvent& e) {

@@ -106,6 +106,7 @@ void InputManager::poll_event(Game& game) {
          event = new MouseMoveInputEvent(sfml_event.mouseMove.x, sfml_event.mouseMove.y);
          break;
       case sf::Event::MouseWheelMoved:
+         // this event type has been deprecated
          Game::logger().msg("InputManager", Logger::INFO, "Received mouse wheel event.");
          event = new MouseWheelInputEvent(
             sfml_event.mouseWheel.x,
@@ -113,6 +114,9 @@ void InputManager::poll_event(Game& game) {
             sfml_event.mouseWheel.delta
          );
          break;
+      case sf::Event::MouseWheelScrolled:
+         // this event is supposed to replace MouseWheelMoved, but delta always returns 0 for some reason
+         continue;
       case sf::Event::MouseButtonPressed:
          Game::logger().msg("InputManager", Logger::INFO, "Received mouse button pressed event.");
          event = new MouseButtonInputEvent(

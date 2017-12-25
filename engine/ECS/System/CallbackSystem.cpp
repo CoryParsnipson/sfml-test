@@ -9,6 +9,7 @@
 #include "InputBinding.h"
 #include "MouseXIntent.h"
 #include "MouseYIntent.h"
+#include "MouseWheelIntent.h"
 #include "LeftClickIntent.h"
 #include "RightClickIntent.h"
 
@@ -60,6 +61,11 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
       }
 
       // mouse wheel calculation
+      if (collision && clickable && contains_new && bindings.get<MouseWheelIntent>()
+          && bindings.get<MouseWheelIntent>()->element()->position() != callback->prev_mouse_wheel_pos()) {
+         callback->prev_mouse_wheel_pos(bindings.get<MouseWheelIntent>()->element()->position());
+         callback->mouse_wheel();
+      }
 
       // left click calculation
       if (collision && clickable && contains_new &&

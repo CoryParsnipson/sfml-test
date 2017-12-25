@@ -35,6 +35,9 @@ public:
    Callback& operator=(const Callback& other);
    void swap(Callback& other);
 
+   float prev_mouse_wheel_pos() const;
+   void prev_mouse_wheel_pos(float pos);
+
    sf::Vector2f prev_mouse_pos() const;
    void prev_mouse_pos(sf::Vector2f pos);
 
@@ -63,6 +66,7 @@ public:
    void right_release();
 
 private:
+   float prev_mouse_wheel_pos_;
    sf::Vector2f prev_mouse_pos_;
    Callbacks callbacks_;
 };

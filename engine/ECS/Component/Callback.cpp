@@ -2,6 +2,8 @@
 
 Callback::Callback(const std::string& id /* = "Callback Component" */)
 : Component(id)
+, prev_mouse_wheel_pos_(0.f)
+, prev_mouse_pos_(0, 0)
 {
    // initialize all callback functions with null callbacks
    this->callbacks_[CallbackKey::MOUSE_IN] = [] () {};
@@ -33,6 +35,14 @@ Callback& Callback::operator=(const Callback& other) {
 void Callback::swap(Callback& other) {
    std::swap(static_cast<Component&>(*this), static_cast<Component&>(other));
    std::swap(this->callbacks_, other.callbacks_);
+}
+
+float Callback::prev_mouse_wheel_pos() const {
+   return this->prev_mouse_wheel_pos_;
+}
+
+void Callback::prev_mouse_wheel_pos(float pos) {
+   this->prev_mouse_wheel_pos_ = pos;
 }
 
 sf::Vector2f Callback::prev_mouse_pos() const {

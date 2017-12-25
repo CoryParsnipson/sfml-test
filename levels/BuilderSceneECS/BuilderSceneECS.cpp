@@ -15,6 +15,7 @@
 
 #include "MouseXIntent.h"
 #include "MouseYIntent.h"
+#include "MouseWheelIntent.h"
 #include "LeftClickIntent.h"
 #include "RightClickIntent.h"
 
@@ -63,6 +64,7 @@ void BuilderSceneECS::init(Game& game) {
    game.add_player(1);
    game.get_player(1).bindings().set<MouseXIntent>(0, game.input_manager().get_device(0)->get("PositionX"));
    game.get_player(1).bindings().set<MouseYIntent>(0, game.input_manager().get_device(0)->get("PositionY"));
+   game.get_player(1).bindings().set<MouseWheelIntent>(0, game.input_manager().get_device(0)->get("Wheel"));
    game.get_player(1).bindings().set<LeftClickIntent>(0, game.input_manager().get_device(0)->get("Left"));
    game.get_player(1).bindings().set<RightClickIntent>(0, game.input_manager().get_device(0)->get("Right"));
 
@@ -105,7 +107,9 @@ void BuilderSceneECS::init(Game& game) {
       }
    });
 
-   mouse_cursor->get<Callback>()->mouse_wheel([] () {
+   mouse_cursor->get<Callback>()->mouse_wheel([&game] () {
+      float wheel_delta = game.get_player(1).bindings().get<MouseWheelIntent>()->element()->position();
+      Game::logger().msg("asdf", Logger::INFO, "Mouse delta " + std::to_string(wheel_delta));
    });
 
    mouse_cursor->get<Callback>()->left_click([] () {
