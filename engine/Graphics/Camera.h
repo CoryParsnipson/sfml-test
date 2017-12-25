@@ -4,12 +4,14 @@
 #include <memory>
 #include <string>
 
+#include "Component.h"
 #include "InputManager.h"
 #include "SceneObject.h"
 #include "CameraResizePolicy.h"
 
 class Camera
-: public SceneObject
+: public Component
+, public SceneObject
 , public Moveable
 {
 public:
@@ -18,7 +20,11 @@ public:
    
    Camera(const std::string& id);
    Camera(const std::string& id, const sf::Vector2f& size);
+   Camera(const Camera& other);
    virtual ~Camera();
+
+   Camera& operator=(const Camera& other);
+   void swap(Camera& other);
 
    const std::string& id() const;
    virtual std::string to_string() const;

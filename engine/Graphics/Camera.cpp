@@ -9,7 +9,8 @@ const float Camera::ZOOM_FACTOR_MIN = 0.125;
 const float Camera::ZOOM_FACTOR_MAX = 3.0;
 
 Camera::Camera(const std::string& id)
-: SceneObject(id, true)
+: Component(id)
+, SceneObject(id, true)
 , id_(id)
 , zoom_factor_(1.0)
 , original_center_(0, 0)
@@ -19,7 +20,8 @@ Camera::Camera(const std::string& id)
 }
 
 Camera::Camera(const std::string& id, const sf::Vector2f& size)
-: SceneObject(id, true)
+: Component(id)
+, SceneObject(id, true)
 , id_(id)
 , zoom_factor_(1.0)
 , original_center_(size.x / 2.f, size.y / 2.f)
@@ -28,8 +30,34 @@ Camera::Camera(const std::string& id, const sf::Vector2f& size)
 {
 }
 
+Camera::Camera(const Camera& other)
+: Component(other.id())
+, SceneObject(other.id(), other.visible())
+, id_(other.id())
+, zoom_factor_(other.zoom_factor_)
+, original_center_(other.original_center_)
+, view_(new sf::View(*other.view_))
+, resize_policy_(other.resize_policy_)
+{
+}
+
 Camera::~Camera() {
    delete this->view_;
+}
+
+Camera& Camera::operator=(const Camera& other) {
+   Camera tmp(other);
+   this->swap(tmp);
+   return *this;
+}
+
+void Camera::swap(Camera& other) {
+   std::swap(static_cast<Component&>(*this), static_cast<Component&>(other));
+   std::swap(this->id_, other.id_);
+   std::swap(this->zoom_factor_, other.zoom_factor_);
+   std::swap(this->original_center_, other.original_center_);
+   std::swap(this->view_, other.view_);
+   std::swap(this->resize_policy_, other.resize_policy_);
 }
 
 const std::string& Camera::id() const {
