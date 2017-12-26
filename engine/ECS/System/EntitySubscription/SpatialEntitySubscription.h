@@ -11,7 +11,7 @@
 // ----------------------------------------------------------------------------
 class SpatialEntitySubscription : public EntitySubscription {
 public:
-   SpatialEntitySubscription(const std::string& id = "SpatialEntitySubscription");
+   SpatialEntitySubscription(const std::string& id = "SpatialEntitySubscription", Handle root = Handle());
    virtual ~SpatialEntitySubscription();
 
    virtual void init(System& system);

@@ -19,6 +19,8 @@
 #include "LeftClickIntent.h"
 #include "RightClickIntent.h"
 
+#include "SpatialEntitySubscription.h"
+
 #include "GraphicalSystem.h"
 #include "VisualDebugSystem.h"
 
@@ -68,23 +70,35 @@ void BuilderSceneECS::init(Game& game) {
    game.get_player(1).bindings().set<LeftClickIntent>(0, game.input_manager().get_device(0)->get("Left"));
    game.get_player(1).bindings().set<RightClickIntent>(0, game.input_manager().get_device(0)->get("Right"));
 
+   // make a map root entity and hud root entity
+   Entity* map_root = this->get_entity(this->create_entity());
+   Entity* hud_root = this->get_entity(this->create_entity());
+
+   // TODO: create a better way to get Systems
    GraphicalSystem* gs = dynamic_cast<GraphicalSystem*>(this->get_system("GraphicalSystem"));
    if (gs) {
       gs->camera()->reset_pan();
       gs->camera()->id("Left System");
       gs->camera()->set_viewport(sf::FloatRect(0.f, 0.f, 0.5f, 1.f));
    }
+   // TODO: there's got to be a better way to do this
+   gs->subscription(new SpatialEntitySubscription(gs->id() + "EntitySubscription", map_root->handle()));
 
-   GraphicalSystem* gs2 = new GraphicalSystem("GraphicalSystem", game.window(), std::make_shared<Camera>("Right Camera"));
+   GraphicalSystem* gs2 = new GraphicalSystem("SecondScreen", game.window(), std::make_shared<Camera>("Right Camera"));
    gs2->camera()->reset_pan();
    gs2->camera()->set_viewport(sf::FloatRect(0.5f, 0.f, 0.5f, 1.f));
+   gs2->subscription(new SpatialEntitySubscription(gs2->id() + "EntitySubscription", hud_root->handle()));
    this->add_system(gs2);
 
-   this->add_system(new VisualDebugSystem("VisualDebugSystem", game.window(), gs->camera()));
+   this->add_system(new VisualDebugSystem("VisualDebugSystemLeft", game.window(), gs->camera()));
+   this->add_system(new VisualDebugSystem("VisualDebugSystemRight", game.window(), gs2->camera()));
 
    // create mouse cursor
    Entity* mouse_cursor = this->get_entity(this->create_entity());
    mouse_cursor->id("MouseCursorEntity");
+
+   // add mouse_cursor to the hud_root
+   this->send_message_async<AddToEntityMessage>(hud_root->handle(), mouse_cursor->handle());
 
    mouse_cursor->add<Clickable>("MouseCursorClickable");
    mouse_cursor->add<Collision>("MouseCursorCollision", sf::FloatRect(0, 0, 6, 6));

@@ -43,6 +43,9 @@ public:
    void init(Game& game);
    void update(Game& game);
 
+   EntitySubscription& subscription();
+   void subscription(EntitySubscription* subscription);
+
    template <
       typename MsgT,
       typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr
@@ -68,9 +71,6 @@ protected:
 
    Scene& scene();
    Mailbox& mailbox();
-
-   EntitySubscription& subscription();
-   void subscription(EntitySubscription* subscription);
 
    EntityFilter& subscribe_to();
 

@@ -44,6 +44,8 @@ public:
 
    std::string to_string();
 
+   Handle handle() const;
+
    void enable_debug_wireframe(bool debug_wireframe);
    bool enable_debug_wireframe();
 
@@ -120,11 +122,13 @@ public:
 private:
    // allow Scene class to create entities
    friend class ObjectPool<Entity>;
+   friend class Scene;
 
    bool enable_debug_wireframe_;
    bool enable_debug_text_;
 
    Scene* scene_;
+   Handle handle_;
    ComponentManager* component_manager_;
 
    PartList parts_;
@@ -132,6 +136,7 @@ private:
 
    // helpers
    void send_message_helper(std::shared_ptr<Message> message);
+   void handle(Handle handle);
 
    // scene graph interface hooks
    virtual void do_draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);

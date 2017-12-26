@@ -237,12 +237,15 @@ public:
    // entity component system interface
    Handle create_entity() {
       Handle handle = this->entities_.add("entity", this, &this->components_);
+      assert(this->get_entity(handle) != nullptr);
+
+      // set the Entity's handle
+      this->get_entity(handle)->handle(handle);
 
       // let Systems know a new Entity has been made
       this->send_message_async<EntityCreatedMessage>(handle);
 
       // add Spatial component, every Entity should always have one
-      assert(this->get_entity(handle) != nullptr);
       this->get_entity(handle)->add<Space>();
 
       // now add spatial component to scene graph root

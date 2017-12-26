@@ -64,6 +64,10 @@ std::string Entity::to_string() {
    return description;
 }
 
+Handle Entity::handle() const {
+   return this->handle_;
+}
+
 void Entity::enable_debug_wireframe(bool debug_wireframe) {
    this->enable_debug_wireframe_ = debug_wireframe;
 }
@@ -217,6 +221,10 @@ void Entity::update(Game& game) {
 void Entity::send_message_helper(std::shared_ptr<Message> message) {
    assert(this->scene_);
    this->scene_->handle_message(message);
+}
+
+void Entity::handle(Handle handle) {
+   this->handle_ = handle;
 }
 
 void Entity::do_draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {

@@ -4,8 +4,9 @@
 #include "Scene.h"
 #include "Entity.h"
 
-SpatialEntitySubscription::SpatialEntitySubscription(const std::string& id /* = "SpatialEntitySubscription" */)
+SpatialEntitySubscription::SpatialEntitySubscription(const std::string& id /* = "SpatialEntitySubscription" */, Handle root /* = Handle() */)
 : EntitySubscription(id)
+, root_(root)
 {
 }
 
@@ -30,7 +31,12 @@ void SpatialEntitySubscription::remove(Handle entity) {
 
 void SpatialEntitySubscription::for_each(System& system, std::function<void(Handle)> entity_handler) {
    std::vector<Handle> entities_to_visit;
-   entities_to_visit.push_back(this->scene(system).space_handle());
+
+   if (!this->scene(system).get_entity(root_)) {
+      entities_to_visit.push_back(this->scene(system).space_handle());
+   } else {
+      entities_to_visit.push_back(this->root_);
+   }
 
    // do a preorder traversal of scene graph
    while (!entities_to_visit.empty()) {
