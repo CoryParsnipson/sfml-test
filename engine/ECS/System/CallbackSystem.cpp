@@ -13,8 +13,11 @@
 #include "LeftClickIntent.h"
 #include "RightClickIntent.h"
 
+#include "ResizeCameraMessage.h"
+
 CallbackSystem::CallbackSystem(const std::string& id /* = "CallbackSystem" */)
 : System(id)
+, camera_was_resized_(false)
 {
 }
 
@@ -23,6 +26,11 @@ CallbackSystem::~CallbackSystem() {
 
 void CallbackSystem::on_init(Game& game) {
    this->subscribe_to().all_of<Callback, PlayerProfile>();
+
+   // handle resize messages
+   this->mailbox().handle<ResizeCameraMessage>([this](ResizeCameraMessage& msg) {
+      this->camera_was_resized_ = true;
+   });
 }
 
 void CallbackSystem::on_update(Game& game, Entity& e) {
@@ -45,6 +53,43 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
       bool contains_new = collision->contains(new_pos);
       bool contains_old = collision->contains(prev_pos);
 
+      // mouse wheel calculation
+      if (collision && clickable && contains_new && bindings.get<MouseWheelIntent>()
+          && bindings.get<MouseWheelIntent>()->element()->position() != callback->prev_mouse_wheel_pos()) {
+         callback->prev_mouse_wheel_pos(bindings.get<MouseWheelIntent>()->element()->position());
+         callback->mouse_wheel();
+      }
+
+      // left click calculation
+      if (collision && clickable && contains_new &&
+          bindings.get<LeftClickIntent>()->element()->is_pressed() && !clickable->is_left_clicked()) {
+         clickable->is_left_clicked(true);
+         clickable->left_click_pos(new_pos);
+         callback->left_click();
+      }
+
+      // right click calculation
+      if (collision && clickable && contains_new &&
+          bindings.get<RightClickIntent>()->element()->is_pressed() && !clickable->is_right_clicked()) {
+         clickable->is_right_clicked(true);
+         clickable->right_click_pos(new_pos);
+         callback->right_click();
+      }
+      
+      // left release calculation (release all clicked elements no matter collision)
+      if (clickable &&
+          !bindings.get<LeftClickIntent>()->element()->is_pressed() && clickable->is_left_clicked()) {
+         clickable->is_left_clicked(false);
+         callback->left_release();
+      }
+      
+      // right release calculation (release all clicked elements no matter collision)
+      if (clickable &&
+          !bindings.get<RightClickIntent>()->element()->is_pressed() && clickable->is_right_clicked()) {
+         clickable->is_right_clicked(false);
+         callback->right_release();
+      }
+
       // mouse in calculation
       if (collision && contains_new && !contains_old) {
          callback->mouse_in();
@@ -59,40 +104,12 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
       if (new_pos != prev_pos) {
          callback->mouse_move();
       }
+   }
 
-      // mouse wheel calculation
-      if (collision && clickable && contains_new && bindings.get<MouseWheelIntent>()
-          && bindings.get<MouseWheelIntent>()->element()->position() != callback->prev_mouse_wheel_pos()) {
-         callback->prev_mouse_wheel_pos(bindings.get<MouseWheelIntent>()->element()->position());
-         callback->mouse_wheel();
-      }
+   if (this->camera_was_resized_) {
+      callback->camera_resize();
 
-      // left click calculation
-      if (collision && clickable && contains_new &&
-          bindings.get<LeftClickIntent>()->element()->is_pressed() && !clickable->is_left_clicked()) {
-         clickable->is_left_clicked(true);
-         callback->left_click();
-      }
-
-      // right click calculation
-      if (collision && clickable && contains_new &&
-          bindings.get<RightClickIntent>()->element()->is_pressed() && !clickable->is_right_clicked()) {
-         clickable->is_right_clicked(true);
-         callback->right_click();
-      }
-      
-      // left release calculation
-      if (collision && clickable && contains_new &&
-          !bindings.get<LeftClickIntent>()->element()->is_pressed() && clickable->is_left_clicked()) {
-         clickable->is_left_clicked(false);
-         callback->left_release();
-      }
-      
-      // right release calculation
-      if (collision && clickable && contains_new &&
-          !bindings.get<RightClickIntent>()->element()->is_pressed() && clickable->is_right_clicked()) {
-         clickable->is_right_clicked(false);
-         callback->right_release();
-      }
+      // reset flag
+      this->camera_was_resized_ = false;
    }
 }

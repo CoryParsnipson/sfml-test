@@ -30,7 +30,7 @@ void SpatialSystem::on_init(Game& game) {
          old_parent->get<Space>()->remove(msg.child);
       }
 
-      parent->get<Space>()->add(msg.child);
+      parent->get<Space>()->add(msg.child, msg.idx);
       child->get<Space>()->parent(msg.parent); // update child entity's parent handle
    });
 

@@ -1,6 +1,8 @@
 #ifndef CLICKABLE_H
 #define CLICKABLE_H
 
+#include "sfml.h"
+
 #include "Component.h"
 
 // ----------------------------------------------------------------------------
@@ -23,10 +25,19 @@ public:
 
    bool is_right_clicked() const;
    void is_right_clicked(bool is_clicked);
-   
+
+   const sf::Vector2f& left_click_pos() const;
+   void left_click_pos(sf::Vector2f pos);
+
+   const sf::Vector2f& right_click_pos() const;
+   void right_click_pos(sf::Vector2f pos);
+
 private:
    bool is_left_clicked_;
    bool is_right_clicked_;
+
+   sf::Vector2f left_click_pos_;
+   sf::Vector2f right_click_pos_;
 };
 
 #endif

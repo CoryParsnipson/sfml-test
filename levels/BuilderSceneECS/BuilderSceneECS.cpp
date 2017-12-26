@@ -89,7 +89,8 @@ void BuilderSceneECS::init(Game& game) {
    hud_graphics->subscription(new SpatialEntitySubscription(hud_graphics->id() + "EntitySubscription", hud_root->handle()));
    this->add_system(hud_graphics);
 
-   this->add_system(new VisualDebugSystem("VisualDebugSystemLeft", game.window(), gs->camera()));
+   // TODO: make a callback or system to enable/disable this via user input
+   //this->add_system(new VisualDebugSystem("VisualDebugSystemLeft", game.window(), gs->camera()));
 
    // create mouse cursor
    Entity* mouse_cursor = this->get_entity(this->create_entity());
@@ -99,13 +100,14 @@ void BuilderSceneECS::init(Game& game) {
    this->send_message_async<AddToEntityMessage>(hud_root->handle(), mouse_cursor->handle());
 
    mouse_cursor->add<Clickable>("MouseCursorClickable");
-   mouse_cursor->add<Collision>("MouseCursorCollision", sf::FloatRect(0, 0, 6, 6));
+   mouse_cursor->add<Collision>("MouseCursorCollision", sf::FloatRect(0, 0, game.window().size().x, game.window().size().y));
 
    mouse_cursor->add<Rectangle>("MouseCursorRectangle", 0, 0, 6, 6);
    mouse_cursor->get<Rectangle>()->color(sf::Color::Red);
 
    mouse_cursor->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
 
+   // create mouse cursor text
    Entity* mouse_cursor_text = this->get_entity(this->create_entity());
    mouse_cursor_text->id("MouseCursorTextEntity");
 
@@ -115,15 +117,29 @@ void BuilderSceneECS::init(Game& game) {
 
    this->send_message_async<AddToEntityMessage>(mouse_cursor->handle(), mouse_cursor_text->handle());
 
+   // create selection rect
+   Entity* selection_rect = this->get_entity(this->create_entity());
+   selection_rect->id("SelectionRectangleEntity");
+   this->send_message_async<AddToEntityMessage>(hud_root->handle(), selection_rect->handle(), 0);
+
+   selection_rect->add<Rectangle>("SelectionRectangle", 0, 0, 0, 0);
+   selection_rect->get<Rectangle>()->color(sf::Color(66, 108, 167, 175));
+   selection_rect->get<Rectangle>()->outline_color(sf::Color(124, 160, 210, 192));
+   selection_rect->get<Rectangle>()->outline_thickness(1.f);
+
+   selection_rect->add<Collision>("SelectionRectandleCollision", sf::FloatRect(0, 0, 0, 0));
+
    // define mouse cursor behavior
    mouse_cursor->add<Callback>("MouseCursorCallback");
-   mouse_cursor->get<Callback>()->mouse_move([mouse_cursor, mouse_cursor_text, &game] () {
+   mouse_cursor->get<Callback>()->mouse_move([mouse_cursor, mouse_cursor_text, selection_rect, &game] () {
       sf::Vector2f new_pos;
       new_pos.x = game.get_player(1).bindings().get<MouseXIntent>()->element()->position();
       new_pos.y = game.get_player(1).bindings().get<MouseYIntent>()->element()->position();
 
+      // move mouse cursor
       mouse_cursor->get<Rectangle>()->position(new_pos - sf::Vector2f(3, 3));
 
+      // move and update mouse cursor text
       mouse_cursor_text->get<Text>()->position(new_pos + sf::Vector2f(0, 10));
       mouse_cursor_text->get<Text>()->string(
          std::to_string(static_cast<int>(new_pos.x)) +
@@ -131,9 +147,24 @@ void BuilderSceneECS::init(Game& game) {
          std::to_string(static_cast<int>(new_pos.y))
       );
 
-      Collision* c = mouse_cursor->get<Collision>();
-      if (c) {
-         c->volume(new_pos - sf::Vector2f(3, 3), sf::Vector2f(6, 6));
+      // update selection rectangle
+      Clickable* clickable = mouse_cursor->get<Clickable>();
+      if (clickable && clickable->is_left_clicked()) {
+         sf::Vector2f sr_origin = clickable->left_click_pos();
+
+         sf::Vector2f pos;
+         sf::Vector2f end;
+
+         pos.x = std::min(sr_origin.x, new_pos.x);
+         pos.y = std::min(sr_origin.y, new_pos.y);
+         
+         end.x = std::max(sr_origin.x, new_pos.x);
+         end.y = std::max(sr_origin.y, new_pos.y);
+
+         selection_rect->get<Rectangle>()->position(pos);
+         selection_rect->get<Rectangle>()->size(end - pos);
+
+         selection_rect->get<Collision>()->volume(pos, end - pos);
       }
    });
 
@@ -142,12 +173,18 @@ void BuilderSceneECS::init(Game& game) {
       Game::logger().msg("asdf", Logger::INFO, "Mouse delta " + std::to_string(wheel_delta));
    });
 
-   mouse_cursor->get<Callback>()->left_click([] () {
-      Game::logger().msg("asdf", Logger::INFO, "LEFT CLICK");
+   mouse_cursor->get<Callback>()->left_click([selection_rect, &game] () {
+      sf::Vector2f new_pos;
+      new_pos.x = game.get_player(1).bindings().get<MouseXIntent>()->element()->position();
+      new_pos.y = game.get_player(1).bindings().get<MouseYIntent>()->element()->position();
+
+      // set selection rect origin
+      selection_rect->get<Rectangle>()->position(new_pos);
    });
 
-   mouse_cursor->get<Callback>()->left_release([] () {
-      Game::logger().msg("asdf", Logger::INFO, "LEFT RELEASE");
+   mouse_cursor->get<Callback>()->left_release([selection_rect] () {
+      selection_rect->get<Rectangle>()->size(0, 0);
+      selection_rect->get<Collision>()->volume(sf::Vector2f(0, 0), sf::Vector2f(0, 0));
    });
 
    mouse_cursor->get<Callback>()->right_click([] () {
@@ -156,6 +193,15 @@ void BuilderSceneECS::init(Game& game) {
 
    mouse_cursor->get<Callback>()->right_release([] () {
       Game::logger().msg("asdf", Logger::INFO, "RIGHT RELEASE");
+   });
+
+   mouse_cursor->get<Callback>()->camera_resize([mouse_cursor, gs] () {
+      sf::Vector2f new_size = gs->camera()->get_size();
+      new_size.x *= gs->camera()->get_viewport().width;
+      new_size.y *= gs->camera()->get_viewport().height;
+
+      // make sure the mouse cursor collision volume fills the whole camera
+      mouse_cursor->get<Collision>()->volume(sf::Vector2f(0, 0), new_size);
    });
 }
 

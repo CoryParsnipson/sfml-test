@@ -44,3 +44,19 @@ void Clickable::is_left_clicked(bool is_clicked) {
 void Clickable::is_right_clicked(bool is_clicked) {
    this->is_right_clicked_ = is_clicked;
 }
+
+const sf::Vector2f& Clickable::left_click_pos() const {
+   return this->left_click_pos_;
+}
+
+void Clickable::left_click_pos(sf::Vector2f pos) {
+   this->left_click_pos_ = pos;
+}
+
+const sf::Vector2f& Clickable::right_click_pos() const {
+   return this->right_click_pos_;
+}
+
+void Clickable::right_click_pos(sf::Vector2f pos) {
+   this->right_click_pos_ = pos;
+}

@@ -220,6 +220,9 @@ void Game::main_loop() {
          continue;
       }
 
+      // poll input
+      this->input_manager().poll_event(*this);
+
       // ------------
       // Need to change these lines to see new ECS system updates
 
@@ -238,9 +241,6 @@ void Game::main_loop() {
 //      // draw
 //      this->window_.clear(); // clear previous frame contents
 //      this->scenes_.top()->draw(this->window_);
-
-      // poll input
-      this->input_manager().poll_event(*this);
 
       // render scene
       this->window_.update();

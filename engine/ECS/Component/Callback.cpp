@@ -116,3 +116,11 @@ void Callback::right_release(Callback::CallbackT callback) {
 void Callback::right_release() {
    this->callbacks_[CallbackKey::RIGHT_RELEASE]();
 }
+
+void Callback::camera_resize(Callback::CallbackT callback) {
+   this->callbacks_[CallbackKey::CAMERA_RESIZE] = callback;
+}
+
+void Callback::camera_resize() {
+   this->callbacks_[CallbackKey::CAMERA_RESIZE]();
+}

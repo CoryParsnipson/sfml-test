@@ -16,6 +16,8 @@ public:
    virtual ~CallbackSystem();
 
 private:
+   bool camera_was_resized_;
+
    virtual void on_init(Game& game);
    virtual void on_update(Game& game, Entity& e);
 };

@@ -14,7 +14,7 @@
 // ----------------------------------------------------------------------------
 enum class CallbackKey {
    MOUSE_IN, MOUSE_OUT, MOUSE_MOVE, MOUSE_WHEEL, LEFT_CLICK, RIGHT_CLICK,
-   LEFT_RELEASE, RIGHT_RELEASE
+   LEFT_RELEASE, RIGHT_RELEASE, CAMERA_RESIZE
 };
 
 // ----------------------------------------------------------------------------
@@ -64,6 +64,9 @@ public:
 
    void right_release(CallbackT callback);
    void right_release();
+
+   void camera_resize(CallbackT callback);
+   void camera_resize();
 
 private:
    float prev_mouse_wheel_pos_;
