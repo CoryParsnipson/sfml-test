@@ -24,6 +24,8 @@
 #include "GraphicalSystem.h"
 #include "VisualDebugSystem.h"
 
+#include "AddToEntityMessage.h"
+
 BuilderSceneECS::BuilderSceneECS()
 : Scene("BuilderSceneECS")
 , map_file_(new FileChannel("pkmn_map_test.txt"))
@@ -74,24 +76,20 @@ void BuilderSceneECS::init(Game& game) {
    Entity* map_root = this->get_entity(this->create_entity());
    Entity* hud_root = this->get_entity(this->create_entity());
 
+   map_root->id("MapRoot Entity");
+   hud_root->id("HudRoot Entity");
+
    // TODO: create a better way to get Systems
    GraphicalSystem* gs = dynamic_cast<GraphicalSystem*>(this->get_system("GraphicalSystem"));
-   if (gs) {
-      gs->camera()->reset_pan();
-      gs->camera()->id("Left System");
-      gs->camera()->set_viewport(sf::FloatRect(0.f, 0.f, 0.5f, 1.f));
-   }
+
    // TODO: there's got to be a better way to do this
    gs->subscription(new SpatialEntitySubscription(gs->id() + "EntitySubscription", map_root->handle()));
 
-   GraphicalSystem* gs2 = new GraphicalSystem("SecondScreen", game.window(), std::make_shared<Camera>("Right Camera"));
-   gs2->camera()->reset_pan();
-   gs2->camera()->set_viewport(sf::FloatRect(0.5f, 0.f, 0.5f, 1.f));
-   gs2->subscription(new SpatialEntitySubscription(gs2->id() + "EntitySubscription", hud_root->handle()));
-   this->add_system(gs2);
+   GraphicalSystem* hud_graphics = new GraphicalSystem("HudGraphics", game.window(), std::make_shared<Camera>("HudCamera"));
+   hud_graphics->subscription(new SpatialEntitySubscription(hud_graphics->id() + "EntitySubscription", hud_root->handle()));
+   this->add_system(hud_graphics);
 
    this->add_system(new VisualDebugSystem("VisualDebugSystemLeft", game.window(), gs->camera()));
-   this->add_system(new VisualDebugSystem("VisualDebugSystemRight", game.window(), gs2->camera()));
 
    // create mouse cursor
    Entity* mouse_cursor = this->get_entity(this->create_entity());
@@ -106,21 +104,32 @@ void BuilderSceneECS::init(Game& game) {
    mouse_cursor->add<Rectangle>("MouseCursorRectangle", 0, 0, 6, 6);
    mouse_cursor->get<Rectangle>()->color(sf::Color::Red);
 
-   mouse_cursor->add<Text>("MouseCursorText", "", this->fonts().get("retro"), 12);
-   mouse_cursor->get<Text>()->position(0, 10);
-   mouse_cursor->get<Text>()->color(sf::Color::White);
-
    mouse_cursor->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
+
+   Entity* mouse_cursor_text = this->get_entity(this->create_entity());
+   mouse_cursor_text->id("MouseCursorTextEntity");
+
+   mouse_cursor_text->add<Text>("MouseCursorText", "0, 0", this->fonts().get("retro"), 12);
+   mouse_cursor_text->get<Text>()->position(0, 10);
+   mouse_cursor_text->get<Text>()->color(sf::Color::White);
+
+   this->send_message_async<AddToEntityMessage>(mouse_cursor->handle(), mouse_cursor_text->handle());
 
    // define mouse cursor behavior
    mouse_cursor->add<Callback>("MouseCursorCallback");
-   mouse_cursor->get<Callback>()->mouse_move([mouse_cursor, &game] () {
+   mouse_cursor->get<Callback>()->mouse_move([mouse_cursor, mouse_cursor_text, &game] () {
       sf::Vector2f new_pos;
-
       new_pos.x = game.get_player(1).bindings().get<MouseXIntent>()->element()->position();
       new_pos.y = game.get_player(1).bindings().get<MouseYIntent>()->element()->position();
 
       mouse_cursor->get<Rectangle>()->position(new_pos - sf::Vector2f(3, 3));
+
+      mouse_cursor_text->get<Text>()->position(new_pos + sf::Vector2f(0, 10));
+      mouse_cursor_text->get<Text>()->string(
+         std::to_string(static_cast<int>(new_pos.x)) +
+         ", " +
+         std::to_string(static_cast<int>(new_pos.y))
+      );
 
       Collision* c = mouse_cursor->get<Collision>();
       if (c) {

@@ -31,8 +31,9 @@
 #include "MoveRightIntent.h"
 
 #include "GraphicalSystem.h"
-#include "SpatialSystem.h"
 #include "PlayerInputSystem.h"
+
+#include "AddToEntityMessage.h"
 
 StartMenuScene::StartMenuScene()
 : Scene("StartMenuScene")
