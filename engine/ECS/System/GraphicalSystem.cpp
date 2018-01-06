@@ -12,12 +12,12 @@
 #include "VertexList.h"
 #include "TileMap.h"
 #include "Space.h"
-#include "SpatialEntitySubscription.h"
+#include "PreorderEntitySubscription.h"
 #include "Scene.h"
 #include "ResizeCameraMessage.h"
 
 GraphicalSystem::GraphicalSystem(const std::string& id, RenderSurface& surface, CameraPtr camera)
-: System(id, new SpatialEntitySubscription(id + "EntitySubscription"))
+: System(id, new PreorderEntitySubscription(id + "EntitySubscription"))
 , surface_(&surface)
 , camera_(camera)
 {

@@ -51,7 +51,7 @@ public:
    bool operator ==(const Handle& other) const {
       return this->index_ == other.index_ && this->version_ == other.version_;
    }
-
+   
    bool operator !=(const Handle& other) const {
       return this->index_ != other.index_ || this->version_ != other.version_;
    }

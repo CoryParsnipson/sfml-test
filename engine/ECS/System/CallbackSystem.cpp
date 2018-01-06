@@ -13,11 +13,14 @@
 #include "LeftClickIntent.h"
 #include "RightClickIntent.h"
 
+#include "PostorderEntitySubscription.h"
+
 #include "ResizeCameraMessage.h"
 
 CallbackSystem::CallbackSystem(const std::string& id /* = "CallbackSystem" */)
-: System(id)
+: System(id, new PostorderEntitySubscription(id + "EntitySubscription"))
 , camera_was_resized_(false)
+, click_target_found_(false)
 {
 }
 
@@ -31,6 +34,10 @@ void CallbackSystem::on_init(Game& game) {
    this->mailbox().handle<ResizeCameraMessage>([this](ResizeCameraMessage& msg) {
       this->camera_was_resized_ = true;
    });
+}
+
+void CallbackSystem::pre_update(Game& game) {
+   this->click_target_found_ = false;
 }
 
 void CallbackSystem::on_update(Game& game, Entity& e) {
@@ -54,25 +61,33 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
       bool contains_old = collision->contains(prev_pos);
 
       // mouse wheel calculation
-      if (collision && clickable && contains_new && bindings.get<MouseWheelIntent>()
-          && bindings.get<MouseWheelIntent>()->element()->position() != callback->prev_mouse_wheel_pos()) {
+      if (collision && clickable && contains_new && bindings.get<MouseWheelIntent>() && !this->click_target_found_ &&
+          bindings.get<MouseWheelIntent>()->element()->position() != callback->prev_mouse_wheel_pos()) {
+         this->click_target_found_ = true;
+
          callback->prev_mouse_wheel_pos(bindings.get<MouseWheelIntent>()->element()->position());
          callback->mouse_wheel();
       }
 
       // left click calculation
-      if (collision && clickable && contains_new &&
+      if (collision && clickable && contains_new && !this->click_target_found_ &&
           bindings.get<LeftClickIntent>()->element()->is_pressed() && !clickable->is_left_clicked()) {
+         this->click_target_found_ = true;
+
          clickable->is_left_clicked(true);
          clickable->left_click_pos(new_pos);
+
          callback->left_click();
       }
 
       // right click calculation
-      if (collision && clickable && contains_new &&
+      if (collision && clickable && contains_new && !this->click_target_found_ &&
           bindings.get<RightClickIntent>()->element()->is_pressed() && !clickable->is_right_clicked()) {
+         this->click_target_found_ = true;
+
          clickable->is_right_clicked(true);
          clickable->right_click_pos(new_pos);
+
          callback->right_click();
       }
       

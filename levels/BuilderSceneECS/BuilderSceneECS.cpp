@@ -19,7 +19,7 @@
 #include "LeftClickIntent.h"
 #include "RightClickIntent.h"
 
-#include "SpatialEntitySubscription.h"
+#include "PreorderEntitySubscription.h"
 
 #include "GraphicalSystem.h"
 #include "VisualDebugSystem.h"
@@ -83,10 +83,10 @@ void BuilderSceneECS::init(Game& game) {
    GraphicalSystem* gs = dynamic_cast<GraphicalSystem*>(this->get_system("GraphicalSystem"));
 
    // TODO: there's got to be a better way to do this
-   gs->subscription(new SpatialEntitySubscription(gs->id() + "EntitySubscription", map_root->handle()));
+   gs->subscription(new PreorderEntitySubscription(gs->id() + "EntitySubscription", map_root->handle()));
 
    GraphicalSystem* hud_graphics = new GraphicalSystem("HudGraphics", game.window(), std::make_shared<Camera>("HudCamera"));
-   hud_graphics->subscription(new SpatialEntitySubscription(hud_graphics->id() + "EntitySubscription", hud_root->handle()));
+   hud_graphics->subscription(new PreorderEntitySubscription(hud_graphics->id() + "EntitySubscription", hud_root->handle()));
    this->add_system(hud_graphics);
 
    // TODO: make a callback or system to enable/disable this via user input

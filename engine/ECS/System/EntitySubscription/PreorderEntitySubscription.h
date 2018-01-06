@@ -1,18 +1,18 @@
-#ifndef SPATIAL_ENTITY_SUBSCRIPTION_H
-#define SPATIAL_ENTITY_SUBSCRIPTION_H
+#ifndef PREORDER_ENTITY_SUBSCRIPTION_H
+#define PREORDER_ENTITY_SUBSCRIPTION_H
 
 #include "EntitySubscription.h"
 
 // ----------------------------------------------------------------------------
-// SpatialEntitySubscription
+// PreorderEntitySubscription
 //
 // This is an entity subscription list that uses the relationships in the
 // Space component to determine which entities are part of the list.
 // ----------------------------------------------------------------------------
-class SpatialEntitySubscription : public EntitySubscription {
+class PreorderEntitySubscription : public EntitySubscription {
 public:
-   SpatialEntitySubscription(const std::string& id = "SpatialEntitySubscription", Handle root = Handle());
-   virtual ~SpatialEntitySubscription();
+   PreorderEntitySubscription(const std::string& id = "PreorderEntitySubscription", Handle root = Handle(), bool reverse_children = false);
+   virtual ~PreorderEntitySubscription();
 
    virtual void init(System& system);
    virtual void clear();
@@ -23,6 +23,7 @@ public:
    virtual void for_each(System& system, std::function<void(Handle)> entity_handler);
 
 private:
+   bool reverse_children_;
    Handle root_;
 };
 
