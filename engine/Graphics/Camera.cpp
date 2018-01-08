@@ -96,7 +96,7 @@ void Camera::resize(sf::Vector2f size) {
 }
 
 sf::Vector2f Camera::get_size() const {
-   return this->view_->getSize() / this->zoom_factor_;
+   return this->view_->getSize();
 }
 
 // TODO: this should be private and accessible only by camera resize policies

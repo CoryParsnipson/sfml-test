@@ -185,9 +185,14 @@ void BuilderSceneECS::init(Game& game) {
       }
    });
 
-   mouse_cursor->get<Callback>()->mouse_wheel([&game] () {
-      float wheel_delta = game.get_player(1).bindings().get<MouseWheelIntent>()->element()->position();
-      Game::logger().msg("asdf", Logger::INFO, "Mouse delta " + std::to_string(wheel_delta));
+   // TODO: encapsulate all this mouse and map stuff into a system (prev_mosue_wheel_pos_ should be a member of that system)
+   mouse_cursor->get<Callback>()->mouse_wheel([this, gs, &game] () {
+      float mouse_wheel_pos = game.get_player(1).bindings().get<MouseWheelIntent>()->element()->position();
+      float wheel_delta = mouse_wheel_pos - this->prev_mouse_wheel_pos_;
+
+      gs->camera()->set_scale(gs->camera()->get_scale() + wheel_delta / 15.f);
+
+      this->prev_mouse_wheel_pos_ = mouse_wheel_pos;
    });
 
    mouse_cursor->get<Callback>()->left_click([selection_rect, &game] () {
