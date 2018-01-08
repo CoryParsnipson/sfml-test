@@ -142,7 +142,7 @@ void BuilderSceneECS::init(Game& game) {
 
    // define mouse cursor behavior
    mouse_cursor->add<Callback>("MouseCursorCallback");
-   mouse_cursor->get<Callback>()->mouse_move([mouse_cursor, mouse_cursor_text, selection_rect, &game] () {
+   mouse_cursor->get<Callback>()->mouse_move([mouse_cursor, mouse_cursor_text, selection_rect, gs, &game] () {
       sf::Vector2f new_pos;
       new_pos.x = game.get_player(1).bindings().get<MouseXIntent>()->element()->position();
       new_pos.y = game.get_player(1).bindings().get<MouseYIntent>()->element()->position();
@@ -177,6 +177,12 @@ void BuilderSceneECS::init(Game& game) {
 
          selection_rect->get<Collision>()->volume(pos, end - pos);
       }
+
+      // pan map camera if right click is down
+      Callback* callback = mouse_cursor->get<Callback>();
+      if (clickable && callback && clickable->is_right_clicked()) {
+         gs->camera()->move(callback->prev_mouse_pos() - new_pos);
+      }
    });
 
    mouse_cursor->get<Callback>()->mouse_wheel([&game] () {
@@ -196,14 +202,6 @@ void BuilderSceneECS::init(Game& game) {
    mouse_cursor->get<Callback>()->left_release([selection_rect] () {
       selection_rect->get<Rectangle>()->size(0, 0);
       selection_rect->get<Collision>()->volume(sf::Vector2f(0, 0), sf::Vector2f(0, 0));
-   });
-
-   mouse_cursor->get<Callback>()->right_click([] () {
-      Game::logger().msg("asdf", Logger::INFO, "RIGHT CLICK");
-   });
-
-   mouse_cursor->get<Callback>()->right_release([] () {
-      Game::logger().msg("asdf", Logger::INFO, "RIGHT RELEASE");
    });
 
    mouse_cursor->get<Callback>()->camera_resize([mouse_cursor, gs] () {

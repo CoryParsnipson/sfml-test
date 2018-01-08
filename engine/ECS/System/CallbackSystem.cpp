@@ -67,7 +67,6 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
    if (bindings.get<MouseXIntent>() && bindings.get<MouseYIntent>()) {
       new_pos.x = bindings.get<MouseXIntent>()->element()->position();
       new_pos.y = bindings.get<MouseYIntent>()->element()->position();
-      callback->prev_mouse_pos(new_pos);
 
       bool contains_new = collision->contains(new_pos);
       bool contains_old = collision->contains(prev_pos);
@@ -193,6 +192,9 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
       if (new_pos != prev_pos) {
          callback->mouse_move();
       }
+
+      // now update previous mouse position
+      callback->prev_mouse_pos(new_pos);
    }
 
    if (this->camera_was_resized_) {
