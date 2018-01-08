@@ -46,6 +46,9 @@ public:
    EntitySubscription& subscription();
    void subscription(EntitySubscription* subscription);
 
+   Handle root() const;
+   void root(Handle root);
+
    template <
       typename MsgT,
       typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr
@@ -82,6 +85,7 @@ private:
    bool enabled_;
 
    Scene* scene_;
+   Handle root_;
 
    Mailbox mailbox_;
    EntitySubscription* subscription_;

@@ -11,7 +11,7 @@
 // ----------------------------------------------------------------------------
 class PreorderEntitySubscription : public EntitySubscription {
 public:
-   PreorderEntitySubscription(const std::string& id = "PreorderEntitySubscription", Handle root = Handle(), bool reverse_children = false);
+   PreorderEntitySubscription(const std::string& id = "PreorderEntitySubscription", bool reverse_children = false);
    virtual ~PreorderEntitySubscription();
 
    virtual void init(System& system);
@@ -24,7 +24,6 @@ public:
 
 private:
    bool reverse_children_;
-   Handle root_;
 };
 
 #endif

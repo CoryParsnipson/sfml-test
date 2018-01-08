@@ -3,15 +3,18 @@
 #include "BuilderSceneECS.h"
 
 #include "Game.h"
+#include "Entity.h"
+
 #include "Text.h"
 #include "Rectangle.h"
 #include "Callback.h"
 #include "Clickable.h"
 #include "Collision.h"
-#include "Entity.h"
 #include "PlayerProfile.h"
+#include "TileMap.h"
 
 #include "FileChannel.h"
+#include "JSONSerializer.h"
 
 #include "MouseXIntent.h"
 #include "MouseYIntent.h"
@@ -28,12 +31,10 @@
 
 BuilderSceneECS::BuilderSceneECS()
 : Scene("BuilderSceneECS")
-, map_file_(new FileChannel("pkmn_map_test.txt"))
 {
 }
 
 BuilderSceneECS::~BuilderSceneECS() {
-   delete this->map_file_;
 }
 
 void BuilderSceneECS::init(Game& game) {
@@ -81,16 +82,26 @@ void BuilderSceneECS::init(Game& game) {
 
    // TODO: create a better way to get Systems
    GraphicalSystem* gs = dynamic_cast<GraphicalSystem*>(this->get_system("GraphicalSystem"));
-
-   // TODO: there's got to be a better way to do this
-   gs->subscription(new PreorderEntitySubscription(gs->id() + "EntitySubscription", map_root->handle()));
+   gs->root(map_root->handle());
 
    GraphicalSystem* hud_graphics = new GraphicalSystem("HudGraphics", game.window(), std::make_shared<Camera>("HudCamera"));
-   hud_graphics->subscription(new PreorderEntitySubscription(hud_graphics->id() + "EntitySubscription", hud_root->handle()));
+   hud_graphics->root(hud_root->handle());
    this->add_system(hud_graphics);
 
    // TODO: make a callback or system to enable/disable this via user input
    //this->add_system(new VisualDebugSystem("VisualDebugSystemLeft", game.window(), gs->camera()));
+
+   // load or create a tile map
+   JSONSerializer serializer;
+   FileChannel map_file("tilemap_test.txt");
+
+   map_file.seek(0);
+   std::string tilemap_data = serializer.read(map_file);
+
+   map_root->add<TileMap>();
+   if (!tilemap_data.empty()) {
+      map_root->get<TileMap>()->deserialize(static_cast<Serializer&>(serializer), *this, tilemap_data);
+   }
 
    // create mouse cursor
    Entity* mouse_cursor = this->get_entity(this->create_entity());

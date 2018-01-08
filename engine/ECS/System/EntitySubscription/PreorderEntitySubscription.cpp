@@ -4,10 +4,9 @@
 #include "Scene.h"
 #include "Entity.h"
 
-PreorderEntitySubscription::PreorderEntitySubscription(const std::string& id /* = "PreorderEntitySubscription" */, Handle root /* = Handle() */, bool reverse_children /* = false */)
+PreorderEntitySubscription::PreorderEntitySubscription(const std::string& id /* = "PreorderEntitySubscription" */, bool reverse_children /* = false */)
 : EntitySubscription(id)
 , reverse_children_(reverse_children)
-, root_(root)
 {
 }
 
@@ -32,12 +31,9 @@ void PreorderEntitySubscription::remove(Handle entity) {
 
 void PreorderEntitySubscription::for_each(System& system, std::function<void(Handle)> entity_handler) {
    std::vector<Handle> entities_to_visit;
-
-   if (!this->scene(system).get_entity(this->root_)) {
-      entities_to_visit.push_back(this->scene(system).space_handle());
-   } else {
-      entities_to_visit.push_back(this->root_);
-   }
+   entities_to_visit.push_back(
+      system.root() == Handle() ? this->scene(system).space_handle() : system.root()
+   );
 
    // do a preorder traversal of scene graph
    while (!entities_to_visit.empty()) {

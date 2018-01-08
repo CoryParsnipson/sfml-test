@@ -11,7 +11,7 @@
 // ----------------------------------------------------------------------------
 class PostorderEntitySubscription : public EntitySubscription {
 public:
-   PostorderEntitySubscription(const std::string& id = "PostorderEntitySubscription", Handle root = Handle(), bool reverse_children = false);
+   PostorderEntitySubscription(const std::string& id = "PostorderEntitySubscription", bool reverse_children = false);
    virtual ~PostorderEntitySubscription();
 
    virtual void init(System& system);
@@ -24,7 +24,6 @@ public:
 
 private:
    bool reverse_children_;
-   Handle root_;
 };
 
 #endif

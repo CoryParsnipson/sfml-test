@@ -119,6 +119,14 @@ void System::subscription(EntitySubscription* subscription) {
    this->subscription_ = subscription;
 }
 
+Handle System::root() const {
+   return this->root_;
+}
+
+void System::root(Handle root) {
+   this->root_ = root;
+}
+
 EntityFilter& System::subscribe_to() {
    return this->subscription_->filter();
 }

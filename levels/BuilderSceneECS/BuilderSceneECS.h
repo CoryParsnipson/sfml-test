@@ -27,10 +27,6 @@ public:
 
    // input event processing
    virtual void process(Game& game, CloseInputEvent& e);
-
-protected:
-   // scene fixtures
-   Channel* map_file_;
 };
 
 #endif
