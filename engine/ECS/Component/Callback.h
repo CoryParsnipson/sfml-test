@@ -28,7 +28,7 @@ public:
    using CallbackT = std::function<void()>;
    using Callbacks = std::map<CallbackKey, CallbackT>;
 
-   explicit Callback(const std::string& id = "Callback Component");
+   explicit Callback(const std::string& id = "Callback Component", bool propagate = true);
    Callback(const Callback& other);
    virtual ~Callback();
 
@@ -40,6 +40,9 @@ public:
 
    sf::Vector2f prev_mouse_pos() const;
    void prev_mouse_pos(sf::Vector2f pos);
+
+   bool propagate() const;
+   void propagate(bool propagate);
 
    void mouse_in(CallbackT callback);
    void mouse_in();
@@ -69,6 +72,7 @@ public:
    void camera_resize();
 
 private:
+   bool propagate_;
    float prev_mouse_wheel_pos_;
    sf::Vector2f prev_mouse_pos_;
    Callbacks callbacks_;

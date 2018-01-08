@@ -1,7 +1,8 @@
 #include "Callback.h"
 
-Callback::Callback(const std::string& id /* = "Callback Component" */)
+Callback::Callback(const std::string& id /* = "Callback Component" */, bool propagate /* = true */)
 : Component(id)
+, propagate_(propagate)
 , prev_mouse_wheel_pos_(0.f)
 , prev_mouse_pos_(0, 0)
 {
@@ -51,6 +52,14 @@ sf::Vector2f Callback::prev_mouse_pos() const {
 
 void Callback::prev_mouse_pos(sf::Vector2f pos) {
    this->prev_mouse_pos_ = pos;
+}
+
+bool Callback::propagate() const {
+   return this->propagate_;
+}
+
+void Callback::propagate(bool propagate) {
+   this->propagate_ = propagate;
 }
 
 void Callback::mouse_in(Callback::CallbackT callback) {

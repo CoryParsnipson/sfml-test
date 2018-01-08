@@ -2,6 +2,7 @@
 #define CALLBACK_SYSTEM_H
 
 #include "System.h"
+#include "Callback.h"
 
 // ----------------------------------------------------------------------------
 // CallbackSystem
@@ -17,7 +18,7 @@ public:
 
 private:
    bool camera_was_resized_;
-   bool click_target_found_;
+   std::map<CallbackKey, bool> target_hit_;
 
    virtual void on_init(Game& game);
 
