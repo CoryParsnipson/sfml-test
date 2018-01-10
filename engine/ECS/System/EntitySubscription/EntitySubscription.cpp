@@ -22,7 +22,7 @@ EntityFilter& EntitySubscription::filter() {
 
 bool EntitySubscription::filter(System& system, Handle entity) {
    Entity* e = this->scene(system).get_entity(entity);
-   return this->filter().filter(*e);
+   return (e == nullptr ? false : this->filter().filter(*e));
 }
 
 Scene& EntitySubscription::scene(System& system) const {
