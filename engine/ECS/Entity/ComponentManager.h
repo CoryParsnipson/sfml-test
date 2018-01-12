@@ -113,7 +113,7 @@ void ComponentManager::remove(Handle handle) {
    ObjectPoolBasePtr& pool_ptr = this->components_[std::type_index(typeid(ComponentType))];
 
    if (pool_ptr) {
-      static_cast<ObjectPool<ComponentType>*>(pool_ptr)->remove(handle);
+      static_cast<ObjectPool<ComponentType>*>(pool_ptr.get())->remove(handle);
    }
 }
 

@@ -191,7 +191,7 @@ void Entity::remove() {
       assert(this->component_manager_);
 
       // unattach component from this entity
-      this->component_manager_->remove<ComponentType>(*it);
+      this->component_manager_->remove<ComponentType>(it->second);
       this->components_.erase(it);
 
       this->send_message_async<ComponentRemovedMessage>();
