@@ -259,6 +259,10 @@ public:
    Entity* get_entity(Handle handle) {
       return this->entities_.get(handle);
    }
+
+   void remove_entity(Handle handle) {
+      this->entities_.remove(handle);
+   }
    
    std::vector<Handle> entities() const {
       return this->entities_.get_active_handles();

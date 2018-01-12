@@ -12,6 +12,7 @@
 #include "Collision.h"
 #include "PlayerProfile.h"
 #include "TileMap.h"
+#include "Grid2.h"
 
 #include "FileChannel.h"
 #include "JSONSerializer.h"
@@ -26,6 +27,7 @@
 
 #include "GraphicalSystem.h"
 #include "VisualDebugSystem.h"
+#include "GridSystem.h"
 
 #include "AddToEntityMessage.h"
 
@@ -102,6 +104,16 @@ void BuilderSceneECS::init(Game& game) {
    if (!tilemap_data.empty()) {
       map_root->get<TileMap>()->deserialize(static_cast<Serializer&>(serializer), *this, tilemap_data);
    }
+
+   // load or create a grid
+   Entity* grid_root = this->get_entity(this->create_entity());
+   grid_root->id("GridRoot Entity");
+   grid_root->add<Grid2>("GridRoot Grid Component", sf::Vector2f(0, 0), 64, 64);
+
+   this->send_message_async<AddToEntityMessage>(map_root->handle(), grid_root->handle());
+
+   // add grid system
+   this->add_system(new GridSystem("GridSystem", gs->camera()));
 
    // create mouse cursor
    Entity* mouse_cursor = this->get_entity(this->create_entity());

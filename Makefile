@@ -66,6 +66,8 @@ INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderScene
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderScene/Commands
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderScene/Entities
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderSceneECS
+INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderSceneECS/Component
+INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderSceneECS/System
 
 CXX_FILES =
 CXX_FILES += $(PROJECT_DIR)/*.cpp
@@ -99,6 +101,8 @@ CXX_FILES += $(PROJECT_DIR)/levels/BuilderScene/*.cpp
 CXX_FILES += $(PROJECT_DIR)/levels/BuilderScene/Commands/*.cpp
 CXX_FILES += $(PROJECT_DIR)/levels/BuilderScene/Entities/*.cpp
 CXX_FILES += $(PROJECT_DIR)/levels/BuilderSceneECS/*.cpp
+CXX_FILES += $(PROJECT_DIR)/levels/BuilderSceneECS/Component/*.cpp
+CXX_FILES += $(PROJECT_DIR)/levels/BuilderSceneECS/System/*.cpp
 
 .PHONY: profiler debug release
 .DEFAULT_GOAL := debug
