@@ -25,9 +25,12 @@ public:
    unsigned int tile_height() const;
    void tile_height(unsigned int height);
 
+   sf::Vector2f floor(const sf::Vector2f& pos);
+   sf::Vector2f round(const sf::Vector2f& pos);
+   sf::Vector2f ceil(const sf::Vector2f& pos);
+
 private:
    sf::Vector2f origin_;
-   sf::Vector2f delta_;
 
    unsigned int tile_width_;
    unsigned int tile_height_;

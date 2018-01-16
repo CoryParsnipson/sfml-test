@@ -22,10 +22,11 @@ private:
    virtual void on_init(Game& game);
    virtual void on_update(Game& game, Entity& e);
 
-   void create_gridline(Entity* grid_entity, std::string id, float x, float y, float width, float height);
+   Entity* create_gridline(Entity* grid_entity, std::string id, float x, float y, float width, float height);
 
-   void create_col(Entity* grid_entity, std::string id, float x);
-   void create_row(Entity* grid_entity, std::string id, float y);
+   Entity* create_col(Entity* grid_entity, std::string id, float x);
+   Entity* create_row(Entity* grid_entity, std::string id, float y);
+   Entity* create_text_marker(Entity* grid_entity, std::string id, const sf::Vector2f& pos);
 
    CameraPtr camera_;
 };
