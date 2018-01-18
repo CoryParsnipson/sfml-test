@@ -67,6 +67,8 @@ INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderScene/Commands
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderScene/Entities
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderSceneECS
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderSceneECS/Component
+INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderSceneECS/Intent
+INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderSceneECS/Message
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderSceneECS/System
 
 CXX_FILES =

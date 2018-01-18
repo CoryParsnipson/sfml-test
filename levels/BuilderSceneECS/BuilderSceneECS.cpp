@@ -22,12 +22,14 @@
 #include "MouseWheelIntent.h"
 #include "LeftClickIntent.h"
 #include "RightClickIntent.h"
+#include "GridVisibilityToggleIntent.h"
 
 #include "PreorderEntitySubscription.h"
 
 #include "GraphicalSystem.h"
 #include "VisualDebugSystem.h"
 #include "GridSystem.h"
+#include "BuilderSceneECSInputSystem.h"
 
 #include "AddToEntityMessage.h"
 
@@ -74,6 +76,8 @@ void BuilderSceneECS::init(Game& game) {
    game.get_player(1).bindings().set<MouseWheelIntent>(0, game.input_manager().get_device(0)->get("Wheel"));
    game.get_player(1).bindings().set<LeftClickIntent>(0, game.input_manager().get_device(0)->get("Left"));
    game.get_player(1).bindings().set<RightClickIntent>(0, game.input_manager().get_device(0)->get("Right"));
+
+   game.get_player(1).bindings().set<GridVisibilityToggleIntent>(1, game.input_manager().get_device(1)->get("G"));
 
    // make a map root entity and hud root entity
    Entity* map_root = this->get_entity(this->create_entity());
@@ -197,7 +201,6 @@ void BuilderSceneECS::init(Game& game) {
       }
    });
 
-   // TODO: encapsulate all this mouse and map stuff into a system (prev_mosue_wheel_pos_ should be a member of that system)
    mouse_cursor->get<Callback>()->mouse_wheel([this, gs, &game] () {
       float mouse_wheel_pos = game.get_player(1).bindings().get<MouseWheelIntent>()->element()->position();
       float wheel_delta = mouse_wheel_pos - this->prev_mouse_wheel_pos_;
@@ -229,6 +232,11 @@ void BuilderSceneECS::init(Game& game) {
       // make sure the mouse cursor collision volume fills the whole camera
       mouse_cursor->get<Collision>()->volume(sf::Vector2f(0, 0), new_size);
    });
+
+   // add keyboard input system
+   BuilderSceneECSInputSystem* input_system = new BuilderSceneECSInputSystem();
+   input_system->grid_entity = grid_root->handle();
+   this->add_system(input_system);
 }
 
 void BuilderSceneECS::enter(Game& game) {

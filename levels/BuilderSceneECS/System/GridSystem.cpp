@@ -9,6 +9,8 @@
 #include "Text.h"
 #include "Grid2.h"
 
+#include "SetGridVisibilityMessage.h"
+
 GridSystem::GridSystem(const std::string& id, CameraPtr camera)
 : camera_(camera)
 {
@@ -23,6 +25,22 @@ CameraPtr GridSystem::camera() {
 
 void GridSystem::on_init(Game& game) {
    this->subscribe_to().all_of<Space, Grid2>();
+
+   // register grid visibility toggling
+   this->mailbox().handle<SetGridVisibilityMessage>([&] (SetGridVisibilityMessage& msg) {
+      Game::logger().msg(this->id(), Logger::INFO, "Handling SetGridVisibilityMessage.");
+
+      Entity* grid_entity = this->scene().get_entity(msg.grid_entity);
+      if (grid_entity) {
+         Space* grid_entity_space = grid_entity->get<Space>();
+         for (unsigned int i = 0; i < grid_entity_space->num_children(); ++i) {
+            Entity* e = this->scene().get_entity(grid_entity_space->get(i));
+            e->get<Space>()->visible(msg.visibility);
+         }
+      }
+
+      this->is_visible_ = msg.visibility;
+   });
 }
 
 void GridSystem::on_update(Game& game, Entity& e) {
@@ -80,7 +98,7 @@ void GridSystem::on_update(Game& game, Entity& e) {
          gridline->position(c, camera_bounds.top);
          gridline->size(1, camera_bounds.height);
 
-         cols[gridline_id]->get<Space>()->visible(true);
+         cols[gridline_id]->get<Space>()->visible(this->is_visible_);
       }
 
       ++gridline_id;
@@ -106,7 +124,7 @@ void GridSystem::on_update(Game& game, Entity& e) {
          gridline->position(camera_bounds.left, r);
          gridline->size(camera_bounds.width, 1);
 
-         rows[gridline_id]->get<Space>()->visible(true);
+         rows[gridline_id]->get<Space>()->visible(this->is_visible_);
       }
 
       ++gridline_id;
@@ -154,7 +172,7 @@ void GridSystem::on_update(Game& game, Entity& e) {
          text_markers[gridline_id]->get<Text>()->string(std::to_string((int)tm_val.x) + ", " + std::to_string((int)tm_val.y));
          text_markers[gridline_id]->get<Text>()->position(tm_pos);
 
-         text_markers[gridline_id]->get<Space>()->visible(true);
+         text_markers[gridline_id]->get<Space>()->visible(this->is_visible_);
 
          ++gridline_id;
       }
