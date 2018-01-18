@@ -159,6 +159,18 @@ sf::Transform System::global_transform(Entity& e) {
    return g_transform;
 }
 
+bool System::is_visible(Handle entity) {
+   bool visible = true;
+   Entity* e = this->scene().get_entity(entity);
+
+   while (e != nullptr && visible) {
+      visible = visible && e->get<Space>()->visible();
+      e = this->scene().get_entity(e->get<Space>()->parent());
+   }
+
+   return visible;
+}
+
 void System::send_message_helper(std::shared_ptr<Message> message) {
    assert(this->scene_ != nullptr);
    this->scene_->handle_message(message);

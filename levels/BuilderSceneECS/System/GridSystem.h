@@ -29,6 +29,7 @@ private:
    Entity* create_text_marker(Entity* grid_entity, std::string id, const sf::Vector2f& pos);
 
    CameraPtr camera_;
+   sf::FloatRect previous_camera_bounds_;
 };
 
 #endif

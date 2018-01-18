@@ -31,6 +31,8 @@ private:
    CameraPtr camera_;
 
    virtual void on_init(Game& game);
+
+   virtual void pre_update(Game& game);
    virtual void on_update(Game& game, Entity& e);
 };
 

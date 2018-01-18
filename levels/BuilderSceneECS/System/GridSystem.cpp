@@ -34,6 +34,11 @@ void GridSystem::on_update(Game& game, Entity& e) {
    std::string row_str = e.get<Grid2>()->id() + "_row";
    std::string tm_str = e.get<Grid2>()->id() + "_tm";
 
+   // no need to update this system if the camera hasn't changed
+   if (this->previous_camera_bounds_ == this->camera_->bounds()) {
+      return;
+   }
+
    // iterate through children and build list of existing rows and cols
    Space* space = e.get<Space>();
    for (unsigned int i = 0; i < space->num_children(); ++i) {
@@ -58,9 +63,10 @@ void GridSystem::on_update(Game& game, Entity& e) {
    // find out how many gridlines there should be based on the camera and update them
    unsigned int gridline_id = 0;
    sf::FloatRect camera_bounds = this->camera()->bounds();
-   sf::Vector2f start_point = e.get<Grid2>()->ceil(sf::Vector2f(camera_bounds.left, camera_bounds.top));
+   sf::Vector2f start_point = e.get<Grid2>()->ceil(sf::Vector2f(camera_bounds.left - e.get<Grid2>()->tile_width(), camera_bounds.top - e.get<Grid2>()->tile_height()));
+   sf::Vector2f end_point = e.get<Grid2>()->ceil(sf::Vector2f(camera_bounds.left + camera_bounds.width + e.get<Grid2>()->tile_width(), camera_bounds.top + camera_bounds.height + e.get<Grid2>()->tile_height()));
 
-   for (int c = start_point.x; c <= camera_bounds.left + camera_bounds.width; c += e.get<Grid2>()->tile_width()) {
+   for (int c = start_point.x; c <= end_point.x; c += e.get<Grid2>()->tile_width()) {
       if (cols[gridline_id] == nullptr || cols[gridline_id]->get<Rectangle>() == nullptr) {
          if (cols[gridline_id] != nullptr && cols[gridline_id]->get<Rectangle>() == nullptr) {
             this->scene().remove_entity(cols[gridline_id]->handle());
@@ -73,13 +79,20 @@ void GridSystem::on_update(Game& game, Entity& e) {
          Rectangle* gridline = cols[gridline_id]->get<Rectangle>();
          gridline->position(c, camera_bounds.top);
          gridline->size(1, camera_bounds.height);
+
+         cols[gridline_id]->get<Space>()->visible(true);
       }
 
       ++gridline_id;
    }
 
+   // set the extraneous columns to be invisible
+   for (unsigned int c = gridline_id; c < cols.size(); ++c) {
+      cols[c]->get<Space>()->visible(false);
+   }
+
    gridline_id = 0;
-   for (int r = start_point.y; r <= camera_bounds.top + camera_bounds.height; r += e.get<Grid2>()->tile_height()) {
+   for (int r = start_point.y; r <= end_point.y; r += e.get<Grid2>()->tile_height()) {
       if (rows[gridline_id] == nullptr || rows[gridline_id]->get<Rectangle>() == nullptr) {
          if (rows[gridline_id] != nullptr && rows[gridline_id]->get<Rectangle>() == nullptr) {
             this->scene().remove_entity(cols[gridline_id]->handle());
@@ -92,9 +105,16 @@ void GridSystem::on_update(Game& game, Entity& e) {
          Rectangle* gridline = rows[gridline_id]->get<Rectangle>();
          gridline->position(camera_bounds.left, r);
          gridline->size(camera_bounds.width, 1);
+
+         rows[gridline_id]->get<Space>()->visible(true);
       }
 
       ++gridline_id;
+   }
+
+   // set the extraneous rows to be invisible
+   for (unsigned int r = gridline_id; r < rows.size(); ++r) {
+      rows[r]->get<Space>()->visible(false);
    }
 
    // update the text markers
@@ -134,9 +154,17 @@ void GridSystem::on_update(Game& game, Entity& e) {
          text_markers[gridline_id]->get<Text>()->string(std::to_string((int)tm_val.x) + ", " + std::to_string((int)tm_val.y));
          text_markers[gridline_id]->get<Text>()->position(tm_pos);
 
+         text_markers[gridline_id]->get<Space>()->visible(true);
+
          ++gridline_id;
       }
    }
+
+   // set the extraneous text markers to be invisible
+   for (unsigned int t = gridline_id; t < text_markers.size(); ++t) {
+      text_markers[t]->get<Space>()->visible(false);
+   }
+
 }
 
 Entity* GridSystem::create_gridline(Entity* grid_entity, std::string id, float x, float y, float width, float height) {

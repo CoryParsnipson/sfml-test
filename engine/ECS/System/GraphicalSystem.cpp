@@ -43,7 +43,16 @@ void GraphicalSystem::on_init(Game& game) {
    this->subscribe_to().all_of<Space>();
 }
 
+void GraphicalSystem::pre_update(Game& game) {
+   this->camera_->draw(*this->surface_); // apply the camera
+}
+
 void GraphicalSystem::on_update(Game& game, Entity& e) {
+   if (!this->is_visible(e.handle())) {
+      // skip the hidden stuff
+      return;
+   }
+
    Circle* circle = e.get<Circle>();
    Rectangle* rectangle = e.get<Rectangle>();
    Sprite* sprite = e.get<Sprite>();
@@ -53,8 +62,6 @@ void GraphicalSystem::on_update(Game& game, Entity& e) {
 
    sf::RenderStates states;
    states.transform = this->global_transform(e);
-
-   this->camera_->draw(*this->surface_); // apply the camera
 
    if (circle != nullptr) {
       circle->draw(*this->surface_, states);

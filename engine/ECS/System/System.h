@@ -80,6 +80,8 @@ protected:
    sf::Transform local_transform(Entity& e);
    sf::Transform global_transform(Entity& e);
 
+   bool is_visible(Handle entity);
+
 private:
    std::string id_;
    bool enabled_;
