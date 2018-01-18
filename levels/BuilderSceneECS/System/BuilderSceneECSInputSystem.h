@@ -22,6 +22,9 @@ private:
 
    bool grid_visible_;
    bool grid_visible_button_down_;
+
+   bool visual_debug_enable_;
+   bool visual_debug_enable_down_;
 };
 
 #endif

@@ -22,6 +22,7 @@
 #include "MouseWheelIntent.h"
 #include "LeftClickIntent.h"
 #include "RightClickIntent.h"
+#include "VisualDebugIntent.h"
 #include "GridVisibilityToggleIntent.h"
 
 #include "PreorderEntitySubscription.h"
@@ -78,6 +79,7 @@ void BuilderSceneECS::init(Game& game) {
    game.get_player(1).bindings().set<RightClickIntent>(0, game.input_manager().get_device(0)->get("Right"));
 
    game.get_player(1).bindings().set<GridVisibilityToggleIntent>(1, game.input_manager().get_device(1)->get("G"));
+   game.get_player(1).bindings().set<VisualDebugIntent>(1, game.input_manager().get_device(1)->get("D"));
 
    // make a map root entity and hud root entity
    Entity* map_root = this->get_entity(this->create_entity());
@@ -94,8 +96,10 @@ void BuilderSceneECS::init(Game& game) {
    hud_graphics->root(hud_root->handle());
    this->add_system(hud_graphics);
 
-   // TODO: make a callback or system to enable/disable this via user input
-   //this->add_system(new VisualDebugSystem("VisualDebugSystemLeft", game.window(), gs->camera()));
+   VisualDebugSystem* hud_vds = new VisualDebugSystem("VisualDebugSystemLeft", game.window(), hud_graphics->camera());
+   hud_vds->disable(); // start with this off
+   hud_vds->root(hud_root->handle());
+   this->add_system(hud_vds);
 
    // load or create a tile map
    JSONSerializer serializer;
