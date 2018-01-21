@@ -4,6 +4,7 @@
 
 #include "GridVisibilityToggleIntent.h"
 #include "VisualDebugIntent.h"
+#include "ResetCameraIntent.h"
 
 #include "SetGridVisibilityMessage.h"
 #include "SetVisualDebugMessage.h"
@@ -39,5 +40,17 @@ void BuilderSceneECSInputSystem::pre_update(Game& game) {
 
    if (!new_visual_debug_enable && this->visual_debug_enable_down_ != new_visual_debug_enable) {
       this->visual_debug_enable_down_ = new_visual_debug_enable;
+   }
+
+   bool reset_camera = game.get_player(1).bindings().get<ResetCameraIntent>()->element()->is_pressed();
+   if (!this->reset_camera_down_ && reset_camera) {
+      this->map_camera->reset_zoom();
+      this->map_camera->reset_pan();
+
+      this->reset_camera_down_ = reset_camera;
+   }
+
+   if (this->reset_camera_down_ && !reset_camera) {
+      this->reset_camera_down_ = reset_camera;
    }
 }

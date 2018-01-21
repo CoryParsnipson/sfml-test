@@ -24,6 +24,7 @@
 #include "RightClickIntent.h"
 #include "VisualDebugIntent.h"
 #include "GridVisibilityToggleIntent.h"
+#include "ResetCameraIntent.h"
 
 #include "PreorderEntitySubscription.h"
 
@@ -80,6 +81,7 @@ void BuilderSceneECS::init(Game& game) {
 
    game.get_player(1).bindings().set<GridVisibilityToggleIntent>(1, game.input_manager().get_device(1)->get("G"));
    game.get_player(1).bindings().set<VisualDebugIntent>(1, game.input_manager().get_device(1)->get("D"));
+   game.get_player(1).bindings().set<ResetCameraIntent>(1, game.input_manager().get_device(1)->get("R"));
 
    // make a map root entity and hud root entity
    Entity* map_root = this->get_entity(this->create_entity());
@@ -240,6 +242,7 @@ void BuilderSceneECS::init(Game& game) {
    // add keyboard input system
    BuilderSceneECSInputSystem* input_system = new BuilderSceneECSInputSystem();
    input_system->grid_entity = grid_root->handle();
+   input_system->map_camera = gs->camera();
    this->add_system(input_system);
 }
 

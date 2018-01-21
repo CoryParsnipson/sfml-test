@@ -2,6 +2,7 @@
 #define BUILDER_SCENE_ECS_INPUT_SYSTEM_H
 
 #include "System.h"
+#include "Camera.h"
 
 // ----------------------------------------------------------------------------
 // BuilderSceneECSInputSystem
@@ -14,6 +15,7 @@ public:
    virtual ~BuilderSceneECSInputSystem();
 
    Handle grid_entity;
+   CameraPtr map_camera;
 
 private:
    virtual void on_init(Game& game) {}
@@ -25,6 +27,8 @@ private:
 
    bool visual_debug_enable_;
    bool visual_debug_enable_down_;
+
+   bool reset_camera_down_;
 };
 
 #endif
