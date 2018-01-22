@@ -171,12 +171,26 @@ void BuilderSceneECS::init(Game& game) {
 
    selection_rect->add<Collision>("SelectionRectandleCollision", sf::FloatRect(0, 0, 0, 0));
 
+   // create tile selection
+   Entity* tile_selection = this->get_entity(this->create_entity());
+   tile_selection->id("TileSelectionEntity");
+   this->send_message_async<AddToEntityMessage>(map_root->handle(), tile_selection->handle(), 0);
+
+   tile_selection->add<Rectangle>("TileSelectionRectangle", 0, 0, 0, 0);
+   tile_selection->get<Rectangle>()->color(sf::Color(255, 255, 255, 128));
+   tile_selection->get<Rectangle>()->outline_color(sf::Color(255, 255, 255, 192));
+   tile_selection->get<Rectangle>()->outline_thickness(2.0);
+
+   tile_selection->add<Collision>("TileSelectionCollider", sf::FloatRect(0, 0, 0, 0));
+
    // define mouse cursor behavior
    mouse_cursor->add<Callback>("MouseCursorCallback");
    mouse_cursor->get<Callback>()->mouse_move([mouse_cursor, mouse_cursor_text, selection_rect, gs, &game] () {
       sf::Vector2f new_pos;
       new_pos.x = game.get_player(1).bindings().get<MouseXIntent>()->element()->position();
       new_pos.y = game.get_player(1).bindings().get<MouseYIntent>()->element()->position();
+
+      sf::Vector2f screen_pos = gs->camera()->get_world_coordinate(new_pos);
 
       // move mouse cursor
       mouse_cursor->get<Rectangle>()->position(new_pos - sf::Vector2f(3, 3));
@@ -186,12 +200,15 @@ void BuilderSceneECS::init(Game& game) {
       mouse_cursor_text->get<Text>()->string(
          std::to_string(static_cast<int>(new_pos.x)) +
          ", " +
-         std::to_string(static_cast<int>(new_pos.y))
+         std::to_string(static_cast<int>(new_pos.y)) + "\n" +
+         std::to_string(static_cast<int>(screen_pos.x)) +
+         ", " +
+         std::to_string(static_cast<int>(screen_pos.y))
       );
 
-      // update selection rectangle
       Clickable* clickable = mouse_cursor->get<Clickable>();
       if (clickable && clickable->is_left_clicked()) {
+         // update selection rectangle
          sf::Vector2f sr_origin = clickable->left_click_pos();
 
          sf::Vector2f pos;
@@ -225,18 +242,61 @@ void BuilderSceneECS::init(Game& game) {
       this->prev_mouse_wheel_pos_ = mouse_wheel_pos;
    });
 
-   mouse_cursor->get<Callback>()->left_click([selection_rect, &game] () {
+   mouse_cursor->get<Callback>()->left_click([selection_rect, tile_selection, gs, &game] () {
       sf::Vector2f new_pos;
       new_pos.x = game.get_player(1).bindings().get<MouseXIntent>()->element()->position();
       new_pos.y = game.get_player(1).bindings().get<MouseYIntent>()->element()->position();
 
-      // set selection rect origin
+      // summon selection rectangle
+      selection_rect->get<Space>()->visible(true);
       selection_rect->get<Rectangle>()->position(new_pos);
+      selection_rect->get<Rectangle>()->size(0, 0);
+      selection_rect->get<Collision>()->volume(new_pos, sf::Vector2f(0, 0));
    });
 
-   mouse_cursor->get<Callback>()->left_release([selection_rect] () {
-      selection_rect->get<Rectangle>()->size(0, 0);
-      selection_rect->get<Collision>()->volume(sf::Vector2f(0, 0), sf::Vector2f(0, 0));
+   mouse_cursor->get<Callback>()->left_release([selection_rect, tile_selection, mouse_cursor, grid_root, gs, &game] () {
+      sf::Vector2f release_pos;
+      release_pos.x = game.get_player(1).bindings().get<MouseXIntent>()->element()->position();
+      release_pos.y = game.get_player(1).bindings().get<MouseYIntent>()->element()->position();
+      release_pos = gs->camera()->get_world_coordinate(release_pos);
+
+      Clickable* clickable = mouse_cursor->get<Clickable>();
+      assert (clickable);
+
+      sf::Vector2f ts_origin  = gs->camera()->get_world_coordinate(clickable->left_click_pos());
+
+      // rectangle calculation
+      sf::Vector2f pos;
+      sf::Vector2f end;
+
+      pos.x = std::min(ts_origin.x, release_pos.x);
+      pos.y = std::min(ts_origin.y, release_pos.y);
+      
+      end.x = std::max(ts_origin.x, release_pos.x);
+      end.y = std::max(ts_origin.y, release_pos.y);
+
+      sf::FloatRect ts_rect(pos, end - pos);
+
+      // get rid of selection rect
+      selection_rect->get<Space>()->visible(false);
+
+      // update tile selection
+      bool is_drag_gesture = (ts_rect.width >= grid_root->get<Grid2>()->tile_width() / 3.f ||
+                              ts_rect.height >= grid_root->get<Grid2>()->tile_height() / 3.f);
+
+      if (!is_drag_gesture && tile_selection->get<Space>()->visible() && tile_selection->get<Collision>()->contains(release_pos)) {
+         tile_selection->get<Space>()->visible(false);
+      } else {
+         // round rectangle to nearest grid point
+         pos = grid_root->get<Grid2>()->floor(pos);
+         end = grid_root->get<Grid2>()->ceil(end);
+         
+         // update tile selection entity
+         tile_selection->get<Rectangle>()->position(pos);
+         tile_selection->get<Rectangle>()->size(end - pos);
+         tile_selection->get<Collision>()->volume(pos, end - pos);
+         tile_selection->get<Space>()->visible(true);
+      }
    });
 
    mouse_cursor->get<Callback>()->camera_resize([mouse_cursor, gs] () {

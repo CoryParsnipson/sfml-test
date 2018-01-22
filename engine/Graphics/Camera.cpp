@@ -115,8 +115,6 @@ void Camera::set_scale(float factor) {
 
    // update viewport size
    this->view_->zoom(factor / this->zoom_factor_);
-   this->transform_.scale(factor / this->zoom_factor_, factor / this->zoom_factor_);
-
    this->zoom_factor_ = factor;
 }
 
@@ -143,9 +141,6 @@ sf::FloatRect Camera::bounds() const {
 
 void Camera::move(const sf::Vector2f& delta) {
    this->view_->move(delta * this->get_scale());
-
-   // transform (for child scene object positioning) moves in opposite direction of camera
-   this->transform_.translate(-delta * this->get_scale());
 }
 
 const sf::View& Camera::view() const {
@@ -161,10 +156,7 @@ const sf::FloatRect& Camera::get_viewport() {
 }
 
 sf::Vector2f Camera::get_world_coordinate(const sf::Vector2f& point) {
-   return this->transform_.transformPoint(point);
-}
-
-sf::Vector2f Camera::get_screen_coordinate(const sf::Vector2f& point) {
+   // copied from SFML source (RenderTarget.cpp:mapPixelToCoords)
    sf::IntRect viewport = this->viewport();
    sf::Vector2f screen_coord(
       -1.f + 2.f * (point.x - viewport.left) / viewport.width,
@@ -172,6 +164,18 @@ sf::Vector2f Camera::get_screen_coordinate(const sf::Vector2f& point) {
    );
    
    return this->view_->getInverseTransform().transformPoint(screen_coord);
+}
+
+sf::Vector2f Camera::get_screen_coordinate(const sf::Vector2f& point) {
+   // copied from SFML source (RenderTarget.cpp:mapCoordsToPixel)
+   sf::Vector2f pixel;
+   sf::Vector2f normalized = this->view_->getTransform().transformPoint(point);
+   sf::IntRect viewport = this->viewport();
+
+   pixel.x = (normalized.x + 1.f) / 2.f * viewport.width + viewport.left;
+   pixel.y = (-normalized.y + 1.f) / 2.f * viewport.height + viewport.top;
+
+   return pixel;
 }
 
 bool Camera::intersects(const sf::Vector2i& other) {
