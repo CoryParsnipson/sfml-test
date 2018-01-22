@@ -25,6 +25,10 @@
 #include "VisualDebugIntent.h"
 #include "GridVisibilityToggleIntent.h"
 #include "ResetCameraIntent.h"
+#include "MoveUpIntent.h"
+#include "MoveLeftIntent.h"
+#include "MoveRightIntent.h"
+#include "MoveDownIntent.h"
 
 #include "PreorderEntitySubscription.h"
 
@@ -82,6 +86,11 @@ void BuilderSceneECS::init(Game& game) {
    game.get_player(1).bindings().set<GridVisibilityToggleIntent>(1, game.input_manager().get_device(1)->get("G"));
    game.get_player(1).bindings().set<VisualDebugIntent>(1, game.input_manager().get_device(1)->get("D"));
    game.get_player(1).bindings().set<ResetCameraIntent>(1, game.input_manager().get_device(1)->get("R"));
+
+   game.get_player(1).bindings().set<MoveUpIntent>(1, game.input_manager().get_device(1)->get("Up"));
+   game.get_player(1).bindings().set<MoveLeftIntent>(1, game.input_manager().get_device(1)->get("Left"));
+   game.get_player(1).bindings().set<MoveRightIntent>(1, game.input_manager().get_device(1)->get("Right"));
+   game.get_player(1).bindings().set<MoveDownIntent>(1, game.input_manager().get_device(1)->get("Down"));
 
    // make a map root entity and hud root entity
    Entity* map_root = this->get_entity(this->create_entity());

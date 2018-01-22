@@ -5,6 +5,10 @@
 #include "GridVisibilityToggleIntent.h"
 #include "VisualDebugIntent.h"
 #include "ResetCameraIntent.h"
+#include "MoveUpIntent.h"
+#include "MoveLeftIntent.h"
+#include "MoveRightIntent.h"
+#include "MoveDownIntent.h"
 
 #include "SetGridVisibilityMessage.h"
 #include "SetVisualDebugMessage.h"
@@ -52,5 +56,21 @@ void BuilderSceneECSInputSystem::pre_update(Game& game) {
 
    if (this->reset_camera_down_ && !reset_camera) {
       this->reset_camera_down_ = reset_camera;
+   }
+
+   if (game.get_player(1).bindings().get<MoveUpIntent>()->element()->is_pressed()) {
+      this->map_camera->move(sf::Vector2f(0, -10));
+   }
+
+   if (game.get_player(1).bindings().get<MoveLeftIntent>()->element()->is_pressed()) {
+      this->map_camera->move(sf::Vector2f(-10, 0));
+   }
+
+   if (game.get_player(1).bindings().get<MoveRightIntent>()->element()->is_pressed()) {
+      this->map_camera->move(sf::Vector2f(10, 0));
+   }
+
+   if (game.get_player(1).bindings().get<MoveDownIntent>()->element()->is_pressed()) {
+      this->map_camera->move(sf::Vector2f(0, 10));
    }
 }
