@@ -31,7 +31,7 @@ void VisualDebugSystem::on_init(Game& game) {
 
 void VisualDebugSystem::on_update(Game& game, Entity& e) {
    Collision* c = e.get<Collision>();
-   if (c) {
+   if (c && this->is_visible(e.handle())) {
       this->camera()->draw(*this->surface()); // apply the camera
 
       sf::RectangleShape r;

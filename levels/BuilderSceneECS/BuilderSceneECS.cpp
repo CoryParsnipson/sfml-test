@@ -107,10 +107,10 @@ void BuilderSceneECS::init(Game& game) {
    hud_graphics->root(hud_root->handle());
    this->add_system(hud_graphics);
 
-   VisualDebugSystem* hud_vds = new VisualDebugSystem("VisualDebugSystemLeft", game.window(), hud_graphics->camera());
-   hud_vds->disable(); // start with this off
-   hud_vds->root(hud_root->handle());
-   this->add_system(hud_vds);
+   VisualDebugSystem* map_vds = new VisualDebugSystem("MapVisualDebugSystem", game.window(), gs->camera());
+   map_vds->disable(); // start with this off
+   map_vds->root(map_root->handle());
+   this->add_system(map_vds);
 
    // load or create a tile map
    JSONSerializer serializer;
@@ -242,7 +242,7 @@ void BuilderSceneECS::init(Game& game) {
       this->prev_mouse_wheel_pos_ = mouse_wheel_pos;
    });
 
-   mouse_cursor->get<Callback>()->left_click([selection_rect, tile_selection, gs, &game] () {
+   mouse_cursor->get<Callback>()->left_click([selection_rect, gs, &game] () {
       sf::Vector2f new_pos;
       new_pos.x = game.get_player(1).bindings().get<MouseXIntent>()->element()->position();
       new_pos.y = game.get_player(1).bindings().get<MouseYIntent>()->element()->position();
