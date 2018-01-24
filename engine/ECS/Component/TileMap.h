@@ -33,9 +33,12 @@ public:
    void swap(TileMap& other);
 
    TileType* get(const sf::Vector2f& pos);
+   std::vector<TileType*> find(const sf::FloatRect& search_area);
+
    void set(TileType tile);
 
-   std::vector<TileType*> find(const sf::FloatRect& search_area);
+   void remove(TileType tile);
+   void remove(const sf::FloatRect& search_area);
 
    // serialize interface
    virtual std::string serialize(Serializer& s);

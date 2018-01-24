@@ -25,6 +25,7 @@
 #include "VisualDebugIntent.h"
 #include "GridVisibilityToggleIntent.h"
 #include "ResetCameraIntent.h"
+#include "RemoveTilesIntent.h"
 #include "MoveUpIntent.h"
 #include "MoveLeftIntent.h"
 #include "MoveRightIntent.h"
@@ -86,6 +87,7 @@ void BuilderSceneECS::init(Game& game) {
    game.get_player(1).bindings().set<GridVisibilityToggleIntent>(1, game.input_manager().get_device(1)->get("G"));
    game.get_player(1).bindings().set<VisualDebugIntent>(1, game.input_manager().get_device(1)->get("D"));
    game.get_player(1).bindings().set<ResetCameraIntent>(1, game.input_manager().get_device(1)->get("R"));
+   game.get_player(1).bindings().set<RemoveTilesIntent>(1, game.input_manager().get_device(1)->get("Delete"));
 
    game.get_player(1).bindings().set<MoveUpIntent>(1, game.input_manager().get_device(1)->get("Up"));
    game.get_player(1).bindings().set<MoveLeftIntent>(1, game.input_manager().get_device(1)->get("Left"));
@@ -311,6 +313,8 @@ void BuilderSceneECS::init(Game& game) {
    // add keyboard input system
    BuilderSceneECSInputSystem* input_system = new BuilderSceneECSInputSystem();
    input_system->grid_entity = grid_root->handle();
+   input_system->map_entity = map_root->handle();
+   input_system->tile_selection = tile_selection->handle();
    input_system->map_camera = gs->camera();
    this->add_system(input_system);
 }

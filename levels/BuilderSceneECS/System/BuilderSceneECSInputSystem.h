@@ -15,6 +15,8 @@ public:
    virtual ~BuilderSceneECSInputSystem();
 
    Handle grid_entity;
+   Handle map_entity;
+   Handle tile_selection;
    CameraPtr map_camera;
 
 private:
@@ -29,6 +31,8 @@ private:
    bool visual_debug_enable_down_;
 
    bool reset_camera_down_;
+
+   bool remove_tiles_down_;
 };
 
 #endif

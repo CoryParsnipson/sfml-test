@@ -43,10 +43,6 @@ TileMap::TileType* TileMap::get(const sf::Vector2f& pos) {
    return nullptr;
 }
 
-void TileMap::set(TileMap::TileType tile) {
-   this->tiles_.push_back(tile);
-}
-
 std::vector<TileMap::TileType*> TileMap::find(const sf::FloatRect& search_area) {
    std::vector<TileMap::TileType*> matching_tiles;
 
@@ -60,6 +56,33 @@ std::vector<TileMap::TileType*> TileMap::find(const sf::FloatRect& search_area) 
    );
 
    return matching_tiles;
+}
+
+void TileMap::set(TileMap::TileType tile) {
+   this->tiles_.push_back(tile);
+}
+
+void TileMap::remove(TileMap::TileType tile) {
+   std::vector<TileMap::TileType>::iterator it;
+   for (it = this->tiles_.begin(); it != this->tiles_.end();) {
+      sf::FloatRect tile_bounds = this->get_global_bounds_from_tile(tile);
+      if (this->get_global_bounds_from_tile(*it).intersects(tile_bounds)) {
+         it = this->tiles_.erase(it);
+      } else {
+         ++it;
+      }
+   }
+}
+
+void TileMap::remove(const sf::FloatRect& search_area) {
+   std::vector<TileMap::TileType>::iterator it;
+   for (it = this->tiles_.begin(); it != this->tiles_.end();) {
+      if (this->get_global_bounds_from_tile(*it).intersects(search_area)) {
+         it = this->tiles_.erase(it);
+      } else {
+         ++it;
+      }
+   }
 }
 
 sf::Vector2f TileMap::get_position_from_tile(TileType& tile) {

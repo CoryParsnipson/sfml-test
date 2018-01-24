@@ -1,14 +1,19 @@
 #include "BuilderSceneECSInputSystem.h"
 
 #include "Game.h"
+#include "Scene.h"
 
 #include "GridVisibilityToggleIntent.h"
 #include "VisualDebugIntent.h"
 #include "ResetCameraIntent.h"
+#include "RemoveTilesIntent.h"
 #include "MoveUpIntent.h"
 #include "MoveLeftIntent.h"
 #include "MoveRightIntent.h"
 #include "MoveDownIntent.h"
+
+#include "TileMap.h"
+#include "Collision.h"
 
 #include "SetGridVisibilityMessage.h"
 #include "SetVisualDebugMessage.h"
@@ -72,5 +77,26 @@ void BuilderSceneECSInputSystem::pre_update(Game& game) {
 
    if (game.get_player(1).bindings().get<MoveDownIntent>()->element()->is_pressed()) {
       this->map_camera->move(sf::Vector2f(0, 10));
+   }
+
+   bool remove_tiles = game.get_player(1).bindings().get<RemoveTilesIntent>()->element()->is_pressed();
+   if (remove_tiles && !this->remove_tiles_down_) {
+      Entity* map_entity = this->scene().get_entity(this->map_entity);
+      Entity* tile_selection_entity = this->scene().get_entity(this->tile_selection);
+
+      if (map_entity && tile_selection_entity) {
+         TileMap* map = map_entity->get<TileMap>();
+         Collision* collision = tile_selection_entity->get<Collision>();
+
+         if (map && collision) {
+            map->remove(collision->volume());
+         }
+      }
+
+      this->remove_tiles_down_ = remove_tiles;
+   }
+
+   if (!remove_tiles && this->remove_tiles_down_) {
+      this->remove_tiles_down_ = remove_tiles;
    }
 }
