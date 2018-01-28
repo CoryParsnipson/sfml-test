@@ -114,6 +114,11 @@ void BuilderSceneECS::init(Game& game) {
    map_vds->root(map_root->handle());
    this->add_system(map_vds);
 
+   VisualDebugSystem* hud_vds = new VisualDebugSystem("HudVisualDebugSystem", game.window(), hud_graphics->camera());
+   hud_vds->disable(); // start with this off
+   hud_vds->root(hud_root->handle());
+   this->add_system(hud_vds);
+
    // load or create a tile map
    JSONSerializer serializer;
    FileChannel map_file("tilemap_test.txt");
@@ -135,31 +140,6 @@ void BuilderSceneECS::init(Game& game) {
 
    // add grid system
    this->add_system(new GridSystem("GridSystem", gs->camera()));
-
-   // create mouse cursor
-   Entity* mouse_cursor = this->get_entity(this->create_entity());
-   mouse_cursor->id("MouseCursorEntity");
-
-   // add mouse_cursor to the hud_root
-   this->send_message_async<AddToEntityMessage>(hud_root->handle(), mouse_cursor->handle());
-
-   mouse_cursor->add<Clickable>("MouseCursorClickable");
-   mouse_cursor->add<Collision>("MouseCursorCollision", sf::FloatRect(0, 0, game.window().size().x, game.window().size().y));
-
-   mouse_cursor->add<Rectangle>("MouseCursorRectangle", 0, 0, 6, 6);
-   mouse_cursor->get<Rectangle>()->color(sf::Color::Red);
-
-   mouse_cursor->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
-
-   // create mouse cursor text
-   Entity* mouse_cursor_text = this->get_entity(this->create_entity());
-   mouse_cursor_text->id("MouseCursorTextEntity");
-
-   mouse_cursor_text->add<Text>("MouseCursorText", "0, 0", this->fonts().get("retro"), 12);
-   mouse_cursor_text->get<Text>()->position(0, 10);
-   mouse_cursor_text->get<Text>()->color(sf::Color::White);
-
-   this->send_message_async<AddToEntityMessage>(mouse_cursor->handle(), mouse_cursor_text->handle());
 
    // create selection rect
    Entity* selection_rect = this->get_entity(this->create_entity());
@@ -185,9 +165,47 @@ void BuilderSceneECS::init(Game& game) {
 
    tile_selection->add<Collision>("TileSelectionCollider", sf::FloatRect(0, 0, 0, 0));
 
-   // define mouse cursor behavior
+   // create tile palette window
+   Entity* tile_palette_window = this->get_entity(this->create_entity());
+   tile_palette_window->id("TilePaletteWindow");
+   this->send_message_async<AddToEntityMessage>(hud_root->handle(), tile_palette_window->handle()); // put this on top of mouse cursor and selection_rect
+
+   tile_palette_window->add<Rectangle>("TilePaletteWindowRectangle", game.window().size().x - 210, 10, 200, 450);
+   tile_palette_window->get<Rectangle>()->color(sf::Color(113, 94, 122, 230));
+
+   tile_palette_window->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
+
+   tile_palette_window->add<Callback>("TilePaletteWindowCallback", false);
+   tile_palette_window->add<Clickable>("TilePaletteWindowClickable");
+   tile_palette_window->add<Collision>("TilePaletteWindowCollision", tile_palette_window->get<Rectangle>()->global_bounds());
+
+   Entity* tpw_outline = this->get_entity(this->create_entity());
+   tpw_outline->id("TilePaletteWindowDecoration");
+   this->send_message_async<AddToEntityMessage>(tile_palette_window->handle(), tpw_outline->handle());
+
+   tpw_outline->add<Rectangle>("", game.window().size().x - 205, 20, 190, 435);
+   tpw_outline->get<Rectangle>()->color(sf::Color::Transparent);
+   tpw_outline->get<Rectangle>()->outline_color(sf::Color(211, 206, 218, 230));
+   tpw_outline->get<Rectangle>()->outline_thickness(2.0);
+
+   // create mouse cursor
+   Entity* mouse_cursor = this->get_entity(this->create_entity());
+   mouse_cursor->id("MouseCursorEntity");
+
+   // add mouse_cursor to the hud_root
+   this->send_message_async<AddToEntityMessage>(hud_root->handle(), mouse_cursor->handle()); // added this last to put it on top
+
+   mouse_cursor->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
+
+   mouse_cursor->add<Rectangle>("MouseCursorRectangle", 0, 0, 6, 6);
+   mouse_cursor->get<Rectangle>()->color(sf::Color::Red);
+
+   mouse_cursor->add<Text>("MouseCursorText", "0, 0", this->fonts().get("retro"), 12);
+   mouse_cursor->get<Text>()->position(0, 10);
+   mouse_cursor->get<Text>()->color(sf::Color::White);
+
    mouse_cursor->add<Callback>("MouseCursorCallback");
-   mouse_cursor->get<Callback>()->mouse_move([mouse_cursor, mouse_cursor_text, selection_rect, gs, &game] () {
+   mouse_cursor->get<Callback>()->mouse_move([mouse_cursor, gs, &game] () {
       sf::Vector2f new_pos;
       new_pos.x = game.get_player(1).bindings().get<MouseXIntent>()->element()->position();
       new_pos.y = game.get_player(1).bindings().get<MouseYIntent>()->element()->position();
@@ -198,8 +216,8 @@ void BuilderSceneECS::init(Game& game) {
       mouse_cursor->get<Rectangle>()->position(new_pos - sf::Vector2f(3, 3));
 
       // move and update mouse cursor text
-      mouse_cursor_text->get<Text>()->position(new_pos + sf::Vector2f(0, 10));
-      mouse_cursor_text->get<Text>()->string(
+      mouse_cursor->get<Text>()->position(new_pos + sf::Vector2f(0, 10));
+      mouse_cursor->get<Text>()->string(
          std::to_string(static_cast<int>(new_pos.x)) +
          ", " +
          std::to_string(static_cast<int>(new_pos.y)) + "\n" +
@@ -207,8 +225,27 @@ void BuilderSceneECS::init(Game& game) {
          ", " +
          std::to_string(static_cast<int>(screen_pos.y))
       );
+   });
 
-      Clickable* clickable = mouse_cursor->get<Clickable>();
+   // This is an invisibile entity that sits at the bottom of the hud layer to handle mouse behavior
+   Entity* mouse_cursor_script = this->get_entity(this->create_entity());
+   mouse_cursor_script->id("MouseCursorScriptEntity");
+
+   this->send_message_async<AddToEntityMessage>(hud_root->handle(), mouse_cursor_script->handle(), 0);
+
+   mouse_cursor_script->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
+
+   mouse_cursor_script->add<Clickable>("MouseCursorClickable");
+   mouse_cursor_script->add<Collision>("MouseCursorCollision", sf::FloatRect(0, 0, game.window().size().x, game.window().size().y));
+
+   // define pan and selection tool behavior
+   mouse_cursor_script->add<Callback>("MouseCursorScriptCallback");
+   mouse_cursor_script->get<Callback>()->mouse_move([mouse_cursor_script, selection_rect, gs, &game] () {
+      sf::Vector2f new_pos;
+      new_pos.x = game.get_player(1).bindings().get<MouseXIntent>()->element()->position();
+      new_pos.y = game.get_player(1).bindings().get<MouseYIntent>()->element()->position();
+
+      Clickable* clickable = mouse_cursor_script->get<Clickable>();
       if (clickable && clickable->is_left_clicked()) {
          // update selection rectangle
          sf::Vector2f sr_origin = clickable->left_click_pos();
@@ -229,13 +266,13 @@ void BuilderSceneECS::init(Game& game) {
       }
 
       // pan map camera if right click is down
-      Callback* callback = mouse_cursor->get<Callback>();
+      Callback* callback = mouse_cursor_script->get<Callback>();
       if (clickable && callback && clickable->is_right_clicked()) {
          gs->camera()->move(callback->prev_mouse_pos() - new_pos);
       }
    });
 
-   mouse_cursor->get<Callback>()->mouse_wheel([this, gs, &game] () {
+   mouse_cursor_script->get<Callback>()->mouse_wheel([this, gs, &game] () {
       float mouse_wheel_pos = game.get_player(1).bindings().get<MouseWheelIntent>()->element()->position();
       float wheel_delta = mouse_wheel_pos - this->prev_mouse_wheel_pos_;
 
@@ -244,7 +281,7 @@ void BuilderSceneECS::init(Game& game) {
       this->prev_mouse_wheel_pos_ = mouse_wheel_pos;
    });
 
-   mouse_cursor->get<Callback>()->left_click([selection_rect, gs, &game] () {
+   mouse_cursor_script->get<Callback>()->left_click([selection_rect, gs, &game] () {
       sf::Vector2f new_pos;
       new_pos.x = game.get_player(1).bindings().get<MouseXIntent>()->element()->position();
       new_pos.y = game.get_player(1).bindings().get<MouseYIntent>()->element()->position();
@@ -256,13 +293,13 @@ void BuilderSceneECS::init(Game& game) {
       selection_rect->get<Collision>()->volume(new_pos, sf::Vector2f(0, 0));
    });
 
-   mouse_cursor->get<Callback>()->left_release([selection_rect, tile_selection, mouse_cursor, grid_root, gs, &game] () {
+   mouse_cursor_script->get<Callback>()->left_release([selection_rect, tile_selection, mouse_cursor_script, grid_root, gs, &game] () {
       sf::Vector2f release_pos;
       release_pos.x = game.get_player(1).bindings().get<MouseXIntent>()->element()->position();
       release_pos.y = game.get_player(1).bindings().get<MouseYIntent>()->element()->position();
       release_pos = gs->camera()->get_world_coordinate(release_pos);
 
-      Clickable* clickable = mouse_cursor->get<Clickable>();
+      Clickable* clickable = mouse_cursor_script->get<Clickable>();
       assert (clickable);
 
       sf::Vector2f ts_origin  = gs->camera()->get_world_coordinate(clickable->left_click_pos());
@@ -301,13 +338,13 @@ void BuilderSceneECS::init(Game& game) {
       }
    });
 
-   mouse_cursor->get<Callback>()->camera_resize([mouse_cursor, gs] () {
+   mouse_cursor_script->get<Callback>()->camera_resize([mouse_cursor_script, gs] () {
       sf::Vector2f new_size = gs->camera()->get_size();
       new_size.x *= gs->camera()->get_viewport().width;
       new_size.y *= gs->camera()->get_viewport().height;
 
       // make sure the mouse cursor collision volume fills the whole camera
-      mouse_cursor->get<Collision>()->volume(sf::Vector2f(0, 0), new_size);
+      mouse_cursor_script->get<Collision>()->volume(sf::Vector2f(0, 0), new_size);
    });
 
    // add keyboard input system

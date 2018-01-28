@@ -22,10 +22,8 @@ public:
    virtual void add(System& system, Handle entity);
    virtual void remove(Handle entity);
 
-   virtual void for_each(System& system, std::function<void(Handle)> entity_handler);
-
 private:
-   std::vector<Handle> entities_;
+   virtual void update_entity_list(System& system) {}
 };
 
 #endif

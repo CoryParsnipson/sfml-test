@@ -43,6 +43,8 @@ public:
    void init(Game& game);
    void update(Game& game);
 
+   void break_out_of_update();
+
    EntitySubscription& subscription();
    void subscription(EntitySubscription* subscription);
 

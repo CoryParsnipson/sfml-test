@@ -96,6 +96,10 @@ void System::update(Game& game) {
    this->post_update(game);
 }
 
+void System::break_out_of_update() {
+   this->subscription_->break_out_of_update();
+}
+
 Scene& System::scene() {
    assert(this->scene_ != nullptr);
    return *this->scene_;

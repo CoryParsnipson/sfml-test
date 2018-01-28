@@ -25,9 +25,14 @@ public:
    virtual ~EntitySubscription();
 
    const std::string& id() const;
+   Scene& scene(System& system) const;
+
+   void break_out_of_update();
 
    EntityFilter& filter();
    bool filter(System& system, Handle entity);
+
+   void for_each(System& system, std::function<void(Handle)> entity_handler);
 
    virtual void init(System& system) = 0;
    virtual void clear() = 0;
@@ -35,13 +40,16 @@ public:
    virtual void add(System& system, Handle entity) = 0;
    virtual void remove(Handle entity) = 0;
 
-   virtual void for_each(System& system, std::function<void(Handle)> entity_handler) = 0;
-
-   Scene& scene(System& system) const;
+protected:
+   std::vector<Handle> entities_;
 
 private:
    std::string id_;
+   bool break_for_each_;
    EntityFilter filter_;
+
+   // this function is supposed to modify/update this->entities_
+   virtual void update_entity_list(System& system) = 0;
 };
 
 #endif

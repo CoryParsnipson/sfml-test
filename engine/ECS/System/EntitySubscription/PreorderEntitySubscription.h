@@ -20,10 +20,10 @@ public:
    virtual void add(System& system, Handle entity);
    virtual void remove(Handle entity);
 
-   virtual void for_each(System& system, std::function<void(Handle)> entity_handler);
-
 private:
    bool reverse_children_;
+
+   virtual void update_entity_list(System& system);
 };
 
 #endif

@@ -29,11 +29,14 @@ void PreorderEntitySubscription::remove(Handle entity) {
    // empty
 }
 
-void PreorderEntitySubscription::for_each(System& system, std::function<void(Handle)> entity_handler) {
+void PreorderEntitySubscription::update_entity_list(System& system) {
    std::vector<Handle> entities_to_visit;
    entities_to_visit.push_back(
       system.root() == Handle() ? this->scene(system).space_handle() : system.root()
    );
+
+   // clear entity list (this subscription list implementation is not optimized)
+   this->entities_.clear();
 
    // do a preorder traversal of scene graph
    while (!entities_to_visit.empty()) {
@@ -56,7 +59,7 @@ void PreorderEntitySubscription::for_each(System& system, std::function<void(Han
          }
 
          if (this->filter(system, current)) {
-            entity_handler(current);
+            this->entities_.push_back(current);
          }
       }
    }

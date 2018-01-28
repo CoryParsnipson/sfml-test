@@ -7,6 +7,7 @@ Callback::Callback(const std::string& id /* = "Callback Component" */, bool prop
 , prev_mouse_pos_(0, 0)
 {
    // initialize all callback functions with null callbacks
+   // TODO: find a better way to do this...
    this->callbacks_[CallbackKey::MOUSE_IN] = [] () {};
    this->callbacks_[CallbackKey::MOUSE_OUT] = [] () {};
    this->callbacks_[CallbackKey::MOUSE_MOVE] = [] () {};
@@ -15,6 +16,7 @@ Callback::Callback(const std::string& id /* = "Callback Component" */, bool prop
    this->callbacks_[CallbackKey::RIGHT_CLICK] = [] () {};
    this->callbacks_[CallbackKey::LEFT_RELEASE] = [] () {};
    this->callbacks_[CallbackKey::RIGHT_RELEASE] = [] () {};
+   this->callbacks_[CallbackKey::CAMERA_RESIZE] = [] () {};
 }
 
 Callback::Callback(const Callback& other)

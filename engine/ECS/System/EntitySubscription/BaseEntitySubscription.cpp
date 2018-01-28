@@ -37,7 +37,3 @@ void BaseEntitySubscription::remove(Handle entity) {
       }
    }
 }
-
-void BaseEntitySubscription::for_each(System& system, std::function<void(Handle)> entity_handler) {
-   std::for_each(this->entities_.begin(), this->entities_.end(), entity_handler);
-}

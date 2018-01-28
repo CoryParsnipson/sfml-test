@@ -12,7 +12,8 @@
 #include "SetGridVisibilityMessage.h"
 
 GridSystem::GridSystem(const std::string& id, CameraPtr camera)
-: camera_(camera)
+: System(id)
+, camera_(camera)
 {
 }
 
@@ -54,6 +55,7 @@ void GridSystem::on_update(Game& game, Entity& e) {
 
    // no need to update this system if the camera hasn't changed
    if (this->previous_camera_bounds_ == this->camera_->bounds()) {
+      this->break_out_of_update();
       return;
    }
 

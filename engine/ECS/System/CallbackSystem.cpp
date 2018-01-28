@@ -22,14 +22,9 @@ CallbackSystem::CallbackSystem(const std::string& id /* = "CallbackSystem" */)
 : System(id, new PostorderEntitySubscription(id + "EntitySubscription"))
 , camera_was_resized_(false)
 {
-   this->target_hit_[CallbackKey::MOUSE_IN] = false;
-   this->target_hit_[CallbackKey::MOUSE_OUT] = false;
-   this->target_hit_[CallbackKey::MOUSE_MOVE] = false;
    this->target_hit_[CallbackKey::MOUSE_WHEEL] = false;
    this->target_hit_[CallbackKey::LEFT_CLICK] = false;
    this->target_hit_[CallbackKey::RIGHT_CLICK] = false;
-   this->target_hit_[CallbackKey::LEFT_RELEASE] = false;
-   this->target_hit_[CallbackKey::RIGHT_RELEASE] = false;
 }
 
 CallbackSystem::~CallbackSystem() {
@@ -45,11 +40,7 @@ void CallbackSystem::on_init(Game& game) {
 }
 
 void CallbackSystem::pre_update(Game& game) {
-   // reset target hit flags
-   std::map<CallbackKey, bool>::iterator it;
-   for (it = this->target_hit_.begin(); it != this->target_hit_.end(); ++it) {
-      it->second = false;
-   }
+   this->target_hit_[CallbackKey::MOUSE_WHEEL] = false;
 }
 
 void CallbackSystem::on_update(Game& game, Entity& e) {
@@ -68,8 +59,8 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
       new_pos.x = bindings.get<MouseXIntent>()->element()->position();
       new_pos.y = bindings.get<MouseYIntent>()->element()->position();
 
-      bool contains_new = collision->contains(new_pos);
-      bool contains_old = collision->contains(prev_pos);
+      bool contains_new = (collision != nullptr ? collision->contains(new_pos) : false);
+      bool contains_old = (collision != nullptr ? collision->contains(prev_pos) : false);
 
       // mouse wheel calculation
       if (collision &&
@@ -163,6 +154,8 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
 
          clickable->is_left_clicked(false);
          callback->left_release();
+
+         this->target_hit_[CallbackKey::LEFT_CLICK] = false;
       }
       
       // right release calculation (release all clicked elements no matter collision)
@@ -172,6 +165,8 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
 
          clickable->is_right_clicked(false);
          callback->right_release();
+
+         this->target_hit_[CallbackKey::RIGHT_CLICK] = false;
       }
 
       // mouse in calculation
