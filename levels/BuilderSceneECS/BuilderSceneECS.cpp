@@ -343,7 +343,7 @@ void BuilderSceneECS::init(Game& game) {
       new_size.x *= gs->camera()->get_viewport().width;
       new_size.y *= gs->camera()->get_viewport().height;
 
-      // make sure the mouse cursor collision volume fills the whole camera
+      // make sure the mouse cursor script collision volume fills the whole camera
       mouse_cursor_script->get<Collision>()->volume(sf::Vector2f(0, 0), new_size);
    });
 

@@ -39,8 +39,11 @@ void CallbackSystem::on_init(Game& game) {
    });
 }
 
-void CallbackSystem::pre_update(Game& game) {
+void CallbackSystem::post_update(Game& game) {
    this->target_hit_[CallbackKey::MOUSE_WHEEL] = false;
+
+   // reset flag
+   this->camera_was_resized_ = false;
 }
 
 void CallbackSystem::on_update(Game& game, Entity& e) {
@@ -194,8 +197,5 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
 
    if (this->camera_was_resized_) {
       callback->camera_resize();
-
-      // reset flag
-      this->camera_was_resized_ = false;
    }
 }
