@@ -69,24 +69,27 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
       if (collision &&
           contains_new &&
           bindings.get<MouseWheelIntent>() &&
-          !this->target_hit_[CallbackKey::MOUSE_WHEEL] &&
-          bindings.get<MouseWheelIntent>()->element()->position() != callback->prev_mouse_wheel_pos()) {
+          !this->target_hit_[CallbackKey::MOUSE_WHEEL]) {
 
+         // set this to true no matter what the mouse wheel delta is, so mouse wheel events don't "bleed" through
          this->target_hit_[CallbackKey::MOUSE_WHEEL] = true;
 
-         callback->prev_mouse_wheel_pos(bindings.get<MouseWheelIntent>()->element()->position());
-         callback->mouse_wheel();
+         // only execute mouse wheel callback if the delta is non-zero
+         if (bindings.get<MouseWheelIntent>()->element()->position() != callback->prev_mouse_wheel_pos()) {
+            callback->prev_mouse_wheel_pos(bindings.get<MouseWheelIntent>()->element()->position());
+            callback->mouse_wheel();
 
-         // propagate this event upward in the scene graph
-         Entity* parent_entity = game.current_scene()->get_entity(e.get<Space>()->parent());
-         bool propagate = callback->propagate();
-         while (parent_entity && propagate) {
-            if (parent_entity->get<Callback>()) {
-               parent_entity->get<Callback>()->mouse_wheel();
-               propagate = parent_entity->get<Callback>()->propagate();
+            // propagate this event upward in the scene graph
+            Entity* parent_entity = game.current_scene()->get_entity(e.get<Space>()->parent());
+            bool propagate = callback->propagate();
+            while (parent_entity && propagate) {
+               if (parent_entity->get<Callback>()) {
+                  parent_entity->get<Callback>()->mouse_wheel();
+                  propagate = parent_entity->get<Callback>()->propagate();
+               }
+
+               parent_entity = game.current_scene()->get_entity(parent_entity->get<Space>()->parent());
             }
-
-            parent_entity = game.current_scene()->get_entity(parent_entity->get<Space>()->parent());
          }
       }
 

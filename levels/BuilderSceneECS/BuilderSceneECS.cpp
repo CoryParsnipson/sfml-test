@@ -176,7 +176,6 @@ void BuilderSceneECS::init(Game& game) {
    tile_palette_window->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
 
    tile_palette_window->add<Callback>("TilePaletteWindowCallback", false);
-   tile_palette_window->add<Clickable>("TilePaletteWindowClickable");
    tile_palette_window->add<Collision>("TilePaletteWindowCollision", tile_palette_window->get<Rectangle>()->global_bounds());
 
    Entity* tpw_outline = this->get_entity(this->create_entity());
