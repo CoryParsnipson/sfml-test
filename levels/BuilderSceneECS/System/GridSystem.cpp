@@ -13,6 +13,7 @@
 
 GridSystem::GridSystem(const std::string& id, CameraPtr camera)
 : System(id)
+, is_visible_(true)
 , camera_(camera)
 {
 }
@@ -58,6 +59,7 @@ void GridSystem::on_update(Game& game, Entity& e) {
       this->break_out_of_update();
       return;
    }
+   this->previous_camera_bounds_ = this->camera_->bounds();
 
    // iterate through children and build list of existing rows and cols
    Space* space = e.get<Space>();

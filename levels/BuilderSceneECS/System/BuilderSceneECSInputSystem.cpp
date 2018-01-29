@@ -20,7 +20,12 @@
 
 BuilderSceneECSInputSystem::BuilderSceneECSInputSystem(const std::string& id /* = "BuilderSceneECSInputSystem" */)
 : System(id)
+, grid_visible_(false)
+, grid_visible_button_down_(false)
 , visual_debug_enable_(true)
+, visual_debug_enable_down_(false)
+, reset_camera_down_(false)
+, remove_tiles_down_(false)
 {
 }
 
