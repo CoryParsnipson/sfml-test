@@ -171,7 +171,7 @@ void BuilderSceneECS::init(Game& game) {
    this->send_message_async<AddToEntityMessage>(hud_root->handle(), tile_palette_window->handle()); // put this on top of mouse cursor and selection_rect
 
    tile_palette_window->add<Rectangle>("TilePaletteWindowRectangle", game.window().size().x - 210, 10, 200, 450);
-   tile_palette_window->get<Rectangle>()->color(sf::Color(113, 94, 122, 230));
+   tile_palette_window->get<Rectangle>()->color(sf::Color(113, 94, 122, 255));
 
    tile_palette_window->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
 
@@ -182,10 +182,27 @@ void BuilderSceneECS::init(Game& game) {
    tpw_outline->id("TilePaletteWindowDecoration");
    this->send_message_async<AddToEntityMessage>(tile_palette_window->handle(), tpw_outline->handle());
 
-   tpw_outline->add<Rectangle>("", game.window().size().x - 205, 20, 190, 435);
+   tpw_outline->add<Rectangle>("TilePaletteWindowOutline", game.window().size().x - 205, 20, 190, 435);
    tpw_outline->get<Rectangle>()->color(sf::Color::Transparent);
    tpw_outline->get<Rectangle>()->outline_color(sf::Color(211, 206, 218, 230));
    tpw_outline->get<Rectangle>()->outline_thickness(2.0);
+
+   Entity* tpw_title_back = this->get_entity(this->create_entity());
+   tpw_title_back->id("TilePaletteWindowTitleBack");
+   this->send_message_async<AddToEntityMessage>(tile_palette_window->handle(), tpw_title_back->handle());
+
+   tpw_title_back->add<Rectangle>("TilePaletteWindowTitleBack", 0, 0, 0, 0);
+   tpw_title_back->get<Rectangle>()->color(sf::Color(113, 94, 122, 255));
+
+   Entity* tpw_title = this->get_entity(this->create_entity());
+   tpw_title->id("TilePaletteWindowTitle");
+   this->send_message_async<AddToEntityMessage>(tile_palette_window->handle(), tpw_title->handle());
+
+   tpw_title->add<Text>("TilePaletteWindowTitleText", "Tileset:", this->fonts().get("retro"), 12);
+   tpw_title->get<Text>()->position(game.window().size().x - 180, 12);
+
+   tpw_title_back->get<Rectangle>()->position(tpw_title->get<Text>()->position() - sf::Vector2f(3, 0));
+   tpw_title_back->get<Rectangle>()->size(tpw_title->get<Text>()->local_bounds().width + 6, tpw_title->get<Text>()->local_bounds().height);
 
    // create mouse cursor
    Entity* mouse_cursor = this->get_entity(this->create_entity());
