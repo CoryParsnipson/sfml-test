@@ -34,6 +34,9 @@ void VisualDebugSystem::on_update(Game& game, Entity& e) {
    if (c && this->is_visible(e.handle())) {
       this->camera()->draw(*this->surface()); // apply the camera
 
+      sf::RenderStates states;
+      states.transform = this->global_transform(e);
+
       sf::RectangleShape r;
       r.setFillColor(sf::Color(124, 160, 210, 100));
       r.setOutlineColor(sf::Color(210, 124, 124, 100));
@@ -42,6 +45,6 @@ void VisualDebugSystem::on_update(Game& game, Entity& e) {
       r.setSize(sf::Vector2f(c->volume().width, c->volume().height));
       r.setPosition(c->volume().left, c->volume().top);
 
-      this->surface()->draw(r);
+      this->surface()->draw(r, states);
    }
 }
