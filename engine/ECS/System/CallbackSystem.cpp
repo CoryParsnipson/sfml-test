@@ -62,12 +62,18 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
       new_pos.x = bindings.get<MouseXIntent>()->element()->position();
       new_pos.y = bindings.get<MouseYIntent>()->element()->position();
 
-      bool contains_new = (collision != nullptr ? collision->contains(new_pos) : false);
-      bool contains_old = (collision != nullptr ? collision->contains(prev_pos) : false);
+      bool contains_new = false;
+      bool contains_old =false;
+   
+      if (collision) {
+         sf::FloatRect global_collision_volume = this->global_transform(e).transformRect(collision->volume());
+
+         contains_new = global_collision_volume.contains(new_pos);
+         contains_old = global_collision_volume.contains(prev_pos);
+      }
 
       // mouse wheel calculation
-      if (collision &&
-          contains_new &&
+      if (contains_new &&
           bindings.get<MouseWheelIntent>() &&
           !this->target_hit_[CallbackKey::MOUSE_WHEEL]) {
 
@@ -94,8 +100,7 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
       }
 
       // left click calculation
-      if (collision &&
-          clickable &&
+      if (clickable &&
           contains_new &&
           !this->target_hit_[CallbackKey::LEFT_CLICK] &&
           bindings.get<LeftClickIntent>()->element()->is_pressed() && !clickable->is_left_clicked()) {
@@ -124,8 +129,7 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
       }
 
       // right click calculation
-      if (collision &&
-          clickable &&
+      if (clickable &&
           contains_new &&
           !this->target_hit_[CallbackKey::RIGHT_CLICK] &&
           bindings.get<RightClickIntent>()->element()->is_pressed() && !clickable->is_right_clicked()) {
@@ -176,14 +180,14 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
       }
 
       // mouse in calculation
-      if (collision && contains_new && !contains_old && !this->target_hit_[CallbackKey::MOUSE_IN]) {
+      if (contains_new && !contains_old && !this->target_hit_[CallbackKey::MOUSE_IN]) {
          this->target_hit_[CallbackKey::MOUSE_IN] = true;
 
          callback->mouse_in();
       }
 
       // mouse out calculation
-      if (collision && !contains_new && contains_old && !this->target_hit_[CallbackKey::MOUSE_OUT]) {
+      if (!contains_new && contains_old && !this->target_hit_[CallbackKey::MOUSE_OUT]) {
          this->target_hit_[CallbackKey::MOUSE_OUT] = true;
 
          callback->mouse_out();

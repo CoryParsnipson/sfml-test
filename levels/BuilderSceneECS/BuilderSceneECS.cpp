@@ -244,7 +244,7 @@ void BuilderSceneECS::init(Game& game) {
       );
    });
 
-   // This is an invisibile entity that sits at the bottom of the hud layer to handle mouse behavior
+   // This is an invisible entity that sits at the bottom of the hud layer to handle mouse behavior
    Entity* mouse_cursor_script = this->get_entity(this->create_entity());
    mouse_cursor_script->id("MouseCursorScriptEntity");
 
