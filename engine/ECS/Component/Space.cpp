@@ -3,6 +3,9 @@
 Space::Space(const std::string& id /* = "Space Component" */)
 : Component(id)
 , visible_(true)
+, transform_()
+, parent_()
+, children_()
 {
 }
 

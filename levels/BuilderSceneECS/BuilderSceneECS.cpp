@@ -170,7 +170,7 @@ void BuilderSceneECS::init(Game& game) {
    tile_palette_window->id("TilePaletteWindow");
    this->send_message_async<AddToEntityMessage>(hud_root->handle(), tile_palette_window->handle()); // put this on top of mouse cursor and selection_rect
 
-   tile_palette_window->add<Rectangle>("TilePaletteWindowRectangle", game.window().size().x - 210, 10, 200, 450);
+   tile_palette_window->add<Rectangle>("TilePaletteWindowRectangle", 0, 0, 200, 450);
    tile_palette_window->get<Rectangle>()->color(sf::Color(113, 94, 122, 255));
 
    tile_palette_window->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
@@ -179,11 +179,23 @@ void BuilderSceneECS::init(Game& game) {
    tile_palette_window->add<Clickable>("TilePaletteWindowClickable");
    tile_palette_window->add<Collision>("TilePaletteWindowCollision", tile_palette_window->get<Rectangle>()->global_bounds());
 
+   // readjust tile palette window (and children) when the camera is resized
+   tile_palette_window->get<Callback>()->camera_resize([tile_palette_window, gs] () {
+      float camera_width = gs->camera()->get_size().x * gs->camera()->get_viewport().width;
+      sf::Vector2f new_pos(camera_width - tile_palette_window->get<Rectangle>()->size().x - 10, 10);
+
+      // reset transform (this is destructive, but without modifying the code there's no other way to do this!)
+      tile_palette_window->get<Space>()->states().transform = sf::Transform::Identity;
+   
+      // move to the upper right corner
+      tile_palette_window->get<Space>()->states().transform.translate(new_pos);
+   });
+
    Entity* tpw_outline = this->get_entity(this->create_entity());
    tpw_outline->id("TilePaletteWindowDecoration");
    this->send_message_async<AddToEntityMessage>(tile_palette_window->handle(), tpw_outline->handle());
 
-   tpw_outline->add<Rectangle>("TilePaletteWindowOutline", game.window().size().x - 205, 20, 190, 435);
+   tpw_outline->add<Rectangle>("TilePaletteWindowOutline", 5, 10, 190, 435);
    tpw_outline->get<Rectangle>()->color(sf::Color::Transparent);
    tpw_outline->get<Rectangle>()->outline_color(sf::Color(211, 206, 218, 230));
    tpw_outline->get<Rectangle>()->outline_thickness(2.0);
@@ -200,7 +212,7 @@ void BuilderSceneECS::init(Game& game) {
    this->send_message_async<AddToEntityMessage>(tile_palette_window->handle(), tpw_title->handle());
 
    tpw_title->add<Text>("TilePaletteWindowTitleText", "Tileset:", this->fonts().get("retro"), 12);
-   tpw_title->get<Text>()->position(game.window().size().x - 180, 12);
+   tpw_title->get<Text>()->position(30, 2);
 
    tpw_title_back->get<Rectangle>()->position(tpw_title->get<Text>()->position() - sf::Vector2f(3, 0));
    tpw_title_back->get<Rectangle>()->size(tpw_title->get<Text>()->local_bounds().width + 6, tpw_title->get<Text>()->local_bounds().height);
