@@ -170,7 +170,7 @@ void BuilderSceneECS::init(Game& game) {
    tile_palette_window->id("TilePaletteWindow");
    this->send_message_async<AddToEntityMessage>(hud_root->handle(), tile_palette_window->handle()); // put this on top of mouse cursor and selection_rect
 
-   tile_palette_window->add<Rectangle>("TilePaletteWindowRectangle", 0, 0, 200, 450);
+   tile_palette_window->add<Rectangle>("TilePaletteWindowRectangle", 0, 0, 220, 480);
    tile_palette_window->get<Rectangle>()->color(sf::Color(113, 94, 122, 255));
 
    tile_palette_window->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
@@ -195,7 +195,7 @@ void BuilderSceneECS::init(Game& game) {
    tpw_outline->id("TilePaletteWindowDecoration");
    this->send_message_async<AddToEntityMessage>(tile_palette_window->handle(), tpw_outline->handle());
 
-   tpw_outline->add<Rectangle>("TilePaletteWindowOutline", 5, 10, 190, 435);
+   tpw_outline->add<Rectangle>("TilePaletteWindowOutline", 5, 10, tile_palette_window->get<Rectangle>()->size().x - 10, tile_palette_window->get<Rectangle>()->size().y - 15);
    tpw_outline->get<Rectangle>()->color(sf::Color::Transparent);
    tpw_outline->get<Rectangle>()->outline_color(sf::Color(211, 206, 218, 230));
    tpw_outline->get<Rectangle>()->outline_thickness(2.0);
@@ -216,6 +216,96 @@ void BuilderSceneECS::init(Game& game) {
 
    tpw_title_back->get<Rectangle>()->position(tpw_title->get<Text>()->position() - sf::Vector2f(3, 0));
    tpw_title_back->get<Rectangle>()->size(tpw_title->get<Text>()->local_bounds().width + 6, tpw_title->get<Text>()->local_bounds().height);
+
+   Entity* tpw_hover = this->get_entity(this->create_entity());
+   tpw_hover->id("TilePaletteWindowHover");
+   
+   tpw_hover->get<Space>()->visible(false);
+   
+   tpw_hover->add<Rectangle>("TilePaletteWindowRectangle", 0, 0, grid_root->get<Grid2>()->tile_width(), grid_root->get<Grid2>()->tile_height());
+   tpw_hover->get<Rectangle>()->color(sf::Color(255, 255, 255, 100));
+   tpw_hover->get<Rectangle>()->outline_color(sf::Color(108, 46, 167, 100));
+   tpw_hover->get<Rectangle>()->outline_thickness(2.f);
+
+   // add tile textures to the tile palette window
+   std::vector<std::string> tile_textures;
+   tile_textures.push_back("tile_grass");
+   tile_textures.push_back("tile_worn_grass");
+   tile_textures.push_back("tile_sign");
+   tile_textures.push_back("tile_dirt_ul");
+   tile_textures.push_back("tile_dirt_um");
+   tile_textures.push_back("tile_dirt_ur");
+   tile_textures.push_back("tile_dirt_ml");
+   tile_textures.push_back("tile_dirt_mm");
+   tile_textures.push_back("tile_dirt_mr");
+   tile_textures.push_back("tile_dirt_bl");
+   tile_textures.push_back("tile_dirt_bm");
+   tile_textures.push_back("tile_dirt_br");
+   tile_textures.push_back("tile_water_ul");
+   tile_textures.push_back("tile_water_um");
+   tile_textures.push_back("tile_water_ur");
+   tile_textures.push_back("tile_water_ml");
+   tile_textures.push_back("tile_water_mm");
+   tile_textures.push_back("tile_water_mr");
+   tile_textures.push_back("tile_water_bl");
+   tile_textures.push_back("tile_water_bm");
+   tile_textures.push_back("tile_water_br");
+
+   int tiles_per_row = tile_palette_window->get<Rectangle>()->size().x / grid_root->get<Grid2>()->tile_width();
+   int side_padding = (tile_palette_window->get<Rectangle>()->size().x - (grid_root->get<Grid2>()->tile_width() * tiles_per_row)) / 2;
+   int top_padding = 20;
+
+   int i = 0;
+   for (std::vector<std::string>::const_iterator it = tile_textures.begin(); it != tile_textures.end(); ++it, ++i) {
+      sf::Vector2f tile_texture_pos(
+         (i % tiles_per_row) * grid_root->get<Grid2>()->tile_width() + side_padding,
+         (i / tiles_per_row) * grid_root->get<Grid2>()->tile_height() + top_padding
+      );
+
+      Entity* entity = this->get_entity(this->create_entity());
+      entity->id(*it + "_tpw_entity");
+      this->send_message_async<AddToEntityMessage>(tile_palette_window->handle(), entity->handle());
+
+      entity->add<Sprite>(*it + "_sprite", *this->textures().get(*it));
+      entity->get<Sprite>()->position(tile_texture_pos);
+
+      entity->add<PlayerProfile>(*it + "_playerProfile", 1);
+      entity->add<Clickable>(*it + "_clickable");
+      entity->add<Collision>(*it + "_collision", entity->get<Sprite>()->global_bounds());
+
+      // define texture button behavior
+      entity->add<Callback>(*it + "_callback");
+      entity->get<Callback>()->mouse_in([entity, tpw_hover] () {
+         tpw_hover->get<Rectangle>()->position(entity->get<Sprite>()->position());
+      });
+
+      entity->get<Callback>()->left_release([entity, tile_selection, map_root, grid_root] () {
+         // remove any existing tiles in the selection if they exist
+         map_root->get<TileMap>()->remove(tile_selection->get<Collision>()->volume());
+
+         // on click, fill the selected area (if it is active) with the clicked on tile
+         sf::FloatRect tsc = tile_selection->get<Collision>()->volume();
+         for (int x_pos = tsc.left; x_pos < tsc.left + tsc.width; x_pos += grid_root->get<Grid2>()->tile_width()) {
+            for (int y_pos = tsc.top; y_pos < tsc.top + tsc.height; y_pos += grid_root->get<Grid2>()->tile_height()) {
+               Sprite sprite(*entity->get<Sprite>());
+               sprite.position(x_pos, y_pos);
+
+               map_root->get<TileMap>()->set(sprite);
+            }
+         }
+      });
+   }
+
+   tile_palette_window->get<Callback>()->mouse_in([tpw_hover] () {
+      tpw_hover->get<Space>()->visible(true);
+   });
+
+   tile_palette_window->get<Callback>()->mouse_out([tpw_hover] () {
+      tpw_hover->get<Space>()->visible(false);
+   });
+
+   // putting this here because tpw_hover needs to be on top of all tiles
+   this->send_message_async<AddToEntityMessage>(tile_palette_window->handle(), tpw_hover->handle());
 
    // create mouse cursor
    Entity* mouse_cursor = this->get_entity(this->create_entity());
