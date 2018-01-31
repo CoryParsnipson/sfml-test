@@ -63,7 +63,7 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
       new_pos.y = bindings.get<MouseYIntent>()->element()->position();
 
       bool contains_new = false;
-      bool contains_old =false;
+      bool contains_old = false;
    
       if (collision) {
          sf::FloatRect global_collision_volume = this->global_transform(e).transformRect(collision->volume());
@@ -180,16 +180,12 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
       }
 
       // mouse in calculation
-      if (contains_new && !contains_old && !this->target_hit_[CallbackKey::MOUSE_IN]) {
-         this->target_hit_[CallbackKey::MOUSE_IN] = true;
-
+      if (contains_new && !contains_old) {
          callback->mouse_in();
       }
 
       // mouse out calculation
-      if (!contains_new && contains_old && !this->target_hit_[CallbackKey::MOUSE_OUT]) {
-         this->target_hit_[CallbackKey::MOUSE_OUT] = true;
-
+      if (!contains_new && contains_old) {
          callback->mouse_out();
       }
       
