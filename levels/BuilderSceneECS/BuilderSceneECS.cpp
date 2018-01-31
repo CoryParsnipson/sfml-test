@@ -30,6 +30,7 @@
 #include "MoveLeftIntent.h"
 #include "MoveRightIntent.h"
 #include "MoveDownIntent.h"
+#include "SerializeMapIntent.h"
 
 #include "PreorderEntitySubscription.h"
 
@@ -88,6 +89,7 @@ void BuilderSceneECS::init(Game& game) {
    game.get_player(1).bindings().set<VisualDebugIntent>(1, game.input_manager().get_device(1)->get("D"));
    game.get_player(1).bindings().set<ResetCameraIntent>(1, game.input_manager().get_device(1)->get("R"));
    game.get_player(1).bindings().set<RemoveTilesIntent>(1, game.input_manager().get_device(1)->get("Delete"));
+   game.get_player(1).bindings().set<SerializeMapIntent>(1, game.input_manager().get_device(1)->get("S"));
 
    game.get_player(1).bindings().set<MoveUpIntent>(1, game.input_manager().get_device(1)->get("Up"));
    game.get_player(1).bindings().set<MoveLeftIntent>(1, game.input_manager().get_device(1)->get("Left"));
@@ -472,6 +474,8 @@ void BuilderSceneECS::init(Game& game) {
    input_system->map_entity = map_root->handle();
    input_system->tile_selection = tile_selection->handle();
    input_system->map_camera = gs->camera();
+   input_system->serializer = new JSONSerializer(3);
+   input_system->file_channel = new FileChannel("tilemap_test.txt");
    this->add_system(input_system);
 }
 

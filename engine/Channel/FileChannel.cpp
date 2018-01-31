@@ -87,3 +87,7 @@ void FileChannel::remove() {
 
    this->file_.open(this->filename_, std::fstream::binary | std::fstream::in | std::fstream::out);
 }
+
+const std::string& FileChannel::filename() const {
+   return this->filename_;
+}

@@ -1,63 +1,181 @@
 {
-   "id" : "TileMap Component",
-   "num_tiles" : "5",
-   "tile_0" : {
-      "color" : "-1",
-      "id" : "tile1",
-      "origin_x":"0.000000",
-      "origin_y":"0.000000",
-      "rotation":"0.000000",
-      "texture" : "tile_sign",
-      "type" : "Sprite",
-      "x" : "100",
-      "y" : "100"
+   "id": "TileMap Component",
+   "num_tiles": "16",
+   "tile_0": {
+      "color": "-1",
+      "id": "tile_sign_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_sign",
+      "type": "Sprite",
+      "x": "64.000000",
+      "y": "64.000000"
    },
-   "tile_1" : {
-      "color" : "-1",
-      "id" : "tile2",
-      "origin_x":"0.000000",
-      "origin_y":"0.000000",
-      "rotation":"0.000000",
-      "texture" : "tile_worn_grass",
-      "type" : "Sprite",
-      "x" : "164",
-      "y" : "100"
+   "tile_1": {
+      "color": "-1",
+      "id": "tile_worn_grass_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_worn_grass",
+      "type": "Sprite",
+      "x": "128.000000",
+      "y": "64.000000"
    },
-   "tile_2" : {
-      "color" : "-1",
-      "id" : "tile3",
-      "origin_x":"0.000000",
-      "origin_y":"0.000000",
-      "rotation":"0.000000",
-      "texture" : "tile_grass",
-      "type" : "Sprite",
-      "x" : "100",
-      "y" : "164"
+   "tile_10": {
+      "color": "-1",
+      "id": "tile_dirt_bm_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_dirt_bm",
+      "type": "Sprite",
+      "x": "128.000000",
+      "y": "256.000000"
    },
-   "tile_3" : {
-      "color" : "-1",
-      "id" : "tile4",
-      "origin_x":"0.000000",
-      "origin_y":"0.000000",
-      "rotation":"0.000000",
-      "texture" : "tile_water_mm",
-      "type" : "Sprite",
-      "x" : "164",
-      "y" : "164"
+   "tile_11": {
+      "color": "-1",
+      "id": "tile_dirt_bl_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_dirt_bl",
+      "type": "Sprite",
+      "x": "64.000000",
+      "y": "256.000000"
    },
-   "tile_4" : {
-      "color":"-16711936",
-      "height":"64.000000",
-      "id":"tile5",
-      "origin_x":"0.000000",
-      "origin_y":"0.000000",
-      "outline_color":"-1",
-      "outline_thickness":"0.000000",
-      "rotation":"0.000000",
-      "type":"Rectangle",
-      "width":"64.000000",
-      "x":"100.000000",
-      "y":"228.000000"
+   "tile_12": {
+      "color": "-1",
+      "id": "tile_grass_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_grass",
+      "type": "Sprite",
+      "x": "256.000000",
+      "y": "64.000000"
    },
-   "type" : "TileMap"
+   "tile_13": {
+      "color": "-1",
+      "id": "tile_grass_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_grass",
+      "type": "Sprite",
+      "x": "256.000000",
+      "y": "128.000000"
+   },
+   "tile_14": {
+      "color": "-1",
+      "id": "tile_grass_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_grass",
+      "type": "Sprite",
+      "x": "256.000000",
+      "y": "192.000000"
+   },
+   "tile_15": {
+      "color": "-1",
+      "id": "tile_grass_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_grass",
+      "type": "Sprite",
+      "x": "256.000000",
+      "y": "256.000000"
+   },
+   "tile_2": {
+      "color": "-1",
+      "id": "tile_grass_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_grass",
+      "type": "Sprite",
+      "x": "192.000000",
+      "y": "64.000000"
+   },
+   "tile_3": {
+      "color": "-1",
+      "id": "tile_dirt_mm_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_dirt_mm",
+      "type": "Sprite",
+      "x": "128.000000",
+      "y": "192.000000"
+   },
+   "tile_4": {
+      "color": "-1",
+      "id": "tile_dirt_ul_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_dirt_ul",
+      "type": "Sprite",
+      "x": "64.000000",
+      "y": "128.000000"
+   },
+   "tile_5": {
+      "color": "-1",
+      "id": "tile_dirt_um_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_dirt_um",
+      "type": "Sprite",
+      "x": "128.000000",
+      "y": "128.000000"
+   },
+   "tile_6": {
+      "color": "-1",
+      "id": "tile_dirt_ur_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_dirt_ur",
+      "type": "Sprite",
+      "x": "192.000000",
+      "y": "128.000000"
+   },
+   "tile_7": {
+      "color": "-1",
+      "id": "tile_dirt_ml_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_dirt_ml",
+      "type": "Sprite",
+      "x": "64.000000",
+      "y": "192.000000"
+   },
+   "tile_8": {
+      "color": "-1",
+      "id": "tile_dirt_mr_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_dirt_mr",
+      "type": "Sprite",
+      "x": "192.000000",
+      "y": "192.000000"
+   },
+   "tile_9": {
+      "color": "-1",
+      "id": "tile_dirt_br_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_dirt_br",
+      "type": "Sprite",
+      "x": "192.000000",
+      "y": "256.000000"
+   },
+   "type": "TileMap"
 }

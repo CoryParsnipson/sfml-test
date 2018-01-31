@@ -11,6 +11,7 @@
 #include "MoveLeftIntent.h"
 #include "MoveRightIntent.h"
 #include "MoveDownIntent.h"
+#include "SerializeMapIntent.h"
 
 #include "TileMap.h"
 #include "Collision.h"
@@ -26,6 +27,7 @@ BuilderSceneECSInputSystem::BuilderSceneECSInputSystem(const std::string& id /* 
 , visual_debug_enable_down_(false)
 , reset_camera_down_(false)
 , remove_tiles_down_(false)
+, save_map_down_(false)
 {
 }
 
@@ -103,5 +105,22 @@ void BuilderSceneECSInputSystem::pre_update(Game& game) {
 
    if (!remove_tiles && this->remove_tiles_down_) {
       this->remove_tiles_down_ = remove_tiles;
+   }
+
+   bool save_map = game.get_player(1).bindings().get<SerializeMapIntent>()->element()->is_pressed();
+   if (save_map && !this->save_map_down_) {
+      Entity* map_root = this->scene().get_entity(this->map_entity);
+      TileMap* tilemap = map_root->get<TileMap>();
+
+      this->file_channel->remove();
+      this->file_channel->seek(0);
+      this->file_channel->send(tilemap->serialize(*this->serializer));
+
+      Game::logger().msg("BuilderSceneECSInputSystem", Logger::INFO, "Saving map to file '" + this->file_channel->filename());
+      this->save_map_down_ = save_map;
+   }
+
+   if (!save_map && this->save_map_down_) {
+      this->save_map_down_ = save_map;
    }
 }

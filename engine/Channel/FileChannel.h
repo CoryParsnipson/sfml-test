@@ -9,7 +9,7 @@ class FileChannel : public Channel {
 public:
    FileChannel(std::string filename);
    virtual ~FileChannel();
-   
+
    virtual void clear();
 
    virtual bool send(std::string data);
@@ -19,6 +19,8 @@ public:
    virtual void flush();
 
    virtual void remove();
+
+   const std::string& filename() const;
 
 private:
    std::fstream file_;

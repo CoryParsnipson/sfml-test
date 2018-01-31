@@ -3,6 +3,8 @@
 
 #include "System.h"
 #include "Camera.h"
+#include "Serializer.h"
+#include "FileChannel.h"
 
 // ----------------------------------------------------------------------------
 // BuilderSceneECSInputSystem
@@ -19,6 +21,9 @@ public:
    Handle tile_selection;
    CameraPtr map_camera;
 
+   Serializer* serializer;
+   FileChannel* file_channel;
+
 private:
    virtual void on_init(Game& game) {}
    virtual void pre_update(Game& game);
@@ -33,6 +38,8 @@ private:
    bool reset_camera_down_;
 
    bool remove_tiles_down_;
+
+   bool save_map_down_;
 };
 
 #endif
