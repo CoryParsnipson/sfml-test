@@ -1,6 +1,6 @@
 {
    "id": "TileMap Component",
-   "num_tiles": "16",
+   "num_tiles": "40",
    "tile_0": {
       "color": "-1",
       "id": "tile_sign_sprite",
@@ -89,6 +89,50 @@
       "x": "256.000000",
       "y": "256.000000"
    },
+   "tile_16": {
+      "color": "-1",
+      "id": "tile_grass_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_grass",
+      "type": "Sprite",
+      "x": "64.000000",
+      "y": "320.000000"
+   },
+   "tile_17": {
+      "color": "-1",
+      "id": "tile_grass_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_grass",
+      "type": "Sprite",
+      "x": "128.000000",
+      "y": "320.000000"
+   },
+   "tile_18": {
+      "color": "-1",
+      "id": "tile_grass_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_grass",
+      "type": "Sprite",
+      "x": "192.000000",
+      "y": "320.000000"
+   },
+   "tile_19": {
+      "color": "-1",
+      "id": "tile_water_ul_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_water_ul",
+      "type": "Sprite",
+      "x": "256.000000",
+      "y": "320.000000"
+   },
    "tile_2": {
       "color": "-1",
       "id": "tile_grass_sprite",
@@ -100,6 +144,116 @@
       "x": "192.000000",
       "y": "64.000000"
    },
+   "tile_20": {
+      "color": "-1",
+      "id": "tile_water_um_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_water_um",
+      "type": "Sprite",
+      "x": "320.000000",
+      "y": "320.000000"
+   },
+   "tile_21": {
+      "color": "-1",
+      "id": "tile_water_um_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_water_um",
+      "type": "Sprite",
+      "x": "384.000000",
+      "y": "320.000000"
+   },
+   "tile_22": {
+      "color": "-1",
+      "id": "tile_water_um_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_water_um",
+      "type": "Sprite",
+      "x": "448.000000",
+      "y": "320.000000"
+   },
+   "tile_23": {
+      "color": "-1",
+      "id": "tile_water_um_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_water_um",
+      "type": "Sprite",
+      "x": "512.000000",
+      "y": "320.000000"
+   },
+   "tile_24": {
+      "color": "-1",
+      "id": "tile_grass_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_grass",
+      "type": "Sprite",
+      "x": "320.000000",
+      "y": "64.000000"
+   },
+   "tile_25": {
+      "color": "-1",
+      "id": "tile_grass_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_grass",
+      "type": "Sprite",
+      "x": "320.000000",
+      "y": "128.000000"
+   },
+   "tile_26": {
+      "color": "-1",
+      "id": "tile_grass_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_grass",
+      "type": "Sprite",
+      "x": "320.000000",
+      "y": "192.000000"
+   },
+   "tile_27": {
+      "color": "-1",
+      "id": "tile_grass_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_grass",
+      "type": "Sprite",
+      "x": "320.000000",
+      "y": "256.000000"
+   },
+   "tile_28": {
+      "color": "-1",
+      "id": "tile_grass_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_grass",
+      "type": "Sprite",
+      "x": "384.000000",
+      "y": "64.000000"
+   },
+   "tile_29": {
+      "color": "-1",
+      "id": "tile_grass_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_grass",
+      "type": "Sprite",
+      "x": "384.000000",
+      "y": "128.000000"
+   },
    "tile_3": {
       "color": "-1",
       "id": "tile_dirt_mm_sprite",
@@ -110,6 +264,116 @@
       "type": "Sprite",
       "x": "128.000000",
       "y": "192.000000"
+   },
+   "tile_30": {
+      "color": "-1",
+      "id": "tile_grass_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_grass",
+      "type": "Sprite",
+      "x": "384.000000",
+      "y": "192.000000"
+   },
+   "tile_31": {
+      "color": "-1",
+      "id": "tile_grass_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_grass",
+      "type": "Sprite",
+      "x": "384.000000",
+      "y": "256.000000"
+   },
+   "tile_32": {
+      "color": "-1",
+      "id": "tile_grass_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_grass",
+      "type": "Sprite",
+      "x": "448.000000",
+      "y": "64.000000"
+   },
+   "tile_33": {
+      "color": "-1",
+      "id": "tile_grass_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_grass",
+      "type": "Sprite",
+      "x": "448.000000",
+      "y": "192.000000"
+   },
+   "tile_34": {
+      "color": "-1",
+      "id": "tile_grass_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_grass",
+      "type": "Sprite",
+      "x": "448.000000",
+      "y": "256.000000"
+   },
+   "tile_35": {
+      "color": "-1",
+      "id": "tile_grass_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_grass",
+      "type": "Sprite",
+      "x": "512.000000",
+      "y": "64.000000"
+   },
+   "tile_36": {
+      "color": "-1",
+      "id": "tile_grass_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_grass",
+      "type": "Sprite",
+      "x": "512.000000",
+      "y": "128.000000"
+   },
+   "tile_37": {
+      "color": "-1",
+      "id": "tile_grass_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_grass",
+      "type": "Sprite",
+      "x": "512.000000",
+      "y": "192.000000"
+   },
+   "tile_38": {
+      "color": "-1",
+      "id": "tile_grass_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_grass",
+      "type": "Sprite",
+      "x": "512.000000",
+      "y": "256.000000"
+   },
+   "tile_39": {
+      "color": "-1",
+      "id": "tile_worn_grass_sprite",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "rotation": "0.000000",
+      "texture": "tile_worn_grass",
+      "type": "Sprite",
+      "x": "448.000000",
+      "y": "128.000000"
    },
    "tile_4": {
       "color": "-1",
