@@ -138,7 +138,7 @@ EntityFilter& System::subscribe_to() {
 sf::Transform System::local_transform(Entity& e) {
    Space* space = e.get<Space>();
    if (space != nullptr) {
-      return space->states().transform;
+      return space->transform();
    }
 
    return sf::Transform();
@@ -150,7 +150,7 @@ sf::Transform System::global_transform(Entity& e) {
    Entity* entity = &e;
 
    while (space != nullptr) {
-      g_transform *= space->states().transform;
+      g_transform *= space->transform();
 
       entity = this->scene().get_entity(space->parent());
       if (entity != nullptr) {

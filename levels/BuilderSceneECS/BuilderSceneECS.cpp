@@ -183,14 +183,14 @@ void BuilderSceneECS::init(Game& game) {
 
    // readjust tile palette window (and children) when the camera is resized
    tile_palette_window->get<Callback>()->camera_resize([tile_palette_window, gs] () {
-      float camera_width = gs->camera()->get_size().x * gs->camera()->get_viewport().width;
+      float camera_width = gs->camera()->get_size().x * gs->camera()->get_viewport().width / gs->camera()->get_scale();
       sf::Vector2f new_pos(camera_width - tile_palette_window->get<Rectangle>()->size().x - 10, 10);
+      sf::Vector2f old_pos(tile_palette_window->get<Space>()->position());
 
-      // reset transform (this is destructive, but without modifying the code there's no other way to do this!)
-      tile_palette_window->get<Space>()->states().transform = sf::Transform::Identity;
-   
+      Game::logger().msg("asdf", Logger::INFO, "Camera width: " + std::to_string((int)camera_width));
+
       // move to the upper right corner
-      tile_palette_window->get<Space>()->states().transform.translate(new_pos);
+      tile_palette_window->get<Space>()->move(new_pos - old_pos);
    });
 
    Entity* tpw_outline = this->get_entity(this->create_entity());

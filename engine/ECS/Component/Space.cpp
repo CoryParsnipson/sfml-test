@@ -87,20 +87,72 @@ unsigned int Space::num_children() const {
    return this->children_.size();
 }
 
-sf::RenderStates& Space::states() {
-   return this->transform_;
-}
-
-void Space::states(sf::RenderStates states) {
-   this->transform_ = states;
-}
-
 bool Space::visible() const {
    return this->visible_;
 }
 
 void Space::visible(bool visible) {
    this->visible_ = visible;
+}
+
+void Space::position(float x, float y) {
+   this->transform_.setPosition(x, y);
+}
+
+void Space::position(const sf::Vector2f& position) {
+   this->transform_.setPosition(position);
+}
+
+const sf::Vector2f& Space::position() const {
+   return this->transform_.getPosition();
+}
+
+void Space::rotation(float angle) {
+   this->transform_.setRotation(angle);
+}
+
+float Space::rotation() const {
+   return this->transform_.getRotation();
+}
+
+void Space::scale(float x, float y) {
+   this->transform_.setScale(x, y);
+}
+
+void Space::scale(const sf::Vector2f& factors) {
+   this->transform_.setScale(factors);
+}
+
+void Space::origin(float x, float y) {
+   this->transform_.setOrigin(x, y);
+}
+
+void Space::origin(const sf::Vector2f& factors) {
+   this->transform_.setOrigin(factors);
+}
+
+const sf::Vector2f& Space::origin() const {
+   return this->transform_.getOrigin();
+}
+
+void Space::move(float x, float y) {
+   this->transform_.move(x, y);
+}
+
+void Space::move(const sf::Vector2f& offset) {
+   this->transform_.move(offset);
+}
+
+void Space::rotate(float angle) {
+   this->transform_.rotate(angle);
+}
+
+const sf::Transform& Space::transform() const {
+   return this->transform_.getTransform();
+}
+
+const sf::Transform& Space::inverse_transform() const {
+   return this->transform_.getInverseTransform();
 }
 
 std::string Space::serialize(Serializer& s) {

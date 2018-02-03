@@ -36,11 +36,32 @@ public:
 
    unsigned int num_children() const;
 
-   sf::RenderStates& states();
-   void states(sf::RenderStates states);
-
    bool visible() const;
    void visible(bool visible);
+
+   // transform interface
+   void position(float x, float y);
+   void position(const sf::Vector2f& position);
+   const sf::Vector2f& position() const;
+
+   void rotation(float angle);
+   float rotation() const;
+
+   void scale(float x, float y);
+   void scale(const sf::Vector2f& factors);
+   const sf::Vector2f& scale() const;
+
+   void origin(float x, float y);
+   void origin(const sf::Vector2f& origin);
+   const sf::Vector2f& origin() const;
+
+   void move(float x, float y);
+   void move(const sf::Vector2f& offset);
+   
+   void rotate(float angle);
+
+   const sf::Transform& transform() const;
+   const sf::Transform& inverse_transform() const;
 
    // serialize interface
    virtual std::string serialize(Serializer& s);
@@ -48,7 +69,7 @@ public:
 
 private:
    bool visible_;
-   sf::RenderStates transform_;
+   sf::Transformable transform_;
 
    Handle parent_;
    std::vector<Handle> children_;
