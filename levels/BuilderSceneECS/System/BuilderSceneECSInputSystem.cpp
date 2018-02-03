@@ -5,7 +5,7 @@
 
 #include "GridVisibilityToggleIntent.h"
 #include "VisualDebugIntent.h"
-#include "ResetCameraIntent.h"
+#include "ResetViewIntent.h"
 #include "RemoveTilesIntent.h"
 #include "MoveUpIntent.h"
 #include "MoveLeftIntent.h"
@@ -58,10 +58,11 @@ void BuilderSceneECSInputSystem::pre_update(Game& game) {
       this->visual_debug_enable_down_ = new_visual_debug_enable;
    }
 
-   bool reset_camera = game.get_player(1).bindings().get<ResetCameraIntent>()->element()->is_pressed();
+   bool reset_camera = game.get_player(1).bindings().get<ResetViewIntent>()->element()->is_pressed();
    if (!this->reset_camera_down_ && reset_camera) {
-      this->map_camera->reset_zoom();
-      this->map_camera->reset_pan();
+      Entity* map_entity = this->scene().get_entity(this->map_entity);
+      map_entity->get<Space>()->position(0, 0);
+      map_entity->get<Space>()->scale(sf::Vector2f(1.f, 1.f));
 
       this->reset_camera_down_ = reset_camera;
    }
@@ -71,19 +72,23 @@ void BuilderSceneECSInputSystem::pre_update(Game& game) {
    }
 
    if (game.get_player(1).bindings().get<MoveUpIntent>()->element()->is_pressed()) {
-      this->map_camera->move(sf::Vector2f(0, -10));
+      Entity* map_entity = this->scene().get_entity(this->map_entity);
+      map_entity->get<Space>()->move(sf::Vector2f(0, -10));
    }
 
    if (game.get_player(1).bindings().get<MoveLeftIntent>()->element()->is_pressed()) {
-      this->map_camera->move(sf::Vector2f(-10, 0));
+      Entity* map_entity = this->scene().get_entity(this->map_entity);
+      map_entity->get<Space>()->move(sf::Vector2f(-10, 0));
    }
 
    if (game.get_player(1).bindings().get<MoveRightIntent>()->element()->is_pressed()) {
-      this->map_camera->move(sf::Vector2f(10, 0));
+      Entity* map_entity = this->scene().get_entity(this->map_entity);
+      map_entity->get<Space>()->move(sf::Vector2f(10, 0));
    }
 
    if (game.get_player(1).bindings().get<MoveDownIntent>()->element()->is_pressed()) {
-      this->map_camera->move(sf::Vector2f(0, 10));
+      Entity* map_entity = this->scene().get_entity(this->map_entity);
+      map_entity->get<Space>()->move(sf::Vector2f(0, 10));
    }
 
    bool remove_tiles = game.get_player(1).bindings().get<RemoveTilesIntent>()->element()->is_pressed();

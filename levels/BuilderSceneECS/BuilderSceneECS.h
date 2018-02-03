@@ -27,9 +27,6 @@ public:
 
    // input event processing
    virtual void process(Game& game, CloseInputEvent& e);
-
-private:
-   float prev_mouse_wheel_pos_;
 };
 
 #endif

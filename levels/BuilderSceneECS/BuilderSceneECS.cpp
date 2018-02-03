@@ -24,7 +24,7 @@
 #include "RightClickIntent.h"
 #include "VisualDebugIntent.h"
 #include "GridVisibilityToggleIntent.h"
-#include "ResetCameraIntent.h"
+#include "ResetViewIntent.h"
 #include "RemoveTilesIntent.h"
 #include "MoveUpIntent.h"
 #include "MoveLeftIntent.h"
@@ -87,7 +87,7 @@ void BuilderSceneECS::init(Game& game) {
 
    game.get_player(1).bindings().set<GridVisibilityToggleIntent>(1, game.input_manager().get_device(1)->get("G"));
    game.get_player(1).bindings().set<VisualDebugIntent>(1, game.input_manager().get_device(1)->get("D"));
-   game.get_player(1).bindings().set<ResetCameraIntent>(1, game.input_manager().get_device(1)->get("R"));
+   game.get_player(1).bindings().set<ResetViewIntent>(1, game.input_manager().get_device(1)->get("R"));
    game.get_player(1).bindings().set<RemoveTilesIntent>(1, game.input_manager().get_device(1)->get("Delete"));
    game.get_player(1).bindings().set<SerializeMapIntent>(1, game.input_manager().get_device(1)->get("S"));
 
@@ -105,21 +105,10 @@ void BuilderSceneECS::init(Game& game) {
 
    // TODO: create a better way to get Systems
    GraphicalSystem* gs = dynamic_cast<GraphicalSystem*>(this->get_system("GraphicalSystem"));
-   gs->root(map_root->handle());
 
-   GraphicalSystem* hud_graphics = new GraphicalSystem("HudGraphics", game.window(), std::make_shared<Camera>("HudCamera"));
-   hud_graphics->root(hud_root->handle());
-   this->add_system(hud_graphics);
-
-   VisualDebugSystem* map_vds = new VisualDebugSystem("MapVisualDebugSystem", game.window(), gs->camera());
-   map_vds->disable(); // start with this off
-   map_vds->root(map_root->handle());
-   this->add_system(map_vds);
-
-   VisualDebugSystem* hud_vds = new VisualDebugSystem("HudVisualDebugSystem", game.window(), hud_graphics->camera());
-   hud_vds->disable(); // start with this off
-   hud_vds->root(hud_root->handle());
-   this->add_system(hud_vds);
+   VisualDebugSystem* vds = new VisualDebugSystem("VisualDebugSystem", game.window(), gs->camera());
+   vds->disable(); // start with this off
+   this->add_system(vds);
 
    // load or create a tile map
    JSONSerializer serializer;
@@ -186,8 +175,6 @@ void BuilderSceneECS::init(Game& game) {
       float camera_width = gs->camera()->get_size().x * gs->camera()->get_viewport().width / gs->camera()->get_scale();
       sf::Vector2f new_pos(camera_width - tile_palette_window->get<Rectangle>()->size().x - 10, 10);
       sf::Vector2f old_pos(tile_palette_window->get<Space>()->position());
-
-      Game::logger().msg("asdf", Logger::INFO, "Camera width: " + std::to_string((int)camera_width));
 
       // move to the upper right corner
       tile_palette_window->get<Space>()->move(new_pos - old_pos);
@@ -326,12 +313,12 @@ void BuilderSceneECS::init(Game& game) {
    mouse_cursor->get<Text>()->color(sf::Color::White);
 
    mouse_cursor->add<Callback>("MouseCursorCallback");
-   mouse_cursor->get<Callback>()->mouse_move([mouse_cursor, gs, &game] () {
+   mouse_cursor->get<Callback>()->mouse_move([mouse_cursor, map_root, &game] () {
       sf::Vector2f new_pos;
       new_pos.x = game.get_player(1).bindings().get<MouseXIntent>()->element()->position();
       new_pos.y = game.get_player(1).bindings().get<MouseYIntent>()->element()->position();
 
-      sf::Vector2f screen_pos = gs->camera()->get_world_coordinate(new_pos);
+      sf::Vector2f screen_pos = map_root->get<Space>()->inverse_transform().transformPoint(new_pos);
 
       // move mouse cursor
       mouse_cursor->get<Rectangle>()->position(new_pos - sf::Vector2f(3, 3));
@@ -361,7 +348,7 @@ void BuilderSceneECS::init(Game& game) {
 
    // define pan and selection tool behavior
    mouse_cursor_script->add<Callback>("MouseCursorScriptCallback");
-   mouse_cursor_script->get<Callback>()->mouse_move([mouse_cursor_script, selection_rect, gs, &game] () {
+   mouse_cursor_script->get<Callback>()->mouse_move([mouse_cursor_script, selection_rect, map_root, &game] () {
       sf::Vector2f new_pos;
       new_pos.x = game.get_player(1).bindings().get<MouseXIntent>()->element()->position();
       new_pos.y = game.get_player(1).bindings().get<MouseYIntent>()->element()->position();
@@ -389,20 +376,18 @@ void BuilderSceneECS::init(Game& game) {
       // pan map camera if right click is down
       Callback* callback = mouse_cursor_script->get<Callback>();
       if (clickable && callback && clickable->is_right_clicked()) {
-         gs->camera()->move(callback->prev_mouse_pos() - new_pos);
+         map_root->get<Space>()->move(new_pos - callback->prev_mouse_pos());
       }
    });
 
-   mouse_cursor_script->get<Callback>()->mouse_wheel([this, gs, &game] () {
+   mouse_cursor_script->get<Callback>()->mouse_wheel([mouse_cursor_script, map_root, &game] () {
       float mouse_wheel_pos = game.get_player(1).bindings().get<MouseWheelIntent>()->element()->position();
-      float wheel_delta = mouse_wheel_pos - this->prev_mouse_wheel_pos_;
+      float wheel_delta = mouse_wheel_pos - mouse_cursor_script->get<Callback>()->prev_mouse_wheel_pos();
 
-      gs->camera()->set_scale(gs->camera()->get_scale() + wheel_delta / 15.f);
-
-      this->prev_mouse_wheel_pos_ = mouse_wheel_pos;
+      map_root->get<Space>()->scale(map_root->get<Space>()->scale() + sf::Vector2f(wheel_delta / 15.f, wheel_delta / 15.f));
    });
 
-   mouse_cursor_script->get<Callback>()->left_click([selection_rect, gs, &game] () {
+   mouse_cursor_script->get<Callback>()->left_click([selection_rect, &game] () {
       sf::Vector2f new_pos;
       new_pos.x = game.get_player(1).bindings().get<MouseXIntent>()->element()->position();
       new_pos.y = game.get_player(1).bindings().get<MouseYIntent>()->element()->position();
@@ -414,16 +399,16 @@ void BuilderSceneECS::init(Game& game) {
       selection_rect->get<Collision>()->volume(new_pos, sf::Vector2f(0, 0));
    });
 
-   mouse_cursor_script->get<Callback>()->left_release([selection_rect, tile_selection, mouse_cursor_script, grid_root, gs, &game] () {
+   mouse_cursor_script->get<Callback>()->left_release([selection_rect, tile_selection, mouse_cursor_script, grid_root, map_root, &game] () {
       sf::Vector2f release_pos;
       release_pos.x = game.get_player(1).bindings().get<MouseXIntent>()->element()->position();
       release_pos.y = game.get_player(1).bindings().get<MouseYIntent>()->element()->position();
-      release_pos = gs->camera()->get_world_coordinate(release_pos);
+      release_pos = map_root->get<Space>()->inverse_transform().transformPoint(release_pos);
 
       Clickable* clickable = mouse_cursor_script->get<Clickable>();
       assert (clickable);
 
-      sf::Vector2f ts_origin  = gs->camera()->get_world_coordinate(clickable->left_click_pos());
+      sf::Vector2f ts_origin  = map_root->get<Space>()->inverse_transform().transformPoint(clickable->left_click_pos());
 
       // rectangle calculation
       sf::Vector2f pos;
@@ -473,7 +458,6 @@ void BuilderSceneECS::init(Game& game) {
    input_system->grid_entity = grid_root->handle();
    input_system->map_entity = map_root->handle();
    input_system->tile_selection = tile_selection->handle();
-   input_system->map_camera = gs->camera();
    input_system->serializer = new JSONSerializer(3);
    input_system->file_channel = new FileChannel("tilemap_test.txt");
    this->add_system(input_system);

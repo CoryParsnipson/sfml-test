@@ -19,7 +19,6 @@ public:
    Handle grid_entity;
    Handle map_entity;
    Handle tile_selection;
-   CameraPtr map_camera;
 
    Serializer* serializer;
    FileChannel* file_channel;

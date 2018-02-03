@@ -1,22 +1,22 @@
-#ifndef RESET_CAMERA_INTENT_H
-#define RESET_CAMERA_INTENT_H
+#ifndef RESET_VIEW_INTENT_H
+#define RESET_VIEW_INTENT_H
 
 #include "Intent.h"
 
 // ----------------------------------------------------------------------------
-// ResetCameraIntent
+// ResetViewIntent
 // 
 // This intent signals that the player is trying to change the visibility of
 // a grid component.
 // ----------------------------------------------------------------------------
-class ResetCameraIntent : public Intent {
+class ResetViewIntent : public Intent {
 public:
-   ResetCameraIntent(InputDevice::DeviceId device_id, InputElementPtr input_element)
-   : Intent("ResetCameraIntent", device_id, input_element)
+   ResetViewIntent(InputDevice::DeviceId device_id, InputElementPtr input_element)
+   : Intent("ResetViewIntent", device_id, input_element)
    {
    }
 
-   virtual ~ResetCameraIntent() {}
+   virtual ~ResetViewIntent() {}
 };
 
 #endif

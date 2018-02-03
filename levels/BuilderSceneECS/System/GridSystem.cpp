@@ -54,12 +54,14 @@ void GridSystem::on_update(Game& game, Entity& e) {
    std::string row_str = e.get<Grid2>()->id() + "_row";
    std::string tm_str = e.get<Grid2>()->id() + "_tm";
 
+   sf::FloatRect camera_bounds = this->global_transform(e).getInverse().transformRect(this->camera()->bounds());
+
    // no need to update this system if the camera hasn't changed
-   if (this->previous_camera_bounds_ == this->camera_->bounds()) {
+   if (this->previous_camera_bounds_ == camera_bounds) {
       this->break_out_of_update();
       return;
    }
-   this->previous_camera_bounds_ = this->camera_->bounds();
+   this->previous_camera_bounds_ = camera_bounds;
 
    // iterate through children and build list of existing rows and cols
    Space* space = e.get<Space>();
@@ -84,7 +86,6 @@ void GridSystem::on_update(Game& game, Entity& e) {
    
    // find out how many gridlines there should be based on the camera and update them
    unsigned int gridline_id = 0;
-   sf::FloatRect camera_bounds = this->camera()->bounds();
    sf::Vector2f start_point = e.get<Grid2>()->ceil(sf::Vector2f(camera_bounds.left - e.get<Grid2>()->tile_width(), camera_bounds.top - e.get<Grid2>()->tile_height()));
    sf::Vector2f end_point = e.get<Grid2>()->ceil(sf::Vector2f(camera_bounds.left + camera_bounds.width + e.get<Grid2>()->tile_width(), camera_bounds.top + camera_bounds.height + e.get<Grid2>()->tile_height()));
 

@@ -82,7 +82,6 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
 
          // only execute mouse wheel callback if the delta is non-zero
          if (bindings.get<MouseWheelIntent>()->element()->position() != callback->prev_mouse_wheel_pos()) {
-            callback->prev_mouse_wheel_pos(bindings.get<MouseWheelIntent>()->element()->position());
             callback->mouse_wheel();
 
             // propagate this event upward in the scene graph
@@ -98,6 +97,9 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
             }
          }
       }
+
+      // update previous mouse wheel position (regardless of whether this mouse wheel event was triggered)
+      callback->prev_mouse_wheel_pos(bindings.get<MouseWheelIntent>()->element()->position());
 
       // left click calculation
       if (clickable &&
