@@ -123,6 +123,10 @@ void Space::scale(const sf::Vector2f& factors) {
    this->transform_.setScale(factors);
 }
 
+const sf::Vector2f& Space::scale() const {
+   return this->transform_.getScale();
+}
+
 void Space::origin(float x, float y) {
    this->transform_.setOrigin(x, y);
 }
