@@ -19,6 +19,7 @@ public:
    Handle grid_entity;
    Handle map_entity;
    Handle tile_selection;
+   Handle fps_entity;
 
    Serializer* serializer;
    FileChannel* file_channel;
@@ -39,6 +40,11 @@ private:
    bool remove_tiles_down_;
 
    bool save_map_down_;
+
+   sf::Clock clock;
+   int last_frame_time;
+   int frame_measurement_interval;
+   int frame_count;
 };
 
 #endif

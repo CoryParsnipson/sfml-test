@@ -28,6 +28,10 @@ BuilderSceneECSInputSystem::BuilderSceneECSInputSystem(const std::string& id /* 
 , reset_camera_down_(false)
 , remove_tiles_down_(false)
 , save_map_down_(false)
+, clock()
+, last_frame_time(0)
+, frame_measurement_interval(6)
+, frame_count(0)
 {
 }
 
@@ -128,4 +132,16 @@ void BuilderSceneECSInputSystem::pre_update(Game& game) {
    if (!save_map && this->save_map_down_) {
       this->save_map_down_ = save_map;
    }
+
+   // update fps read
+   if (!this->frame_count) {
+      this->last_frame_time = (((float)this->frame_measurement_interval / this->clock.getElapsedTime().asSeconds()) * game.settings.framerate_smoothing())
+                              + (this->last_frame_time * (1.0 - game.settings.framerate_smoothing()));
+      this->clock.restart();
+
+      // update fps entity
+      Entity* fps_entity = this->scene().get_entity(this->fps_entity);
+      fps_entity->get<Text>()->string("FPS: " + std::to_string(this->last_frame_time));
+   }
+   this->frame_count = (this->frame_count + 1) % this->frame_measurement_interval;
 }

@@ -7,6 +7,7 @@
 
 #include "Text.h"
 #include "Rectangle.h"
+#include "VertexList.h"
 #include "Callback.h"
 #include "Clickable.h"
 #include "Collision.h"
@@ -131,6 +132,56 @@ void BuilderSceneECS::init(Game& game) {
 
    // add grid system
    this->add_system(new GridSystem("GridSystem", gs->camera()));
+
+   // add a nice backdrop
+   Entity* backdrop = this->get_entity(this->create_entity());
+   backdrop->id("Backdrop Entity");
+   this->send_message_async<AddToEntityMessage>(this->space_handle(), backdrop->handle(), 0);
+   
+   backdrop->add<VertexList>("BackdropVertexList", sf::TrianglesStrip, 4);
+   backdrop->get<VertexList>()->vertex_color(0, sf::Color(50, 50, 50, 255));
+   backdrop->get<VertexList>()->vertex_color(1, sf::Color(25, 25, 25, 255));
+   backdrop->get<VertexList>()->vertex_color(2, sf::Color(50, 50, 50, 255));
+   backdrop->get<VertexList>()->vertex_color(3, sf::Color(25, 25, 25, 255));
+
+   backdrop->add<PlayerProfile>("BackdropPlayerProfile", 1);
+   backdrop->add<Callback>("BackdropCallback");
+
+   backdrop->get<Callback>()->camera_resize([backdrop, gs] () {
+      sf::Vector2f camera_bounds = gs->camera()->get_size();
+
+      camera_bounds.x *= gs->camera()->get_viewport().width / gs->camera()->get_scale();
+      camera_bounds.y *= gs->camera()->get_viewport().height / gs->camera()->get_scale();
+
+      backdrop->get<VertexList>()->vertex_position(0, sf::Vector2f(0, 0));
+      backdrop->get<VertexList>()->vertex_position(1, sf::Vector2f(0, camera_bounds.y));
+      backdrop->get<VertexList>()->vertex_position(2, sf::Vector2f(camera_bounds.x, 0));
+      backdrop->get<VertexList>()->vertex_position(3, sf::Vector2f(camera_bounds.x, camera_bounds.y));
+   });
+
+   // create fps display entity
+   Entity* fps_display = this->get_entity(this->create_entity());
+   fps_display->id("FPS Display Entity");
+   this->send_message_async<AddToEntityMessage>(hud_root->handle(), fps_display->handle());
+
+   fps_display->add<Text>("FPS Display Text", "FPS: ??", this->fonts().get("retro"), 12);
+   fps_display->get<Text>()->color(sf::Color(216, 138, 0, 255));
+
+   fps_display->add<PlayerProfile>("FPSDisplayPlayerProfile", 1);
+   fps_display->add<Callback>("FPSDisplayCallback");
+
+   fps_display->get<Callback>()->camera_resize([fps_display, gs] () {
+      sf::Vector2f camera_bounds = gs->camera()->get_size();
+      sf::Vector2f text_size;
+
+      text_size.x = fps_display->get<Text>()->local_bounds().width;
+      text_size.y = fps_display->get<Text>()->local_bounds().height;
+
+      camera_bounds.x *= gs->camera()->get_viewport().width / gs->camera()->get_scale();
+      camera_bounds.y *= gs->camera()->get_viewport().height / gs->camera()->get_scale();
+
+      fps_display->get<Text>()->position(camera_bounds - text_size - sf::Vector2f(10, 10));
+   });
 
    // create selection rect
    Entity* selection_rect = this->get_entity(this->create_entity());
@@ -458,6 +509,7 @@ void BuilderSceneECS::init(Game& game) {
    input_system->grid_entity = grid_root->handle();
    input_system->map_entity = map_root->handle();
    input_system->tile_selection = tile_selection->handle();
+   input_system->fps_entity = fps_display->handle();
    input_system->serializer = new JSONSerializer(3);
    input_system->file_channel = new FileChannel("tilemap_test.txt");
    this->add_system(input_system);
