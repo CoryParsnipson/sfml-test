@@ -317,6 +317,11 @@ void BuilderSceneECS::init(Game& game) {
       entity->add<Callback>(*it + "_callback");
       entity->get<Callback>()->mouse_in([entity, tpw_hover] () {
          tpw_hover->get<Rectangle>()->position(entity->get<Sprite>()->position());
+         tpw_hover->get<Space>()->visible(true);
+      });
+
+      entity->get<Callback>()->mouse_out([entity, tpw_hover] () {
+         tpw_hover->get<Space>()->visible(false);
       });
 
       entity->get<Callback>()->left_release([entity, tile_selection, map_root, grid_root] () {
@@ -335,14 +340,6 @@ void BuilderSceneECS::init(Game& game) {
          }
       });
    }
-
-   tile_palette_window->get<Callback>()->mouse_in([tpw_hover] () {
-      tpw_hover->get<Space>()->visible(true);
-   });
-
-   tile_palette_window->get<Callback>()->mouse_out([tpw_hover] () {
-      tpw_hover->get<Space>()->visible(false);
-   });
 
    // putting this here because tpw_hover needs to be on top of all tiles
    this->send_message_async<AddToEntityMessage>(tile_palette_window->handle(), tpw_hover->handle());

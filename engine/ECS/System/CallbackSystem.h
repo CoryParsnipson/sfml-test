@@ -1,6 +1,9 @@
 #ifndef CALLBACK_SYSTEM_H
 #define CALLBACK_SYSTEM_H
 
+#include <map>
+#include <vector>
+
 #include "System.h"
 #include "Callback.h"
 
@@ -19,6 +22,7 @@ public:
 private:
    bool camera_was_resized_;
    std::map<CallbackKey, bool> target_hit_;
+   std::vector<Handle> mouse_in_entities_;
 
    virtual void on_init(Game& game);
 

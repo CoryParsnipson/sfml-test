@@ -40,6 +40,16 @@ void CallbackSystem::on_init(Game& game) {
 }
 
 void CallbackSystem::post_update(Game& game) {
+   // execute deferred mouse_in events
+   for (std::vector<Handle>::iterator it = this->mouse_in_entities_.begin(); it != this->mouse_in_entities_.end(); ++it) {
+      Entity* e = this->scene().get_entity(*it);
+      if (e && e->get<Callback>()) {
+         e->get<Callback>()->mouse_in();
+      }
+   }
+   this->mouse_in_entities_.clear();
+
+   // reset mouse wheel target hit flags
    this->target_hit_[CallbackKey::MOUSE_WHEEL] = false;
 
    // reset flag
@@ -189,7 +199,8 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
 
       // mouse in calculation
       if (contains_new && !contains_old) {
-         callback->mouse_in();
+          // defer this execution until after all mouse_out callbacks are run
+          this->mouse_in_entities_.push_back(e.handle());
       }
 
       // mouse out calculation
