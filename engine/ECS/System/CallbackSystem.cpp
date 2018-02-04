@@ -99,12 +99,15 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
       }
 
       // update previous mouse wheel position (regardless of whether this mouse wheel event was triggered)
-      callback->prev_mouse_wheel_pos(bindings.get<MouseWheelIntent>()->element()->position());
+      if (bindings.get<MouseWheelIntent>()) {
+         callback->prev_mouse_wheel_pos(bindings.get<MouseWheelIntent>()->element()->position());
+      }
 
       // left click calculation
       if (clickable &&
           contains_new &&
           !this->target_hit_[CallbackKey::LEFT_CLICK] &&
+          bindings.get<LeftClickIntent>() && 
           bindings.get<LeftClickIntent>()->element()->is_pressed() && !clickable->is_left_clicked()) {
 
          this->target_hit_[CallbackKey::LEFT_CLICK] = true;
@@ -134,6 +137,7 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
       if (clickable &&
           contains_new &&
           !this->target_hit_[CallbackKey::RIGHT_CLICK] &&
+          bindings.get<RightClickIntent>() && 
           bindings.get<RightClickIntent>()->element()->is_pressed() && !clickable->is_right_clicked()) {
 
          this->target_hit_[CallbackKey::RIGHT_CLICK] = true;
@@ -161,6 +165,7 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
       
       // left release calculation (release all clicked elements no matter collision)
       if (clickable &&
+          bindings.get<LeftClickIntent>() && 
           !bindings.get<LeftClickIntent>()->element()->is_pressed() &&
           clickable->is_left_clicked()) {
 
@@ -172,6 +177,7 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
       
       // right release calculation (release all clicked elements no matter collision)
       if (clickable &&
+          bindings.get<RightClickIntent>() && 
           !bindings.get<RightClickIntent>()->element()->is_pressed() &&
           clickable->is_right_clicked()) {
 
