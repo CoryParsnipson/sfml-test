@@ -62,6 +62,8 @@ INCLUDE_PATHS += $(PROJECT_DIR)/engine/UI
 INCLUDE_PATHS += $(PROJECT_DIR)/levels
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/StartMenuScene
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/StartMenuScene/Systems
+INCLUDE_PATHS += $(PROJECT_DIR)/levels/StartMenuSceneECS
+INCLUDE_PATHS += $(PROJECT_DIR)/levels/StartMenuSceneECS/System
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderScene
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderScene/Commands
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderScene/Entities
@@ -99,6 +101,8 @@ CXX_FILES += $(PROJECT_DIR)/engine/UI/Compositor/*.cpp
 
 CXX_FILES += $(PROJECT_DIR)/levels/StartMenuScene/*.cpp
 CXX_FILES += $(PROJECT_DIR)/levels/StartMenuScene/Systems/*.cpp
+CXX_FILES += $(PROJECT_DIR)/levels/StartMenuSceneECS/*.cpp
+CXX_FILES += $(PROJECT_DIR)/levels/StartMenuSceneECS/System/*.cpp
 CXX_FILES += $(PROJECT_DIR)/levels/BuilderScene/*.cpp
 CXX_FILES += $(PROJECT_DIR)/levels/BuilderScene/Commands/*.cpp
 CXX_FILES += $(PROJECT_DIR)/levels/BuilderScene/Entities/*.cpp
