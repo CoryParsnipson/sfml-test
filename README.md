@@ -6,12 +6,8 @@ This was originally going to be a quick isometric tile demo experiment and it ha
 TODO
 ----
 * Encapsulate sf::Font and sf::Color into wrapper classes (for serialization and stuff)
-* Consider having Entities keep track of their own handle -> useful for ComponentAddedMessage and other things
-* Create new components
-   * both of these things below: consider making physics parts composites?
-      * need to upgrade physicscomponent to take list of bounding boxes
-   * Work on adding animations
-      * need to upgrade graphicscomponent to take in animations capability?
+* Work on adding animations
+   * need to upgrade graphicscomponent to take in animations capability?
 
 * Rewrite ObjectPool class to dynamically allocate a block of memory and in place new everything to get rid of allocator requirement
 
