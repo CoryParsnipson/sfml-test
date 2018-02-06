@@ -5,6 +5,7 @@
 #include <memory>
 #include <cassert>
 #include <utility>
+#include <SFML/Graphics.hpp>
 
 #include "Update.h"
 #include "ObjectPool.h"

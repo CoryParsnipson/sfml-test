@@ -3,10 +3,8 @@
 
 #include <vector>
 #include <string>
-
 #include <boost/variant.hpp>
-
-#include "sfml.h"
+#include <SFML/Graphics.hpp>
 
 #include "Component.h"
 #include "Circle.h"

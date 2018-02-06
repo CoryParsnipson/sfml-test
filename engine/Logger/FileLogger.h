@@ -5,7 +5,6 @@
 #include <fstream>
 #include <string>
 
-#include "sfml.h"
 #include "Logger.h"
 
 class FileLogger : public Logger {

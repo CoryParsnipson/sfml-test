@@ -1,7 +1,7 @@
 #ifndef CLICKABLE_H
 #define CLICKABLE_H
 
-#include "sfml.h"
+#include <SFML/System/Vector2.hpp>
 
 #include "Component.h"
 

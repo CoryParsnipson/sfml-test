@@ -1,7 +1,7 @@
 #ifndef CAMERA_RESIZE_POLICY_H
 #define CAMERA_RESIZE_POLICY_H
 
-#include "sfml.h"
+#include <SFML/System/Vector2.hpp>
 
 // ----------------------------------------------------------------------------
 // forward declarations

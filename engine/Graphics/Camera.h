@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <string>
+#include <SFML/Graphics.hpp>
 
 #include "InputManager.h"
 #include "CameraResizePolicy.h"

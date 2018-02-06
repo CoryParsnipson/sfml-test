@@ -2,8 +2,8 @@
 #define TEXTURE_DICTIONARY_H
 
 #include <string>
+#include <SFML/Graphics.hpp>
 
-#include "sfml.h"
 #include "Atlas.h"
 #include "Texture.h"
 

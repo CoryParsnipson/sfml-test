@@ -2,8 +2,7 @@
 #define TEXTURE_H
 
 #include <string>
-
-#include "sfml.h"
+#include <SFML/Graphics.hpp>
 
 class Texture {
 public:

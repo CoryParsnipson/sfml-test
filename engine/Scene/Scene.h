@@ -6,8 +6,6 @@
 #include <memory>
 #include <cassert>
 
-#include "sfml.h"
-
 #include "CloseInputEvent.h"
 #include "ResizeInputEvent.h"
 #include "KeyPressInputEvent.h"

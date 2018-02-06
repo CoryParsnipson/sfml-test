@@ -4,8 +4,7 @@
 #include <map>
 #include <string>
 #include <functional>
-
-#include "sfml.h"
+#include <SFML/System/Vector2.hpp>
 
 #include "Component.h"
 

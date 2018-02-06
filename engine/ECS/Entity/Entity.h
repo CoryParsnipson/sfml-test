@@ -5,8 +5,6 @@
 #include <string>
 #include <typeindex>
 
-#include "sfml.h"
-
 #include "ComponentAddedMessage.h"
 #include "ComponentRemovedMessage.h"
 

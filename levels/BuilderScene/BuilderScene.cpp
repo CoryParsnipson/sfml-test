@@ -1,4 +1,4 @@
-#include "sfml.h"
+#include <SFML/Graphics.hpp>
 
 #include "BuilderScene.h"
 

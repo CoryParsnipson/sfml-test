@@ -1,7 +1,8 @@
 #ifndef RESIZE_CAMERA_MESSAGE
 #define RESIZE_CAMERA_MESSAGE
 
-#include "sfml.h"
+#include <SFML/System/Vector2.hpp>
+
 #include "Mailbox.h"
 
 // ----------------------------------------------------------------------------

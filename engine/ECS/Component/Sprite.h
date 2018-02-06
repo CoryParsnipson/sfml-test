@@ -4,8 +4,7 @@
 #include <tuple>
 #include <string>
 #include <vector>
-
-#include "sfml.h"
+#include <SFML/Graphics.hpp>
 
 #include "Update.h"
 #include "Component.h"

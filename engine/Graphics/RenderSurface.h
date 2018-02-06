@@ -1,7 +1,7 @@
 #ifndef RENDER_SURFACE_H
 #define RENDER_SURFACE_H
 
-#include "sfml.h"
+#include <SFML/Graphics.hpp>
 
 class RenderSurface {
 public:

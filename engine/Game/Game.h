@@ -3,8 +3,7 @@
 
 #include <map>
 #include <stack>
-
-#include "sfml.h"
+#include <SFML/Window.hpp>
 
 #include "InputManager.h"
 #include "Settings.h"

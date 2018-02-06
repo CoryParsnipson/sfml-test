@@ -8,8 +8,6 @@
 #include <utility>
 #include <stdexcept>
 
-#include "sfml.h"
-
 // ----------------------------------------------------------------------------
 // Atlas
 //

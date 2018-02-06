@@ -2,8 +2,7 @@
 #define SPACE_H
 
 #include <string>
-
-#include "sfml.h"
+#include <SFML/Graphics.hpp>
 
 #include "Component.h"
 #include "ObjectPool.h"

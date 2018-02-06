@@ -3,7 +3,6 @@
 
 #include <string>
 
-#include "sfml.h"
 #include "Logger.h"
 
 class ConsoleLogger : public Logger {

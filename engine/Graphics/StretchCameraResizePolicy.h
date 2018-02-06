@@ -1,7 +1,8 @@
 #ifndef STRETCH_CAMERA_RESIZE_POLICY_H
 #define STRETCH_CAMERA_RESIZE_POLICY_H
 
-#include "sfml.h"
+#include <SFML/System/Vector2.hpp>
+
 #include "CameraResizePolicy.h"
 
 // ----------------------------------------------------------------------------

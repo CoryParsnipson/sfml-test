@@ -2,8 +2,8 @@
 #define FONT_DICTIONARY_H
 
 #include <string>
+#include <SFML/Graphics.hpp>
 
-#include "sfml.h"
 #include "Atlas.h"
 
 // ----------------------------------------------------------------------------

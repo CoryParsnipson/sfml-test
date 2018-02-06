@@ -1,7 +1,7 @@
 #ifndef GRID_H
 #define GRID_H
 
-#include "sfml.h"
+#include <SFML/Graphics.hpp>
 
 #include "Component.h"
 

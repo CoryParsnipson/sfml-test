@@ -1,7 +1,7 @@
 #ifndef COLLISION_H
 #define COLLISION_H
 
-#include "sfml.h"
+#include <SFML/Graphics.hpp>
 
 #include "Component.h"
 
