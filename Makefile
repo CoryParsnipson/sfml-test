@@ -51,13 +51,13 @@ INCLUDE_PATHS += $(PROJECT_DIR)/engine/Channel
 INCLUDE_PATHS += $(PROJECT_DIR)/engine/Serializer
 
 INCLUDE_PATHS += $(PROJECT_DIR)/levels
-INCLUDE_PATHS += $(PROJECT_DIR)/levels/StartMenuSceneECS
-INCLUDE_PATHS += $(PROJECT_DIR)/levels/StartMenuSceneECS/System
-INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderSceneECS
-INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderSceneECS/Component
-INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderSceneECS/Intent
-INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderSceneECS/Message
-INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderSceneECS/System
+INCLUDE_PATHS += $(PROJECT_DIR)/levels/StartMenuScene
+INCLUDE_PATHS += $(PROJECT_DIR)/levels/StartMenuScene/System
+INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderScene
+INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderScene/Component
+INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderScene/Intent
+INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderScene/Message
+INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderScene/System
 
 CXX_FILES =
 CXX_FILES += $(PROJECT_DIR)/*.cpp
@@ -77,11 +77,11 @@ CXX_FILES += $(PROJECT_DIR)/engine/ECS/System/EntitySubscription/*.cpp
 CXX_FILES += $(PROJECT_DIR)/engine/Channel/*.cpp
 CXX_FILES += $(PROJECT_DIR)/engine/Serializer/*.cpp
 
-CXX_FILES += $(PROJECT_DIR)/levels/StartMenuSceneECS/*.cpp
-CXX_FILES += $(PROJECT_DIR)/levels/StartMenuSceneECS/System/*.cpp
-CXX_FILES += $(PROJECT_DIR)/levels/BuilderSceneECS/*.cpp
-CXX_FILES += $(PROJECT_DIR)/levels/BuilderSceneECS/Component/*.cpp
-CXX_FILES += $(PROJECT_DIR)/levels/BuilderSceneECS/System/*.cpp
+CXX_FILES += $(PROJECT_DIR)/levels/StartMenuScene/*.cpp
+CXX_FILES += $(PROJECT_DIR)/levels/StartMenuScene/System/*.cpp
+CXX_FILES += $(PROJECT_DIR)/levels/BuilderScene/*.cpp
+CXX_FILES += $(PROJECT_DIR)/levels/BuilderScene/Component/*.cpp
+CXX_FILES += $(PROJECT_DIR)/levels/BuilderScene/System/*.cpp
 
 .PHONY: profiler debug release
 .DEFAULT_GOAL := debug

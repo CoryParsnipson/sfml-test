@@ -1,6 +1,6 @@
 #include "sfml.h"
 
-#include "BuilderSceneECS.h"
+#include "BuilderScene.h"
 
 #include "Game.h"
 #include "Entity.h"
@@ -38,19 +38,19 @@
 #include "GraphicalSystem.h"
 #include "VisualDebugSystem.h"
 #include "GridSystem.h"
-#include "BuilderSceneECSInputSystem.h"
+#include "BuilderSceneInputSystem.h"
 
 #include "AddToEntityMessage.h"
 
-BuilderSceneECS::BuilderSceneECS()
-: Scene("BuilderSceneECS")
+BuilderScene::BuilderScene()
+: Scene("BuilderScene")
 {
 }
 
-BuilderSceneECS::~BuilderSceneECS() {
+BuilderScene::~BuilderScene() {
 }
 
-void BuilderSceneECS::init(Game& game) {
+void BuilderScene::init(Game& game) {
    // load fonts
    this->fonts().load("retro", "retro.ttf");
    
@@ -502,7 +502,7 @@ void BuilderSceneECS::init(Game& game) {
    });
 
    // add keyboard input system
-   BuilderSceneECSInputSystem* input_system = new BuilderSceneECSInputSystem();
+   BuilderSceneInputSystem* input_system = new BuilderSceneInputSystem();
    input_system->grid_entity = grid_root->handle();
    input_system->map_entity = map_root->handle();
    input_system->tile_selection = tile_selection->handle();
@@ -512,14 +512,14 @@ void BuilderSceneECS::init(Game& game) {
    this->add_system(input_system);
 }
 
-void BuilderSceneECS::enter(Game& game) {
+void BuilderScene::enter(Game& game) {
    Game::logger().msg(this->id(), Logger::INFO, "Entering builder state.");
 }
 
-void BuilderSceneECS::exit(Game& game) {
+void BuilderScene::exit(Game& game) {
    Game::logger().msg(this->id(), Logger::INFO, "Exiting builder state.");
 }
 
-void BuilderSceneECS::process(Game& game, CloseInputEvent& e) {
+void BuilderScene::process(Game& game, CloseInputEvent& e) {
    game.unload_scene();
 }

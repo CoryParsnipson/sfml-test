@@ -1,14 +1,14 @@
-#ifndef START_MENU_SCENE_ECS_H
-#define START_MENU_SCENE_ECS_H
+#ifndef START_MENU_SCENE_H
+#define START_MENU_SCENE_H
 
 #include "Scene.h"
 
-class StartMenuSceneECS
+class StartMenuScene
 : public Scene
 {
 public:
-   StartMenuSceneECS();
-   ~StartMenuSceneECS();
+   StartMenuScene();
+   ~StartMenuScene();
 
    virtual void init(Game& game);
    virtual void enter(Game& game);

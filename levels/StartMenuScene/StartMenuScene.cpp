@@ -1,9 +1,9 @@
-#include "StartMenuSceneECS.h"
+#include "StartMenuScene.h"
 
 #include "Game.h"
 #include "Entity.h"
 
-#include "StartMenuECSInputSystem.h"
+#include "StartMenuInputSystem.h"
 
 #include "Text.h"
 #include "Rectangle.h"
@@ -13,15 +13,15 @@
 #include "MouseXIntent.h"
 #include "MouseYIntent.h"
 
-StartMenuSceneECS::StartMenuSceneECS()
-: Scene("StartMenuSceneECS")
+StartMenuScene::StartMenuScene()
+: Scene("StartMenuScene")
 {
 }
 
-StartMenuSceneECS::~StartMenuSceneECS() {
+StartMenuScene::~StartMenuScene() {
 }
 
-void StartMenuSceneECS::init(Game& game) {
+void StartMenuScene::init(Game& game) {
    // load fonts
    this->fonts().load("retro", "retro.ttf");
    
@@ -120,13 +120,13 @@ void StartMenuSceneECS::init(Game& game) {
    });
 
    // add input system
-   this->add_system(new StartMenuECSInputSystem());
+   this->add_system(new StartMenuInputSystem());
 }
 
-void StartMenuSceneECS::enter(Game& game) {
+void StartMenuScene::enter(Game& game) {
    Game::logger().msg(this->id(), Logger::INFO, "Entering game start menu state.");
 }
 
-void StartMenuSceneECS::exit(Game& game) {
+void StartMenuScene::exit(Game& game) {
    Game::logger().msg(this->id(), Logger::INFO, "Exiting game start menu state.");
 }

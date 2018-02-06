@@ -1,17 +1,17 @@
-#ifndef START_MENU_ECS_INPUT_SYSTEM_H
-#define START_MENU_ECS_INPUT_SYSTEM_H
+#ifndef START_MENU_INPUT_SYSTEM_H
+#define START_MENU_INPUT_SYSTEM_H
 
 #include "System.h"
 
 // ----------------------------------------------------------------------------
-// StartMenuECSInputSystem
+// StartMenuInputSystem
 //
 // This handles actions that should occur due to keyboard input.
 // ----------------------------------------------------------------------------
-class StartMenuECSInputSystem : public System {
+class StartMenuInputSystem : public System {
 public:
-   StartMenuECSInputSystem(const std::string& id = "StartMenuECSInputSystem");
-   virtual ~StartMenuECSInputSystem();
+   StartMenuInputSystem(const std::string& id = "StartMenuInputSystem");
+   virtual ~StartMenuInputSystem();
 
 private:
    virtual void on_init(Game& game) {}

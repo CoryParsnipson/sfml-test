@@ -1,5 +1,5 @@
-#ifndef BUILDER_SCENE_ECS_H
-#define BUILDER_SCENE_ECS_H
+#ifndef BUILDER_SCENE_H
+#define BUILDER_SCENE_H
 
 #include "Scene.h"
 #include "Settings.h"
@@ -12,14 +12,14 @@ class Texture;
 class Map;
 
 // ----------------------------------------------------------------------------
-// BuilderSceneECS
+// BuilderScene
 // ----------------------------------------------------------------------------
-class BuilderSceneECS
+class BuilderScene
 : public Scene
 {
 public:
-   BuilderSceneECS();
-   virtual ~BuilderSceneECS();
+   BuilderScene();
+   virtual ~BuilderScene();
 
    virtual void init(Game& game);
    virtual void enter(Game& game);

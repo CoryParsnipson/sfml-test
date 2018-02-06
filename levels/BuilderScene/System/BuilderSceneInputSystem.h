@@ -1,5 +1,5 @@
-#ifndef BUILDER_SCENE_ECS_INPUT_SYSTEM_H
-#define BUILDER_SCENE_ECS_INPUT_SYSTEM_H
+#ifndef BUILDER_SCENE_INPUT_SYSTEM_H
+#define BUILDER_SCENE_INPUT_SYSTEM_H
 
 #include "System.h"
 #include "Camera.h"
@@ -7,14 +7,14 @@
 #include "FileChannel.h"
 
 // ----------------------------------------------------------------------------
-// BuilderSceneECSInputSystem
+// BuilderSceneInputSystem
 //
 // This handles actions that should occur due to keyboard input.
 // ----------------------------------------------------------------------------
-class BuilderSceneECSInputSystem : public System {
+class BuilderSceneInputSystem : public System {
 public:
-   BuilderSceneECSInputSystem(const std::string& id = "BuilderSceneECSInputSystem");
-   virtual ~BuilderSceneECSInputSystem();
+   BuilderSceneInputSystem(const std::string& id = "BuilderSceneInputSystem");
+   virtual ~BuilderSceneInputSystem();
 
    Handle grid_entity;
    Handle map_entity;

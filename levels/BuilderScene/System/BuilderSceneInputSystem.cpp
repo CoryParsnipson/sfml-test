@@ -1,4 +1,4 @@
-#include "BuilderSceneECSInputSystem.h"
+#include "BuilderSceneInputSystem.h"
 
 #include "Game.h"
 #include "Scene.h"
@@ -19,7 +19,7 @@
 #include "SetGridVisibilityMessage.h"
 #include "SetVisualDebugMessage.h"
 
-BuilderSceneECSInputSystem::BuilderSceneECSInputSystem(const std::string& id /* = "BuilderSceneECSInputSystem" */)
+BuilderSceneInputSystem::BuilderSceneInputSystem(const std::string& id /* = "BuilderSceneInputSystem" */)
 : System(id)
 , grid_visible_(false)
 , grid_visible_button_down_(false)
@@ -35,10 +35,10 @@ BuilderSceneECSInputSystem::BuilderSceneECSInputSystem(const std::string& id /* 
 {
 }
 
-BuilderSceneECSInputSystem::~BuilderSceneECSInputSystem() {
+BuilderSceneInputSystem::~BuilderSceneInputSystem() {
 }
 
-void BuilderSceneECSInputSystem::pre_update(Game& game) {
+void BuilderSceneInputSystem::pre_update(Game& game) {
    bool new_grid_visibility = game.get_player(1).bindings().get<GridVisibilityToggleIntent>()->element()->is_pressed();
    bool new_visual_debug_enable = game.get_player(1).bindings().get<VisualDebugIntent>()->element()->is_pressed();
 
@@ -125,7 +125,7 @@ void BuilderSceneECSInputSystem::pre_update(Game& game) {
       this->file_channel->seek(0);
       this->file_channel->send(tilemap->serialize(*this->serializer));
 
-      Game::logger().msg("BuilderSceneECSInputSystem", Logger::INFO, "Saving map to file '" + this->file_channel->filename());
+      Game::logger().msg("BuilderSceneInputSystem", Logger::INFO, "Saving map to file '" + this->file_channel->filename());
       this->save_map_down_ = save_map;
    }
 

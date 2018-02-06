@@ -1,5 +1,5 @@
 #include "Game.h"
-#include "StartMenuSceneECS.h"
+#include "StartMenuScene.h"
 
 int main()
 {
@@ -7,7 +7,7 @@ int main()
 
    // don't need to delete scene objects given to game (messy, I know)
    // TODO: clean this up
-   g.load_scene(new StartMenuSceneECS());
+   g.load_scene(new StartMenuScene());
    g.start();
 
 	return 0;
