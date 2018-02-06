@@ -151,7 +151,7 @@ public:
       // add Spatial component, every Entity should always have one
       this->get_entity(handle)->add<Space>();
 
-      // now add spatial component to scene graph root
+      // now add this entity as a child of the scene graph root
       if (this->root_ != Handle() && this->root_ != handle) {
         this->send_message_async<AddToEntityMessage>(this->root_, handle);
       }

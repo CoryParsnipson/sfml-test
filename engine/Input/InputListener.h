@@ -2,8 +2,8 @@
 #define INPUT_LISTENER_H
 
 #include "Observer.h"
+#include "InputEvent.h"
 
-class InputEvent;
 class CloseInputEvent;
 class ResizeInputEvent;
 class KeyPressInputEvent;
@@ -16,11 +16,13 @@ class InputListener
 : public Observer<InputEvent>
 {
 public:
-   InputListener(std::string id = "InputListener");
-   virtual ~InputListener();
+   InputListener(std::string id = "InputListener") : Observer<InputEvent>(id) {}
+   virtual ~InputListener() {}
 
    // observer interface
-   virtual void notify(InputEvent& event);
+   virtual void notify(InputEvent& event) {
+      event.execute(*this);
+   }
 
    // input event processing
    virtual void process(CloseInputEvent& e) = 0;

@@ -16,11 +16,6 @@ class InputEvent;
 // ----------------------------------------------------------------------------
 // enum classes
 // ----------------------------------------------------------------------------
-enum class MouseAction {
-   Move,
-   Wheel 
-};
-
 enum class MouseButton {
    Left,
    Right,
