@@ -22,13 +22,8 @@ class Entity
 public:
    using ComponentList = std::map<std::type_index, Handle>;
 
-   // TODO: make this private (so only the object pool can make them) when Entity conversion is done
-   explicit Entity(std::string id = "entity", Scene* scene = nullptr, ComponentManager* component_manager = nullptr);
    Entity(const Entity& other);
    virtual ~Entity();
-
-   Entity& operator=(const Entity& other);
-   void swap(Entity& other);
 
    const std::string& id() const;
    void id(std::string id);
@@ -77,9 +72,14 @@ public:
    void send_message_async(Args&&... args);
 
 private:
-   // allow Scene class to create entities
+   // only allow Scene to create entities through create_entity()
    friend class ObjectPool<Entity>;
-   friend class Scene;
+   friend class Scene; // need this to specify the object pool allocator function
+
+   explicit Entity(std::string id = "entity", Scene* scene = nullptr, ComponentManager* component_manager = nullptr);
+
+   Entity& operator=(const Entity& other);
+   void swap(Entity& other);
 
    std::string id_;
    Handle handle_;

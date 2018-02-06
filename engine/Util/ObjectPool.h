@@ -95,6 +95,7 @@ public:
 
    static const unsigned int default_size = 1000;
 
+   // TODO: this allocator thing can be done better (rewrite to allow for non-default constructor. Also to allow for object types with private constructors by only having objectpool as friend)
    ObjectPool(const std::string& id = "ObjectPool", unsigned int size = ObjectPool::default_size, const EntryAllocator& allocator = [](){ return ObjectType(); });
    virtual ~ObjectPool();
 
