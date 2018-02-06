@@ -84,7 +84,7 @@ void GraphicalSystem::on_update(Game& game, Entity& e) {
    }
 
    if (tilemap != nullptr) {
-      std::vector<TileMap::TileType*> tiles = tilemap->find(this->camera()->bounds());
+      std::vector<TileMap::TileType*> tiles = tilemap->find(states.transform.getInverse().transformRect(this->camera()->bounds()));
 
       // draw map tiles
       std::for_each(tiles.begin(), tiles.end(),
