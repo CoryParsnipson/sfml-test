@@ -14,24 +14,14 @@
 #include "ObjectPool.h"
 #include "Component.h"
 
-#include "SceneObject.h"
-#include "Serializable.h"
-
 #include "Mailbox.h"
-
-// ----------------------------------------------------------------------------
-// forward declarations 
-// ----------------------------------------------------------------------------
-class Part;
 
 // ----------------------------------------------------------------------------
 // Entity class
 // ----------------------------------------------------------------------------
 class Entity
-: public SceneObject
 {
 public:
-   using PartList = std::map<std::string, Part*>;
    using ComponentList = std::map<std::type_index, Handle>;
 
    // TODO: make this private (so only the object pool can make them) when Entity conversion is done
@@ -42,26 +32,11 @@ public:
    Entity& operator=(const Entity& other);
    void swap(Entity& other);
 
+   const std::string& id() const;
+   void id(std::string id);
+
    std::string to_string();
-
    Handle handle() const;
-
-   void enable_debug_wireframe(bool debug_wireframe);
-   bool enable_debug_wireframe();
-
-   void enable_debug_text(bool debug_text);
-   bool enable_debug_text();
-
-   void set_position(float x, float y);
-   void set_position(const sf::Vector2f& pos);
-
-   void set_size(float width, float height);
-   void set_size(const sf::Vector2f& size);
-
-   // part management interface
-   void add(Part* part);
-   void remove(const std::string& part_id);
-   Part* get(const std::string& part_id);
 
    template <
       typename ComponentType,       
@@ -103,43 +78,22 @@ public:
    >
    void send_message_async(Args&&... args);
 
-   // serializable interface
-   virtual std::string serialize(Serializer& s);
-   virtual void deserialize(Serializer& s, Scene& scene, std::string& d);
-
-   // scene graph interface
-   virtual bool intersects(const sf::Vector2i& other);
-   virtual bool intersects(const sf::Vector2f& other);
-   virtual bool intersects(const sf::FloatRect& other);
-   virtual bool intersects(const SceneObject& other);
-
-   // scene graph visitor interface
-   virtual void accept(SceneGraphVisitor& visitor);
-
-   // update interface
-   virtual void update(Game& game);
-
 private:
    // allow Scene class to create entities
    friend class ObjectPool<Entity>;
    friend class Scene;
 
-   bool enable_debug_wireframe_;
-   bool enable_debug_text_;
+   std::string id_;
+   Handle handle_;
 
    Scene* scene_;
-   Handle handle_;
-   ComponentManager* component_manager_;
 
-   PartList parts_;
    ComponentList components_;
+   ComponentManager* component_manager_;
 
    // helpers
    void send_message_helper(std::shared_ptr<Message> message);
    void handle(Handle handle);
-
-   // scene graph interface hooks
-   virtual void do_draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default);
 };
 
 // ----------------------------------------------------------------------------

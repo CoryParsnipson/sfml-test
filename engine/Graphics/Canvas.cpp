@@ -1,5 +1,4 @@
 #include "Canvas.h"
-#include "Camera.h"
 
 Canvas::Canvas(const std::string& title, const sf::Vector2f& size, int framerate_limit /* = 60 */)
 : surface_(sf::VideoMode(size.x, size.y), title)

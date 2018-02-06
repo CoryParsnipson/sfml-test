@@ -1,16 +1,14 @@
 #include "Game.h"
 #include "Camera.h"
-#include "RenderSurface.h"
-#include "TextFactory.h"
 #include "FitCameraResizePolicy.h"
+#include "RenderSurface.h"
 
 // initialize static member variables
 const float Camera::ZOOM_FACTOR_MIN = 0.125;
 const float Camera::ZOOM_FACTOR_MAX = 3.0;
 
 Camera::Camera(const std::string& id)
-: SceneObject(id, true)
-, id_(id)
+: id_(id)
 , zoom_factor_(1.0)
 , original_center_(0, 0)
 , view_(new sf::View(this->original_center_, sf::Vector2f(0, 0)))
@@ -19,8 +17,7 @@ Camera::Camera(const std::string& id)
 }
 
 Camera::Camera(const std::string& id, const sf::Vector2f& size)
-: SceneObject(id, true)
-, id_(id)
+: id_(id)
 , zoom_factor_(1.0)
 , original_center_(size.x / 2.f, size.y / 2.f)
 , view_(new sf::View(this->original_center_, size))
@@ -29,8 +26,7 @@ Camera::Camera(const std::string& id, const sf::Vector2f& size)
 }
 
 Camera::Camera(const Camera& other)
-: SceneObject(other.id(), other.visible())
-, id_(other.id())
+: id_(other.id())
 , zoom_factor_(other.zoom_factor_)
 , original_center_(other.original_center_)
 , view_(new sf::View(*other.view_))
@@ -135,16 +131,12 @@ void Camera::set_center(const sf::Vector2f& center) {
    this->original_center_ = center;
 }
 
-sf::FloatRect Camera::bounds() const {
-   return sf::FloatRect(this->get_center() - this->get_size() / 2.f, this->get_size());
-}
-
 void Camera::move(const sf::Vector2f& delta) {
    this->view_->move(delta * this->get_scale());
 }
 
-const sf::View& Camera::view() const {
-   return *this->view_;
+sf::FloatRect Camera::bounds() const {
+   return sf::FloatRect(this->get_center() - this->get_size() / 2.f, this->get_size());
 }
 
 void Camera::set_viewport(const sf::FloatRect& viewport) {
@@ -178,38 +170,12 @@ sf::Vector2f Camera::get_screen_coordinate(const sf::Vector2f& point) {
    return pixel;
 }
 
-bool Camera::intersects(const sf::Vector2i& other) {
-   return this->intersects(static_cast<sf::Vector2f>(other));
-}
-
-bool Camera::intersects(const sf::Vector2f& other) {
-   sf::FloatRect cam_box = static_cast<sf::FloatRect>(this->viewport());
-   return cam_box.contains(other);
-}
-
-bool Camera::intersects(const sf::FloatRect& other) {
-   sf::FloatRect cam_box = static_cast<sf::FloatRect>(this->viewport());
-   return cam_box.intersects(other);
-}
-
-// TODO: implement me
-bool Camera::intersects(const SceneObject& other) { return false; }
-
-void Camera::accept(SceneGraphVisitor& visitor) {
-   visitor.visit(this);
-}
-
-void Camera::do_draw(RenderSurface& surface, sf::RenderStates render_states) {
+void Camera::draw(RenderSurface& surface) {
    surface.view(*this->view_);
 }
 
-std::string Camera::serialize(Serializer& s) {
-   // TODO implement me
-   return "";
-}
-
-void Camera::deserialize(Serializer& s, Scene& scene, std::string& d) {
-   // TODO implement me
+const sf::View& Camera::view() const {
+   return *this->view_;
 }
 
 // ----------------------------------------------------------------------------

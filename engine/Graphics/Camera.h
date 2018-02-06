@@ -5,7 +5,6 @@
 #include <string>
 
 #include "InputManager.h"
-#include "SceneObject.h"
 #include "CameraResizePolicy.h"
 
 // ----------------------------------------------------------------------------
@@ -14,15 +13,17 @@
 typedef std::shared_ptr<Camera> CameraPtr;
 
 // ----------------------------------------------------------------------------
+// forward declarations
+// ----------------------------------------------------------------------------
+class RenderSurface;
+
+// ----------------------------------------------------------------------------
 // Camera
 //
 // This class lets the user manipulate the viewport and view into the game
 // graphics.
 // ----------------------------------------------------------------------------
-class Camera
-: public SceneObject
-, public Moveable
-{
+class Camera {
 public:
    static const float ZOOM_FACTOR_MIN;
    static const float ZOOM_FACTOR_MAX;
@@ -59,34 +60,24 @@ public:
    const sf::Vector2f& get_center() const;
    void set_center(const sf::Vector2f& center);
 
+   void move(const sf::Vector2f& delta);
+
    sf::FloatRect bounds() const;
-
-   // moveable interface
-   virtual void move(const sf::Vector2f& delta);
-
-   const sf::View& view() const; // for internal use only...
 
    // viewport management
    void set_viewport(const sf::FloatRect& viewport);
    const sf::FloatRect& get_viewport();
 
-   // scene graph interface
-   virtual sf::Vector2f get_world_coordinate(const sf::Vector2f& point);
-   virtual sf::Vector2f get_screen_coordinate(const sf::Vector2f& point);
+   sf::Vector2f get_world_coordinate(const sf::Vector2f& point);
+   sf::Vector2f get_screen_coordinate(const sf::Vector2f& point);
 
-   virtual bool intersects(const sf::Vector2i& other);
-   virtual bool intersects(const sf::Vector2f& other);
-   virtual bool intersects(const sf::FloatRect& other);
-   virtual bool intersects(const SceneObject& other);
+   // drawable interface
+   virtual void draw(RenderSurface& surface);
 
-   // scene graph visitor interface
-   virtual void accept(SceneGraphVisitor& visitor);
-
-   // serializable interface
-   virtual std::string serialize(Serializer& s);
-   virtual void deserialize(Serializer& s, Scene& scene, std::string& d);
+   const sf::View& view() const; // for internal use only...
 
 private:
+   // TODO: replace all this shit with sf::Transformable
    std::string id_;
    float zoom_factor_;
 
@@ -98,9 +89,5 @@ private:
    friend std::ostream& operator<<(std::ostream& stream, const Camera& camera);
 
    sf::IntRect viewport();
-
-protected:
-   // scene graph interface hooks
-   virtual void do_draw(RenderSurface& surface, sf::RenderStates render_states);
 };
 #endif

@@ -3,8 +3,6 @@
 
 #include "RenderSurface.h"
 
-class Camera;
-
 class Canvas
 : public RenderSurface
 {

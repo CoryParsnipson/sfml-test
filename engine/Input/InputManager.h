@@ -48,14 +48,6 @@ enum class Key {
 };
 
 // ----------------------------------------------------------------------------
-// Moveable interface
-// ----------------------------------------------------------------------------
-class Moveable {
-public:
-   virtual void move(const sf::Vector2f& delta) = 0;
-};
-
-// ----------------------------------------------------------------------------
 // InputManager
 // 
 // This class hooks into the SFML input events and converts them to InputEvent

@@ -3,13 +3,6 @@
 
 #include "sfml.h"
 
-#include "Draw.h"
-
-class Game;
-class Scene;
-class Entity;
-class Camera;
-
 class RenderSurface {
 public:
    RenderSurface() {}

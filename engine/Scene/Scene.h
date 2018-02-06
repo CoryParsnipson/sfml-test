@@ -17,19 +17,11 @@
 #include "MouseButtonInputEvent.h"
 
 #include "Game.h"
-#include "Draw.h"
 #include "Camera.h"
 #include "Update.h"
 #include "Entity.h"
-#include "Widget.h"
-#include "Gamepad.h"
 #include "FontAtlas.h"
 #include "TextureAtlas.h"
-
-#include "SceneRenderer.h"
-
-#include "RemoveCommand.h"
-#include "ResizeCameraCommand.h"
 
 #include "Space.h"
 
@@ -53,31 +45,17 @@
 // This is a discrete container to organize game play and "levels" with.
 // ----------------------------------------------------------------------------
 class Scene
-: public Draw
-, public Update
+: public Update
 {
 public:
-   using GamepadList = std::vector<Gamepad*>;
-
    Scene(std::string id)
-   : camera_(new Camera("Camera"))
-   , scene_graph_(this->camera_)
-   , id_(id)
+   : id_(id)
    , is_initialized_(false)
    , entities_(id + "EntityPool", 20000, [this](){ return Entity("entity", this, &this->components_); })
    {
    }
 
    virtual ~Scene() {
-      // TODO: need to properly clean up scene objects
-      delete this->scene_graph_;
-
-      GamepadList::const_iterator g_it;
-      for (g_it = this->gamepads_.begin(); g_it != this->gamepads_.end(); ++g_it) {
-         delete *g_it;
-      }
-      this->gamepads_.clear();
-
       // clean up Systems
       for (std::vector<System*>::const_iterator it = this->systems_.begin(); it != this->systems_.end(); ++it) {
          delete *it;
@@ -106,15 +84,6 @@ public:
    }
 
    void do_enter(Game& game) {
-      // start gamepads from receiving input events
-      for (GamepadList::const_iterator it = this->gamepads_.begin(); it != this->gamepads_.end(); ++it) {
-        game.input_manager().attach(**it);
-      }
-
-      // resize all the cameras
-      ResizeCameraCommand rc_command(game.window(), this->scene_graph_);
-      rc_command.execute();
-
       // tell all graphical based systems to resize their cameras
       this->send_message_async<ResizeCameraMessage>(game.window().size());
 
@@ -122,11 +91,6 @@ public:
    }
 
    void do_exit(Game& game) {
-      // stop gamepads from receiving input events
-      for (GamepadList::const_iterator it = this->gamepads_.begin(); it != this->gamepads_.end(); ++it) {
-         game.input_manager().detach(**it);
-      }
-
       this->game_ = nullptr; // unset game pointer
       this->exit(game);
    }
@@ -135,68 +99,11 @@ public:
    virtual void enter(Game& game) {}
    virtual void exit(Game& game) {}
 
-   // draw interface
-   virtual void draw(RenderSurface& surface, sf::RenderStates render_states = sf::RenderStates::Default) {
-      this->renderer_.render(*this->scene_graph_, surface, render_states);
-   }
-
    // update interface
    virtual void update(Game& game) {
-      SceneObject::prefix_iterator it;
-      for (it = this->scene_graph_->begin(); it != this->scene_graph_->end(); ++it) {
-         (*it)->update(game);
-      }
-
       // update systems
       for (std::vector<System*>::iterator it = this->systems_.begin(); it != this->systems_.end(); ++it) {
          (*it)->update(game);
-      }
-   }
-
-   // gamepad interface
-   int gamepad(Gamepad* gamepad, int player_id = -1) {
-      if (player_id >= 0 && player_id < (int)this->gamepads_.size()) {
-         // remove gamepad scene object from scene graph
-         RemoveCommand rc(this->scene_graph_, gamepad);
-         rc.execute();
-
-         // remove gamepad from gamepad list and replace
-         delete this->gamepads_[player_id];
-         this->gamepads_[player_id] = gamepad;
-      } else {
-         player_id = this->gamepads_.size() - 1;
-         this->gamepads_.push_back(gamepad);
-      }
-
-      // add to scene graph
-      this->scene_graph_->add(gamepad);
-      return player_id;
-   }
-
-   Gamepad* gamepad(int player_id) {
-      if (player_id < 0 || player_id >= (signed int)this->gamepads_.size()) {
-         return nullptr;
-      }
-      return this->gamepads_[player_id];
-   }
-
-   void remove_gamepad(int player_id) {
-      if (player_id > (signed int)this->gamepads_.size()) {
-         return;
-      }
-      
-      delete this->gamepads_[player_id];
-      this->gamepads_.erase(this->gamepads_.begin() + player_id);
-   }
-
-   void remove_gamepad(Gamepad* gamepad) {
-      GamepadList::const_iterator it;
-      for (it = this->gamepads_.begin(); it != this->gamepads_.end(); ++it) {
-         if (gamepad == *it) {
-            delete gamepad;
-            this->gamepads_.erase(it);
-            return;
-         }
       }
    }
 
@@ -215,10 +122,6 @@ public:
       assert(this->game_); // can only unload scene from a scene on the top of the game stack
       this->game_->unload_scene();
       return this->game_->current_scene();
-   }
-
-   SceneObject* scene_graph() {
-      return this->scene_graph_;
    }
 
    FontAtlas& fonts() {
@@ -306,18 +209,11 @@ public:
    virtual void process(Game& game, KeyReleaseInputEvent& e) {}
    virtual void process(Game& game, ResizeInputEvent& e) {
       // resize all the cameras
-      ResizeCameraCommand rc_command(game.window(), this->scene_graph_);
-      rc_command.execute();
-
       this->send_message_async<ResizeCameraMessage>(game.window().size());
    }
    virtual void process(Game& game, MouseMoveInputEvent& e) {}
    virtual void process(Game& game, MouseWheelInputEvent& e) {}
    virtual void process(Game& game, MouseButtonInputEvent& e) {}
-
-   const SceneObject& scene_graph() const {
-      return *this->scene_graph_;
-   }
 
    Space& space() {
       assert(this->get_entity(this->root_));
@@ -338,9 +234,6 @@ public:
    }
 
 protected:
-   Camera* camera_;
-   SceneObject* scene_graph_;
-
    // use this to broadcast messages to Systems from Scene
    template <
       typename MsgT,
@@ -361,8 +254,6 @@ private:
    bool is_initialized_;
 
    Game* game_;
-   GamepadList gamepads_;
-   SceneRenderer renderer_;
 
    FontAtlas fonts_;
    TextureAtlas textures_;
