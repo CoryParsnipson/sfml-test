@@ -1,23 +1,23 @@
-#ifndef GRID2_H
-#define GRID2_H
+#ifndef GRID_H
+#define GRID_H
 
 #include "sfml.h"
 
 #include "Component.h"
 
 // ----------------------------------------------------------------------------
-// Grid2
+// Grid
 // 
 // This marks an entity as a grid_root.
 // ----------------------------------------------------------------------------
-class Grid2 : public Component {
+class Grid : public Component {
 public:
-   explicit Grid2(const std::string& id = "Grid2 Component", sf::Vector2f origin = sf::Vector2f(0, 0), unsigned int width = 1, unsigned int height = 1);
-   Grid2(const Grid2& other);
-   virtual ~Grid2();
+   explicit Grid(const std::string& id = "Grid Component", sf::Vector2f origin = sf::Vector2f(0, 0), unsigned int width = 1, unsigned int height = 1);
+   Grid(const Grid& other);
+   virtual ~Grid();
 
-   Grid2& operator=(const Grid2& other);
-   void swap(Grid2& other);
+   Grid& operator=(const Grid& other);
+   void swap(Grid& other);
 
    unsigned int tile_width() const;
    void tile_width(unsigned int width);

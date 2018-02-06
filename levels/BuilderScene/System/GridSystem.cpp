@@ -7,7 +7,7 @@
 #include "Space.h"
 #include "Rectangle.h"
 #include "Text.h"
-#include "Grid2.h"
+#include "Grid.h"
 
 #include "SetGridVisibilityMessage.h"
 
@@ -26,7 +26,7 @@ CameraPtr GridSystem::camera() {
 }
 
 void GridSystem::on_init(Game& game) {
-   this->subscribe_to().all_of<Space, Grid2>();
+   this->subscribe_to().all_of<Space, Grid>();
 
    // register grid visibility toggling
    this->mailbox().handle<SetGridVisibilityMessage>([&] (SetGridVisibilityMessage& msg) {
@@ -50,9 +50,9 @@ void GridSystem::on_update(Game& game, Entity& e) {
    std::map<unsigned int, Entity*> rows;
    std::map<unsigned int, Entity*> text_markers;
 
-   std::string col_str = e.get<Grid2>()->id() + "_col";
-   std::string row_str = e.get<Grid2>()->id() + "_row";
-   std::string tm_str = e.get<Grid2>()->id() + "_tm";
+   std::string col_str = e.get<Grid>()->id() + "_col";
+   std::string row_str = e.get<Grid>()->id() + "_row";
+   std::string tm_str = e.get<Grid>()->id() + "_tm";
 
    sf::FloatRect camera_bounds = this->global_transform(e).getInverse().transformRect(this->camera()->bounds());
 
@@ -86,10 +86,10 @@ void GridSystem::on_update(Game& game, Entity& e) {
    
    // find out how many gridlines there should be based on the camera and update them
    unsigned int gridline_id = 0;
-   sf::Vector2f start_point = e.get<Grid2>()->ceil(sf::Vector2f(camera_bounds.left - e.get<Grid2>()->tile_width(), camera_bounds.top - e.get<Grid2>()->tile_height()));
-   sf::Vector2f end_point = e.get<Grid2>()->ceil(sf::Vector2f(camera_bounds.left + camera_bounds.width + e.get<Grid2>()->tile_width(), camera_bounds.top + camera_bounds.height + e.get<Grid2>()->tile_height()));
+   sf::Vector2f start_point = e.get<Grid>()->ceil(sf::Vector2f(camera_bounds.left - e.get<Grid>()->tile_width(), camera_bounds.top - e.get<Grid>()->tile_height()));
+   sf::Vector2f end_point = e.get<Grid>()->ceil(sf::Vector2f(camera_bounds.left + camera_bounds.width + e.get<Grid>()->tile_width(), camera_bounds.top + camera_bounds.height + e.get<Grid>()->tile_height()));
 
-   for (int c = start_point.x; c <= end_point.x; c += e.get<Grid2>()->tile_width()) {
+   for (int c = start_point.x; c <= end_point.x; c += e.get<Grid>()->tile_width()) {
       if (cols[gridline_id] == nullptr || cols[gridline_id]->get<Rectangle>() == nullptr) {
          if (cols[gridline_id] != nullptr && cols[gridline_id]->get<Rectangle>() == nullptr) {
             this->scene().remove_entity(cols[gridline_id]->handle());
@@ -115,7 +115,7 @@ void GridSystem::on_update(Game& game, Entity& e) {
    }
 
    gridline_id = 0;
-   for (int r = start_point.y; r <= end_point.y; r += e.get<Grid2>()->tile_height()) {
+   for (int r = start_point.y; r <= end_point.y; r += e.get<Grid>()->tile_height()) {
       if (rows[gridline_id] == nullptr || rows[gridline_id]->get<Rectangle>() == nullptr) {
          if (rows[gridline_id] != nullptr && rows[gridline_id]->get<Rectangle>() == nullptr) {
             this->scene().remove_entity(cols[gridline_id]->handle());
@@ -149,14 +149,14 @@ void GridSystem::on_update(Game& game, Entity& e) {
          int col_pos = ty->second->get<Rectangle>()->position().y;
          int row_pos = tx->second->get<Rectangle>()->position().x;
 
-         if ((row_pos >= 0 && row_pos % (3 * e.get<Grid2>()->tile_height()) != 0)
-             || (row_pos < 0 && (row_pos - e.get<Grid2>()->tile_height()) % (3 * e.get<Grid2>()->tile_height()) != 0)
+         if ((row_pos >= 0 && row_pos % (3 * e.get<Grid>()->tile_height()) != 0)
+             || (row_pos < 0 && (row_pos - e.get<Grid>()->tile_height()) % (3 * e.get<Grid>()->tile_height()) != 0)
             ) {
             continue;
          }
 
-         if ((col_pos >= 0 && col_pos % (3 * e.get<Grid2>()->tile_width()) != 0)
-             || (col_pos < 0 && (col_pos - e.get<Grid2>()->tile_width()) % (3 * e.get<Grid2>()->tile_width()) != 0)
+         if ((col_pos >= 0 && col_pos % (3 * e.get<Grid>()->tile_width()) != 0)
+             || (col_pos < 0 && (col_pos - e.get<Grid>()->tile_width()) % (3 * e.get<Grid>()->tile_width()) != 0)
             ) {
             continue;
          }

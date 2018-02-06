@@ -1,8 +1,8 @@
 #include <cmath>
 
-#include "Grid2.h"
+#include "Grid.h"
 
-Grid2::Grid2(const std::string& id /* = "Grid2 Component" */, sf::Vector2f origin /* = sf::Vector2f(0, 0) */, unsigned int width /* = 1 */, unsigned int height /* = 1 */)
+Grid::Grid(const std::string& id /* = "Grid Component" */, sf::Vector2f origin /* = sf::Vector2f(0, 0) */, unsigned int width /* = 1 */, unsigned int height /* = 1 */)
 : Component(id)
 , origin_(origin)
 , tile_width_(width)
@@ -10,7 +10,7 @@ Grid2::Grid2(const std::string& id /* = "Grid2 Component" */, sf::Vector2f origi
 {
 }
 
-Grid2::Grid2(const Grid2& other)
+Grid::Grid(const Grid& other)
 : Component(other.id())
 , origin_(other.origin_)
 , tile_width_(other.tile_width_)
@@ -18,39 +18,39 @@ Grid2::Grid2(const Grid2& other)
 {
 }
 
-Grid2::~Grid2() {
+Grid::~Grid() {
 }
 
-Grid2& Grid2::operator=(const Grid2& other) {
-   Grid2 tmp(other);
+Grid& Grid::operator=(const Grid& other) {
+   Grid tmp(other);
    this->swap(tmp);
    return *this;
 }
 
-void Grid2::swap(Grid2& other) {
+void Grid::swap(Grid& other) {
    std::swap(static_cast<Component&>(*this), static_cast<Component&>(other));
    std::swap(this->origin_, other.origin_);
    std::swap(this->tile_width_, other.tile_width_);
    std::swap(this->tile_height_, other.tile_height_);
 }
 
-unsigned int Grid2::tile_width() const {
+unsigned int Grid::tile_width() const {
    return this->tile_width_;
 }
 
-void Grid2::tile_width(unsigned int width) {
+void Grid::tile_width(unsigned int width) {
    this->tile_width_ = width;
 }
 
-unsigned int Grid2::tile_height() const {
+unsigned int Grid::tile_height() const {
    return this->tile_height_;
 }
 
-void Grid2::tile_height(unsigned int height) {
+void Grid::tile_height(unsigned int height) {
    this->tile_height_ = height;
 }
 
-sf::Vector2f Grid2::floor(const sf::Vector2f& pos) {
+sf::Vector2f Grid::floor(const sf::Vector2f& pos) {
    sf::Vector2f origin_offset((int)this->origin_.x % this->tile_width(), (int)this->origin_.y % this->tile_height());
 
    return origin_offset + sf::Vector2f(
@@ -59,7 +59,7 @@ sf::Vector2f Grid2::floor(const sf::Vector2f& pos) {
    );
 }
 
-sf::Vector2f Grid2::round(const sf::Vector2f& pos) {
+sf::Vector2f Grid::round(const sf::Vector2f& pos) {
    sf::Vector2f origin_offset((int)this->origin_.x % this->tile_width(), (int)this->origin_.y % this->tile_height());
 
    return origin_offset + sf::Vector2f(
@@ -68,7 +68,7 @@ sf::Vector2f Grid2::round(const sf::Vector2f& pos) {
    );
 }
 
-sf::Vector2f Grid2::ceil(const sf::Vector2f& pos) {
+sf::Vector2f Grid::ceil(const sf::Vector2f& pos) {
    sf::Vector2f origin_offset((int)this->origin_.x % this->tile_width(), (int)this->origin_.y % this->tile_height());
 
    return origin_offset + sf::Vector2f(

@@ -13,7 +13,7 @@
 #include "Collision.h"
 #include "PlayerProfile.h"
 #include "TileMap.h"
-#include "Grid2.h"
+#include "Grid.h"
 
 #include "FileChannel.h"
 #include "JSONSerializer.h"
@@ -126,7 +126,7 @@ void BuilderScene::init(Game& game) {
    // load or create a grid
    Entity* grid_root = this->get_entity(this->create_entity());
    grid_root->id("GridRoot Entity");
-   grid_root->add<Grid2>("GridRoot Grid Component", sf::Vector2f(0, 0), 64, 64);
+   grid_root->add<Grid>("GridRoot Grid Component", sf::Vector2f(0, 0), 64, 64);
 
    this->send_message_async<AddToEntityMessage>(map_root->handle(), grid_root->handle());
 
@@ -262,7 +262,7 @@ void BuilderScene::init(Game& game) {
    
    tpw_hover->get<Space>()->visible(false);
    
-   tpw_hover->add<Rectangle>("TilePaletteWindowRectangle", 0, 0, grid_root->get<Grid2>()->tile_width(), grid_root->get<Grid2>()->tile_height());
+   tpw_hover->add<Rectangle>("TilePaletteWindowRectangle", 0, 0, grid_root->get<Grid>()->tile_width(), grid_root->get<Grid>()->tile_height());
    tpw_hover->get<Rectangle>()->color(sf::Color(255, 255, 255, 100));
    tpw_hover->get<Rectangle>()->outline_color(sf::Color(108, 46, 167, 100));
    tpw_hover->get<Rectangle>()->outline_thickness(2.f);
@@ -291,15 +291,15 @@ void BuilderScene::init(Game& game) {
    tile_textures.push_back("tile_water_bm");
    tile_textures.push_back("tile_water_br");
 
-   int tiles_per_row = tile_palette_window->get<Rectangle>()->size().x / grid_root->get<Grid2>()->tile_width();
-   int side_padding = (tile_palette_window->get<Rectangle>()->size().x - (grid_root->get<Grid2>()->tile_width() * tiles_per_row)) / 2;
+   int tiles_per_row = tile_palette_window->get<Rectangle>()->size().x / grid_root->get<Grid>()->tile_width();
+   int side_padding = (tile_palette_window->get<Rectangle>()->size().x - (grid_root->get<Grid>()->tile_width() * tiles_per_row)) / 2;
    int top_padding = 20;
 
    int i = 0;
    for (std::vector<std::string>::const_iterator it = tile_textures.begin(); it != tile_textures.end(); ++it, ++i) {
       sf::Vector2f tile_texture_pos(
-         (i % tiles_per_row) * grid_root->get<Grid2>()->tile_width() + side_padding,
-         (i / tiles_per_row) * grid_root->get<Grid2>()->tile_height() + top_padding
+         (i % tiles_per_row) * grid_root->get<Grid>()->tile_width() + side_padding,
+         (i / tiles_per_row) * grid_root->get<Grid>()->tile_height() + top_padding
       );
 
       Entity* entity = this->get_entity(this->create_entity());
@@ -330,8 +330,8 @@ void BuilderScene::init(Game& game) {
 
          // on click, fill the selected area (if it is active) with the clicked on tile
          sf::FloatRect tsc = tile_selection->get<Collision>()->volume();
-         for (int x_pos = tsc.left; x_pos < tsc.left + tsc.width; x_pos += grid_root->get<Grid2>()->tile_width()) {
-            for (int y_pos = tsc.top; y_pos < tsc.top + tsc.height; y_pos += grid_root->get<Grid2>()->tile_height()) {
+         for (int x_pos = tsc.left; x_pos < tsc.left + tsc.width; x_pos += grid_root->get<Grid>()->tile_width()) {
+            for (int y_pos = tsc.top; y_pos < tsc.top + tsc.height; y_pos += grid_root->get<Grid>()->tile_height()) {
                Sprite sprite(*entity->get<Sprite>());
                sprite.position(x_pos, y_pos);
 
@@ -474,15 +474,15 @@ void BuilderScene::init(Game& game) {
       selection_rect->get<Space>()->visible(false);
 
       // update tile selection
-      bool is_drag_gesture = (ts_rect.width >= grid_root->get<Grid2>()->tile_width() / 3.f ||
-                              ts_rect.height >= grid_root->get<Grid2>()->tile_height() / 3.f);
+      bool is_drag_gesture = (ts_rect.width >= grid_root->get<Grid>()->tile_width() / 3.f ||
+                              ts_rect.height >= grid_root->get<Grid>()->tile_height() / 3.f);
 
       if (!is_drag_gesture && tile_selection->get<Space>()->visible() && tile_selection->get<Collision>()->contains(release_pos)) {
          tile_selection->get<Space>()->visible(false);
       } else {
          // round rectangle to nearest grid point
-         pos = grid_root->get<Grid2>()->floor(pos);
-         end = grid_root->get<Grid2>()->ceil(end);
+         pos = grid_root->get<Grid>()->floor(pos);
+         end = grid_root->get<Grid>()->ceil(end);
          
          // update tile selection entity
          tile_selection->get<Rectangle>()->position(pos);
