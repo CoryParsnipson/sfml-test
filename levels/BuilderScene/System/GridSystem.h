@@ -32,6 +32,7 @@ private:
 
    CameraPtr camera_;
    sf::FloatRect previous_camera_bounds_;
+   sf::Vector2f previous_zoom_factor_;
 };
 
 #endif

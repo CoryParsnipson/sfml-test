@@ -4,6 +4,7 @@
 
 Grid::Grid(const std::string& id /* = "Grid Component" */, sf::Vector2f origin /* = sf::Vector2f(0, 0) */, unsigned int width /* = 1 */, unsigned int height /* = 1 */)
 : Component(id)
+, zoom_factor(1.f, 1.f)
 , origin_(origin)
 , tile_width_(width)
 , tile_height_(height)
@@ -12,6 +13,7 @@ Grid::Grid(const std::string& id /* = "Grid Component" */, sf::Vector2f origin /
 
 Grid::Grid(const Grid& other)
 : Component(other.id())
+, zoom_factor(other.zoom_factor)
 , origin_(other.origin_)
 , tile_width_(other.tile_width_)
 , tile_height_(other.tile_height_)
@@ -29,6 +31,7 @@ Grid& Grid::operator=(const Grid& other) {
 
 void Grid::swap(Grid& other) {
    std::swap(static_cast<Component&>(*this), static_cast<Component&>(other));
+   std::swap(this->zoom_factor, other.zoom_factor);
    std::swap(this->origin_, other.origin_);
    std::swap(this->tile_width_, other.tile_width_);
    std::swap(this->tile_height_, other.tile_height_);

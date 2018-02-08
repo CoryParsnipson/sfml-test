@@ -15,6 +15,8 @@ GridSystem::GridSystem(const std::string& id, CameraPtr camera)
 : System(id)
 , is_visible_(true)
 , camera_(camera)
+, previous_camera_bounds_(0, 0, 0, 0)
+, previous_zoom_factor_(1.f, 1.f)
 {
 }
 
@@ -57,11 +59,11 @@ void GridSystem::on_update(Game& game, Entity& e) {
    sf::FloatRect camera_bounds = this->global_transform(e).getInverse().transformRect(this->camera()->bounds());
 
    // no need to update this system if the camera hasn't changed
-   if (this->previous_camera_bounds_ == camera_bounds) {
-      this->break_out_of_update();
+   if (this->previous_camera_bounds_ == camera_bounds && this->previous_zoom_factor_ == e.get<Grid>()->zoom_factor) {
       return;
    }
    this->previous_camera_bounds_ = camera_bounds;
+   this->previous_zoom_factor_ = e.get<Grid>()->zoom_factor;
 
    // iterate through children and build list of existing rows and cols
    Space* space = e.get<Space>();
@@ -101,7 +103,7 @@ void GridSystem::on_update(Game& game, Entity& e) {
          // modify column
          Rectangle* gridline = cols[gridline_id]->get<Rectangle>();
          gridline->position(c, camera_bounds.top);
-         gridline->size(1, camera_bounds.height);
+         gridline->size(1 / e.get<Grid>()->zoom_factor.x, camera_bounds.height);
 
          cols[gridline_id]->get<Space>()->visible(this->is_visible_);
       }
@@ -127,7 +129,7 @@ void GridSystem::on_update(Game& game, Entity& e) {
          // modify row
          Rectangle* gridline = rows[gridline_id]->get<Rectangle>();
          gridline->position(camera_bounds.left, r);
-         gridline->size(camera_bounds.width, 1);
+         gridline->size(camera_bounds.width, 1 / e.get<Grid>()->zoom_factor.y);
 
          rows[gridline_id]->get<Space>()->visible(this->is_visible_);
       }
@@ -140,6 +142,8 @@ void GridSystem::on_update(Game& game, Entity& e) {
       rows[r]->get<Space>()->visible(false);
    }
 
+   unsigned int interval = 3;
+
    // update the text markers
    gridline_id = 0;
    std::map<unsigned int, Entity*>::iterator ty;
@@ -149,14 +153,14 @@ void GridSystem::on_update(Game& game, Entity& e) {
          int col_pos = ty->second->get<Rectangle>()->position().y;
          int row_pos = tx->second->get<Rectangle>()->position().x;
 
-         if ((row_pos >= 0 && row_pos % (3 * e.get<Grid>()->tile_height()) != 0)
-             || (row_pos < 0 && (row_pos - e.get<Grid>()->tile_height()) % (3 * e.get<Grid>()->tile_height()) != 0)
+         if ((row_pos >= 0 && row_pos % (interval * e.get<Grid>()->tile_height()) != 0)
+             || (row_pos < 0 && (row_pos - e.get<Grid>()->tile_height()) % (interval * e.get<Grid>()->tile_height()) != 0)
             ) {
             continue;
          }
 
-         if ((col_pos >= 0 && col_pos % (3 * e.get<Grid>()->tile_width()) != 0)
-             || (col_pos < 0 && (col_pos - e.get<Grid>()->tile_width()) % (3 * e.get<Grid>()->tile_width()) != 0)
+         if ((col_pos >= 0 && col_pos % (interval * e.get<Grid>()->tile_width()) != 0)
+             || (col_pos < 0 && (col_pos - e.get<Grid>()->tile_width()) % (interval * e.get<Grid>()->tile_width()) != 0)
             ) {
             continue;
          }
@@ -176,6 +180,7 @@ void GridSystem::on_update(Game& game, Entity& e) {
          // modify text marker
          text_markers[gridline_id]->get<Text>()->string(std::to_string((int)tm_val.x) + ", " + std::to_string((int)tm_val.y));
          text_markers[gridline_id]->get<Text>()->position(tm_pos);
+         text_markers[gridline_id]->get<Text>()->font_size(9 / e.get<Grid>()->zoom_factor.x);
 
          text_markers[gridline_id]->get<Space>()->visible(this->is_visible_);
 

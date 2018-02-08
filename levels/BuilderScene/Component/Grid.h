@@ -29,6 +29,8 @@ public:
    sf::Vector2f round(const sf::Vector2f& pos);
    sf::Vector2f ceil(const sf::Vector2f& pos);
 
+   sf::Vector2f zoom_factor;
+
 private:
    sf::Vector2f origin_;
 
