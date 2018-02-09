@@ -27,6 +27,11 @@ public:
 
    // input event processing
    virtual void process(Game& game, CloseInputEvent& e);
+   virtual void process(Game& game, MouseEnteredInputEvent& e);
+   virtual void process(Game& game, MouseLeftInputEvent& e);
+
+private:
+   Handle mouse_cursor_;
 };
 
 #endif

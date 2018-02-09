@@ -5,6 +5,10 @@
 #include "InputEvent.h"
 
 class CloseInputEvent;
+class LostFocusInputEvent;
+class GainedFocusInputEvent;
+class MouseEnteredInputEvent;
+class MouseLeftInputEvent;
 class ResizeInputEvent;
 class KeyPressInputEvent;
 class KeyReleaseInputEvent;
@@ -26,6 +30,10 @@ public:
 
    // input event processing
    virtual void process(CloseInputEvent& e) = 0;
+   virtual void process(LostFocusInputEvent& e) = 0;
+   virtual void process(GainedFocusInputEvent& e) = 0;
+   virtual void process(MouseEnteredInputEvent& e) = 0;
+   virtual void process(MouseLeftInputEvent& e) = 0;
    virtual void process(ResizeInputEvent& e) = 0;
    virtual void process(KeyPressInputEvent& e) = 0;
    virtual void process(KeyReleaseInputEvent& e) = 0;

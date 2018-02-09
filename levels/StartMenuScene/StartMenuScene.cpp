@@ -92,6 +92,8 @@ void StartMenuScene::init(Game& game) {
    Entity* mouse_cursor = this->get_entity(this->create_entity());
    mouse_cursor->id("MouseCursorEntity");
 
+   this->mouse_cursor_ = mouse_cursor->handle();
+
    mouse_cursor->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
 
    mouse_cursor->add<Rectangle>("MouseCursorRectangle", 0, 0, 6, 6);
@@ -129,4 +131,18 @@ void StartMenuScene::enter(Game& game) {
 
 void StartMenuScene::exit(Game& game) {
    Game::logger().msg(this->id(), Logger::INFO, "Exiting game start menu state.");
+}
+
+void StartMenuScene::process(Game& game, MouseEnteredInputEvent& e) {
+   Entity* cursor = this->get_entity(this->mouse_cursor_);
+   if (cursor) {
+      cursor->get<Space>()->visible(true);
+   }
+}
+
+void StartMenuScene::process(Game& game, MouseLeftInputEvent& e) {
+   Entity* cursor = this->get_entity(this->mouse_cursor_);
+   if (cursor) {
+      cursor->get<Space>()->visible(false);
+   }
 }

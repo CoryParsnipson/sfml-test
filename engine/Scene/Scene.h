@@ -7,6 +7,10 @@
 #include <cassert>
 
 #include "CloseInputEvent.h"
+#include "LostFocusInputEvent.h"
+#include "GainedFocusInputEvent.h"
+#include "MouseEnteredInputEvent.h"
+#include "MouseLeftInputEvent.h"
 #include "ResizeInputEvent.h"
 #include "KeyPressInputEvent.h"
 #include "KeyReleaseInputEvent.h"
@@ -203,6 +207,10 @@ public:
    virtual void process(Game& game, CloseInputEvent& e) {
       game.unload_scene();
    }
+   virtual void process(Game& game, LostFocusInputEvent& e) {}
+   virtual void process(Game& game, GainedFocusInputEvent& e) {}
+   virtual void process(Game& game, MouseEnteredInputEvent& e) {}
+   virtual void process(Game& game, MouseLeftInputEvent& e) {}
    virtual void process(Game& game, KeyPressInputEvent& e) {}
    virtual void process(Game& game, KeyReleaseInputEvent& e) {}
    virtual void process(Game& game, ResizeInputEvent& e) {

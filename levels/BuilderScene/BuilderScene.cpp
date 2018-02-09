@@ -348,6 +348,8 @@ void BuilderScene::init(Game& game) {
    Entity* mouse_cursor = this->get_entity(this->create_entity());
    mouse_cursor->id("MouseCursorEntity");
 
+   this->mouse_cursor_ = mouse_cursor->handle();
+
    // add mouse_cursor to the hud_root
    this->send_message_async<AddToEntityMessage>(hud_root->handle(), mouse_cursor->handle()); // added this last to put it on top
 
@@ -523,4 +525,18 @@ void BuilderScene::exit(Game& game) {
 
 void BuilderScene::process(Game& game, CloseInputEvent& e) {
    game.unload_scene();
+}
+
+void BuilderScene::process(Game& game, MouseEnteredInputEvent& e) {
+   Entity* cursor = this->get_entity(this->mouse_cursor_);
+   if (cursor) {
+      cursor->get<Space>()->visible(true);
+   }
+}
+
+void BuilderScene::process(Game& game, MouseLeftInputEvent& e) {
+   Entity* cursor = this->get_entity(this->mouse_cursor_);
+   if (cursor) {
+      cursor->get<Space>()->visible(false);
+   }
 }

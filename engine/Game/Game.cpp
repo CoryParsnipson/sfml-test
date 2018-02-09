@@ -12,6 +12,10 @@
 #include "Keyboard.h"
 
 #include "CloseInputEvent.h"
+#include "LostFocusInputEvent.h"
+#include "GainedFocusInputEvent.h"
+#include "MouseEnteredInputEvent.h"
+#include "MouseLeftInputEvent.h"
 #include "ResizeInputEvent.h"
 #include "KeyPressInputEvent.h"
 #include "KeyReleaseInputEvent.h"
@@ -144,6 +148,22 @@ Scene* Game::current_scene() {
 }
 
 void Game::process(CloseInputEvent& e) {
+   this->scenes_.top()->process(*this, e);
+}
+
+void Game::process(LostFocusInputEvent& e) {
+   this->scenes_.top()->process(*this, e);
+}
+
+void Game::process(GainedFocusInputEvent& e) {
+   this->scenes_.top()->process(*this, e);
+}
+
+void Game::process(MouseEnteredInputEvent& e) {
+   this->scenes_.top()->process(*this, e);
+}
+
+void Game::process(MouseLeftInputEvent& e) {
    this->scenes_.top()->process(*this, e);
 }
 

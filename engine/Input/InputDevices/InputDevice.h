@@ -57,6 +57,10 @@ public:
 
    // input event processing
    virtual void process(CloseInputEvent& e) {}
+   virtual void process(LostFocusInputEvent& e) {}
+   virtual void process(GainedFocusInputEvent& e) {}
+   virtual void process(MouseEnteredInputEvent& e) {}
+   virtual void process(MouseLeftInputEvent& e) {}
    virtual void process(ResizeInputEvent& e) {}
    virtual void process(KeyPressInputEvent& e) {}
    virtual void process(KeyReleaseInputEvent& e) {}

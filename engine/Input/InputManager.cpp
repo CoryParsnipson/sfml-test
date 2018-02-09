@@ -2,6 +2,10 @@
 #include "InputManager.h"
 #include "InputEvent.h"
 #include "CloseInputEvent.h"
+#include "LostFocusInputEvent.h"
+#include "GainedFocusInputEvent.h"
+#include "MouseEnteredInputEvent.h"
+#include "MouseLeftInputEvent.h"
 #include "ResizeInputEvent.h"
 #include "KeyPressInputEvent.h"
 #include "KeyReleaseInputEvent.h"
@@ -55,16 +59,20 @@ void InputManager::poll_event(Game& game) {
          break;
       case sf::Event::LostFocus:
          Game::logger().msg("InputManager", Logger::INFO, "Received LostFocus event.");
-         continue; // TODO: create input event for this?
+         event = new LostFocusInputEvent();
+         break;
       case sf::Event::GainedFocus:
          Game::logger().msg("InputManager", Logger::INFO, "Received GainedFocus event.");
-         continue; // TODO: create input event for this?
+         event = new GainedFocusInputEvent();
+         break;
       case sf::Event::MouseEntered:
          Game::logger().msg("InputManager", Logger::INFO, "Received MouseEntered event.");
-         continue; // TODO: create input event for this?
+         event = new MouseEnteredInputEvent();
+         break;
       case sf::Event::MouseLeft:
          Game::logger().msg("InputManager", Logger::INFO, "Received MouseLeft event.");
-         continue; // TODO: create input event for this?
+         event = new MouseLeftInputEvent();
+         break;
       case sf::Event::Resized:
          Game::logger().msg("InputManager", Logger::INFO, "Received resize event.");
          event = new ResizeInputEvent(sfml_event.size.width, sfml_event.size.height);
