@@ -434,8 +434,12 @@ void BuilderScene::init(Game& game) {
       float mouse_wheel_pos = game.get_player(1).bindings().get<MouseWheelIntent>()->element()->position();
       float wheel_delta = mouse_wheel_pos - mouse_cursor_script->get<Callback>()->prev_mouse_wheel_pos();
 
-      map_root->get<Space>()->scale(map_root->get<Space>()->scale() + sf::Vector2f(wheel_delta / 15.f, wheel_delta / 15.f));
-      grid_root->get<Grid>()->zoom_factor = map_root->get<Space>()->scale() + sf::Vector2f(wheel_delta / 15.f, wheel_delta / 15.f);
+      sf::Vector2f new_scale(map_root->get<Space>()->scale() + sf::Vector2f(wheel_delta / 15.f, wheel_delta / 15.f));
+      new_scale.x = std::max(new_scale.x, 0.25f);
+      new_scale.y = std::max(new_scale.y, 0.25f);
+
+      map_root->get<Space>()->scale(new_scale);
+      grid_root->get<Grid>()->zoom_factor = new_scale;
    });
 
    mouse_cursor_script->get<Callback>()->left_click([selection_rect, &game] () {
