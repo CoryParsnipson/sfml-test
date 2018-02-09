@@ -10,6 +10,9 @@
 #include "Observer.h"
 #include "InputDevice.h"
 
+// ----------------------------------------------------------------------------
+// forward declarations
+// ----------------------------------------------------------------------------
 class Game;
 class InputEvent;
 
@@ -52,7 +55,7 @@ class InputManager
 : public Subject<InputEvent>
 {
 public:
-   using DeviceId = unsigned short int;
+   using DeviceMap = std::map<InputDevice::DeviceId, InputDevice*>;
 
    static std::vector<std::string> KeyStr;
 
@@ -61,12 +64,12 @@ public:
 
    virtual void poll_event(Game& game);
 
-   void add_device(InputDevice* device);
-   InputDevice* get_device(DeviceId device_id);
-   // list_devices // TODO
+   InputDevice::DeviceId add_device(InputDevice* device);
+   InputDevice* get_device(InputDevice::DeviceId device_id);
+   DeviceMap& list_devices();
 
 private:
-   std::map<DeviceId, InputDevice*> devices_;
+   DeviceMap devices_;
 };
 
 #endif

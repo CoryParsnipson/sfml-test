@@ -38,7 +38,7 @@ InputManager::InputManager(std::string id /* = "InputManager" */)
 }
 
 InputManager::~InputManager() {
-   for (std::map<DeviceId, InputDevice*>::const_iterator it = this->devices_.begin(); it != this->devices_.end(); ++it) {
+   for (InputManager::DeviceMap::const_iterator it = this->devices_.begin(); it != this->devices_.end(); ++it) {
       delete it->second;
    }
    this->devices_.clear();
@@ -152,21 +152,27 @@ void InputManager::poll_event(Game& game) {
    }
 }
 
-void InputManager::add_device(InputDevice* device) {
+InputDevice::DeviceId InputManager::add_device(InputDevice* device) {
    if (device == nullptr) {
-      Game::logger().msg("InputManager", Logger::INFO, "Received nullptr device, not adding.");
-      return;
+      Game::logger().msg("InputManager", Logger::WARNING, "Received nullptr device, not adding.");
+      return 0;
    }
 
    this->devices_[device->device_id()] = device;
    this->attach(*device);
+
+   return device->device_id();
 }
 
-InputDevice* InputManager::get_device(DeviceId device_id) {
-   std::map<DeviceId, InputDevice*>::const_iterator it = this->devices_.find(device_id);
+InputDevice* InputManager::get_device(InputDevice::DeviceId device_id) {
+   InputManager::DeviceMap::const_iterator it = this->devices_.find(device_id);
    if (it != this->devices_.end()) {
       return it->second;
    }
 
    return nullptr;
+}
+
+InputManager::DeviceMap& InputManager::list_devices() {
+   return this->devices_;
 }
