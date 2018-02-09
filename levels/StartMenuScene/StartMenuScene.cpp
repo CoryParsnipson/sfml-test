@@ -81,7 +81,7 @@ void StartMenuScene::init(Game& game) {
    GraphicalSystem* gs = dynamic_cast<GraphicalSystem*>(this->get_system("GraphicalSystem"));
 
    text_layer->get<Callback>()->camera_resize([text_layer, gs] () {
-      text_layer->get<Space>()->position(gs->camera()->get_center());
+      text_layer->get<Space>()->position(gs->camera()->center());
    });
 
    this->send_message_async<AddToEntityMessage>(text_layer->handle(), title->handle());

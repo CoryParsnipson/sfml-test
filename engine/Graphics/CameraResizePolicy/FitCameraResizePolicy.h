@@ -14,7 +14,7 @@ class FitCameraResizePolicy : public CameraResizePolicy {
 public:
    FitCameraResizePolicy();
 
-   virtual void resize(Camera& camera, sf::Vector2f size);
+   virtual void resize(Camera& camera, const sf::Vector2f& size);
 };
 
 #endif

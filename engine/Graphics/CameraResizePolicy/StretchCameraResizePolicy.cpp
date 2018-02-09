@@ -12,11 +12,11 @@ StretchCameraResizePolicy::StretchCameraResizePolicy(sf::Vector2f size)
 {
 }
 
-void StretchCameraResizePolicy::resize(Camera& camera, sf::Vector2f size) {
+void StretchCameraResizePolicy::resize(Camera& camera, const sf::Vector2f& size) {
   Game::logger().msg("StretchCameraResizePolicy", Logger::INFO, "Resizing from "
-     + std::to_string((int)camera.get_size().x) + "x" + std::to_string((int)camera.get_size().y)
-     + " to " + std::to_string((int)size.x) + "x" + std::to_string((int)size.y));
+     + std::to_string((int)camera.size().x) + "x" + std::to_string((int)camera.size().y)
+     + " to " + std::to_string((int)this->size_.x) + "x" + std::to_string((int)this->size_.y));
 
-   camera.set_size(this->size_);
-   camera.set_center(0.5f * this->size_);
+   this->set_camera_size(camera, this->size_);
+   camera.center(0.5f * this->size_);
 }

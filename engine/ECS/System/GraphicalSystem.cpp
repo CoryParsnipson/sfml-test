@@ -23,7 +23,7 @@ GraphicalSystem::GraphicalSystem(const std::string& id, RenderSurface& surface, 
 {
    // handle resize messages
    this->mailbox().handle<ResizeCameraMessage>([this](ResizeCameraMessage& msg) {
-      this->camera_->resize(sf::Vector2f(msg.width, msg.height));
+      this->camera_->size(sf::Vector2f(msg.width, msg.height));
    });
 }
 

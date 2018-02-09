@@ -148,10 +148,10 @@ void BuilderScene::init(Game& game) {
    backdrop->add<Callback>("BackdropCallback");
 
    backdrop->get<Callback>()->camera_resize([backdrop, gs] () {
-      sf::Vector2f camera_bounds = gs->camera()->get_size();
+      sf::Vector2f camera_bounds = gs->camera()->size();
 
-      camera_bounds.x *= gs->camera()->get_viewport().width / gs->camera()->get_scale();
-      camera_bounds.y *= gs->camera()->get_viewport().height / gs->camera()->get_scale();
+      camera_bounds.x *= gs->camera()->viewport().width / gs->camera()->zoom();
+      camera_bounds.y *= gs->camera()->viewport().height / gs->camera()->zoom();
 
       backdrop->get<VertexList>()->vertex_position(0, sf::Vector2f(0, 0));
       backdrop->get<VertexList>()->vertex_position(1, sf::Vector2f(0, camera_bounds.y));
@@ -171,14 +171,14 @@ void BuilderScene::init(Game& game) {
    fps_display->add<Callback>("FPSDisplayCallback");
 
    fps_display->get<Callback>()->camera_resize([fps_display, gs] () {
-      sf::Vector2f camera_bounds = gs->camera()->get_size();
+      sf::Vector2f camera_bounds = gs->camera()->size();
       sf::Vector2f text_size;
 
       text_size.x = fps_display->get<Text>()->local_bounds().width;
       text_size.y = fps_display->get<Text>()->local_bounds().height;
 
-      camera_bounds.x *= gs->camera()->get_viewport().width / gs->camera()->get_scale();
-      camera_bounds.y *= gs->camera()->get_viewport().height / gs->camera()->get_scale();
+      camera_bounds.x *= gs->camera()->viewport().width / gs->camera()->zoom();
+      camera_bounds.y *= gs->camera()->viewport().height / gs->camera()->zoom();
 
       fps_display->get<Text>()->position(camera_bounds - text_size - sf::Vector2f(10, 10));
    });
@@ -223,7 +223,7 @@ void BuilderScene::init(Game& game) {
 
    // readjust tile palette window (and children) when the camera is resized
    tile_palette_window->get<Callback>()->camera_resize([tile_palette_window, gs] () {
-      float camera_width = gs->camera()->get_size().x * gs->camera()->get_viewport().width / gs->camera()->get_scale();
+      float camera_width = gs->camera()->size().x * gs->camera()->viewport().width / gs->camera()->zoom();
       sf::Vector2f new_pos(camera_width - tile_palette_window->get<Rectangle>()->size().x - 10, 10);
       sf::Vector2f old_pos(tile_palette_window->get<Space>()->position());
 
@@ -494,9 +494,9 @@ void BuilderScene::init(Game& game) {
    });
 
    mouse_cursor_script->get<Callback>()->camera_resize([mouse_cursor_script, gs] () {
-      sf::Vector2f new_size = gs->camera()->get_size();
-      new_size.x *= gs->camera()->get_viewport().width;
-      new_size.y *= gs->camera()->get_viewport().height;
+      sf::Vector2f new_size = gs->camera()->size();
+      new_size.x *= gs->camera()->viewport().width;
+      new_size.y *= gs->camera()->viewport().height;
 
       // make sure the mouse cursor script collision volume fills the whole camera
       mouse_cursor_script->get<Collision>()->volume(sf::Vector2f(0, 0), new_size);

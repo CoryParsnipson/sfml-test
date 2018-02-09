@@ -3,6 +3,14 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Camera.h"
+
+// ----------------------------------------------------------------------------
+// RenderSurface
+//
+// This is an abstract interface to define an object that represents video
+// memory.
+// ----------------------------------------------------------------------------
 class RenderSurface {
 public:
    RenderSurface() {}
@@ -12,14 +20,16 @@ public:
 
    // draw interface
    virtual void draw(sf::Drawable& drawable, sf::RenderStates render_states = sf::RenderStates::Default) = 0;
+   virtual void draw(Camera* camera, sf::RenderStates render_states = sf::RenderStates::Default) = 0;
 
    // update interface
    virtual void update() = 0;
    virtual void clear(const sf::Color& color = sf::Color::Black) = 0;
 
-   // for internal use only...
-   virtual const sf::View& view() const = 0;
-   virtual void view(const sf::View& view) = 0;
+protected:
+   virtual void set_view(Camera* camera, sf::RenderWindow& window, sf::RenderStates render_states = sf::RenderStates::Default) {
+      window.setView(camera->view_);
+   }
 };
 
 #endif

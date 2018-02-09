@@ -3,6 +3,14 @@
 
 #include "RenderSurface.h"
 
+// ----------------------------------------------------------------------------
+// forward declaration
+// ----------------------------------------------------------------------------
+class Camera;
+
+// ----------------------------------------------------------------------------
+// Canvas
+// ----------------------------------------------------------------------------
 class Canvas
 : public RenderSurface
 {
@@ -13,6 +21,7 @@ public:
    virtual sf::Vector2f size() const;
 
    virtual void draw(sf::Drawable& drawable, sf::RenderStates render_states = sf::RenderStates::Default);
+   virtual void draw(Camera* camera, sf::RenderStates render_states = sf::RenderStates::Default);
 
    virtual void update();
    virtual void clear(const sf::Color& color = sf::Color::Black);
@@ -22,10 +31,6 @@ public:
    void set_mouse_cursor_visible(bool visible);
 
    bool poll_event(sf::Event& event);
-
-   // for internal use only...
-   virtual const sf::View& view() const;
-   virtual void view(const sf::View& view);
 
 protected:
    sf::RenderWindow surface_;
