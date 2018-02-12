@@ -487,9 +487,23 @@ void BuilderScene::init(Game& game) {
       if (!is_drag_gesture && tile_selection->get<Space>()->visible() && tile_selection->get<Collision>()->contains(release_pos)) {
          tile_selection->get<Space>()->visible(false);
       } else {
-         // round rectangle to nearest grid point
-         pos = grid_root->get<Grid>()->floor(pos);
-         end = grid_root->get<Grid>()->ceil(end);
+         float tile_width = grid_root->get<Grid>()->tile_width() * grid_root->get<Grid>()->zoom_factor.x;
+         float tile_height = grid_root->get<Grid>()->tile_height() * grid_root->get<Grid>()->zoom_factor.y;
+
+         // make this at least 1 tile big (if you provide grid with value that falls
+         // directly on gridline it can give identical values for floor and ceil)
+         if (end.x - pos.x < tile_width || end.y - pos.y < tile_height) {
+            end.x += tile_width;
+            end.y += tile_height;
+
+            // round rectangle to nearest grid point
+            pos = grid_root->get<Grid>()->floor(pos);
+            end = grid_root->get<Grid>()->floor(end);
+         } else {
+            // round rectangle to nearest grid point
+            pos = grid_root->get<Grid>()->floor(pos);
+            end = grid_root->get<Grid>()->ceil(end);
+         }
          
          // update tile selection entity
          tile_selection->get<Rectangle>()->position(pos);
