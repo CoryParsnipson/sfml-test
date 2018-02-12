@@ -55,6 +55,8 @@ public:
    , is_initialized_(false)
    , entities_(id + "EntityPool", 20000, [this](){ return Entity("entity", this, &this->components_); })
    {
+      // TODO: this value should come from config
+      this->components_.create_pool<Space>("", 20000);
    }
 
    virtual ~Scene() {
