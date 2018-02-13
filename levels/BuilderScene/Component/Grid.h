@@ -12,18 +12,18 @@
 // ----------------------------------------------------------------------------
 class Grid : public Component {
 public:
-   explicit Grid(const std::string& id = "Grid Component", sf::Vector2f origin = sf::Vector2f(0, 0), unsigned int width = 1, unsigned int height = 1);
+   explicit Grid(const std::string& id = "Grid Component", sf::Vector2f origin = sf::Vector2f(0, 0), float width = 1.f, float height = 1.f);
    Grid(const Grid& other);
    virtual ~Grid();
 
    Grid& operator=(const Grid& other);
    void swap(Grid& other);
 
-   unsigned int tile_width() const;
-   void tile_width(unsigned int width);
+   float tile_width() const;
+   void tile_width(float width);
 
-   unsigned int tile_height() const;
-   void tile_height(unsigned int height);
+   float tile_height() const;
+   void tile_height(float height);
 
    sf::Vector2f floor(const sf::Vector2f& pos);
    sf::Vector2f round(const sf::Vector2f& pos);
@@ -34,8 +34,8 @@ public:
 private:
    sf::Vector2f origin_;
 
-   unsigned int tile_width_;
-   unsigned int tile_height_;
+   float tile_width_;
+   float tile_height_;
 };
 
 #endif

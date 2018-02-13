@@ -91,7 +91,7 @@ void GridSystem::on_update(Game& game, Entity& e) {
    sf::Vector2f start_point = e.get<Grid>()->ceil(sf::Vector2f(camera_bounds.left - e.get<Grid>()->tile_width(), camera_bounds.top - e.get<Grid>()->tile_height()));
    sf::Vector2f end_point = e.get<Grid>()->ceil(sf::Vector2f(camera_bounds.left + camera_bounds.width + e.get<Grid>()->tile_width(), camera_bounds.top + camera_bounds.height + e.get<Grid>()->tile_height()));
 
-   for (int c = start_point.x; c <= end_point.x; c += e.get<Grid>()->tile_width()) {
+   for (float c = start_point.x; c <= end_point.x; c += e.get<Grid>()->tile_width()) {
       if (cols[gridline_id] == nullptr || cols[gridline_id]->get<Rectangle>() == nullptr) {
          if (cols[gridline_id] != nullptr && cols[gridline_id]->get<Rectangle>() == nullptr) {
             this->scene().remove_entity(cols[gridline_id]->handle());
@@ -117,7 +117,7 @@ void GridSystem::on_update(Game& game, Entity& e) {
    }
 
    gridline_id = 0;
-   for (int r = start_point.y; r <= end_point.y; r += e.get<Grid>()->tile_height()) {
+   for (float r = start_point.y; r <= end_point.y; r += e.get<Grid>()->tile_height()) {
       if (rows[gridline_id] == nullptr || rows[gridline_id]->get<Rectangle>() == nullptr) {
          if (rows[gridline_id] != nullptr && rows[gridline_id]->get<Rectangle>() == nullptr) {
             this->scene().remove_entity(cols[gridline_id]->handle());
@@ -150,17 +150,17 @@ void GridSystem::on_update(Game& game, Entity& e) {
    std::map<unsigned int, Entity*>::iterator tx;
    for (ty = rows.begin(); ty != rows.end(); ++ty) {
       for (tx = cols.begin(); tx != cols.end(); ++tx) {
-         int col_pos = ty->second->get<Rectangle>()->position().y;
-         int row_pos = tx->second->get<Rectangle>()->position().x;
+         float col_pos = ty->second->get<Rectangle>()->position().y;
+         float row_pos = tx->second->get<Rectangle>()->position().x;
 
-         if ((row_pos >= 0 && row_pos % (interval * e.get<Grid>()->tile_height()) != 0)
-             || (row_pos < 0 && (row_pos - e.get<Grid>()->tile_height()) % (interval * e.get<Grid>()->tile_height()) != 0)
+         if ((row_pos >= 0 && (int)row_pos % (interval * (int)e.get<Grid>()->tile_height()) != 0)
+             || (row_pos < 0 && ((int)row_pos - (int)e.get<Grid>()->tile_height()) % (interval * (int)e.get<Grid>()->tile_height()) != 0)
             ) {
             continue;
          }
 
-         if ((col_pos >= 0 && col_pos % (interval * e.get<Grid>()->tile_width()) != 0)
-             || (col_pos < 0 && (col_pos - e.get<Grid>()->tile_width()) % (interval * e.get<Grid>()->tile_width()) != 0)
+         if ((col_pos >= 0 && (int)col_pos % (interval * (int)e.get<Grid>()->tile_width()) != 0)
+             || (col_pos < 0 && ((int)col_pos - (int)e.get<Grid>()->tile_width()) % (interval * (int)e.get<Grid>()->tile_width()) != 0)
             ) {
             continue;
          }

@@ -2,7 +2,7 @@
 
 #include "Grid.h"
 
-Grid::Grid(const std::string& id /* = "Grid Component" */, sf::Vector2f origin /* = sf::Vector2f(0, 0) */, unsigned int width /* = 1 */, unsigned int height /* = 1 */)
+Grid::Grid(const std::string& id /* = "Grid Component" */, sf::Vector2f origin /* = sf::Vector2f(0, 0) */, float width /* = 1.f */, float height /* = 1.f */)
 : Component(id)
 , zoom_factor(1.f, 1.f)
 , origin_(origin)
@@ -37,45 +37,54 @@ void Grid::swap(Grid& other) {
    std::swap(this->tile_height_, other.tile_height_);
 }
 
-unsigned int Grid::tile_width() const {
+float Grid::tile_width() const {
    return this->tile_width_;
 }
 
-void Grid::tile_width(unsigned int width) {
+void Grid::tile_width(float width) {
    this->tile_width_ = width;
 }
 
-unsigned int Grid::tile_height() const {
+float Grid::tile_height() const {
    return this->tile_height_;
 }
 
-void Grid::tile_height(unsigned int height) {
+void Grid::tile_height(float height) {
    this->tile_height_ = height;
 }
 
 sf::Vector2f Grid::floor(const sf::Vector2f& pos) {
-   sf::Vector2f origin_offset((int)this->origin_.x % this->tile_width(), (int)this->origin_.y % this->tile_height());
+   float tile_width = this->tile_width();
+   float tile_height = this->tile_height();
+
+   sf::Vector2f origin_offset(std::fmod(this->origin_.x, tile_width), std::fmod(this->origin_.y, tile_height));
 
    return origin_offset + sf::Vector2f(
-      std::floor(pos.x / this->tile_width()) * this->tile_width(),
-      std::floor(pos.y / this->tile_height()) * this->tile_height()
+      std::floor(pos.x / tile_height) * tile_width,
+      std::floor(pos.y / tile_height) * tile_height
    );
 }
 
 sf::Vector2f Grid::round(const sf::Vector2f& pos) {
-   sf::Vector2f origin_offset((int)this->origin_.x % this->tile_width(), (int)this->origin_.y % this->tile_height());
+   float tile_width = this->tile_width();
+   float tile_height = this->tile_height();
+
+   sf::Vector2f origin_offset(std::fmod(this->origin_.x, tile_width), std::fmod(this->origin_.y, tile_height));
 
    return origin_offset + sf::Vector2f(
-      std::round(pos.x / this->tile_width()) * this->tile_width(),
-      std::round(pos.y / this->tile_height()) * this->tile_height()
+      std::round(pos.x / tile_height) * tile_width,
+      std::round(pos.y / tile_height) * tile_height
    );
 }
 
 sf::Vector2f Grid::ceil(const sf::Vector2f& pos) {
-   sf::Vector2f origin_offset((int)this->origin_.x % this->tile_width(), (int)this->origin_.y % this->tile_height());
+   float tile_width = this->tile_width();
+   float tile_height = this->tile_height();
+
+   sf::Vector2f origin_offset(std::fmod(this->origin_.x, tile_width), std::fmod(this->origin_.y, tile_height));
 
    return origin_offset + sf::Vector2f(
-      std::ceil(pos.x / this->tile_width()) * this->tile_width(),
-      std::ceil(pos.y / this->tile_height()) * this->tile_height()
+      std::ceil(pos.x / tile_height) * tile_width,
+      std::ceil(pos.y / tile_height) * tile_height
    );
 }
