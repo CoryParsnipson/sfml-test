@@ -88,3 +88,15 @@ sf::Vector2f Grid::ceil(const sf::Vector2f& pos) {
       std::ceil(pos.y / tile_height) * tile_height
    );
 }
+
+sf::Vector2i Grid::grid_index(const sf::Vector2f& pos) {
+   sf::Vector2f rounded_pos = this->round(pos);
+   float tile_width = this->tile_width() * this->zoom_factor.x;
+   float tile_height = this->tile_height() * this->zoom_factor.y;
+
+   return sf::Vector2i(std::round(rounded_pos.x / tile_width), std::round(rounded_pos.y / tile_height));
+}
+
+sf::Vector2i Grid::grid_index(float x, float y) {
+   return this->grid_index(sf::Vector2f(x, y));
+}

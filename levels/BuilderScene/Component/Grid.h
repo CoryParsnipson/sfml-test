@@ -29,6 +29,10 @@ public:
    sf::Vector2f round(const sf::Vector2f& pos);
    sf::Vector2f ceil(const sf::Vector2f& pos);
 
+   // this function rounds to the nearest grid point and returns a vector divided by tile height and width
+   sf::Vector2i grid_index(const sf::Vector2f& pos);
+   sf::Vector2i grid_index(float x, float y);
+
    sf::Vector2f zoom_factor;
 
 private:

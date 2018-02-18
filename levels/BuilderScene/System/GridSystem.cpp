@@ -157,10 +157,9 @@ void GridSystem::on_update(Game& game, Entity& e) {
          float col_pos = tx->second->get<Rectangle>()->position().x;
          float row_pos = ty->second->get<Rectangle>()->position().y;
 
-         unsigned int col_id = static_cast<unsigned int>(std::round(std::abs(col_pos) / tile_width));
-         unsigned int row_id = static_cast<unsigned int>(std::round(std::abs(row_pos) / tile_height));
+         sf::Vector2i grid_idx = e.get<Grid>()->grid_index(col_pos, row_pos);
 
-         if (!ty->second->get<Space>()->visible() || !tx->second->get<Space>()->visible() || row_id  % interval != 0 || col_id % interval != 0) {
+         if (!ty->second->get<Space>()->visible() || !tx->second->get<Space>()->visible() || std::abs(grid_idx.y) % interval != 0 || std::abs(grid_idx.x) % interval != 0) {
             continue;
          }
 
@@ -178,9 +177,9 @@ void GridSystem::on_update(Game& game, Entity& e) {
 
          // modify text marker
          text_markers[gridline_id]->get<Text>()->string(
-            std::to_string((int)(col_id * e.get<Grid>()->tile_width())) +
+            std::to_string((int)(grid_idx.x * e.get<Grid>()->tile_width())) +
             ", " +
-            std::to_string((int)(row_id * e.get<Grid>()->tile_height()))
+            std::to_string((int)(grid_idx.y * e.get<Grid>()->tile_height()))
          );
          text_markers[gridline_id]->get<Text>()->position(tm_pos);
 

@@ -501,7 +501,7 @@ void BuilderScene::init(Game& game) {
       bool is_drag_gesture = (end.x - pos.x >= grid_root->get<Grid>()->tile_width() / 3.f ||
                               end.y - pos.y >= grid_root->get<Grid>()->tile_height() / 3.f);
 
-      if (!is_drag_gesture && tile_selection->get<Space>()->visible() && tile_selection->get<Collision>()->contains(release_pos)) {
+      if (!is_drag_gesture && tile_selection->get<Space>()->visible() && tile_selection->get<Rectangle>()->global_bounds().contains(release_pos)) {
          tile_selection->get<Space>()->visible(false);
       } else {
          float tile_width = grid_root->get<Grid>()->tile_width() * grid_root->get<Grid>()->zoom_factor.x;
@@ -530,21 +530,12 @@ void BuilderScene::init(Game& game) {
          tile_selection->get<Rectangle>()->size(end_visual - pos_visual);
 
          // need to transform collision component to match map_root
-         sf::Vector2f old_zoom_factor = grid_root->get<Grid>()->zoom_factor;
-         grid_root->get<Grid>()->zoom_factor = sf::Vector2f(1.f, 1.f);
+         sf::Vector2i pos_idx = grid_root->get<Grid>()->grid_index(pos_visual);
+         sf::Vector2i end_idx = grid_root->get<Grid>()->grid_index(end_visual);
 
-         if (end.x - pos.x < grid_root->get<Grid>()->tile_width() || end.y - pos.y < grid_root->get<Grid>()->tile_height()) {
-            end.x += grid_root->get<Grid>()->tile_width();
-            end.y += grid_root->get<Grid>()->tile_height();
-
-            pos = grid_root->get<Grid>()->floor(pos);
-            end = grid_root->get<Grid>()->floor(end);
-         } else {
-            pos = grid_root->get<Grid>()->floor(pos);
-            end = grid_root->get<Grid>()->ceil(end);
-         }
-         grid_root->get<Grid>()->zoom_factor = old_zoom_factor;
-         tile_selection->get<Collision>()->volume(pos, end - pos);
+         sf::Vector2f test_pos(grid_root->get<Grid>()->tile_width() * pos_idx.x, grid_root->get<Grid>()->tile_height() * pos_idx.y);
+         sf::Vector2f test_end(grid_root->get<Grid>()->tile_width() * end_idx.x, grid_root->get<Grid>()->tile_height() * end_idx.y);
+         tile_selection->get<Collision>()->volume(test_pos, test_end - test_pos);
 
          tile_selection->get<Space>()->visible(true);
       }
