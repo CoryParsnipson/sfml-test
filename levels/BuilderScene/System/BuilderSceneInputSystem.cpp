@@ -71,16 +71,32 @@ void BuilderSceneInputSystem::pre_update(Game& game) {
       map_entity->get<Space>()->scale(sf::Vector2f(1.f, 1.f));
 
       Entity* grid_entity = this->scene().get_entity(this->grid_entity);
+      Entity* tile_selection = this->scene().get_entity(this->tile_selection);
+
+      sf::Vector2f pos = tile_selection->get<Rectangle>()->position();
+      sf::Vector2f end = pos + tile_selection->get<Rectangle>()->size();
+
+      sf::Vector2i pos_idx = grid_entity->get<Grid>()->grid_index(pos);
+      sf::Vector2i end_idx = grid_entity->get<Grid>()->grid_index(end);
+
+      // reset grid
       grid_entity->get<Space>()->position(0, 0);
       grid_entity->get<Grid>()->zoom_factor.x = 1.f;
       grid_entity->get<Grid>()->zoom_factor.y = 1.f;
 
-      // unset tile selection
-      Entity* tile_selection = this->scene().get_entity(this->tile_selection);
-      tile_selection->get<Space>()->visible(false);
-      tile_selection->get<Rectangle>()->position(0, 0);
-      tile_selection->get<Rectangle>()->size(0, 0);
-      tile_selection->get<Collision>()->volume(sf::Vector2f(0, 0), sf::Vector2f(0, 0));
+      // recalculate tile selection visual
+      sf::Vector2f new_pos;
+      new_pos.x = grid_entity->get<Grid>()->tile_width() * pos_idx.x;
+      new_pos.y = grid_entity->get<Grid>()->tile_height() * pos_idx.y;
+
+      sf::Vector2f new_end;
+      new_end.x = grid_entity->get<Grid>()->tile_width() * end_idx.x;
+      new_end.y = grid_entity->get<Grid>()->tile_height() * end_idx.y;
+
+      tile_selection->get<Rectangle>()->position(new_pos);
+      tile_selection->get<Rectangle>()->size(new_end - new_pos);
+
+      tile_selection->get<Collision>()->volume(tile_selection->get<Rectangle>()->global_bounds());
 
       this->reset_camera_down_ = reset_camera;
    }
@@ -112,11 +128,11 @@ void BuilderSceneInputSystem::pre_update(Game& game) {
    bool remove_tiles = game.get_player(1).bindings().get<RemoveTilesIntent>()->element()->is_pressed();
    if (remove_tiles && !this->remove_tiles_down_) {
       Entity* map_entity = this->scene().get_entity(this->map_entity);
-      Entity* tile_selection_entity = this->scene().get_entity(this->tile_selection);
+      Entity* tile_selection_maproot_entity = this->scene().get_entity(this->tile_selection_maproot);
 
-      if (map_entity && tile_selection_entity) {
+      if (map_entity && tile_selection_maproot_entity) {
          TileMap* map = map_entity->get<TileMap>();
-         Collision* collision = tile_selection_entity->get<Collision>();
+         Collision* collision = tile_selection_maproot_entity->get<Collision>();
 
          if (map && collision) {
             map->remove(collision->volume());

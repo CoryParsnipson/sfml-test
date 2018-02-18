@@ -196,7 +196,7 @@ void BuilderScene::init(Game& game) {
 
    selection_rect->add<Collision>("SelectionRectandleCollision", sf::FloatRect(0, 0, 0, 0));
 
-   // create tile selection
+   // create tile selection visual
    Entity* tile_selection = this->get_entity(this->create_entity());
    tile_selection->id("TileSelectionEntity");
    this->send_message_async<AddToEntityMessage>(grid_root->handle(), tile_selection->handle(), 0);
@@ -207,6 +207,13 @@ void BuilderScene::init(Game& game) {
    tile_selection->get<Rectangle>()->outline_thickness(2.0);
 
    tile_selection->add<Collision>("TileSelectionCollider", sf::FloatRect(0, 0, 0, 0));
+
+   // create tile selection map_root portion
+   Entity* tile_selection_maproot = this->get_entity(this->create_entity());
+   tile_selection_maproot->id("TileSelectionMapRootEntity");
+   this->send_message_async<AddToEntityMessage>(map_root->handle(), tile_selection_maproot->handle(), 0);
+
+   tile_selection_maproot->add<Collision>("TileSelectionMapRootCollider", sf::FloatRect(0, 0, 0, 0));
 
    // create tile palette window
    Entity* tile_palette_window = this->get_entity(this->create_entity());
@@ -325,12 +332,12 @@ void BuilderScene::init(Game& game) {
          tpw_hover->get<Space>()->visible(false);
       });
 
-      entity->get<Callback>()->left_release([entity, tile_selection, map_root, grid_root] () {
+      entity->get<Callback>()->left_release([entity, tile_selection_maproot, map_root, grid_root] () {
          // remove any existing tiles in the selection if they exist
-         map_root->get<TileMap>()->remove(tile_selection->get<Collision>()->volume());
+         map_root->get<TileMap>()->remove(tile_selection_maproot->get<Collision>()->volume());
 
          // on click, fill the selected area (if it is active) with the clicked on tile
-         sf::FloatRect tsc = tile_selection->get<Collision>()->volume();
+         sf::FloatRect tsc = tile_selection_maproot->get<Collision>()->volume();
          for (int x_pos = tsc.left; x_pos < tsc.left + tsc.width; x_pos += grid_root->get<Grid>()->tile_width()) {
             for (int y_pos = tsc.top; y_pos < tsc.top + tsc.height; y_pos += grid_root->get<Grid>()->tile_height()) {
                Sprite sprite(*entity->get<Sprite>());
@@ -441,24 +448,30 @@ void BuilderScene::init(Game& game) {
       new_scale.y = std::max(new_scale.y, 0.4f);
 
       map_root->get<Space>()->scale(new_scale);
+
+      // adjust tile selection visual on the grid layer
+      if (tile_selection->get<Space>()->visible() && new_scale.x >= 0.4f) {
+         sf::Vector2f pos = tile_selection->get<Rectangle>()->position();
+         sf::Vector2f end = pos + tile_selection->get<Rectangle>()->size();
+
+         sf::Vector2i pos_idx = grid_root->get<Grid>()->grid_index(pos);
+         sf::Vector2i end_idx = grid_root->get<Grid>()->grid_index(end);
+
+         sf::Vector2f new_pos;
+         new_pos.x = grid_root->get<Grid>()->tile_width() * pos_idx.x * new_scale.x;
+         new_pos.y = grid_root->get<Grid>()->tile_height() * pos_idx.y * new_scale.y;
+
+         sf::Vector2f new_end;
+         new_end.x = grid_root->get<Grid>()->tile_width() * end_idx.x * new_scale.x;
+         new_end.y = grid_root->get<Grid>()->tile_height() * end_idx.y * new_scale.y;
+
+         tile_selection->get<Rectangle>()->position(new_pos);
+         tile_selection->get<Rectangle>()->size(new_end - new_pos);
+
+         tile_selection->get<Collision>()->volume(tile_selection->get<Rectangle>()->global_bounds());
+      }
+
       grid_root->get<Grid>()->zoom_factor = new_scale;
-
-      // adjust tile selection entity to make it match the map zoom
-      //if (tile_selection->get<Space>()->visible() && new_scale.x > 0.4f) {
-      //   sf::Vector2f new_pos = tile_selection->get<Rectangle>()->position();
-      //   sf::Vector2f new_size = tile_selection->get<Rectangle>()->size();
-
-      //   new_pos.x *= 1.f + wheel_delta / 12.5f;
-      //   new_pos.y *= 1.f + wheel_delta / 12.5f;
-
-      //   new_size.x *= 1.f + wheel_delta / 12.5f;
-      //   new_size.y *= 1.f + wheel_delta / 12.5f;
-
-      //   tile_selection->get<Rectangle>()->position(grid_root->get<Grid>()->round(new_pos));
-      //   tile_selection->get<Rectangle>()->size(grid_root->get<Grid>()->round(new_size));
-
-      //   tile_selection->get<Collision>()->volume(tile_selection->get<Rectangle>()->global_bounds());
-      //}
    });
 
    mouse_cursor_script->get<Callback>()->left_click([selection_rect, &game] () {
@@ -473,7 +486,7 @@ void BuilderScene::init(Game& game) {
       selection_rect->get<Collision>()->volume(new_pos, sf::Vector2f(0, 0));
    });
 
-   mouse_cursor_script->get<Callback>()->left_release([selection_rect, tile_selection, mouse_cursor_script, map_root, grid_root, &game] () {
+   mouse_cursor_script->get<Callback>()->left_release([selection_rect, tile_selection, tile_selection_maproot, mouse_cursor_script, map_root, grid_root, &game] () {
       sf::Vector2f release_pos;
       release_pos.x = game.get_player(1).bindings().get<MouseXIntent>()->element()->position();
       release_pos.y = game.get_player(1).bindings().get<MouseYIntent>()->element()->position();
@@ -501,43 +514,41 @@ void BuilderScene::init(Game& game) {
       bool is_drag_gesture = (end.x - pos.x >= grid_root->get<Grid>()->tile_width() / 3.f ||
                               end.y - pos.y >= grid_root->get<Grid>()->tile_height() / 3.f);
 
-      if (!is_drag_gesture && tile_selection->get<Space>()->visible() && tile_selection->get<Rectangle>()->global_bounds().contains(release_pos)) {
+      if (!is_drag_gesture && tile_selection->get<Space>()->visible() && tile_selection->get<Collision>()->contains(release_pos)) {
          tile_selection->get<Space>()->visible(false);
+         tile_selection_maproot->get<Collision>()->volume(sf::FloatRect(0, 0, 0, 0));
       } else {
          float tile_width = grid_root->get<Grid>()->tile_width() * grid_root->get<Grid>()->zoom_factor.x;
          float tile_height = grid_root->get<Grid>()->tile_height() * grid_root->get<Grid>()->zoom_factor.y;
 
-         sf::Vector2f pos_visual(pos);
-         sf::Vector2f end_visual(end);
-
          // make this at least 1 tile big (if you provide grid with value that falls
          // directly on gridline it can give identical values for floor and ceil)
-         if (end_visual.x - pos_visual.x < tile_width || end_visual.y - pos_visual.y < tile_height) {
-            end_visual.x += tile_width;
-            end_visual.y += tile_height;
+         if (end.x - pos.x < tile_width || end.y - pos.y < tile_height) {
+            end.x += tile_width;
+            end.y += tile_height;
 
             // round rectangle to nearest grid point
-            pos_visual = grid_root->get<Grid>()->floor(pos_visual);
-            end_visual = grid_root->get<Grid>()->floor(end_visual);
+            pos = grid_root->get<Grid>()->floor(pos);
+            end = grid_root->get<Grid>()->floor(end);
          } else {
             // round rectangle to nearest grid point
-            pos_visual = grid_root->get<Grid>()->floor(pos_visual);
-            end_visual = grid_root->get<Grid>()->ceil(end_visual);
+            pos = grid_root->get<Grid>()->floor(pos);
+            end = grid_root->get<Grid>()->ceil(end);
          }
 
          // update tile selection entity
-         tile_selection->get<Rectangle>()->position(pos_visual);
-         tile_selection->get<Rectangle>()->size(end_visual - pos_visual);
-
-         // need to transform collision component to match map_root
-         sf::Vector2i pos_idx = grid_root->get<Grid>()->grid_index(pos_visual);
-         sf::Vector2i end_idx = grid_root->get<Grid>()->grid_index(end_visual);
-
-         sf::Vector2f test_pos(grid_root->get<Grid>()->tile_width() * pos_idx.x, grid_root->get<Grid>()->tile_height() * pos_idx.y);
-         sf::Vector2f test_end(grid_root->get<Grid>()->tile_width() * end_idx.x, grid_root->get<Grid>()->tile_height() * end_idx.y);
-         tile_selection->get<Collision>()->volume(test_pos, test_end - test_pos);
-
+         tile_selection->get<Rectangle>()->position(pos);
+         tile_selection->get<Rectangle>()->size(end - pos);
+         tile_selection->get<Collision>()->volume(tile_selection->get<Rectangle>()->global_bounds());
          tile_selection->get<Space>()->visible(true);
+
+         // update tile selection maproot entity
+         sf::Vector2i pos_idx = grid_root->get<Grid>()->grid_index(pos);
+         sf::Vector2i end_idx = grid_root->get<Grid>()->grid_index(end);
+
+         sf::Vector2f maproot_pos(grid_root->get<Grid>()->tile_width() * pos_idx.x, grid_root->get<Grid>()->tile_height() * pos_idx.y);
+         sf::Vector2f maproot_end(grid_root->get<Grid>()->tile_width() * end_idx.x, grid_root->get<Grid>()->tile_height() * end_idx.y);
+         tile_selection_maproot->get<Collision>()->volume(maproot_pos, maproot_end - maproot_pos);
       }
    });
 
@@ -555,6 +566,7 @@ void BuilderScene::init(Game& game) {
    input_system->grid_entity = grid_root->handle();
    input_system->map_entity = map_root->handle();
    input_system->tile_selection = tile_selection->handle();
+   input_system->tile_selection_maproot = tile_selection_maproot->handle();
    input_system->fps_entity = fps_display->handle();
    input_system->serializer = new JSONSerializer(3);
    input_system->file_channel = new FileChannel("tilemap_test.txt");

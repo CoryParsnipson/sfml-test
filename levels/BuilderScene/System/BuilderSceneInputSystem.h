@@ -19,6 +19,7 @@ public:
    Handle grid_entity;
    Handle map_entity;
    Handle tile_selection;
+   Handle tile_selection_maproot;
    Handle fps_entity;
 
    Serializer* serializer;
