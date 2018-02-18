@@ -88,10 +88,13 @@ void GridSystem::on_update(Game& game, Entity& e) {
    
    // find out how many gridlines there should be based on the camera and update them
    unsigned int gridline_id = 0;
-   sf::Vector2f start_point = e.get<Grid>()->ceil(sf::Vector2f(camera_bounds.left - e.get<Grid>()->tile_width(), camera_bounds.top - e.get<Grid>()->tile_height()));
-   sf::Vector2f end_point = e.get<Grid>()->ceil(sf::Vector2f(camera_bounds.left + camera_bounds.width + e.get<Grid>()->tile_width(), camera_bounds.top + camera_bounds.height + e.get<Grid>()->tile_height()));
+   float tile_width = e.get<Grid>()->tile_width() * e.get<Grid>()->zoom_factor.x;
+   float tile_height = e.get<Grid>()->tile_height() * e.get<Grid>()->zoom_factor.y;
 
-   for (float c = start_point.x; c <= end_point.x; c += e.get<Grid>()->tile_width()) {
+   sf::Vector2f start_point = e.get<Grid>()->ceil(sf::Vector2f(camera_bounds.left - tile_width, camera_bounds.top - tile_height));
+   sf::Vector2f end_point = e.get<Grid>()->ceil(sf::Vector2f(camera_bounds.left + camera_bounds.width + tile_width, camera_bounds.top + camera_bounds.height + tile_height));
+
+   for (float c = start_point.x; c <= end_point.x; c += tile_width) {
       if (cols[gridline_id] == nullptr || cols[gridline_id]->get<Rectangle>() == nullptr) {
          if (cols[gridline_id] != nullptr && cols[gridline_id]->get<Rectangle>() == nullptr) {
             this->scene().remove_entity(cols[gridline_id]->handle());
@@ -103,7 +106,7 @@ void GridSystem::on_update(Game& game, Entity& e) {
          // modify column
          Rectangle* gridline = cols[gridline_id]->get<Rectangle>();
          gridline->position(c, camera_bounds.top);
-         gridline->size(1 / e.get<Grid>()->zoom_factor.x, camera_bounds.height);
+         gridline->size(1, camera_bounds.height);
 
          cols[gridline_id]->get<Space>()->visible(this->is_visible_);
       }
@@ -117,7 +120,7 @@ void GridSystem::on_update(Game& game, Entity& e) {
    }
 
    gridline_id = 0;
-   for (float r = start_point.y; r <= end_point.y; r += e.get<Grid>()->tile_height()) {
+   for (float r = start_point.y; r <= end_point.y; r += tile_height) {
       if (rows[gridline_id] == nullptr || rows[gridline_id]->get<Rectangle>() == nullptr) {
          if (rows[gridline_id] != nullptr && rows[gridline_id]->get<Rectangle>() == nullptr) {
             this->scene().remove_entity(cols[gridline_id]->handle());
@@ -129,7 +132,7 @@ void GridSystem::on_update(Game& game, Entity& e) {
          // modify row
          Rectangle* gridline = rows[gridline_id]->get<Rectangle>();
          gridline->position(camera_bounds.left, r);
-         gridline->size(camera_bounds.width, 1 / e.get<Grid>()->zoom_factor.y);
+         gridline->size(camera_bounds.width, 1);
 
          rows[gridline_id]->get<Space>()->visible(this->is_visible_);
       }
@@ -142,7 +145,8 @@ void GridSystem::on_update(Game& game, Entity& e) {
       rows[r]->get<Space>()->visible(false);
    }
 
-   unsigned int interval = 3;
+   // make the text marker interval inversely dependent on grid zoom
+   unsigned int interval = std::max(1, static_cast<int>(6 / e.get<Grid>()->zoom_factor.x));
 
    // update the text markers
    gridline_id = 0;
@@ -150,22 +154,17 @@ void GridSystem::on_update(Game& game, Entity& e) {
    std::map<unsigned int, Entity*>::iterator tx;
    for (ty = rows.begin(); ty != rows.end(); ++ty) {
       for (tx = cols.begin(); tx != cols.end(); ++tx) {
-         float col_pos = ty->second->get<Rectangle>()->position().y;
-         float row_pos = tx->second->get<Rectangle>()->position().x;
+         float col_pos = tx->second->get<Rectangle>()->position().x;
+         float row_pos = ty->second->get<Rectangle>()->position().y;
 
-         if ((row_pos >= 0 && (int)row_pos % (interval * (int)e.get<Grid>()->tile_height()) != 0)
-             || (row_pos < 0 && ((int)row_pos - (int)e.get<Grid>()->tile_height()) % (interval * (int)e.get<Grid>()->tile_height()) != 0)
-            ) {
+         unsigned int col_id = static_cast<unsigned int>(std::round(std::abs(col_pos) / tile_width));
+         unsigned int row_id = static_cast<unsigned int>(std::round(std::abs(row_pos) / tile_height));
+
+         if (!ty->second->get<Space>()->visible() || !tx->second->get<Space>()->visible() || row_id  % interval != 0 || col_id % interval != 0) {
             continue;
          }
 
-         if ((col_pos >= 0 && (int)col_pos % (interval * (int)e.get<Grid>()->tile_width()) != 0)
-             || (col_pos < 0 && ((int)col_pos - (int)e.get<Grid>()->tile_width()) % (interval * (int)e.get<Grid>()->tile_width()) != 0)
-            ) {
-            continue;
-         }
-
-         sf::Vector2f tm_val(row_pos, col_pos);
+         sf::Vector2f tm_val(col_pos, row_pos);
          sf::Vector2f tm_pos = tm_val + sf::Vector2f(3, 3); // offset the text marker a little to the lower right
 
          if (text_markers[gridline_id] == nullptr || text_markers[gridline_id]->get<Text>() == nullptr) {
@@ -178,9 +177,12 @@ void GridSystem::on_update(Game& game, Entity& e) {
          }
 
          // modify text marker
-         text_markers[gridline_id]->get<Text>()->string(std::to_string((int)tm_val.x) + ", " + std::to_string((int)tm_val.y));
+         text_markers[gridline_id]->get<Text>()->string(
+            std::to_string((int)(col_id * e.get<Grid>()->tile_width())) +
+            ", " +
+            std::to_string((int)(row_id * e.get<Grid>()->tile_height()))
+         );
          text_markers[gridline_id]->get<Text>()->position(tm_pos);
-         text_markers[gridline_id]->get<Text>()->font_size(9 / e.get<Grid>()->zoom_factor.x);
 
          text_markers[gridline_id]->get<Space>()->visible(this->is_visible_);
 

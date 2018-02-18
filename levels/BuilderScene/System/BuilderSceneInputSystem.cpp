@@ -13,8 +13,10 @@
 #include "MoveDownIntent.h"
 #include "SerializeMapIntent.h"
 
+#include "Space.h"
 #include "TileMap.h"
 #include "Collision.h"
+#include "Grid.h"
 
 #include "SetGridVisibilityMessage.h"
 #include "SetVisualDebugMessage.h"
@@ -67,6 +69,18 @@ void BuilderSceneInputSystem::pre_update(Game& game) {
       Entity* map_entity = this->scene().get_entity(this->map_entity);
       map_entity->get<Space>()->position(0, 0);
       map_entity->get<Space>()->scale(sf::Vector2f(1.f, 1.f));
+
+      Entity* grid_entity = this->scene().get_entity(this->grid_entity);
+      grid_entity->get<Space>()->position(0, 0);
+      grid_entity->get<Grid>()->zoom_factor.x = 1.f;
+      grid_entity->get<Grid>()->zoom_factor.y = 1.f;
+
+      // unset tile selection
+      Entity* tile_selection = this->scene().get_entity(this->tile_selection);
+      tile_selection->get<Space>()->visible(false);
+      tile_selection->get<Rectangle>()->position(0, 0);
+      tile_selection->get<Rectangle>()->size(0, 0);
+      tile_selection->get<Collision>()->volume(sf::Vector2f(0, 0), sf::Vector2f(0, 0));
 
       this->reset_camera_down_ = reset_camera;
    }
