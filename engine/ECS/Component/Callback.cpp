@@ -6,17 +6,6 @@ Callback::Callback(const std::string& id /* = "Callback Component" */, bool prop
 , prev_mouse_wheel_pos_(0.f)
 , prev_mouse_pos_(0, 0)
 {
-   // initialize all callback functions with null callbacks
-   // TODO: find a better way to do this...
-   this->callbacks_[CallbackKey::MOUSE_IN] = [] () {};
-   this->callbacks_[CallbackKey::MOUSE_OUT] = [] () {};
-   this->callbacks_[CallbackKey::MOUSE_MOVE] = [] () {};
-   this->callbacks_[CallbackKey::MOUSE_WHEEL] = [] () {};
-   this->callbacks_[CallbackKey::LEFT_CLICK] = [] () {};
-   this->callbacks_[CallbackKey::RIGHT_CLICK] = [] () {};
-   this->callbacks_[CallbackKey::LEFT_RELEASE] = [] () {};
-   this->callbacks_[CallbackKey::RIGHT_RELEASE] = [] () {};
-   this->callbacks_[CallbackKey::CAMERA_RESIZE] = [] () {};
 }
 
 Callback::Callback(const Callback& other)
@@ -69,7 +58,7 @@ void Callback::mouse_in(Callback::CallbackT callback) {
 }
 
 void Callback::mouse_in() {
-   this->callbacks_[CallbackKey::MOUSE_IN]();
+   this->execute_callback(CallbackKey::MOUSE_IN);
 }
 
 void Callback::mouse_out(Callback::CallbackT callback) {
@@ -77,7 +66,7 @@ void Callback::mouse_out(Callback::CallbackT callback) {
 }
 
 void Callback::mouse_out() {
-   this->callbacks_[CallbackKey::MOUSE_OUT]();
+   this->execute_callback(CallbackKey::MOUSE_OUT);
 }
 
 void Callback::mouse_move(Callback::CallbackT callback) {
@@ -85,7 +74,7 @@ void Callback::mouse_move(Callback::CallbackT callback) {
 }
 
 void Callback::mouse_move() {
-   this->callbacks_[CallbackKey::MOUSE_MOVE]();
+   this->execute_callback(CallbackKey::MOUSE_MOVE);
 }
 
 void Callback::mouse_wheel(Callback::CallbackT callback) {
@@ -93,7 +82,7 @@ void Callback::mouse_wheel(Callback::CallbackT callback) {
 }
 
 void Callback::mouse_wheel() {
-   this->callbacks_[CallbackKey::MOUSE_WHEEL]();
+   this->execute_callback(CallbackKey::MOUSE_WHEEL);
 }
 
 void Callback::left_click(Callback::CallbackT callback) {
@@ -101,7 +90,7 @@ void Callback::left_click(Callback::CallbackT callback) {
 }
 
 void Callback::left_click() {
-   this->callbacks_[CallbackKey::LEFT_CLICK]();
+   this->execute_callback(CallbackKey::LEFT_CLICK);
 }
 
 void Callback::right_click(Callback::CallbackT callback) {
@@ -109,7 +98,7 @@ void Callback::right_click(Callback::CallbackT callback) {
 }
 
 void Callback::right_click() {
-   this->callbacks_[CallbackKey::RIGHT_CLICK]();
+   this->execute_callback(CallbackKey::RIGHT_CLICK);
 }
 
 void Callback::left_release(Callback::CallbackT callback) {
@@ -117,7 +106,7 @@ void Callback::left_release(Callback::CallbackT callback) {
 }
 
 void Callback::left_release() {
-   this->callbacks_[CallbackKey::LEFT_RELEASE]();
+   this->execute_callback(CallbackKey::LEFT_RELEASE);
 }
 
 void Callback::right_release(Callback::CallbackT callback) {
@@ -125,7 +114,7 @@ void Callback::right_release(Callback::CallbackT callback) {
 }
 
 void Callback::right_release() {
-   this->callbacks_[CallbackKey::RIGHT_RELEASE]();
+   this->execute_callback(CallbackKey::RIGHT_RELEASE);
 }
 
 void Callback::camera_resize(Callback::CallbackT callback) {
@@ -133,5 +122,11 @@ void Callback::camera_resize(Callback::CallbackT callback) {
 }
 
 void Callback::camera_resize() {
-   this->callbacks_[CallbackKey::CAMERA_RESIZE]();
+   this->execute_callback(CallbackKey::CAMERA_RESIZE);
+}
+
+void Callback::execute_callback(CallbackKey cb_type) {
+   if (this->callbacks_[cb_type]) {
+      this->callbacks_[cb_type]();
+   }
 }

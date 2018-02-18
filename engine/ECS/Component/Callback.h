@@ -75,6 +75,8 @@ private:
    float prev_mouse_wheel_pos_;
    sf::Vector2f prev_mouse_pos_;
    Callbacks callbacks_;
+
+   void execute_callback(CallbackKey cb_type);
 };
 
 #endif
