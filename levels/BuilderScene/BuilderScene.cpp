@@ -444,13 +444,13 @@ void BuilderScene::init(Game& game) {
       float wheel_delta = mouse_wheel_pos - mouse_cursor_script->get<Callback>()->prev_mouse_wheel_pos();
 
       sf::Vector2f new_scale(map_root->get<Space>()->scale() + sf::Vector2f(wheel_delta / 12.5f, wheel_delta / 12.5f));
-      new_scale.x = std::max(new_scale.x, 0.4f);
-      new_scale.y = std::max(new_scale.y, 0.4f);
+      new_scale.x = std::max(new_scale.x, 0.25f);
+      new_scale.y = std::max(new_scale.y, 0.25f);
 
       map_root->get<Space>()->scale(new_scale);
 
       // adjust tile selection visual on the grid layer
-      if (tile_selection->get<Space>()->visible() && new_scale.x >= 0.4f) {
+      if (tile_selection->get<Space>()->visible()) {
          sf::Vector2f pos = tile_selection->get<Rectangle>()->position();
          sf::Vector2f end = pos + tile_selection->get<Rectangle>()->size();
 
