@@ -197,7 +197,7 @@ void GridSystem::on_update(Game& game, Entity& e) {
 }
 
 Entity* GridSystem::create_gridline(Entity* grid_entity, std::string id, float x, float y, float width, float height) {
-   Entity* e = this->scene().get_entity(this->scene().create_entity());
+   Entity* e = this->scene().create_entity();
    this->send_message_async<AddToEntityMessage>(grid_entity->handle(), e->handle());
 
    e->id(id);
@@ -216,7 +216,7 @@ Entity* GridSystem::create_row(Entity* grid_entity, std::string id, float y) {
 }
 
 Entity* GridSystem::create_text_marker(Entity* grid_entity, std::string id, const sf::Vector2f& pos) {
-   Entity* e = this->scene().get_entity(this->scene().create_entity());
+   Entity* e = this->scene().create_entity();
    this->send_message_async<AddToEntityMessage>(grid_entity->handle(), e->handle());
    
    e->id(id);

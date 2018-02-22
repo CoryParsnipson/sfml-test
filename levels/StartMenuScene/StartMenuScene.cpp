@@ -32,7 +32,7 @@ void StartMenuScene::init(Game& game) {
    game.get_player(1).bindings().set<MouseYIntent>(0, game.input_manager().get_device(0)->get("PositionY"));
 
    // create title text entities
-   Entity* title = this->get_entity(this->create_entity());
+   Entity* title = this->create_entity();
    title->id("Title Entity");
 
    title->add<Text>("TitleText", "SFML TEST", this->fonts().get("retro"), 36);
@@ -46,7 +46,7 @@ void StartMenuScene::init(Game& game) {
 
    title->get<Text>()->position(0, 0); // must position after changing origin
 
-   Entity* subtitle = this->get_entity(this->create_entity());
+   Entity* subtitle = this->create_entity();
    subtitle->id("SubtitleEntity");
 
    subtitle->add<Text>("SubtitleText", "main menu", this->fonts().get("retro"), 12);
@@ -59,7 +59,7 @@ void StartMenuScene::init(Game& game) {
 
    subtitle->get<Text>()->position(0, 45);
 
-   Entity* subtitle2 = this->get_entity(this->create_entity());
+   Entity* subtitle2 = this->create_entity();
    subtitle2->id("Subtitle2Entity");
 
    subtitle2->add<Text>("Subtitle2Text", "(Press SPACE or ENTER)", this->fonts().get("retro"), 12);
@@ -73,7 +73,7 @@ void StartMenuScene::init(Game& game) {
    subtitle2->get<Text>()->position(0, 60);
 
    // center text entities in the middle of the screen
-   Entity* text_layer = this->get_entity(this->create_entity());
+   Entity* text_layer = this->create_entity();
    text_layer->add<PlayerProfile>("RootPlayerProfile", 1);
    text_layer->add<Callback>("RootCallback");
    
@@ -89,7 +89,7 @@ void StartMenuScene::init(Game& game) {
    this->send_message_async<AddToEntityMessage>(text_layer->handle(), subtitle2->handle());
 
    // create mouse cursor
-   Entity* mouse_cursor = this->get_entity(this->create_entity());
+   Entity* mouse_cursor = this->create_entity();
    mouse_cursor->id("MouseCursorEntity");
 
    this->mouse_cursor_ = mouse_cursor->handle();

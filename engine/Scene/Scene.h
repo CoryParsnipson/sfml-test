@@ -74,7 +74,7 @@ public:
       this->game_ = &game; // set game pointer
 
       // create scene graph root entity
-      this->root_ = this->create_entity();
+      this->root_ = this->create_entity_handle();
       this->get_entity(this->root_)->id(this->id() + "RootEntity");
       this->get_entity(this->root_)->get<Space>()->id("RootSpaceComponent");
 
@@ -142,25 +142,30 @@ public:
    }
 
    // entity component system interface
-   Handle create_entity() {
+   Entity* create_entity() {
       Handle handle = this->entities_.add("entity", this, &this->components_);
       assert(this->get_entity(handle) != nullptr);
 
       // set the Entity's handle
-      this->get_entity(handle)->handle(handle);
+      Entity* e = this->get_entity(handle);
+      e->handle(handle);
 
       // let Systems know a new Entity has been made
       this->send_message_async<EntityCreatedMessage>(handle);
 
       // add Spatial component, every Entity should always have one
-      this->get_entity(handle)->add<Space>();
+      e->add<Space>();
 
       // now add this entity as a child of the scene graph root
       if (this->root_ != Handle() && this->root_ != handle) {
         this->send_message_async<AddToEntityMessage>(this->root_, handle);
       }
 
-      return handle;
+      return e;
+   }
+
+   Handle create_entity_handle() {
+      return this->create_entity()->handle();
    }
 
    Entity* get_entity(Handle handle) {
