@@ -29,7 +29,7 @@ void PreorderEntitySubscription::remove(Handle entity) {
    // empty
 }
 
-void PreorderEntitySubscription::update_entity_list(System& system) {
+void PreorderEntitySubscription::on_update(System& system) {
    std::vector<Handle> entities_to_visit;
    entities_to_visit.push_back(
       system.root() == Handle() ? this->scene(system).space_handle() : system.root()

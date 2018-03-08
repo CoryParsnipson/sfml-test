@@ -23,7 +23,7 @@ public:
    virtual void remove(Handle entity);
 
 private:
-   virtual void update_entity_list(System& system) {}
+   virtual void on_update(System& system) {}
 };
 
 #endif

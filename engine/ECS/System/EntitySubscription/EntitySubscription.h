@@ -49,7 +49,7 @@ private:
    EntityFilter filter_;
 
    // this function is supposed to modify/update this->entities_
-   virtual void update_entity_list(System& system) = 0;
+   virtual void on_update(System& system) = 0;
 };
 
 #endif

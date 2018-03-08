@@ -23,7 +23,7 @@ public:
 private:
    bool reverse_children_;
 
-   virtual void update_entity_list(System& system);
+   virtual void on_update(System& system);
 };
 
 #endif
