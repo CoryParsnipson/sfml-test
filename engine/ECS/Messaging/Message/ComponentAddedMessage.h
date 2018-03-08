@@ -17,7 +17,8 @@
 class ComponentAddedMessage : public Message {
 public:
    ComponentAddedMessage(Handle entity, std::type_index component_type)
-   : entity(entity)
+   : Message("ComponentAddedMessage")
+   , entity(entity)
    , component_type(component_type)
    {
    }

@@ -9,3 +9,4 @@
 { "type": "logger", "stream": "console", "tag": "PlayerGamepad", "enable": "false" }
 { "type": "logger", "stream": "console", "tag": "Default Camera", "enable": "false" }
 { "type": "logger", "stream": "console", "tag": "HudCamera", "enable": "false" }
+{ "type": "logger", "stream": "console", "tag": "Entity Message", "enable": "false" }

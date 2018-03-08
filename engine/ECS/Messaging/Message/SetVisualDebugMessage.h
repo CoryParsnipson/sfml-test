@@ -10,7 +10,7 @@
 // ----------------------------------------------------------------------------
 class SetVisualDebugMessage : public Message {
 public:
-   SetVisualDebugMessage(bool enable) : enable(enable) {}
+   SetVisualDebugMessage(bool enable) : Message("SetVisualDebugMessage"), enable(enable) {}
 
    bool enable;
 };

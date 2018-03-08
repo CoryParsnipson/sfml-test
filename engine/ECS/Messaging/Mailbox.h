@@ -3,6 +3,7 @@
 
 #include <map>
 #include <vector>
+#include <string>
 #include <memory>
 #include <cassert>
 #include <utility>
@@ -18,8 +19,10 @@
 // ----------------------------------------------------------------------------
 class Message {
 public:
-   Message(bool async = false) : async_(async) {}
+   Message(const std::string& id) : async_(false), id_(id) {}
    virtual ~Message() {}
+
+   const std::string& id() const { return this->id_; }
 
    virtual std::type_index type() const { return std::type_index(typeid(*this)); }
 
@@ -28,6 +31,7 @@ public:
 
 private:
    bool async_;
+   std::string id_;
 };
 
 // ----------------------------------------------------------------------------

@@ -11,8 +11,7 @@
 // ----------------------------------------------------------------------------
 class EntityCreatedMessage : public Message {
 public:
-   EntityCreatedMessage() {}
-   EntityCreatedMessage(Handle entity) : entity(entity) {}
+   EntityCreatedMessage(Handle entity) : Message("EntityCreatedMessage"), entity(entity) {}
    
    Handle entity;
 };

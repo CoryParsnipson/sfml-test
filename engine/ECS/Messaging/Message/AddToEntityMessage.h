@@ -12,8 +12,12 @@
 // ----------------------------------------------------------------------------
 class AddToEntityMessage : public Message {
 public:
-   AddToEntityMessage() {}
-   AddToEntityMessage(Handle parent, Handle child, int idx = -1) : parent(parent), child(child), idx(idx) {}
+   AddToEntityMessage(Handle parent, Handle child, int idx = -1)
+   : Message("AddToEntityMessage")
+   , parent(parent)
+   , child(child)
+   , idx(idx)
+   {}
 
    Handle parent;
    Handle child;

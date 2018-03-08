@@ -17,7 +17,8 @@
 class ComponentRemovedMessage : public Message {
 public:
    ComponentRemovedMessage(Handle entity, std::type_index component_type)
-   : entity(entity)
+   : Message("ComponentRemovedMessage")
+   , entity(entity)
    , component_type(component_type)
    {
    }

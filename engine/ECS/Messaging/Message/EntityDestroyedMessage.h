@@ -12,8 +12,7 @@
 // ----------------------------------------------------------------------------
 class EntityDestroyedMessage : public Message {
 public:
-   EntityDestroyedMessage() {}
-   EntityDestroyedMessage(Handle entity) : entity(entity) {}
+   EntityDestroyedMessage(Handle entity) : Message("EntityDestroyedMessage"), entity(entity) {}
    
    Handle entity;
 };

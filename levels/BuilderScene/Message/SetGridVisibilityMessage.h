@@ -12,7 +12,8 @@
 class SetGridVisibilityMessage : public Message {
 public:
    SetGridVisibilityMessage(Handle grid_entity, bool visibility)
-   : visibility(visibility)
+   : Message("SetGridVisibilityMessage")
+   , visibility(visibility)
    , grid_entity(grid_entity)
    {}
 

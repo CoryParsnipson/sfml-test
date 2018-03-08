@@ -75,9 +75,8 @@ public:
       this->game_ = &game; // set game pointer
 
       // create scene graph root entity
-      this->root_ = this->create_entity_handle();
-      this->get_entity(this->root_)->id(this->id() + "RootEntity");
-      this->get_entity(this->root_)->get<Space>()->id("RootSpaceComponent");
+      this->root_ = this->create_entity_handle(this->id() + "RootEntity");
+      this->get_entity(this->root_)->get<Space>()->id("RootSpace");
 
       // add some default systems
       this->add_system(new SpatialSystem());
@@ -143,8 +142,8 @@ public:
    }
 
    // entity component system interface
-   Entity* create_entity() {
-      Handle handle = this->entities_.add("entity", this, &this->components_);
+   Entity* create_entity(const std::string& id = "Anonymous Entity") {
+      Handle handle = this->entities_.add(id, this, &this->components_);
       assert(this->get_entity(handle) != nullptr);
 
       // set the Entity's handle
@@ -165,8 +164,8 @@ public:
       return e;
    }
 
-   Handle create_entity_handle() {
-      return this->create_entity()->handle();
+   Handle create_entity_handle(const std::string& id = "Anonymous Entity") {
+      return this->create_entity(id)->handle();
    }
 
    Entity* get_entity(Handle handle) {

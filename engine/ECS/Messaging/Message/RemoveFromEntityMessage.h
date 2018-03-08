@@ -11,6 +11,12 @@
 // ----------------------------------------------------------------------------
 class RemoveFromEntityMessage : public Message {
 public:
+   RemoveFromEntityMessage(Handle parent, Handle child)
+   : Message("RemoveFromEntityMessage")
+   , parent(parent)
+   , child(child)
+   {}
+
    Handle parent;
    Handle child;
 };

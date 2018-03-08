@@ -13,9 +13,23 @@
 // ----------------------------------------------------------------------------
 class ResizeCameraMessage : public Message {
 public:
-   ResizeCameraMessage() : width(0), height(0) {}
-   ResizeCameraMessage(int width, int height) : width(width), height(height) {}
-   ResizeCameraMessage(sf::Vector2f size) : width(size.x), height(size.y) {}
+   ResizeCameraMessage()
+   : Message("ResizeCameraMessage")
+   , width(0)
+   , height(0)
+   {}
+
+   ResizeCameraMessage(int width, int height)
+   : Message("ResizeCameraMessage")
+   , width(width)
+   , height(height)
+   {}
+
+   ResizeCameraMessage(sf::Vector2f size)
+   : Message("ResizeCameraMessage")
+   , width(size.x)
+   , height(size.y)
+   {}
 
    int width;
    int height;

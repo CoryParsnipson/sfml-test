@@ -98,11 +98,8 @@ void BuilderScene::init(Game& game) {
    game.get_player(1).bindings().set<MoveDownIntent>(1, game.input_manager().get_device(1)->get("Down"));
 
    // make a map root entity and hud root entity
-   Entity* map_root = this->create_entity();
-   Entity* hud_root = this->create_entity();
-
-   map_root->id("MapRoot Entity");
-   hud_root->id("HudRoot Entity");
+   Entity* map_root = this->create_entity("MapRoot Entity");
+   Entity* hud_root = this->create_entity("HudRoot Entity");
 
    // TODO: create a better way to get Systems
    GraphicalSystem* gs = dynamic_cast<GraphicalSystem*>(this->get_system("GraphicalSystem"));
@@ -124,8 +121,7 @@ void BuilderScene::init(Game& game) {
    }
 
    // load or create a grid
-   Entity* grid_root = this->create_entity();
-   grid_root->id("GridRoot Entity");
+   Entity* grid_root = this->create_entity("GridRoot Entity");
    grid_root->add<Grid>("GridRoot Grid Component", sf::Vector2f(0, 0), 64, 64);
 
    // put grid_root under hud_root but over map_root
@@ -135,8 +131,7 @@ void BuilderScene::init(Game& game) {
    this->add_system(new GridSystem("GridSystem", gs->camera()));
 
    // add a nice backdrop
-   Entity* backdrop = this->create_entity();
-   backdrop->id("Backdrop Entity");
+   Entity* backdrop = this->create_entity("Backdrop Entity");
    this->send_message<AddToEntityMessage>(this->space_handle(), backdrop->handle(), 0);
    
    backdrop->add<VertexList>("BackdropVertexList", sf::TrianglesStrip, 4);
@@ -161,8 +156,7 @@ void BuilderScene::init(Game& game) {
    });
 
    // create fps display entity
-   Entity* fps_display = this->create_entity();
-   fps_display->id("FPS Display Entity");
+   Entity* fps_display = this->create_entity("FPS Display Entity");
    this->send_message<AddToEntityMessage>(hud_root->handle(), fps_display->handle());
 
    fps_display->add<Text>("FPS Display Text", "FPS: ??", this->fonts().get("retro"), 12);
@@ -185,8 +179,7 @@ void BuilderScene::init(Game& game) {
    });
 
    // create selection rect
-   Entity* selection_rect = this->create_entity();
-   selection_rect->id("SelectionRectangleEntity");
+   Entity* selection_rect = this->create_entity("SelectionRectangleEntity");
    this->send_message<AddToEntityMessage>(hud_root->handle(), selection_rect->handle(), 0);
 
    selection_rect->add<Rectangle>("SelectionRectangle", 0, 0, 0, 0);
@@ -197,8 +190,7 @@ void BuilderScene::init(Game& game) {
    selection_rect->add<Collision>("SelectionRectandleCollision", sf::FloatRect(0, 0, 0, 0));
 
    // create tile selection visual
-   Entity* tile_selection = this->create_entity();
-   tile_selection->id("TileSelectionEntity");
+   Entity* tile_selection = this->create_entity("TileSelectionEntity");
    this->send_message<AddToEntityMessage>(grid_root->handle(), tile_selection->handle(), 0);
 
    tile_selection->add<Rectangle>("TileSelectionRectangle", 0, 0, 0, 0);
@@ -209,15 +201,13 @@ void BuilderScene::init(Game& game) {
    tile_selection->add<Collision>("TileSelectionCollider", sf::FloatRect(0, 0, 0, 0));
 
    // create tile selection map_root portion
-   Entity* tile_selection_maproot = this->create_entity();
-   tile_selection_maproot->id("TileSelectionMapRootEntity");
+   Entity* tile_selection_maproot = this->create_entity("TileSelectionMapRootEntity");
    this->send_message<AddToEntityMessage>(map_root->handle(), tile_selection_maproot->handle(), 0);
 
    tile_selection_maproot->add<Collision>("TileSelectionMapRootCollider", sf::FloatRect(0, 0, 0, 0));
 
    // create tile palette window
-   Entity* tile_palette_window = this->create_entity();
-   tile_palette_window->id("TilePaletteWindow");
+   Entity* tile_palette_window = this->create_entity("TilePaletteWindow");
    this->send_message<AddToEntityMessage>(hud_root->handle(), tile_palette_window->handle()); // put this on top of mouse cursor and selection_rect
 
    tile_palette_window->add<Rectangle>("TilePaletteWindowRectangle", 0, 0, 220, 480);
@@ -239,8 +229,7 @@ void BuilderScene::init(Game& game) {
       tile_palette_window->get<Space>()->move(new_pos - old_pos);
    });
 
-   Entity* tpw_outline = this->create_entity();
-   tpw_outline->id("TilePaletteWindowDecoration");
+   Entity* tpw_outline = this->create_entity("TilePaletteWindowDecoration");
    this->send_message<AddToEntityMessage>(tile_palette_window->handle(), tpw_outline->handle());
 
    tpw_outline->add<Rectangle>("TilePaletteWindowOutline", 5, 10, tile_palette_window->get<Rectangle>()->size().x - 10, tile_palette_window->get<Rectangle>()->size().y - 15);
@@ -248,15 +237,13 @@ void BuilderScene::init(Game& game) {
    tpw_outline->get<Rectangle>()->outline_color(sf::Color(211, 206, 218, 230));
    tpw_outline->get<Rectangle>()->outline_thickness(2.0);
 
-   Entity* tpw_title_back = this->create_entity();
-   tpw_title_back->id("TilePaletteWindowTitleBack");
+   Entity* tpw_title_back = this->create_entity("TilePaletteWindowTitleBack");
    this->send_message<AddToEntityMessage>(tile_palette_window->handle(), tpw_title_back->handle());
 
    tpw_title_back->add<Rectangle>("TilePaletteWindowTitleBack", 0, 0, 0, 0);
    tpw_title_back->get<Rectangle>()->color(sf::Color(113, 94, 122, 255));
 
-   Entity* tpw_title = this->create_entity();
-   tpw_title->id("TilePaletteWindowTitle");
+   Entity* tpw_title = this->create_entity("TilePaletteWindowTitle");
    this->send_message<AddToEntityMessage>(tile_palette_window->handle(), tpw_title->handle());
 
    tpw_title->add<Text>("TilePaletteWindowTitleText", "Tileset:", this->fonts().get("retro"), 12);
@@ -265,8 +252,7 @@ void BuilderScene::init(Game& game) {
    tpw_title_back->get<Rectangle>()->position(tpw_title->get<Text>()->position() - sf::Vector2f(3, 0));
    tpw_title_back->get<Rectangle>()->size(tpw_title->get<Text>()->local_bounds().width + 6, tpw_title->get<Text>()->local_bounds().height);
 
-   Entity* tpw_hover = this->create_entity();
-   tpw_hover->id("TilePaletteWindowHover");
+   Entity* tpw_hover = this->create_entity("TilePaletteWindowHover");
    
    tpw_hover->get<Space>()->visible(false);
    
@@ -310,8 +296,7 @@ void BuilderScene::init(Game& game) {
          (i / tiles_per_row) * grid_root->get<Grid>()->tile_height() + top_padding
       );
 
-      Entity* entity = this->create_entity();
-      entity->id(*it + "_tpw_entity");
+      Entity* entity = this->create_entity(*it + "_tpw_entity");
       this->send_message<AddToEntityMessage>(tile_palette_window->handle(), entity->handle());
 
       entity->add<Sprite>(*it + "_sprite", *this->textures().get(*it));
@@ -353,9 +338,7 @@ void BuilderScene::init(Game& game) {
    this->send_message<AddToEntityMessage>(tile_palette_window->handle(), tpw_hover->handle());
 
    // create mouse cursor
-   Entity* mouse_cursor = this->create_entity();
-   mouse_cursor->id("MouseCursorEntity");
-
+   Entity* mouse_cursor = this->create_entity("MouseCursorEntity");
    this->mouse_cursor_ = mouse_cursor->handle();
 
    // add mouse_cursor to the hud_root
@@ -394,8 +377,7 @@ void BuilderScene::init(Game& game) {
    });
 
    // This is an invisible entity that sits at the bottom of the hud layer to handle mouse behavior
-   Entity* mouse_cursor_script = this->create_entity();
-   mouse_cursor_script->id("MouseCursorScriptEntity");
+   Entity* mouse_cursor_script = this->create_entity("MouseCursorScriptEntity");
 
    this->send_message<AddToEntityMessage>(hud_root->handle(), mouse_cursor_script->handle(), 0);
 
