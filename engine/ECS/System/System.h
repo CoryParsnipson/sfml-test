@@ -70,7 +70,7 @@ public:
       typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
       typename... Args
    >
-   void send_message_async(Args&&... args);
+   void send_message_sync(Args&&... args);
 
 protected:
    friend Scene& EntitySubscription::scene(System& system) const;
@@ -134,6 +134,8 @@ template <
 >
 void System::send_message(Args&&... args) {
    std::shared_ptr<MsgT> message = std::make_shared<MsgT>(std::forward<Args>(args)...);
+   message->async(true);
+
    this->send_message_helper(message);
 }
 
@@ -142,10 +144,8 @@ template <
    typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
    typename... Args
 >
-void System::send_message_async(Args&&... args) {
+void System::send_message_sync(Args&&... args) {
    std::shared_ptr<MsgT> message = std::make_shared<MsgT>(std::forward<Args>(args)...);
-   message->async(true);
-
    this->send_message_helper(message);
 }
 

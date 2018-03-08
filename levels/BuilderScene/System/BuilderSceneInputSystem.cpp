@@ -45,7 +45,7 @@ void BuilderSceneInputSystem::pre_update(Game& game) {
    bool new_visual_debug_enable = game.get_player(1).bindings().get<VisualDebugIntent>()->element()->is_pressed();
 
    if (new_grid_visibility && this->grid_visible_button_down_ != new_grid_visibility) {
-      this->send_message_async<SetGridVisibilityMessage>(this->grid_entity, this->grid_visible_);
+      this->send_message<SetGridVisibilityMessage>(this->grid_entity, this->grid_visible_);
       this->grid_visible_ = !this->grid_visible_;
       this->grid_visible_button_down_ = new_grid_visibility;
    }
@@ -55,7 +55,7 @@ void BuilderSceneInputSystem::pre_update(Game& game) {
    }
 
    if (new_visual_debug_enable && this->visual_debug_enable_down_ != new_visual_debug_enable) {
-      this->send_message_async<SetVisualDebugMessage>(this->visual_debug_enable_);
+      this->send_message<SetVisualDebugMessage>(this->visual_debug_enable_);
       this->visual_debug_enable_ = !this->visual_debug_enable_;
       this->visual_debug_enable_down_ = new_visual_debug_enable;
    }

@@ -84,9 +84,9 @@ void StartMenuScene::init(Game& game) {
       text_layer->get<Space>()->position(gs->camera()->center());
    });
 
-   this->send_message_async<AddToEntityMessage>(text_layer->handle(), title->handle());
-   this->send_message_async<AddToEntityMessage>(text_layer->handle(), subtitle->handle());
-   this->send_message_async<AddToEntityMessage>(text_layer->handle(), subtitle2->handle());
+   this->send_message<AddToEntityMessage>(text_layer->handle(), title->handle());
+   this->send_message<AddToEntityMessage>(text_layer->handle(), subtitle->handle());
+   this->send_message<AddToEntityMessage>(text_layer->handle(), subtitle2->handle());
 
    // create mouse cursor
    Entity* mouse_cursor = this->create_entity();

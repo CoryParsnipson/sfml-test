@@ -129,7 +129,7 @@ void BuilderScene::init(Game& game) {
    grid_root->add<Grid>("GridRoot Grid Component", sf::Vector2f(0, 0), 64, 64);
 
    // put grid_root under hud_root but over map_root
-   this->send_message_async<AddToEntityMessage>(this->space_handle(), grid_root->handle(), 1);
+   this->send_message<AddToEntityMessage>(this->space_handle(), grid_root->handle(), 1);
 
    // add grid system
    this->add_system(new GridSystem("GridSystem", gs->camera()));
@@ -137,7 +137,7 @@ void BuilderScene::init(Game& game) {
    // add a nice backdrop
    Entity* backdrop = this->create_entity();
    backdrop->id("Backdrop Entity");
-   this->send_message_async<AddToEntityMessage>(this->space_handle(), backdrop->handle(), 0);
+   this->send_message<AddToEntityMessage>(this->space_handle(), backdrop->handle(), 0);
    
    backdrop->add<VertexList>("BackdropVertexList", sf::TrianglesStrip, 4);
    backdrop->get<VertexList>()->vertex_color(0, sf::Color(50, 50, 50, 255));
@@ -163,7 +163,7 @@ void BuilderScene::init(Game& game) {
    // create fps display entity
    Entity* fps_display = this->create_entity();
    fps_display->id("FPS Display Entity");
-   this->send_message_async<AddToEntityMessage>(hud_root->handle(), fps_display->handle());
+   this->send_message<AddToEntityMessage>(hud_root->handle(), fps_display->handle());
 
    fps_display->add<Text>("FPS Display Text", "FPS: ??", this->fonts().get("retro"), 12);
    fps_display->get<Text>()->color(sf::Color(216, 138, 0, 255));
@@ -187,7 +187,7 @@ void BuilderScene::init(Game& game) {
    // create selection rect
    Entity* selection_rect = this->create_entity();
    selection_rect->id("SelectionRectangleEntity");
-   this->send_message_async<AddToEntityMessage>(hud_root->handle(), selection_rect->handle(), 0);
+   this->send_message<AddToEntityMessage>(hud_root->handle(), selection_rect->handle(), 0);
 
    selection_rect->add<Rectangle>("SelectionRectangle", 0, 0, 0, 0);
    selection_rect->get<Rectangle>()->color(sf::Color(66, 108, 167, 175));
@@ -199,7 +199,7 @@ void BuilderScene::init(Game& game) {
    // create tile selection visual
    Entity* tile_selection = this->create_entity();
    tile_selection->id("TileSelectionEntity");
-   this->send_message_async<AddToEntityMessage>(grid_root->handle(), tile_selection->handle(), 0);
+   this->send_message<AddToEntityMessage>(grid_root->handle(), tile_selection->handle(), 0);
 
    tile_selection->add<Rectangle>("TileSelectionRectangle", 0, 0, 0, 0);
    tile_selection->get<Rectangle>()->color(sf::Color(255, 255, 255, 128));
@@ -211,14 +211,14 @@ void BuilderScene::init(Game& game) {
    // create tile selection map_root portion
    Entity* tile_selection_maproot = this->create_entity();
    tile_selection_maproot->id("TileSelectionMapRootEntity");
-   this->send_message_async<AddToEntityMessage>(map_root->handle(), tile_selection_maproot->handle(), 0);
+   this->send_message<AddToEntityMessage>(map_root->handle(), tile_selection_maproot->handle(), 0);
 
    tile_selection_maproot->add<Collision>("TileSelectionMapRootCollider", sf::FloatRect(0, 0, 0, 0));
 
    // create tile palette window
    Entity* tile_palette_window = this->create_entity();
    tile_palette_window->id("TilePaletteWindow");
-   this->send_message_async<AddToEntityMessage>(hud_root->handle(), tile_palette_window->handle()); // put this on top of mouse cursor and selection_rect
+   this->send_message<AddToEntityMessage>(hud_root->handle(), tile_palette_window->handle()); // put this on top of mouse cursor and selection_rect
 
    tile_palette_window->add<Rectangle>("TilePaletteWindowRectangle", 0, 0, 220, 480);
    tile_palette_window->get<Rectangle>()->color(sf::Color(113, 94, 122, 255));
@@ -241,7 +241,7 @@ void BuilderScene::init(Game& game) {
 
    Entity* tpw_outline = this->create_entity();
    tpw_outline->id("TilePaletteWindowDecoration");
-   this->send_message_async<AddToEntityMessage>(tile_palette_window->handle(), tpw_outline->handle());
+   this->send_message<AddToEntityMessage>(tile_palette_window->handle(), tpw_outline->handle());
 
    tpw_outline->add<Rectangle>("TilePaletteWindowOutline", 5, 10, tile_palette_window->get<Rectangle>()->size().x - 10, tile_palette_window->get<Rectangle>()->size().y - 15);
    tpw_outline->get<Rectangle>()->color(sf::Color::Transparent);
@@ -250,14 +250,14 @@ void BuilderScene::init(Game& game) {
 
    Entity* tpw_title_back = this->create_entity();
    tpw_title_back->id("TilePaletteWindowTitleBack");
-   this->send_message_async<AddToEntityMessage>(tile_palette_window->handle(), tpw_title_back->handle());
+   this->send_message<AddToEntityMessage>(tile_palette_window->handle(), tpw_title_back->handle());
 
    tpw_title_back->add<Rectangle>("TilePaletteWindowTitleBack", 0, 0, 0, 0);
    tpw_title_back->get<Rectangle>()->color(sf::Color(113, 94, 122, 255));
 
    Entity* tpw_title = this->create_entity();
    tpw_title->id("TilePaletteWindowTitle");
-   this->send_message_async<AddToEntityMessage>(tile_palette_window->handle(), tpw_title->handle());
+   this->send_message<AddToEntityMessage>(tile_palette_window->handle(), tpw_title->handle());
 
    tpw_title->add<Text>("TilePaletteWindowTitleText", "Tileset:", this->fonts().get("retro"), 12);
    tpw_title->get<Text>()->position(30, 2);
@@ -312,7 +312,7 @@ void BuilderScene::init(Game& game) {
 
       Entity* entity = this->create_entity();
       entity->id(*it + "_tpw_entity");
-      this->send_message_async<AddToEntityMessage>(tile_palette_window->handle(), entity->handle());
+      this->send_message<AddToEntityMessage>(tile_palette_window->handle(), entity->handle());
 
       entity->add<Sprite>(*it + "_sprite", *this->textures().get(*it));
       entity->get<Sprite>()->position(tile_texture_pos);
@@ -350,7 +350,7 @@ void BuilderScene::init(Game& game) {
    }
 
    // putting this here because tpw_hover needs to be on top of all tiles
-   this->send_message_async<AddToEntityMessage>(tile_palette_window->handle(), tpw_hover->handle());
+   this->send_message<AddToEntityMessage>(tile_palette_window->handle(), tpw_hover->handle());
 
    // create mouse cursor
    Entity* mouse_cursor = this->create_entity();
@@ -359,7 +359,7 @@ void BuilderScene::init(Game& game) {
    this->mouse_cursor_ = mouse_cursor->handle();
 
    // add mouse_cursor to the hud_root
-   this->send_message_async<AddToEntityMessage>(hud_root->handle(), mouse_cursor->handle()); // added this last to put it on top
+   this->send_message<AddToEntityMessage>(hud_root->handle(), mouse_cursor->handle()); // added this last to put it on top
 
    mouse_cursor->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
 
@@ -397,7 +397,7 @@ void BuilderScene::init(Game& game) {
    Entity* mouse_cursor_script = this->create_entity();
    mouse_cursor_script->id("MouseCursorScriptEntity");
 
-   this->send_message_async<AddToEntityMessage>(hud_root->handle(), mouse_cursor_script->handle(), 0);
+   this->send_message<AddToEntityMessage>(hud_root->handle(), mouse_cursor_script->handle(), 0);
 
    mouse_cursor_script->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
 

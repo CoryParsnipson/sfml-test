@@ -2,11 +2,12 @@
 #define ENTITY_CREATED_MESSAGE_H
 
 #include "Mailbox.h"
+#include "ObjectPool.h"
 
 // ----------------------------------------------------------------------------
 // EntityCreatedMessage
 //
-// This is a message that is sent by a World when a new Entity is allocated.
+// This is a message that is sent when a new Entity is allocated.
 // ----------------------------------------------------------------------------
 class EntityCreatedMessage : public Message {
 public:

@@ -69,7 +69,7 @@ public:
       typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
       typename... Args
    >
-   void send_message_async(Args&&... args);
+   void send_message_sync(Args&&... args);
 
 private:
    // only allow Scene to create entities through create_entity()
@@ -128,7 +128,7 @@ Handle Entity::add(ComponentArgs&&... args) {
    Handle handle(this->component_manager_->add<ComponentType>(args...));
    this->components_[std::type_index(typeid(ComponentType))] = handle;
 
-   this->send_message_async<ComponentAddedMessage>();
+   this->send_message<ComponentAddedMessage>(this->handle(), std::type_index(typeid(ComponentType)));
 
    return handle;
 }
@@ -146,7 +146,7 @@ void Entity::remove() {
       this->component_manager_->remove<ComponentType>(it->second);
       this->components_.erase(it);
 
-      this->send_message_async<ComponentRemovedMessage>();
+      this->send_message<ComponentRemovedMessage>(this->handle(), std::type_index(typeid(ComponentType)));
    }
 }
 
@@ -157,6 +157,8 @@ template <
 >
 void Entity::send_message(Args&&... args) {
    std::shared_ptr<MsgT> message = std::make_shared<MsgT>(std::forward<Args>(args)...);
+   message->async(true);
+
    this->send_message_helper(message);
 }
 
@@ -165,10 +167,8 @@ template <
    typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
    typename... Args
 >
-void Entity::send_message_async(Args&&... args) {
+void Entity::send_message_sync(Args&&... args) {
    std::shared_ptr<MsgT> message = std::make_shared<MsgT>(std::forward<Args>(args)...);
-   message->async(true);
-
    this->send_message_helper(message);
 }
 

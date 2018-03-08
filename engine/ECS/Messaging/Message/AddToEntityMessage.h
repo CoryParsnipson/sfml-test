@@ -2,6 +2,7 @@
 #define ADD_TO_ENTITY_MESSAGE_H
 
 #include "Mailbox.h"
+#include "ObjectPool.h"
 
 // ----------------------------------------------------------------------------
 // AddToEntityMessage

@@ -57,6 +57,8 @@ Handle Entity::handle() const {
 
 void Entity::send_message_helper(std::shared_ptr<Message> message) {
    assert(this->scene_);
+   Game::logger().msg("Entity Message", Logger::INFO, "Sending message '" + std::string(typeid(*message.get()).name()) + "' from " + this->id());
+
    this->scene_->handle_message(message);
 }
 

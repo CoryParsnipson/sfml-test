@@ -37,6 +37,7 @@
 #include "GraphicalSystem.h"
 
 #include "EntityCreatedMessage.h"
+#include "EntityDestroyedMessage.h"
 #include "AddToEntityMessage.h"
 #include "ResizeCameraMessage.h"
 
@@ -89,7 +90,7 @@ public:
 
    void do_enter(Game& game) {
       // tell all graphical based systems to resize their cameras
-      this->send_message_async<ResizeCameraMessage>(game.window().size());
+      this->send_message<ResizeCameraMessage>(game.window().size());
 
       this->enter(game);
    }
@@ -151,14 +152,14 @@ public:
       e->handle(handle);
 
       // let Systems know a new Entity has been made
-      this->send_message_async<EntityCreatedMessage>(handle);
+      this->send_message<EntityCreatedMessage>(handle);
 
       // add Spatial component, every Entity should always have one
       e->add<Space>();
 
       // now add this entity as a child of the scene graph root
       if (this->root_ != Handle() && this->root_ != handle) {
-        this->send_message_async<AddToEntityMessage>(this->root_, handle);
+        this->send_message<AddToEntityMessage>(this->root_, handle);
       }
 
       return e;
@@ -173,6 +174,9 @@ public:
    }
 
    void remove_entity(Handle handle) {
+      // let Systems know a new Entity has been made
+      this->send_message<EntityDestroyedMessage>(handle);
+
       this->entities_.remove(handle);
    }
    
@@ -222,7 +226,7 @@ public:
    virtual void process(Game& game, KeyReleaseInputEvent& e) {}
    virtual void process(Game& game, ResizeInputEvent& e) {
       // resize all the cameras
-      this->send_message_async<ResizeCameraMessage>(game.window().size());
+      this->send_message<ResizeCameraMessage>(game.window().size());
    }
    virtual void process(Game& game, MouseMoveInputEvent& e) {}
    virtual void process(Game& game, MouseWheelInputEvent& e) {}
@@ -247,7 +251,7 @@ public:
    }
 
 protected:
-   // use this to broadcast messages to Systems from Scene
+   // use send_message* to broadcast messages to Systems from Scene (sync will delay until next update)
    template <
       typename MsgT,
       typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
@@ -260,7 +264,7 @@ protected:
       typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
       typename... Args
    >
-   void send_message_async(Args&&... args);
+   void send_message_sync(Args&&... args);
 
 private:
    std::string id_;
@@ -288,6 +292,8 @@ template <
 >
 void Scene::send_message(Args&&... args) {
    std::shared_ptr<MsgT> message = std::make_shared<MsgT>(std::forward<Args>(args)...);
+   message->async(true);
+
    this->handle_message(message);
 }
 
@@ -296,10 +302,8 @@ template <
    typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
    typename... Args
 >
-void Scene::send_message_async(Args&&... args) {
+void Scene::send_message_sync(Args&&... args) {
    std::shared_ptr<MsgT> message = std::make_shared<MsgT>(std::forward<Args>(args)...);
-   message->async(true);
-
    this->handle_message(message);
 }
 
