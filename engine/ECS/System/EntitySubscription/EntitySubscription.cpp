@@ -35,7 +35,7 @@ bool EntitySubscription::filter(System& system, Handle entity) {
 }
 
 void EntitySubscription::for_each(System& system, std::function<void(Handle)> entity_handler) {
-   this->on_update(system);
+   this->on_for_each(system);
 
    std::vector<Handle>::const_iterator it;
    for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {

@@ -21,9 +21,6 @@ public:
 
    virtual void add(System& system, Handle entity);
    virtual void remove(Handle entity);
-
-private:
-   virtual void on_update(System& system) {}
 };
 
 #endif

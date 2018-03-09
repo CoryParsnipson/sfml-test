@@ -29,7 +29,7 @@ void PostorderEntitySubscription::remove(Handle entity) {
    // empty
 }
 
-void PostorderEntitySubscription::on_update(System& system) {
+void PostorderEntitySubscription::on_for_each(System& system) {
    std::vector<Handle> entities_to_visit;
    std::vector<Handle> postorder_result;
 

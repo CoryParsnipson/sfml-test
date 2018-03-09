@@ -48,8 +48,7 @@ private:
    bool break_for_each_;
    EntityFilter filter_;
 
-   // this function is supposed to modify/update this->entities_
-   virtual void on_update(System& system) = 0;
+   virtual void on_for_each(System& system) {}
 };
 
 #endif

@@ -23,7 +23,7 @@ public:
 private:
    bool reverse_children_;
 
-   virtual void on_update(System& system);
+   virtual void on_for_each(System& system);
 };
 
 #endif
