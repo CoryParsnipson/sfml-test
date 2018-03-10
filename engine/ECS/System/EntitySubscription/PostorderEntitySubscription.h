@@ -15,15 +15,12 @@ public:
    virtual ~PostorderEntitySubscription();
 
    virtual void init(System& system);
-   virtual void clear();
 
    virtual void add(System& system, Handle entity);
    virtual void remove(Handle entity);
 
 private:
    bool reverse_children_;
-
-   virtual void on_for_each(System& system);
 };
 
 #endif

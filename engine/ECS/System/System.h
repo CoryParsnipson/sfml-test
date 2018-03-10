@@ -125,6 +125,9 @@ void System::receive_message(std::shared_ptr<MsgT> message) {
       // else, put the message in the mailbox queue and handle it in update
       this->mailbox_.enqueue(message);
    }
+
+   // forward message to entity subscription
+   this->subscription().receive_message(message);
 }
    
 template <

@@ -1,8 +1,15 @@
 #include <cassert>
+#include <algorithm>
 
 #include "PreorderEntitySubscription.h"
 #include "Scene.h"
 #include "Entity.h"
+
+#include "EntityDestroyedMessage.h"
+#include "AddToEntityMessage.h"
+#include "RemoveFromEntityMessage.h"
+#include "ComponentAddedMessage.h"
+#include "ComponentRemovedMessage.h"
 
 PreorderEntitySubscription::PreorderEntitySubscription(const std::string& id /* = "PreorderEntitySubscription" */, bool reverse_children /* = false */)
 : EntitySubscription(id)
@@ -14,29 +21,38 @@ PreorderEntitySubscription::~PreorderEntitySubscription() {
 }
 
 void PreorderEntitySubscription::init(System& system) {
-   // empty
-}
+   // set some messaging callbacks for when to update the entity list
+   this->mailbox().handle<EntityDestroyedMessage>([this, &system](EntityDestroyedMessage& msg) {
+      this->init(system); // rebuild entire entity list (is there an algorithm that can do better?)
+   });
 
-void PreorderEntitySubscription::clear() {
-   // empty
-}
+   this->mailbox().handle<AddToEntityMessage>([this, &system](AddToEntityMessage& msg) {
+      this->init(system); // rebuild entire entity list (is there an algorithm that can do better?)
+   });
 
-void PreorderEntitySubscription::add(System& system, Handle entity) {
-   // empty
-}
+   this->mailbox().handle<RemoveFromEntityMessage>([this, &system](RemoveFromEntityMessage& msg) {
+      this->init(system); // rebuild entire entity list (is there an algorithm that can do better?)
+   });
 
-void PreorderEntitySubscription::remove(Handle entity) {
-   // empty
-}
+   this->mailbox().handle<ComponentAddedMessage>([this, &system](ComponentAddedMessage& msg) {
+      if (this->filter(system, msg.entity) && std::find(this->entities_.begin(), this->entities_.end(), msg.entity) == this->entities_.end()) {
+         this->init(system); // rebuild entire entity list (is there an algorithm that can do better?)
+      }
+   });
 
-void PreorderEntitySubscription::on_for_each(System& system) {
+   this->mailbox().handle<ComponentRemovedMessage>([this, &system](ComponentRemovedMessage& msg) {
+      if (this->filter(system, msg.entity) && std::find(this->entities_.begin(), this->entities_.end(), msg.entity) != this->entities_.end()) {
+         this->init(system); // rebuild entire entity list (is there an algorithm that can do better?)
+      }
+   });
+
+   // now build entity list
    std::vector<Handle> entities_to_visit;
    entities_to_visit.push_back(
       system.root() == Handle() ? this->scene(system).space_handle() : system.root()
    );
 
-   // clear entity list (this subscription list implementation is not optimized)
-   this->entities_.clear();
+   this->clear();
 
    // do a preorder traversal of scene graph
    while (!entities_to_visit.empty()) {
@@ -63,4 +79,12 @@ void PreorderEntitySubscription::on_for_each(System& system) {
          }
       }
    }
+}
+
+void PreorderEntitySubscription::add(System& system, Handle entity) {
+   // empty
+}
+
+void PreorderEntitySubscription::remove(Handle entity) {
+   // empty
 }

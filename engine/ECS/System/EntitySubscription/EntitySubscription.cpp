@@ -7,6 +7,8 @@
 EntitySubscription::EntitySubscription(const std::string& id /* = "EntitySubscription" */)
 : id_(id)
 , break_for_each_(false)
+, mailbox_(id + "Mailbox")
+, filter_(id + "EntityFilter")
 {
 }
 
@@ -48,4 +50,14 @@ void EntitySubscription::for_each(System& system, std::function<void(Handle)> en
 
    // reset the break out of update loop flag
    this->break_for_each_ = false;
+}
+
+void EntitySubscription::clear() {
+   this->pre_clear();
+   this->entities_.clear();
+   this->post_clear();
+}
+
+Mailbox& EntitySubscription::mailbox() {
+   return this->mailbox_;
 }
