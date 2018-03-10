@@ -5,9 +5,13 @@ This was originally going to be a quick isometric tile demo experiment and it ha
 
 TODO
 ----
+* Add an interface that encapsulates mailbox(), send_message, and receive message to avoid duplicating code?
+
 * Encapsulate sf::Font and sf::Color into wrapper classes (for serialization and stuff)
 * Work on adding animations
    * need to upgrade graphicscomponent to take in animations capability?
+
+* Optimize EntitySubscription
 
 * Rewrite ObjectPool class to dynamically allocate a block of memory and in place new everything to get rid of allocator requirement
 
