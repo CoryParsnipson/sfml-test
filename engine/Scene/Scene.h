@@ -244,10 +244,17 @@ public:
       return this->root_;
    }
 
-   // broadcast a message to all systems in the scene; this method is called by Messageable interface
+   // this method should be called by Messageables' send_message_helper
    void handle_message(MessagePtr msg) {
+      // broadcast a message to all systems in the scene
       for (std::vector<System*>::const_iterator it = this->systems_.begin(); it != this->systems_.end(); ++it) {
          (*it)->receive_message(msg);
+      }
+
+      // broadcast a message to all entities in the scene
+      std::vector<Handle> entities = this->entities();
+      for (std::vector<Handle>::const_iterator it = entities.begin(); it != entities.end(); ++it) {
+         this->get_entity(*it)->receive_message(msg);
       }
    }
 
