@@ -12,6 +12,16 @@
 #include <functional>
 
 // ----------------------------------------------------------------------------
+// forward declarations
+// ----------------------------------------------------------------------------
+class Message;
+
+// ----------------------------------------------------------------------------
+// typedefs and aliases
+// ----------------------------------------------------------------------------
+using MessagePtr = std::shared_ptr<Message>;
+
+// ----------------------------------------------------------------------------
 // Message
 //
 // This is the base class for Mailbox messages. Any messages that need to be
@@ -47,12 +57,14 @@ public:
       typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr
    >
    using MessageHandlerT = std::function<void(MsgT&)>;
-
-   using MessagePtr = std::shared_ptr<Message>;
    using Messages = std::vector<MessagePtr>;
 
    Mailbox(const std::string& id = "Mailbox");
+   Mailbox(const Mailbox& other);
    ~Mailbox();
+
+   Mailbox& operator=(const Mailbox& other);
+   void swap(Mailbox& other);
 
    const std::string& id() const;
    void id(std::string id);

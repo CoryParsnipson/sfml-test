@@ -17,12 +17,12 @@
 #include "ResizeCameraMessage.h"
 
 GraphicalSystem::GraphicalSystem(const std::string& id, RenderSurface& surface, CameraPtr camera)
-: System(id, new PreorderEntitySubscription(id + "EntitySubscription"))
+: System(id, new PreorderEntitySubscription(this, id + "EntitySubscription"))
 , surface_(&surface)
 , camera_(camera)
 {
    // handle resize messages
-   this->mailbox().handle<ResizeCameraMessage>([this](ResizeCameraMessage& msg) {
+   this->install_message_handler<ResizeCameraMessage>([this](ResizeCameraMessage& msg) {
       this->camera_->size(sf::Vector2f(msg.width, msg.height));
    });
 }

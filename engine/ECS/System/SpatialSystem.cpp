@@ -15,7 +15,7 @@ SpatialSystem::~SpatialSystem() {
 }
 
 void SpatialSystem::on_init(Game& game) {
-   this->mailbox().handle<AddToEntityMessage>([&] (AddToEntityMessage& msg) {
+   this->install_message_handler<AddToEntityMessage>([&] (AddToEntityMessage& msg) {
       Entity* parent = this->scene().get_entity(msg.parent);
       Entity* child = this->scene().get_entity(msg.child);
 
@@ -34,7 +34,7 @@ void SpatialSystem::on_init(Game& game) {
       child->get<Space>()->parent(msg.parent); // update child entity's parent handle
    });
 
-   this->mailbox().handle<RemoveFromEntityMessage>([&] (RemoveFromEntityMessage& msg) {
+   this->install_message_handler<RemoveFromEntityMessage>([&] (RemoveFromEntityMessage& msg) {
       Entity* parent = this->scene().get_entity(msg.parent);
       Entity* child = this->scene().get_entity(msg.child);
 

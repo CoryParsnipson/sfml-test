@@ -11,12 +11,12 @@
 // ----------------------------------------------------------------------------
 class PostorderEntitySubscription : public EntitySubscription {
 public:
-   PostorderEntitySubscription(const std::string& id = "PostorderEntitySubscription", bool reverse_children = false);
+   PostorderEntitySubscription(System* system, const std::string& id = "PostorderEntitySubscription", bool reverse_children = false);
    virtual ~PostorderEntitySubscription();
 
-   virtual void init(System& system);
+   virtual void init();
 
-   virtual void add(System& system, Handle entity);
+   virtual void add(Handle entity);
    virtual void remove(Handle entity);
 
 private:

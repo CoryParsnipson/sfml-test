@@ -20,7 +20,7 @@ void VisualDebugSystem::on_init(Game& game) {
    this->subscribe_to().one_of<Collision>();
 
    // handle messages to enable/disable visual debug
-   this->mailbox().handle<SetVisualDebugMessage>([&] (SetVisualDebugMessage& msg) {
+   this->install_message_handler<SetVisualDebugMessage>([&] (SetVisualDebugMessage& msg) {
       if (msg.enable) {
          this->enable();
       } else {

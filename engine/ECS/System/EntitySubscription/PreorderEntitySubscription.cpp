@@ -11,45 +11,43 @@
 #include "ComponentAddedMessage.h"
 #include "ComponentRemovedMessage.h"
 
-PreorderEntitySubscription::PreorderEntitySubscription(const std::string& id /* = "PreorderEntitySubscription" */, bool reverse_children /* = false */)
-: EntitySubscription(id)
+PreorderEntitySubscription::PreorderEntitySubscription(System* system, const std::string& id /* = "PreorderEntitySubscription" */, bool reverse_children /* = false */)
+: EntitySubscription(system, id)
 , reverse_children_(reverse_children)
 {
+   // set some messaging callbacks for when to update the entity list
+   this->install_message_handler<EntityDestroyedMessage>([this](EntityDestroyedMessage& msg) {
+      this->init(); // rebuild entire entity list (is there an algorithm that can do better?)
+   });
+
+   this->install_message_handler<AddToEntityMessage>([this](AddToEntityMessage& msg) {
+      this->init(); // rebuild entire entity list (is there an algorithm that can do better?)
+   });
+
+   this->install_message_handler<RemoveFromEntityMessage>([this](RemoveFromEntityMessage& msg) {
+      this->init(); // rebuild entire entity list (is there an algorithm that can do better?)
+   });
+
+   this->install_message_handler<ComponentAddedMessage>([this](ComponentAddedMessage& msg) {
+      if (this->filter(msg.entity) && std::find(this->entities_.begin(), this->entities_.end(), msg.entity) == this->entities_.end()) {
+         this->init(); // rebuild entire entity list (is there an algorithm that can do better?)
+      }
+   });
+
+   this->install_message_handler<ComponentRemovedMessage>([this](ComponentRemovedMessage& msg) {
+      if (this->filter(msg.entity) && std::find(this->entities_.begin(), this->entities_.end(), msg.entity) != this->entities_.end()) {
+         this->init(); // rebuild entire entity list (is there an algorithm that can do better?)
+      }
+   });
 }
 
 PreorderEntitySubscription::~PreorderEntitySubscription() {
 }
 
-void PreorderEntitySubscription::init(System& system) {
-   // set some messaging callbacks for when to update the entity list
-   this->mailbox().handle<EntityDestroyedMessage>([this, &system](EntityDestroyedMessage& msg) {
-      this->init(system); // rebuild entire entity list (is there an algorithm that can do better?)
-   });
-
-   this->mailbox().handle<AddToEntityMessage>([this, &system](AddToEntityMessage& msg) {
-      this->init(system); // rebuild entire entity list (is there an algorithm that can do better?)
-   });
-
-   this->mailbox().handle<RemoveFromEntityMessage>([this, &system](RemoveFromEntityMessage& msg) {
-      this->init(system); // rebuild entire entity list (is there an algorithm that can do better?)
-   });
-
-   this->mailbox().handle<ComponentAddedMessage>([this, &system](ComponentAddedMessage& msg) {
-      if (this->filter(system, msg.entity) && std::find(this->entities_.begin(), this->entities_.end(), msg.entity) == this->entities_.end()) {
-         this->init(system); // rebuild entire entity list (is there an algorithm that can do better?)
-      }
-   });
-
-   this->mailbox().handle<ComponentRemovedMessage>([this, &system](ComponentRemovedMessage& msg) {
-      if (this->filter(system, msg.entity) && std::find(this->entities_.begin(), this->entities_.end(), msg.entity) != this->entities_.end()) {
-         this->init(system); // rebuild entire entity list (is there an algorithm that can do better?)
-      }
-   });
-
-   // now build entity list
+void PreorderEntitySubscription::init() {
    std::vector<Handle> entities_to_visit;
    entities_to_visit.push_back(
-      system.root() == Handle() ? this->scene(system).space_handle() : system.root()
+      this->system().root() == Handle() ? this->scene().space_handle() : this->system().root()
    );
 
    this->clear();
@@ -59,7 +57,7 @@ void PreorderEntitySubscription::init(System& system) {
       Handle current = entities_to_visit.back();
       entities_to_visit.pop_back();
 
-      Entity* e = this->scene(system).get_entity(current);
+      Entity* e = this->scene().get_entity(current);
       if (e != nullptr) {
          Space* space = e->get<Space>();
          assert(space != nullptr);
@@ -74,14 +72,14 @@ void PreorderEntitySubscription::init(System& system) {
             }
          }
 
-         if (this->filter(system, current)) {
+         if (this->filter(current)) {
             this->entities_.push_back(current);
          }
       }
    }
 }
 
-void PreorderEntitySubscription::add(System& system, Handle entity) {
+void PreorderEntitySubscription::add(Handle entity) {
    // empty
 }
 

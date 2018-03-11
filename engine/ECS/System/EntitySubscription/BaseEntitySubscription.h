@@ -13,13 +13,13 @@
 // ----------------------------------------------------------------------------
 class BaseEntitySubscription : public EntitySubscription {
 public:
-   BaseEntitySubscription(const std::string& id = "BaseEntitySubscription");
+   BaseEntitySubscription(System* system, const std::string& id = "BaseEntitySubscription");
    virtual ~BaseEntitySubscription();
 
-   virtual void init(System& system);
+   virtual void init();
    virtual void clear();
 
-   virtual void add(System& system, Handle entity);
+   virtual void add(Handle entity);
    virtual void remove(Handle entity);
 };
 

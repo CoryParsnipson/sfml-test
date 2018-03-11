@@ -10,12 +10,13 @@
 #include "ComponentAddedMessage.h"
 #include "ComponentRemovedMessage.h"
 
-System::System(const std::string& id /* = "System" */, EntitySubscription* sub /* = new BaseEntitySubscription() */)
-: id_(id)
+System::System(const std::string& id /* = "System" */, EntitySubscription* sub /* = nullptr */)
+: Messageable(id)
+, id_(id)
 , enabled_(true)
 , scene_(nullptr)
 , mailbox_(id + "Mailbox")
-, subscription_(sub)
+, subscription_(sub ? sub : new BaseEntitySubscription(this))
 {
 }
 
@@ -56,17 +57,17 @@ void System::init(Game& game) {
    this->on_init(game);
 
    // filter in subscription list should be initialized in pre_init() or on_init()
-   this->subscription_->init(*this); 
+   this->subscription_->init();
 
    // add some reasonable defaults to certain message types
-   this->mailbox().handle<ComponentAddedMessage>([this](ComponentAddedMessage& msg) {
+   this->install_message_handler<ComponentAddedMessage>([this](ComponentAddedMessage& msg) {
       this->subscription().clear();
-      this->subscription().init(*this);
+      this->subscription().init();
    });
 
-   this->mailbox().handle<ComponentRemovedMessage>([this](ComponentRemovedMessage& msg) {
+   this->install_message_handler<ComponentRemovedMessage>([this](ComponentRemovedMessage& msg) {
       this->subscription().clear();
-      this->subscription().init(*this);
+      this->subscription().init();
    });
 
    this->post_init(game);
@@ -80,9 +81,7 @@ void System::update(Game& game) {
    assert(this->scene_ != nullptr);
 
    this->pre_update(game);
-
-   // handle any queued up messages
-   this->mailbox_.process_queue();
+   this->handle_queued_messages();
 
    // perform system update on all subscribed entities
    std::function<void(Handle)> handle_on_update = [&](Handle h) {
@@ -91,7 +90,7 @@ void System::update(Game& game) {
          this->on_update(game, *e);
       }
    };
-   this->subscription_->for_each(*this, handle_on_update);
+   this->subscription_->for_each(handle_on_update);
 
    this->post_update(game);
 }
@@ -175,7 +174,12 @@ bool System::is_visible(Handle entity) {
    return visible;
 }
 
-void System::send_message_helper(std::shared_ptr<Message> message) {
-   assert(this->scene_ != nullptr);
+void System::send_message_helper(MessagePtr message) {
+   assert(this->scene_);
    this->scene_->handle_message(message);
+}
+
+void System::post_receive_message(MessagePtr message) {
+   // forward message to entity subscription
+   this->subscription().receive_message(message);
 }

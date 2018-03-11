@@ -12,12 +12,13 @@
 #include "ObjectPool.h"
 #include "Component.h"
 
-#include "Mailbox.h"
+#include "Messageable.h"
 
 // ----------------------------------------------------------------------------
 // Entity class
 // ----------------------------------------------------------------------------
 class Entity
+: public Messageable
 {
 public:
    using ComponentList = std::map<std::type_index, Handle>;
@@ -56,21 +57,6 @@ public:
    >
    void remove();
 
-   // messaging interface
-   template <
-      typename MsgT,
-      typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
-      typename... Args
-   >
-   void send_message(Args&&... args);
-
-   template <
-      typename MsgT,
-      typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
-      typename... Args
-   >
-   void send_message_sync(Args&&... args);
-
 private:
    // only allow Scene to create entities through create_entity()
    friend class ObjectPool<Entity>;
@@ -90,8 +76,9 @@ private:
    ComponentManager* component_manager_;
 
    // helpers
-   void send_message_helper(std::shared_ptr<Message> message);
    void handle(Handle handle);
+
+   virtual void send_message_helper(MessagePtr message);
 };
 
 // ----------------------------------------------------------------------------
@@ -148,28 +135,6 @@ void Entity::remove() {
 
       this->send_message<ComponentRemovedMessage>(this->handle(), std::type_index(typeid(ComponentType)));
    }
-}
-
-template <
-   typename MsgT,
-   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
-   typename... Args
->
-void Entity::send_message(Args&&... args) {
-   std::shared_ptr<MsgT> message = std::make_shared<MsgT>(std::forward<Args>(args)...);
-   message->async(true);
-
-   this->send_message_helper(message);
-}
-
-template <
-   typename MsgT,
-   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
-   typename... Args
->
-void Entity::send_message_sync(Args&&... args) {
-   std::shared_ptr<MsgT> message = std::make_shared<MsgT>(std::forward<Args>(args)...);
-   this->send_message_helper(message);
 }
 
 #endif

@@ -4,8 +4,8 @@
 #include <string>
 #include <functional>
 
-#include "Mailbox.h"
 #include "ObjectPool.h"
+#include "Messageable.h"
 #include "EntityFilter.h"
 
 // ----------------------------------------------------------------------------
@@ -20,66 +20,47 @@ class System;
 //
 // Base class for Entity Subscriptions used by Systems.
 // ----------------------------------------------------------------------------
-class EntitySubscription {
+class EntitySubscription
+: public Messageable
+{
 public:
-   EntitySubscription(const std::string& id = "EntitySubscription");
+   EntitySubscription(System* system, const std::string& id);
    virtual ~EntitySubscription();
 
    const std::string& id() const;
-   Scene& scene(System& system) const;
+   Scene& scene() const;
 
    void break_out_of_update();
 
    EntityFilter& filter();
-   bool filter(System& system, Handle entity);
+   bool filter(Handle entity);
 
-   void for_each(System& system, std::function<void(Handle)> entity_handler);
+   void for_each(std::function<void(Handle)> entity_handler);
    void clear();
 
-   virtual void init(System& system) = 0;
-   virtual void add(System& system, Handle entity) = 0;
+   virtual void init() = 0;
+   virtual void add(Handle entity) = 0;
    virtual void remove(Handle entity) = 0;
 
-   template <
-      typename MsgT,
-      typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr
-   >
-   void receive_message(std::shared_ptr<MsgT> message);
-   
 protected:
    std::vector<Handle> entities_;
 
    Mailbox& mailbox();
+   System& system();
 
 private:
    std::string id_;
    bool break_for_each_;
 
+   System* system_;
    Mailbox mailbox_;
    EntityFilter filter_;
 
-   virtual void on_for_each(System& system) {}
+   virtual void send_message_helper(MessagePtr message);
+
+   virtual void on_for_each() {}
    virtual void pre_clear() {}
    virtual void post_clear() {}
 };
-
-// ----------------------------------------------------------------------------
-// template member declarations
-// ----------------------------------------------------------------------------
-template <
-   typename MsgT,
-   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr
->
-void EntitySubscription::receive_message(std::shared_ptr<MsgT> message) {
-   assert(message != nullptr);
-
-   if (message->async()) {
-      // if this message is asynchronous, process it now
-      this->mailbox_.process(message);
-   } else {
-      // else, put the message in the mailbox queue and handle it in update
-      this->mailbox_.enqueue(message);
-   }
-}
    
 #endif

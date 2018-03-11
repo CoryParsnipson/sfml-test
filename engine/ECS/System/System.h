@@ -11,7 +11,7 @@
 #include "ObjectPool.h"
 #include "BaseEntitySubscription.h"
 
-#include "Mailbox.h"
+#include "Messageable.h"
 
 // ----------------------------------------------------------------------------
 // forward declarations
@@ -28,9 +28,10 @@ class EntityFilter;
 // ----------------------------------------------------------------------------
 class System
 : public Update
+, public Messageable
 {
 public:
-   System(const std::string& id = "System", EntitySubscription* sub = new BaseEntitySubscription());
+   System(const std::string& id = "System", EntitySubscription* sub = nullptr);
    virtual ~System();
 
    void id(const std::string& id);
@@ -52,28 +53,8 @@ public:
    Handle root() const;
    void root(Handle root);
 
-   template <
-      typename MsgT,
-      typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr
-   >
-   void receive_message(std::shared_ptr<MsgT> message);
-   
-   template <
-      typename MsgT,
-      typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
-      typename... Args
-   >
-   void send_message(Args&&... args);
-
-   template <
-      typename MsgT,
-      typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
-      typename... Args
-   >
-   void send_message_sync(Args&&... args);
-
 protected:
-   friend Scene& EntitySubscription::scene(System& system) const;
+   friend Scene& EntitySubscription::scene() const;
 
    Scene& scene();
    Mailbox& mailbox();
@@ -95,6 +76,10 @@ private:
    Mailbox mailbox_;
    EntitySubscription* subscription_;
 
+   virtual void send_message_helper(MessagePtr message);
+
+   virtual void post_receive_message(MessagePtr message);
+
    // System interface hooks
    virtual void pre_init(Game& game) {}
    virtual void on_init(Game& game) = 0;
@@ -103,53 +88,6 @@ private:
    virtual void pre_update(Game& game) {}
    virtual void on_update(Game& game, Entity& e) = 0;
    virtual void post_update(Game& game) {}
-
-   // helpers
-   void send_message_helper(std::shared_ptr<Message> message);
 };
-
-// ----------------------------------------------------------------------------
-// template member declarations
-// ----------------------------------------------------------------------------
-template <
-   typename MsgT,
-   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr
->
-void System::receive_message(std::shared_ptr<MsgT> message) {
-   assert(message != nullptr);
-
-   if (message->async()) {
-      // if this message is asynchronous, process it now
-      this->mailbox_.process(message);
-   } else {
-      // else, put the message in the mailbox queue and handle it in update
-      this->mailbox_.enqueue(message);
-   }
-
-   // forward message to entity subscription
-   this->subscription().receive_message(message);
-}
-   
-template <
-   typename MsgT,
-   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
-   typename... Args
->
-void System::send_message(Args&&... args) {
-   std::shared_ptr<MsgT> message = std::make_shared<MsgT>(std::forward<Args>(args)...);
-   message->async(true);
-
-   this->send_message_helper(message);
-}
-
-template <
-   typename MsgT,
-   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
-   typename... Args
->
-void System::send_message_sync(Args&&... args) {
-   std::shared_ptr<MsgT> message = std::make_shared<MsgT>(std::forward<Args>(args)...);
-   this->send_message_helper(message);
-}
 
 #endif

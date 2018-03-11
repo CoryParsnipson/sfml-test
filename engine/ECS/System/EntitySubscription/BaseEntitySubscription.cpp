@@ -2,8 +2,8 @@
 #include "System.h"
 #include "BaseEntitySubscription.h"
 
-BaseEntitySubscription::BaseEntitySubscription(const std::string& id /* = "BaseEntitySubscription" */)
-: EntitySubscription(id)
+BaseEntitySubscription::BaseEntitySubscription(System* system, const std::string& id /* = "BaseEntitySubscription" */)
+: EntitySubscription(system, id)
 {
 }
 
@@ -11,10 +11,10 @@ BaseEntitySubscription::~BaseEntitySubscription() {
    this->entities_.clear();
 }
 
-void BaseEntitySubscription::init(System& system) {
-   std::vector<Handle> entities_from_scene = this->scene(system).entities();
+void BaseEntitySubscription::init() {
+   std::vector<Handle> entities_from_scene = this->scene().entities();
    for (std::vector<Handle>::iterator it = entities_from_scene.begin(); it != entities_from_scene.end(); ++it) {
-      this->add(system, *it);
+      this->add(*it);
    }
 }
 
@@ -22,8 +22,8 @@ void BaseEntitySubscription::clear() {
    this->entities_.clear();
 }
 
-void BaseEntitySubscription::add(System& system, Handle entity) {
-   if (this->filter(system, entity)) {
+void BaseEntitySubscription::add(Handle entity) {
+   if (this->filter(entity)) {
       this->entities_.push_back(entity);
    }
 }

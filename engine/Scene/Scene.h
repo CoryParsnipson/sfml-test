@@ -30,7 +30,7 @@
 #include "ComponentManager.h"
 
 #include "System.h"
-#include "Mailbox.h"
+#include "Messageable.h"
 
 #include "SpatialSystem.h"
 #include "CallbackSystem.h"
@@ -49,10 +49,12 @@
 // ----------------------------------------------------------------------------
 class Scene
 : public Update
+, public Messageable
 {
 public:
    Scene(std::string id)
-   : id_(id)
+   : Messageable(id)
+   , id_(id)
    , is_initialized_(false)
    , entities_(id + "EntityPool", 20000, [this](){ return Entity("entity", this, &this->components_); })
    {
@@ -242,28 +244,12 @@ public:
       return this->root_;
    }
 
-   // broadcast a message to all systems in the scene; this method is called by System
-   void handle_message(std::shared_ptr<Message> msg) {
+   // broadcast a message to all systems in the scene; this method is called by Messageable interface
+   void handle_message(MessagePtr msg) {
       for (std::vector<System*>::const_iterator it = this->systems_.begin(); it != this->systems_.end(); ++it) {
          (*it)->receive_message(msg);
       }
    }
-
-protected:
-   // use send_message* to broadcast messages to Systems from Scene (sync will delay until next update)
-   template <
-      typename MsgT,
-      typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
-      typename... Args
-   >
-   void send_message(Args&&... args);
-
-   template <
-      typename MsgT,
-      typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
-      typename... Args
-   >
-   void send_message_sync(Args&&... args);
 
 private:
    std::string id_;
@@ -279,31 +265,10 @@ private:
    std::vector<System*> systems_;
 
    Handle root_;
+
+   virtual void send_message_helper(MessagePtr message) {
+      this->handle_message(message);
+   }
 };
-
-// ----------------------------------------------------------------------------
-// template member declarations
-// ----------------------------------------------------------------------------
-template <
-   typename MsgT,
-   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
-   typename... Args
->
-void Scene::send_message(Args&&... args) {
-   std::shared_ptr<MsgT> message = std::make_shared<MsgT>(std::forward<Args>(args)...);
-   message->async(true);
-
-   this->handle_message(message);
-}
-
-template <
-   typename MsgT,
-   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
-   typename... Args
->
-void Scene::send_message_sync(Args&&... args) {
-   std::shared_ptr<MsgT> message = std::make_shared<MsgT>(std::forward<Args>(args)...);
-   this->handle_message(message);
-}
 
 #endif

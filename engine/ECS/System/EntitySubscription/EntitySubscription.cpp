@@ -4,9 +4,11 @@
 #include "System.h"
 #include "EntitySubscription.h"
 
-EntitySubscription::EntitySubscription(const std::string& id /* = "EntitySubscription" */)
-: id_(id)
+EntitySubscription::EntitySubscription(System* system, const std::string& id)
+: Messageable(id)
+, id_(id)
 , break_for_each_(false)
+, system_(system)
 , mailbox_(id + "Mailbox")
 , filter_(id + "EntityFilter")
 {
@@ -19,8 +21,9 @@ const std::string& EntitySubscription::id() const {
    return this->id_;
 }
 
-Scene& EntitySubscription::scene(System& system) const {
-   return system.scene();
+Scene& EntitySubscription::scene() const {
+   assert(this->system_);
+   return this->system_->scene();
 }
 
 void EntitySubscription::break_out_of_update() {
@@ -31,13 +34,13 @@ EntityFilter& EntitySubscription::filter() {
    return this->filter_;
 }
 
-bool EntitySubscription::filter(System& system, Handle entity) {
-   Entity* e = this->scene(system).get_entity(entity);
+bool EntitySubscription::filter(Handle entity) {
+   Entity* e = this->scene().get_entity(entity);
    return (e == nullptr ? false : this->filter().filter(*e));
 }
 
-void EntitySubscription::for_each(System& system, std::function<void(Handle)> entity_handler) {
-   this->on_for_each(system);
+void EntitySubscription::for_each(std::function<void(Handle)> entity_handler) {
+   this->on_for_each();
 
    std::vector<Handle>::const_iterator it;
    for (it = this->entities_.begin(); it != this->entities_.end(); ++it) {
@@ -60,4 +63,14 @@ void EntitySubscription::clear() {
 
 Mailbox& EntitySubscription::mailbox() {
    return this->mailbox_;
+}
+
+System& EntitySubscription::system() {
+   assert(this->system_);
+   return *this->system_;
+}
+
+void EntitySubscription::send_message_helper(MessagePtr message) {
+   assert(this->system_);
+   this->scene().handle_message(message);
 }

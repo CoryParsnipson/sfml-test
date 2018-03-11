@@ -31,7 +31,7 @@ void GridSystem::on_init(Game& game) {
    this->subscribe_to().all_of<Space, Grid>();
 
    // register grid visibility toggling
-   this->mailbox().handle<SetGridVisibilityMessage>([&] (SetGridVisibilityMessage& msg) {
+   this->install_message_handler<SetGridVisibilityMessage>([&] (SetGridVisibilityMessage& msg) {
       Game::logger().msg(this->id(), Logger::INFO, "Handling SetGridVisibilityMessage.");
 
       Entity* grid_entity = this->scene().get_entity(msg.grid_entity);

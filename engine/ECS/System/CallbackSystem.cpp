@@ -19,7 +19,7 @@
 #include "ResizeCameraMessage.h"
 
 CallbackSystem::CallbackSystem(const std::string& id /* = "CallbackSystem" */)
-: System(id, new PostorderEntitySubscription(id + "EntitySubscription"))
+: System(id, new PostorderEntitySubscription(this, id + "EntitySubscription"))
 , camera_was_resized_(false)
 {
    this->target_hit_[CallbackKey::MOUSE_WHEEL] = false;
@@ -34,7 +34,7 @@ void CallbackSystem::on_init(Game& game) {
    this->subscribe_to().all_of<Callback, PlayerProfile>();
 
    // handle resize messages
-   this->mailbox().handle<ResizeCameraMessage>([this](ResizeCameraMessage& msg) {
+   this->install_message_handler<ResizeCameraMessage>([this](ResizeCameraMessage& msg) {
       this->camera_was_resized_ = true;
    });
 }
