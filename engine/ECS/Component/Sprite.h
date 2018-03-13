@@ -6,7 +6,6 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 
-#include "Update.h"
 #include "Component.h"
 
 // ----------------------------------------------------------------------------
