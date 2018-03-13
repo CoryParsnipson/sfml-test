@@ -1,9 +1,9 @@
-#ifndef UPDATE_H
-#define UPDATE_H
+#ifndef UPDATEABLE_H
+#define UPDATEABLE_H
 
 class Game;
 
-class Update {
+class Updateable {
 public:
    virtual void update(Game& game) = 0;
 };

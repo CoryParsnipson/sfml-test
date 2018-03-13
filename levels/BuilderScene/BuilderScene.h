@@ -32,6 +32,9 @@ public:
 
 private:
    Handle mouse_cursor_;
+
+   void load_fonts();
+   void load_textures();
 };
 
 #endif

@@ -19,8 +19,8 @@
 #include "MouseButtonInputEvent.h"
 
 #include "Game.h"
+#include "Updateable.h"
 #include "Camera.h"
-#include "Update.h"
 #include "Entity.h"
 #include "FontAtlas.h"
 #include "TextureAtlas.h"
@@ -48,7 +48,7 @@
 // This is a discrete container to organize game play and "levels" with.
 // ----------------------------------------------------------------------------
 class Scene
-: public Update
+: public Updateable
 , public Messageable
 {
 public:

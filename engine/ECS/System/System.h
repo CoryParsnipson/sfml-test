@@ -7,7 +7,7 @@
 #include <utility>
 #include <SFML/Graphics.hpp>
 
-#include "Update.h"
+#include "Updateable.h"
 #include "ObjectPool.h"
 #include "BaseEntitySubscription.h"
 
@@ -27,7 +27,7 @@ class EntityFilter;
 // between Entities and Components.
 // ----------------------------------------------------------------------------
 class System
-: public Update
+: public Updateable
 , public Messageable
 {
 public:
