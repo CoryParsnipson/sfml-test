@@ -7,6 +7,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Component.h"
+#include "Updateable.h"
 
 // ----------------------------------------------------------------------------
 // forward declarations
@@ -47,6 +48,7 @@ private:
 // ----------------------------------------------------------------------------
 class Sprite
 : public Component
+, public Updateable
 {
 public:
    explicit Sprite(const std::string& id = "Sprite");
