@@ -33,6 +33,14 @@ public:
 private:
    Handle mouse_cursor_;
 
+   bool grid_visible_;
+   bool visual_debug_enable_;
+
+   sf::Clock clock;
+   int last_frame_time;
+   int frame_measurement_interval;
+   int frame_count;
+
    void load_fonts();
    void load_textures();
 };

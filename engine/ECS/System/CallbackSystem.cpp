@@ -217,6 +217,9 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
       callback->prev_mouse_pos(new_pos);
    }
 
+   // run this always
+   callback->on_update();
+
    if (this->camera_was_resized_) {
       callback->camera_resize();
    }

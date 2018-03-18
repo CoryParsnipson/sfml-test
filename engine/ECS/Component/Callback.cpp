@@ -53,6 +53,14 @@ void Callback::propagate(bool propagate) {
    this->propagate_ = propagate;
 }
 
+void Callback::on_update(Callback::CallbackT callback) {
+   this->callbacks_[CallbackKey::ON_UPDATE] = callback;
+}
+
+void Callback::on_update() {
+   this->execute_callback(CallbackKey::ON_UPDATE);
+}
+
 void Callback::mouse_in(Callback::CallbackT callback) {
    this->callbacks_[CallbackKey::MOUSE_IN] = callback;
 }

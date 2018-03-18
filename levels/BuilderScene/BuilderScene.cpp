@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "Entity.h"
 
+#include "Space.h"
 #include "Text.h"
 #include "Rectangle.h"
 #include "VertexList.h"
@@ -38,12 +39,19 @@
 #include "GraphicalSystem.h"
 #include "VisualDebugSystem.h"
 #include "GridSystem.h"
-#include "BuilderSceneInputSystem.h"
 
 #include "AddToEntityMessage.h"
+#include "SetGridVisibilityMessage.h"
+#include "SetVisualDebugMessage.h"
 
 BuilderScene::BuilderScene()
 : Scene("BuilderScene")
+, grid_visible_(false)
+, visual_debug_enable_(true)
+, clock()
+, last_frame_time(0)
+, frame_measurement_interval(6)
+, frame_count(0)
 {
 }
 
@@ -519,16 +527,106 @@ void BuilderScene::init(Game& game) {
       mouse_cursor_script->get<Collision>()->volume(sf::Vector2f(0, 0), new_size);
    });
 
-   // add keyboard input system
-   BuilderSceneInputSystem* input_system = new BuilderSceneInputSystem();
-   input_system->grid_entity = grid_root->handle();
-   input_system->map_entity = map_root->handle();
-   input_system->tile_selection = tile_selection->handle();
-   input_system->tile_selection_maproot = tile_selection_maproot->handle();
-   input_system->fps_entity = fps_display->handle();
-   input_system->serializer = new JSONSerializer(3);
-   input_system->file_channel = new FileChannel("tilemap_test.txt");
-   this->add_system(input_system);
+   // add keyboard inputs
+   hud_root->add<Callback>("HudRootCallback");
+   hud_root->add<PlayerProfile>("HudRootPlayerProfile", 1);
+
+   hud_root->get<Callback>()->on_update([this, grid_root, map_root, tile_selection, tile_selection_maproot, fps_display, &game] () {
+      InputBinding& p1_bindings = game.get_player(1).bindings();
+
+      if (p1_bindings.get<GridVisibilityToggleIntent>()->element()->was_pressed()) {
+         this->send_message<SetGridVisibilityMessage>(grid_root->handle(), this->grid_visible_);
+         this->grid_visible_ = !this->grid_visible_;
+      }
+
+      if (p1_bindings.get<VisualDebugIntent>()->element()->was_pressed()) {
+         this->send_message<SetVisualDebugMessage>(this->visual_debug_enable_);
+         this->visual_debug_enable_ = !this->visual_debug_enable_;
+      }
+
+      if (p1_bindings.get<ResetViewIntent>()->element()->was_pressed()) {
+         map_root->get<Space>()->position(0, 0);
+         map_root->get<Space>()->scale(sf::Vector2f(1.f, 1.f));
+
+         sf::Vector2f pos = tile_selection->get<Rectangle>()->position();
+         sf::Vector2f end = pos + tile_selection->get<Rectangle>()->size();
+
+         sf::Vector2i pos_idx = grid_root->get<Grid>()->grid_index(pos);
+         sf::Vector2i end_idx = grid_root->get<Grid>()->grid_index(end);
+
+         // reset grid
+         grid_root->get<Space>()->position(0, 0);
+         grid_root->get<Grid>()->zoom_factor.x = 1.f;
+         grid_root->get<Grid>()->zoom_factor.y = 1.f;
+
+         // recalculate tile selection visual
+         sf::Vector2f new_pos;
+         new_pos.x = grid_root->get<Grid>()->tile_width() * pos_idx.x;
+         new_pos.y = grid_root->get<Grid>()->tile_height() * pos_idx.y;
+
+         sf::Vector2f new_end;
+         new_end.x = grid_root->get<Grid>()->tile_width() * end_idx.x;
+         new_end.y = grid_root->get<Grid>()->tile_height() * end_idx.y;
+
+         tile_selection->get<Rectangle>()->position(new_pos);
+         tile_selection->get<Rectangle>()->size(new_end - new_pos);
+
+         tile_selection->get<Collision>()->volume(tile_selection->get<Rectangle>()->global_bounds());
+      }
+
+      if (p1_bindings.get<MoveUpIntent>()->element()->is_pressed()) {
+         map_root->get<Space>()->move(sf::Vector2f(0, -10));
+         grid_root->get<Space>()->move(sf::Vector2f(0, -10));
+      }
+
+      if (p1_bindings.get<MoveLeftIntent>()->element()->is_pressed()) {
+         map_root->get<Space>()->move(sf::Vector2f(-10, 0));
+         grid_root->get<Space>()->move(sf::Vector2f(-10, 0));
+      }
+
+      if (p1_bindings.get<MoveRightIntent>()->element()->is_pressed()) {
+         map_root->get<Space>()->move(sf::Vector2f(10, 0));
+         grid_root->get<Space>()->move(sf::Vector2f(10, 0));
+      }
+
+      if (p1_bindings.get<MoveDownIntent>()->element()->is_pressed()) {
+         map_root->get<Space>()->move(sf::Vector2f(0, 10));
+         grid_root->get<Space>()->move(sf::Vector2f(0, 10));
+      }
+
+      if (p1_bindings.get<RemoveTilesIntent>()->element()->was_pressed()) {
+         if (map_root && tile_selection_maproot) {
+            TileMap* map = map_root->get<TileMap>();
+            Collision* collision = tile_selection_maproot->get<Collision>();
+
+            if (map && collision) {
+               map->remove(collision->volume());
+            }
+         }
+      }
+
+      if (p1_bindings.get<SerializeMapIntent>()->element()->was_pressed()) {
+         TileMap* tilemap = map_root->get<TileMap>();
+         FileChannel* fc = new FileChannel("tilemap_test.txt");
+         Serializer* serializer = new JSONSerializer(3);
+
+         fc->remove();
+         fc->seek(0);
+         fc->send(tilemap->serialize(*serializer));
+
+         Game::logger().msg("BuilderSceneInputSystem", Logger::INFO, "Saving map to file '" + fc->filename());
+      }
+
+      // update fps read
+      if (!this->frame_count) {
+         this->last_frame_time = (((float)this->frame_measurement_interval / this->clock.getElapsedTime().asSeconds()) * game.settings.framerate_smoothing())
+                                 + (this->last_frame_time * (1.0 - game.settings.framerate_smoothing()));
+         this->clock.restart();
+
+         fps_display->get<Text>()->string("FPS: " + std::to_string(this->last_frame_time));
+      }
+      this->frame_count = (this->frame_count + 1) % this->frame_measurement_interval;
+   });
 }
 
 void BuilderScene::enter(Game& game) {

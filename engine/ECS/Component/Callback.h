@@ -12,7 +12,7 @@
 // enum classes
 // ----------------------------------------------------------------------------
 enum class CallbackKey {
-   MOUSE_IN, MOUSE_OUT, MOUSE_MOVE, MOUSE_WHEEL, LEFT_CLICK, RIGHT_CLICK,
+   ON_UPDATE, MOUSE_IN, MOUSE_OUT, MOUSE_MOVE, MOUSE_WHEEL, LEFT_CLICK, RIGHT_CLICK,
    LEFT_RELEASE, RIGHT_RELEASE, CAMERA_RESIZE
 };
 
@@ -42,6 +42,9 @@ public:
 
    bool propagate() const;
    void propagate(bool propagate);
+
+   void on_update(CallbackT callback);
+   void on_update();
 
    void mouse_in(CallbackT callback);
    void mouse_in();
