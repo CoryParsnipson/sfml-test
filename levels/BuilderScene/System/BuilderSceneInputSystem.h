@@ -31,16 +31,7 @@ private:
    virtual void on_update(Game& game, Entity& e) {}
 
    bool grid_visible_;
-   bool grid_visible_button_down_;
-
    bool visual_debug_enable_;
-   bool visual_debug_enable_down_;
-
-   bool reset_camera_down_;
-
-   bool remove_tiles_down_;
-
-   bool save_map_down_;
 
    sf::Clock clock;
    int last_frame_time;

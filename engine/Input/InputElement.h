@@ -5,6 +5,8 @@
 #include <climits>
 #include <memory>
 
+#include "Updateable.h"
+
 // ----------------------------------------------------------------------------
 // forward declarations
 // ----------------------------------------------------------------------------
@@ -24,9 +26,9 @@ typedef std::shared_ptr<Button> ButtonPtr;
 //
 // This defines properties for buttons and joystick axes.
 // ----------------------------------------------------------------------------
-class InputElement {
+class InputElement : public Updateable {
 public:
-   InputElement(const std::string& name) : name_(name), position_(0) {}
+   InputElement(const std::string& name) : Updateable(), name_(name), position_(0), prev_position_(0) {}
    virtual ~InputElement() {}
 
    const std::string& name() const { return this->name_; }
@@ -34,17 +36,33 @@ public:
 
    bool is_pressed() const { return this->position_ != 0; }
 
+   bool was_pressed() const {
+      return this->is_pressed() && this->prev_position_ == 0;
+   }
+
+   bool was_released() const {
+      return !this->is_pressed() && this->prev_position_ == 0;
+   }
+
    int position() const { return this->position_; }
    virtual void position(int position) = 0; 
 
    virtual std::string to_string() const = 0;
 
+   virtual void update(Game& game) {
+      this->prev_position_ = this->position_;
+   }
+
 protected:
-   void set_position(int position) { this->position_ = position; }
+   void set_position(int position) {
+      this->prev_position_ = this->position_;
+      this->position_ = position;
+   }
 
 private:
    std::string name_;
    int position_;
+   int prev_position_;
 };
 
 // ----------------------------------------------------------------------------

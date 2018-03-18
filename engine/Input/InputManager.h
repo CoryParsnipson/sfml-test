@@ -9,6 +9,7 @@
 
 #include "Observer.h"
 #include "InputDevice.h"
+#include "Updateable.h"
 
 // ----------------------------------------------------------------------------
 // forward declarations
@@ -53,6 +54,7 @@ enum class Key {
 // ----------------------------------------------------------------------------
 class InputManager
 : public Subject<InputEvent>
+, public Updateable
 {
 public:
    using DeviceMap = std::map<InputDevice::DeviceId, InputDevice*>;
@@ -63,6 +65,7 @@ public:
    ~InputManager();
 
    virtual void poll_event(Game& game);
+   virtual void update(Game& game);
 
    InputDevice::DeviceId add_device(InputDevice* device);
    InputDevice* get_device(InputDevice::DeviceId device_id);

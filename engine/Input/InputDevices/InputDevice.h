@@ -6,6 +6,7 @@
 #include <memory>
 #include <map>
 
+#include "Updateable.h"
 #include "InputElement.h"
 #include "InputListener.h"
 
@@ -14,7 +15,10 @@
 //
 // This is the base class for all i/o interfaces to the game engine.
 // ----------------------------------------------------------------------------
-class InputDevice : public InputListener {
+class InputDevice
+: public InputListener
+, public Updateable
+{
 public:
    using DeviceId = unsigned int;
    using ElementId = std::string;
@@ -67,6 +71,8 @@ public:
    virtual void process(MouseMoveInputEvent& e) {}
    virtual void process(MouseWheelInputEvent& e) {}
    virtual void process(MouseButtonInputEvent& e) {}
+
+   virtual void update(Game& game);
 
 protected:
    void add_button(const ElementId& name) {

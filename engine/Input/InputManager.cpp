@@ -152,6 +152,12 @@ void InputManager::poll_event(Game& game) {
    }
 }
 
+void InputManager::update(Game& game) {
+   for (InputManager::DeviceMap::iterator it = this->devices_.begin(); it != this->devices_.end(); ++it) {
+      it->second->update(game);
+   }
+}
+
 InputDevice::DeviceId InputManager::add_device(InputDevice* device) {
    if (device == nullptr) {
       Game::logger().msg("InputManager", Logger::WARNING, "Received nullptr device, not adding.");

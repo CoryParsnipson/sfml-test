@@ -24,12 +24,7 @@
 BuilderSceneInputSystem::BuilderSceneInputSystem(const std::string& id /* = "BuilderSceneInputSystem" */)
 : System(id)
 , grid_visible_(false)
-, grid_visible_button_down_(false)
 , visual_debug_enable_(true)
-, visual_debug_enable_down_(false)
-, reset_camera_down_(false)
-, remove_tiles_down_(false)
-, save_map_down_(false)
 , clock()
 , last_frame_time(0)
 , frame_measurement_interval(6)
@@ -41,31 +36,19 @@ BuilderSceneInputSystem::~BuilderSceneInputSystem() {
 }
 
 void BuilderSceneInputSystem::pre_update(Game& game) {
-   bool new_grid_visibility = game.get_player(1).bindings().get<GridVisibilityToggleIntent>()->element()->is_pressed();
-   bool new_visual_debug_enable = game.get_player(1).bindings().get<VisualDebugIntent>()->element()->is_pressed();
+   InputBinding& p1_bindings = game.get_player(1).bindings();
 
-   if (new_grid_visibility && this->grid_visible_button_down_ != new_grid_visibility) {
+   if (p1_bindings.get<GridVisibilityToggleIntent>()->element()->was_pressed()) {
       this->send_message<SetGridVisibilityMessage>(this->grid_entity, this->grid_visible_);
       this->grid_visible_ = !this->grid_visible_;
-      this->grid_visible_button_down_ = new_grid_visibility;
    }
 
-   if (!new_grid_visibility && this->grid_visible_button_down_ != new_grid_visibility) {
-      this->grid_visible_button_down_ = new_grid_visibility;
-   }
-
-   if (new_visual_debug_enable && this->visual_debug_enable_down_ != new_visual_debug_enable) {
+   if (p1_bindings.get<VisualDebugIntent>()->element()->was_pressed()) {
       this->send_message<SetVisualDebugMessage>(this->visual_debug_enable_);
       this->visual_debug_enable_ = !this->visual_debug_enable_;
-      this->visual_debug_enable_down_ = new_visual_debug_enable;
    }
 
-   if (!new_visual_debug_enable && this->visual_debug_enable_down_ != new_visual_debug_enable) {
-      this->visual_debug_enable_down_ = new_visual_debug_enable;
-   }
-
-   bool reset_camera = game.get_player(1).bindings().get<ResetViewIntent>()->element()->is_pressed();
-   if (!this->reset_camera_down_ && reset_camera) {
+   if (p1_bindings.get<ResetViewIntent>()->element()->was_pressed()) {
       Entity* map_entity = this->scene().get_entity(this->map_entity);
       map_entity->get<Space>()->position(0, 0);
       map_entity->get<Space>()->scale(sf::Vector2f(1.f, 1.f));
@@ -97,36 +80,37 @@ void BuilderSceneInputSystem::pre_update(Game& game) {
       tile_selection->get<Rectangle>()->size(new_end - new_pos);
 
       tile_selection->get<Collision>()->volume(tile_selection->get<Rectangle>()->global_bounds());
-
-      this->reset_camera_down_ = reset_camera;
-   }
-
-   if (this->reset_camera_down_ && !reset_camera) {
-      this->reset_camera_down_ = reset_camera;
    }
 
    if (game.get_player(1).bindings().get<MoveUpIntent>()->element()->is_pressed()) {
       Entity* map_entity = this->scene().get_entity(this->map_entity);
+      Entity* grid_entity = this->scene().get_entity(this->grid_entity);
       map_entity->get<Space>()->move(sf::Vector2f(0, -10));
+      grid_entity->get<Space>()->move(sf::Vector2f(0, -10));
    }
 
    if (game.get_player(1).bindings().get<MoveLeftIntent>()->element()->is_pressed()) {
       Entity* map_entity = this->scene().get_entity(this->map_entity);
+      Entity* grid_entity = this->scene().get_entity(this->grid_entity);
       map_entity->get<Space>()->move(sf::Vector2f(-10, 0));
+      grid_entity->get<Space>()->move(sf::Vector2f(-10, 0));
    }
 
    if (game.get_player(1).bindings().get<MoveRightIntent>()->element()->is_pressed()) {
       Entity* map_entity = this->scene().get_entity(this->map_entity);
+      Entity* grid_entity = this->scene().get_entity(this->grid_entity);
       map_entity->get<Space>()->move(sf::Vector2f(10, 0));
+      grid_entity->get<Space>()->move(sf::Vector2f(10, 0));
    }
 
    if (game.get_player(1).bindings().get<MoveDownIntent>()->element()->is_pressed()) {
       Entity* map_entity = this->scene().get_entity(this->map_entity);
+      Entity* grid_entity = this->scene().get_entity(this->grid_entity);
       map_entity->get<Space>()->move(sf::Vector2f(0, 10));
+      grid_entity->get<Space>()->move(sf::Vector2f(0, 10));
    }
 
-   bool remove_tiles = game.get_player(1).bindings().get<RemoveTilesIntent>()->element()->is_pressed();
-   if (remove_tiles && !this->remove_tiles_down_) {
+   if (p1_bindings.get<RemoveTilesIntent>()->element()->was_pressed()) {
       Entity* map_entity = this->scene().get_entity(this->map_entity);
       Entity* tile_selection_maproot_entity = this->scene().get_entity(this->tile_selection_maproot);
 
@@ -138,16 +122,9 @@ void BuilderSceneInputSystem::pre_update(Game& game) {
             map->remove(collision->volume());
          }
       }
-
-      this->remove_tiles_down_ = remove_tiles;
    }
 
-   if (!remove_tiles && this->remove_tiles_down_) {
-      this->remove_tiles_down_ = remove_tiles;
-   }
-
-   bool save_map = game.get_player(1).bindings().get<SerializeMapIntent>()->element()->is_pressed();
-   if (save_map && !this->save_map_down_) {
+   if (p1_bindings.get<SerializeMapIntent>()->element()->was_pressed()) {
       Entity* map_root = this->scene().get_entity(this->map_entity);
       TileMap* tilemap = map_root->get<TileMap>();
 
@@ -156,11 +133,6 @@ void BuilderSceneInputSystem::pre_update(Game& game) {
       this->file_channel->send(tilemap->serialize(*this->serializer));
 
       Game::logger().msg("BuilderSceneInputSystem", Logger::INFO, "Saving map to file '" + this->file_channel->filename());
-      this->save_map_down_ = save_map;
-   }
-
-   if (!save_map && this->save_map_down_) {
-      this->save_map_down_ = save_map;
    }
 
    // update fps read

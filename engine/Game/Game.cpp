@@ -238,6 +238,9 @@ void Game::main_loop() {
          continue;
       }
 
+      // update input manager for previous cycle
+      this->input_manager().update(*this);
+
       // poll input
       this->input_manager().poll_event(*this);
 
