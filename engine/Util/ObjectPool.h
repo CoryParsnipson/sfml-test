@@ -113,7 +113,7 @@ public:
    void remove(const Handle& handle);
 
    std::vector<ObjectType*> get_active_objects() const;
-   std::vector<Handle> get_active_handles() const;
+   const std::vector<Handle>& get_active_handles() const;
 
    void resize(unsigned int size);
 
@@ -140,8 +140,8 @@ private:
 
    std::string id_;
    unsigned int first_free_index_;
-   unsigned int num_entries_active_;
 
+   std::vector<Handle> active_handles_;
    std::vector<Entry> pool_;
 
    EntryAllocator allocator_;
@@ -182,6 +182,7 @@ template <typename ObjectType>
 ObjectPool<ObjectType>::ObjectPool(const std::string& id /* = "ObjectPool" */, unsigned int size /* = ObjectPool::default_size */, const EntryAllocator& allocator /* = [](){ return ObjectType(); } */)
 : ObjectPoolBase()
 , id_(id)
+, active_handles_()
 , pool_(size, Entry(size, allocator()))
 , allocator_(allocator)
 {
@@ -195,7 +196,8 @@ ObjectPool<ObjectType>::~ObjectPool() {
 template <typename ObjectType>
 void ObjectPool<ObjectType>::reset() {
    this->first_free_index_ = 0;
-   this->num_entries_active_ = 0;
+
+   this->active_handles_.clear();
 
    int next_free_index = 1;
    for (typename std::vector<Entry>::iterator it = this->pool_.begin(); it != this->pool_.end(); ++it) {
@@ -220,7 +222,7 @@ unsigned int ObjectPool<ObjectType>::size() const {
 
 template <typename ObjectType>
 unsigned int ObjectPool<ObjectType>::num_entries_active() const {
-   return this->num_entries_active_;
+   return this->active_handles_.size();
 }
 
 template <typename ObjectType>
@@ -266,8 +268,6 @@ Handle ObjectPool<ObjectType>::add(ComponentArgs&&... args) {
    this->pool_[new_index].version_ += 1;
    this->pool_[new_index].next_free_index_ = 0; // this is set when the entry is removed
 
-   ++this->num_entries_active_;
-
    // reserve version == 0 for invalid handles only
    if (this->pool_[new_index].version_ == 0) {
       ++this->pool_[new_index].version_;
@@ -279,6 +279,9 @@ Handle ObjectPool<ObjectType>::add(ComponentArgs&&... args) {
 
    // TODO: implement some sort of customizable resize policy
    assert(this->num_entries_active() <= this->size());
+
+   // add to active handles list
+   this->active_handles_.push_back(Handle(new_index, this->pool_[new_index].version_));
 
    return Handle(new_index, this->pool_[new_index].version_);
 }
@@ -296,7 +299,14 @@ void ObjectPool<ObjectType>::remove(const Handle& handle) {
       entry.next_free_index_ = this->first_free_index_;
 
       this->first_free_index_ = handle.index();
-      --this->num_entries_active_;
+
+      // remove from active handles list
+      for (std::vector<Handle>::const_iterator it = this->active_handles_.begin(); it != this->active_handles_.end(); ++it) {
+         if (handle == *it) {
+            this->active_handles_.erase(it);
+            break;
+         }
+      }
    } catch (const std::out_of_range& e) {
       // silently fail
       return;
@@ -307,39 +317,16 @@ template <typename ObjectType>
 std::vector<ObjectType*> ObjectPool<ObjectType>::get_active_objects() const {
    std::vector<ObjectType*> active;
 
-   if (this->pool_.empty() || this->num_entries_active_ == 0) {
-      return active;
-   }
-
-   // NOTE: this loop can be circumvented with the addition of an "active list"
-   for (typename std::vector<Entry>::const_iterator it = this->pool_.begin(); it != this->pool_.end(); ++it) {
-      if ((*it).active_) {
-         active.push_back(&((*it).data_));
-      }
+   for (std::vector<Handle>::const_iterator it = this->active_handles_.begin(); it != this->active_handles_.end(); ++it) {
+      active.push_back(this->get(*it));
    }
 
    return active;
 }
 
 template <typename ObjectType>
-std::vector<Handle> ObjectPool<ObjectType>::get_active_handles() const {
-   std::vector<Handle> active;
-
-   if (this->pool_.empty() || this->num_entries_active_ == 0) {
-      return active;
-   }
-
-   // NOTE: this loop can be circumvented with the addition of an "active list"
-   int idx = 0;
-   for (typename std::vector<Entry>::const_iterator it = this->pool_.begin(); it != this->pool_.end(); ++it) {
-      if ((*it).active_) {
-         active.push_back(Handle(idx, (*it).version_));
-      }
-
-      ++idx;
-   }
-
-   return active;
+const std::vector<Handle>& ObjectPool<ObjectType>::get_active_handles() const {
+   return this->active_handles_;
 }
 
 template <typename ObjectType>
@@ -358,10 +345,12 @@ void ObjectPool<ObjectType>::resize(unsigned int size) {
    
    // update active entries record (if necessary)
    if (size < this->size()) {
+      unsigned int idx = size;
       for (typename std::vector<Entry>::const_iterator it = this->pool_.begin() + size; it != this->pool_.end(); ++it) {
          if ((*it)->active_) {
-            --this->num_entries_active_;
+            this->remove(Handle(idx, (*it)->version_));
          }
+         ++idx;
       }
    }
 
@@ -377,7 +366,7 @@ template <typename ObjectType>
 std::string ObjectPool<ObjectType>::to_string() const {
    std::string info = "[ObjectPool '" + this->id() + "']\n";
 
-   info += "[first_free_index = " + std::to_string(this->first_free_index_) + ", num_entries_active = " + std::to_string(this->num_entries_active_) + "]\n";
+   info += "[first_free_index = " + std::to_string(this->first_free_index_) + ", num_entries_active = " + std::to_string(this->num_entries_active()) + "]\n";
 
    unsigned int idx = 0;
    for (typename std::vector<Entry>::const_iterator it = this->pool_.begin(); it != this->pool_.end(); ++it) {
