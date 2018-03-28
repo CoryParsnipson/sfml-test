@@ -97,11 +97,11 @@ const sf::Vector2f& Text::origin() const {
 }
 
 void Text::color(const sf::Color& color) {
-   this->drawable_.setColor(color);
+   this->drawable_.setFillColor(color);
 }
 
 const sf::Color& Text::color() const {
-   return this->drawable_.getColor();
+   return this->drawable_.getFillColor();
 }
 
 const sf::Transform& Text::transform() const {
