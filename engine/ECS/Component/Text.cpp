@@ -1,6 +1,7 @@
 #include <algorithm>
 
 #include "Text.h"
+#include "Scene.h"
 #include "RenderSurface.h"
 
 // ----------------------------------------------------------------------------
@@ -205,6 +206,8 @@ void Text::deserialize(Serializer& s, Scene& scene, std::string& d) {
    int color_a = (raw_color & 0xFF000000) >> 24;
 
    sf::Color color(color_r, color_g, color_b, color_a);
+
+   Serializer::SerialData font_data = s.deserialize(scene, data["font"]);
    
    this->id(data["id"]);
    this->position(std::stof(data["x"]), std::stof(data["y"]));
@@ -212,7 +215,7 @@ void Text::deserialize(Serializer& s, Scene& scene, std::string& d) {
    this->origin(std::stof(data["origin_x"]), std::stof(data["origin_y"]));
    this->color(color);
    this->string(data["text"]);
-   this->font_->deserialize(s, scene, d);
+   this->font(scene.fonts().get(font_data["id"])); // get font from scene (FontAtlas does the actual deserialization)
    this->font_size(std::stoi(data["font_size"]));
    this->style(static_cast<sf::Text::Style>(std::stoi(data["style"])));
 }

@@ -54,8 +54,12 @@ public:
       return this->to_string();
    }
 
-   std::string id() const {
+   const std::string& id() const {
       return this->id_;
+   }
+
+   void id(const std::string& id) {
+      this->id_ = id;
    }
 
 private:
