@@ -7,7 +7,7 @@ TextureAtlas::TextureAtlas()
 }
 
 void TextureAtlas::load(std::string key, std::string filename, sf::IntRect area /* = sf::IntRect() */) {
-   this->set(key, new Texture(key, filename, area));
+   this->set(key, std::make_shared<Texture>(key, filename, area));
 }
 
 void TextureAtlas::unload(std::string key) {

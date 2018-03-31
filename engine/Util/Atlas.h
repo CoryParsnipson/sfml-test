@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <memory>
 #include <typeinfo>
 #include <utility>
 #include <stdexcept>
@@ -16,7 +17,7 @@
 template <typename Key, class T>
 class Atlas {
 public:
-   using ItemList = std::map<Key, T*>;
+   using ItemList = std::map<Key, std::shared_ptr<T>>;
 
    Atlas(std::string id = "Atlas")
    : id_(std::move(id))
@@ -24,14 +25,11 @@ public:
    }
 
    virtual ~Atlas() {
-      for (typename ItemList::const_iterator it = this->items_.begin(); it != this->items_.end(); ++it) {
-         delete it->second;
-      }
       this->items_.clear();
    }
 
-   T* get(Key k) const {
-      T* item = nullptr;
+   std::shared_ptr<T> get(Key k) const {
+      std::shared_ptr<T> item = nullptr;
       
       this->get_pre(k);
 
@@ -44,9 +42,7 @@ public:
       return item;
    }
 
-   void set(Key k, T* item) {
-      // delete pre-existing key if already exists
-      delete this->items_[k];
+   void set(Key k, std::shared_ptr<T> item) {
       this->items_[k] = item;
    }
 
@@ -64,7 +60,7 @@ public:
 
 private:
    std::string id_;
-   ItemList items_; // ownership (TODO: change to use smart pointers later)
+   ItemList items_;
 
    friend std::ostream& operator<<(std::ostream& stream, const Atlas& dict) {
       stream << dict.to_string();
@@ -78,7 +74,7 @@ protected:
 
    // hooks for inheriting classes
    void get_pre(Key k) const {}
-   T* get_post(Key k, T* item) const { return item; }
+   std::shared_ptr<T> get_post(Key k, std::shared_ptr<T> item) const { return item; }
 
    typename ItemList::const_iterator iterator() const {
       return typename ItemList::const_iterator();

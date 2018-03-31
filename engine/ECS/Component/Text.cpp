@@ -7,7 +7,7 @@
 // ----------------------------------------------------------------------------
 // Text implementation
 // ----------------------------------------------------------------------------
-Text::Text(const std::string& id /* = "Text" */, const std::string& text /* = "" */, Font* font /* = nullptr */, unsigned int size /* = 12 */)
+Text::Text(const std::string& id /* = "Text" */, const std::string& text /* = "" */, std::shared_ptr<Font> font /* = nullptr */, unsigned int size /* = 12 */)
 : Component(id)
 , font_(font)
 , drawable_()
@@ -122,7 +122,7 @@ const std::string& Text::string() const {
    return this->string_;
 }
 
-void Text::font(Font* font) {
+void Text::font(std::shared_ptr<Font> font) {
    if (!font) {
       return;
    }
@@ -132,7 +132,7 @@ void Text::font(Font* font) {
    this->position_.y = this->global_bounds().top;
 }
 
-const Font* Text::font() const {
+std::shared_ptr<Font> Text::font() const {
    return this->font_;
 }
 

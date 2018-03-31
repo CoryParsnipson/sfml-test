@@ -73,10 +73,10 @@ Sprite::Sprite(const std::string& id /* = "Sprite" */)
    this->default_animation_.add(this->drawable_.getTextureRect(), 0);
 }
 
-Sprite::Sprite(const std::string& id, Texture& texture)
+Sprite::Sprite(const std::string& id, std::shared_ptr<Texture> texture)
 : Component(id)
-, texture_(&texture)
-, drawable_(texture.get_texture())
+, texture_(texture)
+, drawable_(texture->get_texture())
 , default_animation_(id + " Default Animation")
 , cur_idx(0)
 , remaining_frame_duration_(0)
@@ -85,10 +85,10 @@ Sprite::Sprite(const std::string& id, Texture& texture)
    this->default_animation_.add(this->drawable_.getTextureRect(), 0);
 }
 
-Sprite::Sprite(const std::string& id, Texture& texture, const sf::IntRect& texture_rect)
+Sprite::Sprite(const std::string& id, std::shared_ptr<Texture> texture, const sf::IntRect& texture_rect)
 : Component(id)
-, texture_(&texture)
-, drawable_(texture.get_texture(), texture_rect)
+, texture_(texture)
+, drawable_(texture->get_texture(), texture_rect)
 , default_animation_(id + " Default Animation")
 , cur_idx(0)
 , remaining_frame_duration_(0)
@@ -195,12 +195,12 @@ const sf::Transform& Sprite::transform() const {
    return this->drawable_.getTransform();
 }
 
-void Sprite::texture(Texture& texture) {
-   this->texture_ = &texture;
-   this->drawable_.setTexture(texture.get_texture(), true);
+void Sprite::texture(std::shared_ptr<Texture> texture) {
+   this->texture_ = texture;
+   this->drawable_.setTexture(texture->get_texture(), true);
 }
 
-const Texture* Sprite::texture() const {
+std::shared_ptr<Texture> Sprite::texture() const {
    return this->texture_;
 }
 
@@ -256,8 +256,8 @@ void Sprite::deserialize(Serializer& s, Scene& scene, std::string& d) {
    this->origin(std::stof(data["origin_x"]), std::stof(data["origin_y"]));
    this->color(color);
 
-   Texture* texture = scene.textures().get(data["texture"]);
+   std::shared_ptr<Texture> texture = scene.textures().get(data["texture"]);
    if (texture) {
-      this->texture(*texture);
+      this->texture(texture);
    }
 }

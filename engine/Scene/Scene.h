@@ -62,9 +62,6 @@ public:
    {
       // TODO: this value should come from config
       this->components_.create_pool<Space>("", 20000);
-
-      Font* font = new Font("test", "testfilename");
-      delete font;
    }
 
    virtual ~Scene() {

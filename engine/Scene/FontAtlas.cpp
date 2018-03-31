@@ -8,7 +8,7 @@ FontAtlas::FontAtlas()
 }
 
 void FontAtlas::load(std::string font_key, std::string font_filename) {
-   this->set(font_key, new Font(font_key, font_filename));
+   this->set(font_key, std::make_shared<Font>(font_key, font_filename));
 }
 
 void FontAtlas::unload(std::string font_key) {
@@ -33,7 +33,7 @@ void FontAtlas::deserialize(Serializer& s, Scene& scene, std::string& d) {
 
    data.erase(data.find("id"));
    for (Serializer::SerialData::iterator it = data.begin(); it != data.end(); ++it) {
-      Font* f = new Font(it->first, "");
+      std::shared_ptr<Font> f = std::make_shared<Font>(it->first, "");
       f->deserialize(s, scene, it->second);
 
       this->set(it->first, f);

@@ -283,7 +283,7 @@ void BuilderScene::init(Game& game) {
       Entity* entity = this->create_entity(*it + "_tpw_entity");
       this->send_message<AddToEntityMessage>(tile_palette_window->handle(), entity->handle());
 
-      entity->add<Sprite>(*it + "_sprite", *this->textures().get(*it));
+      entity->add<Sprite>(*it + "_sprite", this->textures().get(*it));
       entity->get<Sprite>()->position(tile_texture_pos);
 
       entity->add<PlayerProfile>(*it + "_playerProfile", 1);

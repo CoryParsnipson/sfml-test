@@ -4,6 +4,7 @@
 #include <tuple>
 #include <string>
 #include <vector>
+#include <memory>
 #include <SFML/Graphics.hpp>
 
 #include "Component.h"
@@ -52,8 +53,8 @@ class Sprite
 {
 public:
    explicit Sprite(const std::string& id = "Sprite");
-   Sprite(const std::string& id, Texture& texture);
-   Sprite(const std::string& id, Texture& texture, const sf::IntRect& texture_rect);
+   Sprite(const std::string& id, std::shared_ptr<Texture> texture);
+   Sprite(const std::string& id, std::shared_ptr<Texture> texture, const sf::IntRect& texture_rect);
    Sprite(const Sprite& other);
    virtual ~Sprite();
 
@@ -91,8 +92,8 @@ public:
    virtual const sf::Transform& transform() const;
    
    // sprite manipulation interface
-   void texture(Texture& texture);
-   const Texture* texture() const;
+   void texture(std::shared_ptr<Texture> texture);
+   std::shared_ptr<Texture> texture() const;
 
    void animation(Animation* animation);
    const Animation& animation() const;
@@ -102,7 +103,7 @@ public:
    virtual void deserialize(Serializer& s, Scene& scene, std::string& d);
 
 private:
-   Texture* texture_;
+   std::shared_ptr<Texture> texture_;
    sf::Sprite drawable_;
    Animation default_animation_;
 
