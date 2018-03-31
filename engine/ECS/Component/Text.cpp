@@ -6,8 +6,9 @@
 // ----------------------------------------------------------------------------
 // Text implementation
 // ----------------------------------------------------------------------------
-Text::Text(const std::string& id /* = "Text" */, const std::string& text /* = "" */, sf::Font* font /* = nullptr */, unsigned int size /* = 12 */)
+Text::Text(const std::string& id /* = "Text" */, const std::string& text /* = "" */, Font* font /* = nullptr */, unsigned int size /* = 12 */)
 : Component(id)
+, font_(font)
 , drawable_()
 {
    this->string(text);
@@ -120,18 +121,18 @@ const std::string& Text::string() const {
    return this->string_;
 }
 
-void Text::font(sf::Font* font) {
+void Text::font(Font* font) {
    if (!font) {
       return;
    }
-   this->drawable_.setFont(*font);
+   this->drawable_.setFont(font->get_font());
 
    this->position_.x = this->global_bounds().left;
    this->position_.y = this->global_bounds().top;
 }
 
-const sf::Font* Text::font() const {
-   return this->drawable_.getFont();
+const Font* Text::font() const {
+   return this->font_;
 }
 
 void Text::font_size(unsigned int size) {
@@ -162,7 +163,7 @@ unsigned int Text::em_width() const {
    em.setCharacterSize(this->font_size());
    
    if (this->font()) {
-      em.setFont(*this->font());
+      em.setFont(this->font()->get_font());
    }
 
    return em.getLocalBounds().width;
@@ -186,7 +187,7 @@ std::string Text::serialize(Serializer& s) {
    data["origin_y"] = std::to_string(this->origin().y);
    data["color"] = std::to_string(color);
    data["text"] = this->string();
-   //data["font"]  // TODO: make font serializable
+   data["font"] = this->font_->serialize(s);
    data["font_size"] = std::to_string(this->font_size());
    data["style"] = std::to_string(static_cast<int>(this->style()));
 
@@ -211,7 +212,7 @@ void Text::deserialize(Serializer& s, Scene& scene, std::string& d) {
    this->origin(std::stof(data["origin_x"]), std::stof(data["origin_y"]));
    this->color(color);
    this->string(data["text"]);
-   // TODO: deserialize font
+   this->font_->deserialize(s, scene, d);
    this->font_size(std::stoi(data["font_size"]));
    this->style(static_cast<sf::Text::Style>(std::stoi(data["style"])));
 }

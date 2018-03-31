@@ -4,14 +4,15 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 
+#include "Font.h"
 #include "Atlas.h"
 
 // ----------------------------------------------------------------------------
 // FontAtlas
 //
-// This is a map that contains sf::Font pointers.
+// This is a map that contains Font pointers.
 // ----------------------------------------------------------------------------
-class FontAtlas : public Atlas<std::string, sf::Font> {
+class FontAtlas : public Atlas<std::string, Font> {
 public:
    FontAtlas();
 

@@ -1,4 +1,5 @@
 #include "FontAtlas.h"
+#include "Font.h"
 #include "Game.h"
 
 FontAtlas::FontAtlas()
@@ -7,14 +8,7 @@ FontAtlas::FontAtlas()
 }
 
 void FontAtlas::load(std::string font_key, std::string font_filename) {
-   sf::Font* font = new sf::Font();
-
-   if (!font->loadFromFile(font_filename)) {
-      Game::logger().msg(this->id(), Logger::ERROR, "Cannot load font '" + font_filename + "'.");
-      return;
-   }
-   
-   this->set(font_key, font);
+   this->set(font_key, new Font(font_key, font_filename));
 }
 
 void FontAtlas::unload(std::string font_key) {

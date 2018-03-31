@@ -4,6 +4,7 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 
+#include "Font.h"
 #include "Component.h"
 
 // ----------------------------------------------------------------------------
@@ -21,7 +22,7 @@ class Text
 : public Component
 {
 public:
-   explicit Text(const std::string& id = "Text", const std::string& text = "", sf::Font* font = nullptr, unsigned int size = 12);
+   explicit Text(const std::string& id = "Text", const std::string& text = "", Font* font = nullptr, unsigned int size = 12);
    Text(const Text& other);
    virtual ~Text();
 
@@ -60,8 +61,8 @@ public:
    void string(const std::string& s);
    const std::string& string() const;
 
-   void font(sf::Font* font);
-   const sf::Font* font() const;
+   void font(Font* font);
+   const Font* font() const;
 
    void font_size(unsigned int size);
    unsigned int font_size() const;
@@ -77,6 +78,7 @@ public:
 
 private:
    std::string string_;
+   Font* font_;
    sf::Text drawable_;
 
    sf::Vector2f position_;
