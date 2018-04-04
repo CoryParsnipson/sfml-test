@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Color.h"
 #include "Camera.h"
 
 // ----------------------------------------------------------------------------
@@ -24,7 +25,7 @@ public:
 
    // update interface
    virtual void update() = 0;
-   virtual void clear(const sf::Color& color = sf::Color::Black) = 0;
+   virtual void clear(const Color& color = Color(sf::Color::Black)) = 0;
 
 protected:
    virtual void set_view(Camera* camera, sf::RenderWindow& window, sf::RenderStates render_states = sf::RenderStates::Default) {

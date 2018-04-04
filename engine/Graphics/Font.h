@@ -11,7 +11,7 @@
 // This is a wrapper class for sf::Font that also contains some helper
 // functions for serialization, etc.
 // ----------------------------------------------------------------------------
-class Font final {
+class Font final : public Serializable {
 public:
    Font(const std::string& id, const std::string& filename);
    Font(const Font& other);

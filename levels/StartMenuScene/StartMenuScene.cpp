@@ -2,6 +2,7 @@
 
 #include "Game.h"
 #include "Entity.h"
+#include "Color.h"
 
 #include "StartMenuInputSystem.h"
 
@@ -34,7 +35,7 @@ void StartMenuScene::init(Game& game) {
    // create title text entities
    Entity* title = this->create_entity("Title Entity");
    title->add<Text>("TitleText", "SFML TEST", this->fonts().get("retro"), 36);
-   title->get<Text>()->color(sf::Color::White);
+   title->get<Text>()->color(Color(sf::Color::White));
 
    // center text
    title->get<Text>()->origin(
@@ -46,7 +47,7 @@ void StartMenuScene::init(Game& game) {
 
    Entity* subtitle = this->create_entity("Subtitle Entity");
    subtitle->add<Text>("SubtitleText", "main menu", this->fonts().get("retro"), 12);
-   subtitle->get<Text>()->color(sf::Color::White);
+   subtitle->get<Text>()->color(Color(sf::Color::White));
 
    subtitle->get<Text>()->origin(
       subtitle->get<Text>()->local_bounds().left + subtitle->get<Text>()->local_bounds().width / 2.f,
@@ -57,7 +58,7 @@ void StartMenuScene::init(Game& game) {
 
    Entity* subtitle2 = this->create_entity("Subtitle Entity 2");
    subtitle2->add<Text>("Subtitle Entity 2 Text", "(Press SPACE or ENTER)", this->fonts().get("retro"), 12);
-   subtitle2->get<Text>()->color(sf::Color::White);
+   subtitle2->get<Text>()->color(Color(sf::Color::White));
 
    subtitle2->get<Text>()->origin(
       subtitle2->get<Text>()->local_bounds().left + subtitle2->get<Text>()->local_bounds().width / 2.f,
@@ -89,11 +90,11 @@ void StartMenuScene::init(Game& game) {
    mouse_cursor->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
 
    mouse_cursor->add<Rectangle>("MouseCursorRectangle", 0, 0, 6, 6);
-   mouse_cursor->get<Rectangle>()->color(sf::Color::Red);
+   mouse_cursor->get<Rectangle>()->color(Color(sf::Color::Red));
 
    mouse_cursor->add<Text>("MouseCursorText", "0, 0", this->fonts().get("retro"), 12);
    mouse_cursor->get<Text>()->position(0, 10);
-   mouse_cursor->get<Text>()->color(sf::Color::White);
+   mouse_cursor->get<Text>()->color(Color(sf::Color::White));
 
    mouse_cursor->add<Callback>("MouseCursorCallback");
    mouse_cursor->get<Callback>()->mouse_move([mouse_cursor, &game] () {

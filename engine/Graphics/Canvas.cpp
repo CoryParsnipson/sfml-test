@@ -28,7 +28,7 @@ void Canvas::update() {
    this->surface_.display();
 }
 
-void Canvas::clear(const sf::Color& color /* = sf::Color::Black */) {
+void Canvas::clear(const Color& color /* = Color(sf::Color::Black) */) {
    this->surface_.clear(color);
 }
 

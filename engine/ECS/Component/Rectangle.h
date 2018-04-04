@@ -4,6 +4,7 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 
+#include "Color.h"
 #include "Component.h"
 
 // ----------------------------------------------------------------------------

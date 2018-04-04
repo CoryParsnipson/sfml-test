@@ -173,10 +173,7 @@ unsigned int Text::em_width() const {
 std::string Text::serialize(Serializer& s) {
    Serializer::SerialData data;
 
-   int color = this->color().r;
-   color |= this->color().g << 8;
-   color |= this->color().b << 16;
-   color |= this->color().a << 24;
+   Color color(this->color());
 
    data["type"] = "Text";
 
@@ -186,7 +183,7 @@ std::string Text::serialize(Serializer& s) {
    data["rotation"] = std::to_string(this->rotation());
    data["origin_x"] = std::to_string(this->origin().x);
    data["origin_y"] = std::to_string(this->origin().y);
-   data["color"] = std::to_string(color);
+   data["color"] = color.serialize(s);
    data["text"] = this->string();
    data["font"] = this->font_->serialize(s);
    data["font_size"] = std::to_string(this->font_size());
@@ -198,14 +195,8 @@ std::string Text::serialize(Serializer& s) {
 void Text::deserialize(Serializer& s, Scene& scene, std::string& d) {
    Serializer::SerialData data = s.deserialize(scene, d);
 
-   int raw_color = std::stoi(data["color"]);
-
-   int color_r = raw_color & 0xFF;
-   int color_g = (raw_color & 0xFF00) >> 8;
-   int color_b = (raw_color & 0xFF0000) >> 16;
-   int color_a = (raw_color & 0xFF000000) >> 24;
-
-   sf::Color color(color_r, color_g, color_b, color_a);
+   Color color(sf::Color::Black);
+   color.deserialize(s, scene, data["color"]);
 
    Serializer::SerialData font_data = s.deserialize(scene, data["font"]);
    

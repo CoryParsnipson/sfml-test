@@ -7,6 +7,7 @@
 #include <memory>
 #include <SFML/Graphics.hpp>
 
+#include "Color.h"
 #include "Component.h"
 #include "Updateable.h"
 

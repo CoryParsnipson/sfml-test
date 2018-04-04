@@ -5,6 +5,8 @@
 #include "Game.h"
 #include "Entity.h"
 
+#include "Color.h"
+
 #include "Space.h"
 #include "Text.h"
 #include "Rectangle.h"
@@ -119,10 +121,10 @@ void BuilderScene::init(Game& game) {
    this->send_message<AddToEntityMessage>(this->space_handle(), backdrop->handle(), 0);
    
    backdrop->add<VertexList>("BackdropVertexList", sf::TrianglesStrip, 4);
-   backdrop->get<VertexList>()->vertex_color(0, sf::Color(50, 50, 50, 255));
-   backdrop->get<VertexList>()->vertex_color(1, sf::Color(25, 25, 25, 255));
-   backdrop->get<VertexList>()->vertex_color(2, sf::Color(50, 50, 50, 255));
-   backdrop->get<VertexList>()->vertex_color(3, sf::Color(25, 25, 25, 255));
+   backdrop->get<VertexList>()->vertex_color(0, Color(50, 50, 50, 255));
+   backdrop->get<VertexList>()->vertex_color(1, Color(25, 25, 25, 255));
+   backdrop->get<VertexList>()->vertex_color(2, Color(50, 50, 50, 255));
+   backdrop->get<VertexList>()->vertex_color(3, Color(25, 25, 25, 255));
 
    backdrop->add<PlayerProfile>("BackdropPlayerProfile", 1);
    backdrop->add<Callback>("BackdropCallback");
@@ -144,7 +146,7 @@ void BuilderScene::init(Game& game) {
    this->send_message<AddToEntityMessage>(hud_root->handle(), fps_display->handle());
 
    fps_display->add<Text>("FPS Display Text", "FPS: ??", this->fonts().get("retro"), 12);
-   fps_display->get<Text>()->color(sf::Color(216, 138, 0, 255));
+   fps_display->get<Text>()->color(Color(216, 138, 0, 255));
 
    fps_display->add<PlayerProfile>("FPSDisplayPlayerProfile", 1);
    fps_display->add<Callback>("FPSDisplayCallback");
@@ -167,8 +169,8 @@ void BuilderScene::init(Game& game) {
    this->send_message<AddToEntityMessage>(hud_root->handle(), selection_rect->handle(), 0);
 
    selection_rect->add<Rectangle>("SelectionRectangle", 0, 0, 0, 0);
-   selection_rect->get<Rectangle>()->color(sf::Color(66, 108, 167, 175));
-   selection_rect->get<Rectangle>()->outline_color(sf::Color(124, 160, 210, 192));
+   selection_rect->get<Rectangle>()->color(Color(66, 108, 167, 175));
+   selection_rect->get<Rectangle>()->outline_color(Color(124, 160, 210, 192));
    selection_rect->get<Rectangle>()->outline_thickness(1.f);
 
    selection_rect->add<Collision>("SelectionRectandleCollision", sf::FloatRect(0, 0, 0, 0));
@@ -178,8 +180,8 @@ void BuilderScene::init(Game& game) {
    this->send_message<AddToEntityMessage>(grid_root->handle(), tile_selection->handle(), 0);
 
    tile_selection->add<Rectangle>("TileSelectionRectangle", 0, 0, 0, 0);
-   tile_selection->get<Rectangle>()->color(sf::Color(255, 255, 255, 128));
-   tile_selection->get<Rectangle>()->outline_color(sf::Color(255, 255, 255, 192));
+   tile_selection->get<Rectangle>()->color(Color(255, 255, 255, 128));
+   tile_selection->get<Rectangle>()->outline_color(Color(255, 255, 255, 192));
    tile_selection->get<Rectangle>()->outline_thickness(2.0);
 
    tile_selection->add<Collision>("TileSelectionCollider", sf::FloatRect(0, 0, 0, 0));
@@ -195,7 +197,7 @@ void BuilderScene::init(Game& game) {
    this->send_message<AddToEntityMessage>(hud_root->handle(), tile_palette_window->handle()); // put this on top of mouse cursor and selection_rect
 
    tile_palette_window->add<Rectangle>("TilePaletteWindowRectangle", 0, 0, 220, 480);
-   tile_palette_window->get<Rectangle>()->color(sf::Color(113, 94, 122, 255));
+   tile_palette_window->get<Rectangle>()->color(Color(113, 94, 122, 255));
 
    tile_palette_window->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
 
@@ -217,15 +219,15 @@ void BuilderScene::init(Game& game) {
    this->send_message<AddToEntityMessage>(tile_palette_window->handle(), tpw_outline->handle());
 
    tpw_outline->add<Rectangle>("TilePaletteWindowOutline", 5, 10, tile_palette_window->get<Rectangle>()->size().x - 10, tile_palette_window->get<Rectangle>()->size().y - 15);
-   tpw_outline->get<Rectangle>()->color(sf::Color::Transparent);
-   tpw_outline->get<Rectangle>()->outline_color(sf::Color(211, 206, 218, 230));
+   tpw_outline->get<Rectangle>()->color(Color(sf::Color::Transparent));
+   tpw_outline->get<Rectangle>()->outline_color(Color(211, 206, 218, 230));
    tpw_outline->get<Rectangle>()->outline_thickness(2.0);
 
    Entity* tpw_title_back = this->create_entity("TilePaletteWindowTitleBack");
    this->send_message<AddToEntityMessage>(tile_palette_window->handle(), tpw_title_back->handle());
 
    tpw_title_back->add<Rectangle>("TilePaletteWindowTitleBack", 0, 0, 0, 0);
-   tpw_title_back->get<Rectangle>()->color(sf::Color(113, 94, 122, 255));
+   tpw_title_back->get<Rectangle>()->color(Color(113, 94, 122, 255));
 
    Entity* tpw_title = this->create_entity("TilePaletteWindowTitle");
    this->send_message<AddToEntityMessage>(tile_palette_window->handle(), tpw_title->handle());
@@ -241,8 +243,8 @@ void BuilderScene::init(Game& game) {
    tpw_hover->get<Space>()->visible(false);
    
    tpw_hover->add<Rectangle>("TilePaletteWindowRectangle", 0, 0, grid_root->get<Grid>()->tile_width(), grid_root->get<Grid>()->tile_height());
-   tpw_hover->get<Rectangle>()->color(sf::Color(255, 255, 255, 100));
-   tpw_hover->get<Rectangle>()->outline_color(sf::Color(108, 46, 167, 100));
+   tpw_hover->get<Rectangle>()->color(Color(255, 255, 255, 100));
+   tpw_hover->get<Rectangle>()->outline_color(Color(108, 46, 167, 100));
    tpw_hover->get<Rectangle>()->outline_thickness(2.f);
 
    // add tile textures to the tile palette window
@@ -331,11 +333,11 @@ void BuilderScene::init(Game& game) {
    mouse_cursor->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
 
    mouse_cursor->add<Rectangle>("MouseCursorRectangle", 0, 0, 6, 6);
-   mouse_cursor->get<Rectangle>()->color(sf::Color::Red);
+   mouse_cursor->get<Rectangle>()->color(Color(sf::Color::Red));
 
    mouse_cursor->add<Text>("MouseCursorText", "0, 0", this->fonts().get("retro"), 12);
    mouse_cursor->get<Text>()->position(0, 10);
-   mouse_cursor->get<Text>()->color(sf::Color::White);
+   mouse_cursor->get<Text>()->color(Color(sf::Color::White));
 
    mouse_cursor->add<Callback>("MouseCursorCallback");
    mouse_cursor->get<Callback>()->mouse_move([mouse_cursor, map_root, &game] () {

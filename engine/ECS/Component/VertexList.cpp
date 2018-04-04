@@ -179,10 +179,7 @@ const sf::Vector2f& VertexList::vertex_texture_coord(unsigned int idx) const {
 std::string VertexList::serialize(Serializer& s) {
    Serializer::SerialData data;
 
-   int color = this->color().r;
-   color |= this->color().g << 8;
-   color |= this->color().b << 16;
-   color |= this->color().a << 24;
+   Color color(this->color());
 
    data["type"] = "VertexList";
 
@@ -192,21 +189,18 @@ std::string VertexList::serialize(Serializer& s) {
    data["rotation"] = std::to_string(this->rotation());
    data["origin_x"] = std::to_string(this->origin().x);
    data["origin_y"] = std::to_string(this->origin().y);
-   data["color"] = std::to_string(color);
+   data["color"] = color.serialize(s);
    data["primitive_type"] = std::to_string(static_cast<int>(this->drawable_.getPrimitiveType()));
 
    data["vertex_count"] = std::to_string(this->drawable_.getVertexCount());
 
    // vertex array info
    for (unsigned int i = 0; i < this->drawable_.getVertexCount(); ++i) {
-      int v_color = this->vertex_color(i).r;
-      v_color |= this->vertex_color(i).g << 8;
-      v_color |= this->vertex_color(i).b << 16;
-      v_color |= this->vertex_color(i).a << 24;
+      Color v_color(this->vertex_color(i));
 
       data["vertex_" + std::to_string(i) + "_position_x"] = std::to_string(this->vertex_position(i).x);
       data["vertex_" + std::to_string(i) + "_position_y"] = std::to_string(this->vertex_position(i).y);
-      data["vertex_" + std::to_string(i) + "_color"] = std::to_string(v_color);
+      data["vertex_" + std::to_string(i) + "_color"] = v_color.serialize(s);
       data["vertex_" + std::to_string(i) + "_texture_coord_x"] = std::to_string(this->vertex_texture_coord(i).x);
       data["vertex_" + std::to_string(i) + "_texture_coord_y"] = std::to_string(this->vertex_texture_coord(i).y);
    }
@@ -217,14 +211,8 @@ std::string VertexList::serialize(Serializer& s) {
 void VertexList::deserialize(Serializer& s, Scene& scene, std::string& d) {
    Serializer::SerialData data = s.deserialize(scene, d);
 
-   int raw_color = std::stoi(data["color"]);
-
-   int color_r = raw_color & 0xFF;
-   int color_g = (raw_color & 0xFF00) >> 8;
-   int color_b = (raw_color & 0xFF0000) >> 16;
-   int color_a = (raw_color & 0xFF000000) >> 24;
-
-   sf::Color color(color_r, color_g, color_b, color_a);
+   Color color(sf::Color::Black);
+   color.deserialize(s, scene, data["color"]);
 
    this->id(data["id"]);
    this->position(std::stof(data["x"]), std::stof(data["y"]));
@@ -237,14 +225,8 @@ void VertexList::deserialize(Serializer& s, Scene& scene, std::string& d) {
 
    // vertex array deserialization
    for (unsigned int i = 0; i < this->drawable_.getVertexCount(); ++i) {
-      int raw_v_color = std::stoi(data["vertex_" + std::to_string(i) + "_color"]);
-
-      int v_color_r = raw_v_color & 0xFF;
-      int v_color_g = (raw_v_color & 0xFF00) >> 8;
-      int v_color_b = (raw_v_color & 0xFF0000) >> 16;
-      int v_color_a = (raw_v_color & 0xFF000000) >> 24;
-
-      sf::Color v_color(v_color_r, v_color_g, v_color_b, v_color_a);
+      Color v_color(sf::Color::Black);
+      v_color.deserialize(s, scene, data["vertex_" + std::to_string(i) + "_color"]);
 
       this->vertex_position(i, sf::Vector2f(
          std::stof(data["vertex_" + std::to_string(i) + "_position_x"]),

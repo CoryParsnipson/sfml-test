@@ -24,7 +24,7 @@ public:
    virtual void draw(Camera* camera, sf::RenderStates render_states = sf::RenderStates::Default);
 
    virtual void update();
-   virtual void clear(const sf::Color& color = sf::Color::Black);
+   virtual void clear(const Color& color = Color(sf::Color::Black));
 
    // canvas interface
    void set_framerate_limit(int limit);

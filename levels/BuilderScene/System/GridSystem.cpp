@@ -1,8 +1,8 @@
 #include <cmath>
 
 #include "GridSystem.h"
-
 #include "Scene.h"
+#include "Color.h"
 
 #include "Space.h"
 #include "Rectangle.h"
@@ -202,7 +202,7 @@ Entity* GridSystem::create_gridline(Entity* grid_entity, std::string id, float x
 
    e->id(id);
    e->add<Rectangle>(id, x, y, width, height);
-   e->get<Rectangle>()->color(sf::Color(230, 230, 230, 90));
+   e->get<Rectangle>()->color(Color(230, 230, 230, 90));
 
    return e;
 }
