@@ -148,10 +148,10 @@ void BuilderScene::init(Game& game) {
    tile_selection_maproot->add<Collision>("TileSelectionMapRootCollider", sf::FloatRect(0, 0, 0, 0));
 
    this->create_tile_palette(gs);
-   assert(this->bookmark("TilePaletteWindow"));
+   assert(this->get_entity("TilePaletteWindow"));
    
    // put tile palette window on top of mouse cursor and selection_rect
-   this->send_message<AddToEntityMessage>(hud_root->handle(), this->bookmark("TilePaletteWindow")->handle());
+   this->send_message<AddToEntityMessage>(hud_root->handle(), this->get_entity("TilePaletteWindow")->handle());
 
    // create mouse cursor
    Entity* mouse_cursor = this->create_entity("MouseCursorEntity");
@@ -535,7 +535,7 @@ void BuilderScene::create_backdrop(GraphicalSystem* gs) {
 }
 
 void BuilderScene::create_fps_display(GraphicalSystem* gs) {
-   Entity* hud_root = this->bookmark("HudRootEntity");
+   Entity* hud_root = this->get_entity("HudRootEntity");
    assert(hud_root);
 
    Entity* fps_display = this->create_entity("FPS Display Entity");
@@ -574,13 +574,13 @@ void BuilderScene::create_fps_display(GraphicalSystem* gs) {
 }
 
 void BuilderScene::create_tile_palette(GraphicalSystem* gs) {
-   Entity* tile_selection_maproot = this->bookmark("TileSelectionMapRootEntity");
+   Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
    assert(tile_selection_maproot);
 
-   Entity* map_root = this->bookmark("MapRootEntity");
+   Entity* map_root = this->get_entity("MapRootEntity");
    assert(map_root);
 
-   Entity* grid_root = this->bookmark("GridRootEntity");
+   Entity* grid_root = this->get_entity("GridRootEntity");
    assert(grid_root);
 
    Entity* tile_palette_window = this->create_entity("TilePaletteWindow");

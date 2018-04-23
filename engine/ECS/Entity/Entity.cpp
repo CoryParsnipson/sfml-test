@@ -4,6 +4,8 @@
 #include "Entity.h"
 #include "Scene.h"
 
+#include "EntityIdChangedMessage.h"
+
 Entity::Entity(std::string id /* = "entity" */, Scene* scene /* = nullptr */, ComponentManager* component_manager /* = nullptr */)
 : Messageable(id)
 , id_(id)
@@ -48,7 +50,10 @@ const std::string& Entity::id() const {
 }
 
 void Entity::id(std::string id) {
+   std::string old_id = this->id_;
    this->id_ = id;
+
+   this->send_message<EntityIdChangedMessage>(this->handle(), old_id);
 }
 
 std::string Entity::to_string() {

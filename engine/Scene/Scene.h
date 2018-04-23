@@ -41,6 +41,7 @@
 #include "EntityDestroyedMessage.h"
 #include "AddToEntityMessage.h"
 #include "ResizeCameraMessage.h"
+#include "EntityIdChangedMessage.h"
 
 #include "Font.h"
 
@@ -87,6 +88,13 @@ public:
       this->add_system(new SpatialSystem());
       this->add_system(new CallbackSystem());
       this->add_system(new GraphicalSystem("GraphicalSystem", game.window(), std::make_shared<Camera>("Default Camera")));
+
+      // provide default actions for handling certain messages
+      this->install_message_handler<EntityIdChangedMessage>([this](EntityIdChangedMessage& msg) {
+         // if the ID changes, we need to update the bookmarks
+         this->remove_bookmark(msg.old_id);
+         this->bookmark(msg.entity);
+      });
 
       this->init(game);
       this->is_initialized_ = true;
@@ -172,7 +180,7 @@ public:
       }
 
       // create a default bookmark (and make sure entity's id is unique)
-      if (this->bookmark(e->id()) != nullptr) {
+      if (this->get_entity(e->id()) != nullptr) {
          throw std::runtime_error("Entity ID '" + e->id() + "' is already in use!");
       }
       this->bookmark(e);
@@ -188,6 +196,10 @@ public:
       return this->entities_.get(handle);
    }
 
+   Entity* get_entity(const std::string& id) {
+      return this->get_entity(this->bookmarks_[id]);
+   }
+
    void remove_entity(Handle handle) {
       // let Systems know a new Entity has been made
       this->send_message<EntityDestroyedMessage>(handle);
@@ -197,29 +209,6 @@ public:
    
    std::vector<Handle> entities() const {
       return this->entities_.get_active_handles();
-   }
-
-   // store a handle to an entity with a string identifier
-   void bookmark(const std::string& bookmark_id, Handle entity) {
-      this->bookmarks_[bookmark_id] = entity;
-   }
-
-   void bookmark(Handle entity) {
-      Entity* e = this->get_entity(entity);
-      if (!e) {
-         return; // fails silently
-      }
-
-      this->bookmarks_[e->id()] = entity;
-   }
-
-   void bookmark(Entity* entity) {
-      this->bookmarks_[entity->id()] = entity->handle();
-   }
-
-   // retrieve an entity given a string identifier (will return nullptr if bookmark does not exist)
-   Entity* bookmark(const std::string& bookmark_id) {
-      return this->get_entity(this->bookmarks_[bookmark_id]);
    }
 
    void add_system(System* system, int priority = -1) {
@@ -292,6 +281,33 @@ public:
       std::vector<Handle> entities = this->entities();
       for (std::vector<Handle>::const_iterator it = entities.begin(); it != entities.end(); ++it) {
          this->get_entity(*it)->receive_message(msg);
+      }
+   }
+
+protected:
+   // store a handle to an entity with a string identifier
+   void bookmark(const std::string& bookmark_id, Handle entity) {
+      this->bookmarks_[bookmark_id] = entity;
+   }
+
+   void bookmark(Handle entity) {
+      Entity* e = this->get_entity(entity);
+      if (!e) {
+         return; // fails silently
+      }
+
+      this->bookmarks_[e->id()] = entity;
+   }
+
+   void bookmark(Entity* entity) {
+      this->bookmarks_[entity->id()] = entity->handle();
+   }
+
+   void remove_bookmark(const std::string& bookmark_id) {
+      auto b = this->bookmarks_.find(bookmark_id);
+
+      if (b != this->bookmarks_.end()) {
+         this->bookmarks_.erase(b);
       }
    }
 
