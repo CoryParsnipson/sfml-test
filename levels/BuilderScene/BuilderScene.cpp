@@ -84,8 +84,8 @@ void BuilderScene::init(Game& game) {
    game.get_player(1).bindings().set<MoveDownIntent>(1, game.input_manager().get_device(1)->get("Down"));
 
    // make a map root entity and hud root entity
-   Entity* map_root = this->create_entity("MapRoot Entity");
-   Entity* hud_root = this->create_entity("HudRoot Entity");
+   Entity* map_root = this->create_entity("MapRootEntity");
+   Entity* hud_root = this->create_entity("HudRootEntity");
 
    // TODO: create a better way to get Systems
    GraphicalSystem* gs = dynamic_cast<GraphicalSystem*>(this->get_system("GraphicalSystem"));
@@ -107,7 +107,7 @@ void BuilderScene::init(Game& game) {
    }
 
    // load or create a grid
-   Entity* grid_root = this->create_entity("GridRoot Entity");
+   Entity* grid_root = this->create_entity("GridRootEntity");
    grid_root->add<Grid>("GridRoot Grid Component", sf::Vector2f(0, 0), 64, 64);
 
    // put grid_root under hud_root but over map_root
@@ -116,53 +116,8 @@ void BuilderScene::init(Game& game) {
    // add grid system
    this->add_system(new GridSystem("GridSystem", gs->camera()));
 
-   // add a nice backdrop
-   Entity* backdrop = this->create_entity("Backdrop Entity");
-   this->send_message<AddToEntityMessage>(this->space_handle(), backdrop->handle(), 0);
-   
-   backdrop->add<VertexList>("BackdropVertexList", sf::TrianglesStrip, 4);
-   backdrop->get<VertexList>()->vertex_color(0, Color(50, 50, 50, 255));
-   backdrop->get<VertexList>()->vertex_color(1, Color(25, 25, 25, 255));
-   backdrop->get<VertexList>()->vertex_color(2, Color(50, 50, 50, 255));
-   backdrop->get<VertexList>()->vertex_color(3, Color(25, 25, 25, 255));
-
-   backdrop->add<PlayerProfile>("BackdropPlayerProfile", 1);
-   backdrop->add<Callback>("BackdropCallback");
-
-   backdrop->get<Callback>()->camera_resize([backdrop, gs] () {
-      sf::Vector2f camera_bounds = gs->camera()->size();
-
-      camera_bounds.x *= gs->camera()->viewport().width / gs->camera()->zoom();
-      camera_bounds.y *= gs->camera()->viewport().height / gs->camera()->zoom();
-
-      backdrop->get<VertexList>()->vertex_position(0, sf::Vector2f(0, 0));
-      backdrop->get<VertexList>()->vertex_position(1, sf::Vector2f(0, camera_bounds.y));
-      backdrop->get<VertexList>()->vertex_position(2, sf::Vector2f(camera_bounds.x, 0));
-      backdrop->get<VertexList>()->vertex_position(3, sf::Vector2f(camera_bounds.x, camera_bounds.y));
-   });
-
-   // create fps display entity
-   Entity* fps_display = this->create_entity("FPS Display Entity");
-   this->send_message<AddToEntityMessage>(hud_root->handle(), fps_display->handle());
-
-   fps_display->add<Text>("FPS Display Text", "FPS: ??", this->fonts().get("retro"), 12);
-   fps_display->get<Text>()->color(Color(216, 138, 0, 255));
-
-   fps_display->add<PlayerProfile>("FPSDisplayPlayerProfile", 1);
-   fps_display->add<Callback>("FPSDisplayCallback");
-
-   fps_display->get<Callback>()->camera_resize([fps_display, gs] () {
-      sf::Vector2f camera_bounds = gs->camera()->size();
-      sf::Vector2f text_size;
-
-      text_size.x = fps_display->get<Text>()->local_bounds().width;
-      text_size.y = fps_display->get<Text>()->local_bounds().height;
-
-      camera_bounds.x *= gs->camera()->viewport().width / gs->camera()->zoom();
-      camera_bounds.y *= gs->camera()->viewport().height / gs->camera()->zoom();
-
-      fps_display->get<Text>()->position(camera_bounds - text_size - sf::Vector2f(10, 10));
-   });
+   this->create_backdrop(gs);
+   this->create_fps_display(gs);
 
    // create selection rect
    Entity* selection_rect = this->create_entity("SelectionRectangleEntity");
@@ -192,136 +147,11 @@ void BuilderScene::init(Game& game) {
 
    tile_selection_maproot->add<Collision>("TileSelectionMapRootCollider", sf::FloatRect(0, 0, 0, 0));
 
-   // create tile palette window
-   Entity* tile_palette_window = this->create_entity("TilePaletteWindow");
-   this->send_message<AddToEntityMessage>(hud_root->handle(), tile_palette_window->handle()); // put this on top of mouse cursor and selection_rect
-
-   tile_palette_window->add<Rectangle>("TilePaletteWindowRectangle", 0, 0, 220, 480);
-   tile_palette_window->get<Rectangle>()->color(Color(113, 94, 122, 255));
-
-   tile_palette_window->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
-
-   tile_palette_window->add<Callback>("TilePaletteWindowCallback", false);
-   tile_palette_window->add<Clickable>("TilePaletteWindowClickable");
-   tile_palette_window->add<Collision>("TilePaletteWindowCollision", tile_palette_window->get<Rectangle>()->global_bounds());
-
-   // readjust tile palette window (and children) when the camera is resized
-   tile_palette_window->get<Callback>()->camera_resize([tile_palette_window, gs] () {
-      float camera_width = gs->camera()->size().x * gs->camera()->viewport().width / gs->camera()->zoom();
-      sf::Vector2f new_pos(camera_width - tile_palette_window->get<Rectangle>()->size().x - 10, 10);
-      sf::Vector2f old_pos(tile_palette_window->get<Space>()->position());
-
-      // move to the upper right corner
-      tile_palette_window->get<Space>()->move(new_pos - old_pos);
-   });
-
-   Entity* tpw_outline = this->create_entity("TilePaletteWindowDecoration");
-   this->send_message<AddToEntityMessage>(tile_palette_window->handle(), tpw_outline->handle());
-
-   tpw_outline->add<Rectangle>("TilePaletteWindowOutline", 5, 10, tile_palette_window->get<Rectangle>()->size().x - 10, tile_palette_window->get<Rectangle>()->size().y - 15);
-   tpw_outline->get<Rectangle>()->color(Color(sf::Color::Transparent));
-   tpw_outline->get<Rectangle>()->outline_color(Color(211, 206, 218, 230));
-   tpw_outline->get<Rectangle>()->outline_thickness(2.0);
-
-   Entity* tpw_title_back = this->create_entity("TilePaletteWindowTitleBack");
-   this->send_message<AddToEntityMessage>(tile_palette_window->handle(), tpw_title_back->handle());
-
-   tpw_title_back->add<Rectangle>("TilePaletteWindowTitleBack", 0, 0, 0, 0);
-   tpw_title_back->get<Rectangle>()->color(Color(113, 94, 122, 255));
-
-   Entity* tpw_title = this->create_entity("TilePaletteWindowTitle");
-   this->send_message<AddToEntityMessage>(tile_palette_window->handle(), tpw_title->handle());
-
-   tpw_title->add<Text>("TilePaletteWindowTitleText", "Tileset:", this->fonts().get("retro"), 12);
-   tpw_title->get<Text>()->position(30, 2);
-
-   tpw_title_back->get<Rectangle>()->position(tpw_title->get<Text>()->position() - sf::Vector2f(3, 0));
-   tpw_title_back->get<Rectangle>()->size(tpw_title->get<Text>()->local_bounds().width + 6, tpw_title->get<Text>()->local_bounds().height);
-
-   Entity* tpw_hover = this->create_entity("TilePaletteWindowHover");
+   this->create_tile_palette(gs);
+   assert(this->bookmark("TilePaletteWindow"));
    
-   tpw_hover->get<Space>()->visible(false);
-   
-   tpw_hover->add<Rectangle>("TilePaletteWindowRectangle", 0, 0, grid_root->get<Grid>()->tile_width(), grid_root->get<Grid>()->tile_height());
-   tpw_hover->get<Rectangle>()->color(Color(255, 255, 255, 100));
-   tpw_hover->get<Rectangle>()->outline_color(Color(108, 46, 167, 100));
-   tpw_hover->get<Rectangle>()->outline_thickness(2.f);
-
-   // add tile textures to the tile palette window
-   std::vector<std::string> tile_textures;
-   tile_textures.push_back("tile_grass");
-   tile_textures.push_back("tile_worn_grass");
-   tile_textures.push_back("tile_sign");
-   tile_textures.push_back("tile_dirt_ul");
-   tile_textures.push_back("tile_dirt_um");
-   tile_textures.push_back("tile_dirt_ur");
-   tile_textures.push_back("tile_dirt_ml");
-   tile_textures.push_back("tile_dirt_mm");
-   tile_textures.push_back("tile_dirt_mr");
-   tile_textures.push_back("tile_dirt_bl");
-   tile_textures.push_back("tile_dirt_bm");
-   tile_textures.push_back("tile_dirt_br");
-   tile_textures.push_back("tile_water_ul");
-   tile_textures.push_back("tile_water_um");
-   tile_textures.push_back("tile_water_ur");
-   tile_textures.push_back("tile_water_ml");
-   tile_textures.push_back("tile_water_mm");
-   tile_textures.push_back("tile_water_mr");
-   tile_textures.push_back("tile_water_bl");
-   tile_textures.push_back("tile_water_bm");
-   tile_textures.push_back("tile_water_br");
-
-   int tiles_per_row = tile_palette_window->get<Rectangle>()->size().x / grid_root->get<Grid>()->tile_width();
-   int side_padding = (tile_palette_window->get<Rectangle>()->size().x - (grid_root->get<Grid>()->tile_width() * tiles_per_row)) / 2;
-   int top_padding = 20;
-
-   int i = 0;
-   for (std::vector<std::string>::const_iterator it = tile_textures.begin(); it != tile_textures.end(); ++it, ++i) {
-      sf::Vector2f tile_texture_pos(
-         (i % tiles_per_row) * grid_root->get<Grid>()->tile_width() + side_padding,
-         (i / tiles_per_row) * grid_root->get<Grid>()->tile_height() + top_padding
-      );
-
-      Entity* entity = this->create_entity(*it + "_tpw_entity");
-      this->send_message<AddToEntityMessage>(tile_palette_window->handle(), entity->handle());
-
-      entity->add<Sprite>(*it + "_sprite", this->textures().get(*it));
-      entity->get<Sprite>()->position(tile_texture_pos);
-
-      entity->add<PlayerProfile>(*it + "_playerProfile", 1);
-      entity->add<Clickable>(*it + "_clickable");
-      entity->add<Collision>(*it + "_collision", entity->get<Sprite>()->global_bounds());
-
-      // define texture button behavior
-      entity->add<Callback>(*it + "_callback");
-      entity->get<Callback>()->mouse_in([entity, tpw_hover] () {
-         tpw_hover->get<Rectangle>()->position(entity->get<Sprite>()->position());
-         tpw_hover->get<Space>()->visible(true);
-      });
-
-      entity->get<Callback>()->mouse_out([entity, tpw_hover] () {
-         tpw_hover->get<Space>()->visible(false);
-      });
-
-      entity->get<Callback>()->left_release([entity, tile_selection_maproot, map_root, grid_root] () {
-         // remove any existing tiles in the selection if they exist
-         map_root->get<TileMap>()->remove(tile_selection_maproot->get<Collision>()->volume());
-
-         // on click, fill the selected area (if it is active) with the clicked on tile
-         sf::FloatRect tsc = tile_selection_maproot->get<Collision>()->volume();
-         for (int x_pos = tsc.left; x_pos < tsc.left + tsc.width; x_pos += grid_root->get<Grid>()->tile_width()) {
-            for (int y_pos = tsc.top; y_pos < tsc.top + tsc.height; y_pos += grid_root->get<Grid>()->tile_height()) {
-               Sprite sprite(*entity->get<Sprite>());
-               sprite.position(x_pos, y_pos);
-
-               map_root->get<TileMap>()->set(sprite);
-            }
-         }
-      });
-   }
-
-   // putting this here because tpw_hover needs to be on top of all tiles
-   this->send_message<AddToEntityMessage>(tile_palette_window->handle(), tpw_hover->handle());
+   // put tile palette window on top of mouse cursor and selection_rect
+   this->send_message<AddToEntityMessage>(hud_root->handle(), this->bookmark("TilePaletteWindow")->handle());
 
    // create mouse cursor
    Entity* mouse_cursor = this->create_entity("MouseCursorEntity");
@@ -533,7 +363,7 @@ void BuilderScene::init(Game& game) {
    hud_root->add<Callback>("HudRootCallback");
    hud_root->add<PlayerProfile>("HudRootPlayerProfile", 1);
 
-   hud_root->get<Callback>()->on_update([this, grid_root, map_root, tile_selection, tile_selection_maproot, fps_display, &game] () {
+   hud_root->get<Callback>()->on_update([this, grid_root, map_root, tile_selection, tile_selection_maproot, &game] () {
       InputBinding& p1_bindings = game.get_player(1).bindings();
 
       if (p1_bindings.get<GridVisibilityToggleIntent>()->element()->was_pressed()) {
@@ -618,16 +448,6 @@ void BuilderScene::init(Game& game) {
 
          Game::logger().msg("BuilderSceneInputSystem", Logger::INFO, "Saving map to file '" + fc->filename());
       }
-
-      // update fps read
-      if (!this->frame_count) {
-         this->last_frame_time = (((float)this->frame_measurement_interval / this->clock.getElapsedTime().asSeconds()) * game.settings.framerate_smoothing())
-                                 + (this->last_frame_time * (1.0 - game.settings.framerate_smoothing()));
-         this->clock.restart();
-
-         fps_display->get<Text>()->string("FPS: " + std::to_string(this->last_frame_time));
-      }
-      this->frame_count = (this->frame_count + 1) % this->frame_measurement_interval;
    });
 }
 
@@ -686,4 +506,209 @@ void BuilderScene::load_textures() {
    this->textures().load("tile_water_bm", "pkmn_tiles_outdoor1.png", sf::IntRect(256, 192, 64, 64));
    this->textures().load("tile_water_br", "pkmn_tiles_outdoor1.png", sf::IntRect(320, 192, 64, 64));
    Game::logger().msg(this->id(), Logger::INFO, this->textures());
+}
+
+void BuilderScene::create_backdrop(GraphicalSystem* gs) {
+   Entity* backdrop = this->create_entity("Backdrop Entity");
+   this->send_message<AddToEntityMessage>(this->space_handle(), backdrop->handle(), 0);
+   
+   backdrop->add<VertexList>("BackdropVertexList", sf::TrianglesStrip, 4);
+   backdrop->get<VertexList>()->vertex_color(0, Color(50, 50, 50, 255));
+   backdrop->get<VertexList>()->vertex_color(1, Color(25, 25, 25, 255));
+   backdrop->get<VertexList>()->vertex_color(2, Color(50, 50, 50, 255));
+   backdrop->get<VertexList>()->vertex_color(3, Color(25, 25, 25, 255));
+
+   backdrop->add<PlayerProfile>("BackdropPlayerProfile", 1);
+   backdrop->add<Callback>("BackdropCallback");
+
+   backdrop->get<Callback>()->camera_resize([backdrop, gs] () {
+      sf::Vector2f camera_bounds = gs->camera()->size();
+
+      camera_bounds.x *= gs->camera()->viewport().width / gs->camera()->zoom();
+      camera_bounds.y *= gs->camera()->viewport().height / gs->camera()->zoom();
+
+      backdrop->get<VertexList>()->vertex_position(0, sf::Vector2f(0, 0));
+      backdrop->get<VertexList>()->vertex_position(1, sf::Vector2f(0, camera_bounds.y));
+      backdrop->get<VertexList>()->vertex_position(2, sf::Vector2f(camera_bounds.x, 0));
+      backdrop->get<VertexList>()->vertex_position(3, sf::Vector2f(camera_bounds.x, camera_bounds.y));
+   });
+}
+
+void BuilderScene::create_fps_display(GraphicalSystem* gs) {
+   Entity* hud_root = this->bookmark("HudRootEntity");
+   assert(hud_root);
+
+   Entity* fps_display = this->create_entity("FPS Display Entity");
+   this->send_message<AddToEntityMessage>(hud_root->handle(), fps_display->handle());
+
+   fps_display->add<Text>("FPS Display Text", "FPS: ??", this->fonts().get("retro"), 12);
+   fps_display->get<Text>()->color(Color(216, 138, 0, 255));
+
+   fps_display->add<PlayerProfile>("FPSDisplayPlayerProfile", 1);
+   fps_display->add<Callback>("FPSDisplayCallback");
+
+   fps_display->get<Callback>()->camera_resize([fps_display, gs] () {
+      sf::Vector2f camera_bounds = gs->camera()->size();
+      sf::Vector2f text_size;
+
+      text_size.x = fps_display->get<Text>()->local_bounds().width;
+      text_size.y = fps_display->get<Text>()->local_bounds().height;
+
+      camera_bounds.x *= gs->camera()->viewport().width / gs->camera()->zoom();
+      camera_bounds.y *= gs->camera()->viewport().height / gs->camera()->zoom();
+
+      fps_display->get<Text>()->position(camera_bounds - text_size - sf::Vector2f(10, 10));
+   });
+
+   fps_display->get<Callback>()->on_update([this, fps_display, gs] () {
+      // update fps read
+      if (!this->frame_count) {
+         this->last_frame_time = (((float)this->frame_measurement_interval / this->clock.getElapsedTime().asSeconds()) * this->game().settings.framerate_smoothing())
+                                 + (this->last_frame_time * (1.0 - this->game().settings.framerate_smoothing()));
+         this->clock.restart();
+
+         fps_display->get<Text>()->string("FPS: " + std::to_string(this->last_frame_time));
+      }
+      this->frame_count = (this->frame_count + 1) % this->frame_measurement_interval;
+   });
+}
+
+void BuilderScene::create_tile_palette(GraphicalSystem* gs) {
+   Entity* tile_selection_maproot = this->bookmark("TileSelectionMapRootEntity");
+   assert(tile_selection_maproot);
+
+   Entity* map_root = this->bookmark("MapRootEntity");
+   assert(map_root);
+
+   Entity* grid_root = this->bookmark("GridRootEntity");
+   assert(grid_root);
+
+   Entity* tile_palette_window = this->create_entity("TilePaletteWindow");
+
+   tile_palette_window->add<Rectangle>("TilePaletteWindowRectangle", 0, 0, 220, 480);
+   tile_palette_window->get<Rectangle>()->color(Color(113, 94, 122, 255));
+
+   tile_palette_window->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
+
+   tile_palette_window->add<Callback>("TilePaletteWindowCallback", false);
+   tile_palette_window->add<Clickable>("TilePaletteWindowClickable");
+   tile_palette_window->add<Collision>("TilePaletteWindowCollision", tile_palette_window->get<Rectangle>()->global_bounds());
+
+   // readjust tile palette window (and children) when the camera is resized
+   tile_palette_window->get<Callback>()->camera_resize([tile_palette_window, gs] () {
+      float camera_width = gs->camera()->size().x * gs->camera()->viewport().width / gs->camera()->zoom();
+      sf::Vector2f new_pos(camera_width - tile_palette_window->get<Rectangle>()->size().x - 10, 10);
+      sf::Vector2f old_pos(tile_palette_window->get<Space>()->position());
+
+      // move to the upper right corner
+      tile_palette_window->get<Space>()->move(new_pos - old_pos);
+   });
+
+   Entity* tpw_outline = this->create_entity("TilePaletteWindowDecoration");
+   this->send_message<AddToEntityMessage>(tile_palette_window->handle(), tpw_outline->handle());
+
+   tpw_outline->add<Rectangle>("TilePaletteWindowOutline", 5, 10, tile_palette_window->get<Rectangle>()->size().x - 10, tile_palette_window->get<Rectangle>()->size().y - 15);
+   tpw_outline->get<Rectangle>()->color(Color(sf::Color::Transparent));
+   tpw_outline->get<Rectangle>()->outline_color(Color(211, 206, 218, 230));
+   tpw_outline->get<Rectangle>()->outline_thickness(2.0);
+
+   Entity* tpw_title_back = this->create_entity("TilePaletteWindowTitleBack");
+   this->send_message<AddToEntityMessage>(tile_palette_window->handle(), tpw_title_back->handle());
+
+   tpw_title_back->add<Rectangle>("TilePaletteWindowTitleBack", 0, 0, 0, 0);
+   tpw_title_back->get<Rectangle>()->color(Color(113, 94, 122, 255));
+
+   Entity* tpw_title = this->create_entity("TilePaletteWindowTitle");
+   this->send_message<AddToEntityMessage>(tile_palette_window->handle(), tpw_title->handle());
+
+   tpw_title->add<Text>("TilePaletteWindowTitleText", "Tileset:", this->fonts().get("retro"), 12);
+   tpw_title->get<Text>()->position(30, 2);
+
+   tpw_title_back->get<Rectangle>()->position(tpw_title->get<Text>()->position() - sf::Vector2f(3, 0));
+   tpw_title_back->get<Rectangle>()->size(tpw_title->get<Text>()->local_bounds().width + 6, tpw_title->get<Text>()->local_bounds().height);
+
+   Entity* tpw_hover = this->create_entity("TilePaletteWindowHover");
+   
+   tpw_hover->get<Space>()->visible(false);
+   
+   tpw_hover->add<Rectangle>("TilePaletteWindowRectangle", 0, 0, grid_root->get<Grid>()->tile_width(), grid_root->get<Grid>()->tile_height());
+   tpw_hover->get<Rectangle>()->color(Color(255, 255, 255, 100));
+   tpw_hover->get<Rectangle>()->outline_color(Color(108, 46, 167, 100));
+   tpw_hover->get<Rectangle>()->outline_thickness(2.f);
+
+   // add tile textures to the tile palette window
+   std::vector<std::string> tile_textures;
+   tile_textures.push_back("tile_grass");
+   tile_textures.push_back("tile_worn_grass");
+   tile_textures.push_back("tile_sign");
+   tile_textures.push_back("tile_dirt_ul");
+   tile_textures.push_back("tile_dirt_um");
+   tile_textures.push_back("tile_dirt_ur");
+   tile_textures.push_back("tile_dirt_ml");
+   tile_textures.push_back("tile_dirt_mm");
+   tile_textures.push_back("tile_dirt_mr");
+   tile_textures.push_back("tile_dirt_bl");
+   tile_textures.push_back("tile_dirt_bm");
+   tile_textures.push_back("tile_dirt_br");
+   tile_textures.push_back("tile_water_ul");
+   tile_textures.push_back("tile_water_um");
+   tile_textures.push_back("tile_water_ur");
+   tile_textures.push_back("tile_water_ml");
+   tile_textures.push_back("tile_water_mm");
+   tile_textures.push_back("tile_water_mr");
+   tile_textures.push_back("tile_water_bl");
+   tile_textures.push_back("tile_water_bm");
+   tile_textures.push_back("tile_water_br");
+
+   int tiles_per_row = tile_palette_window->get<Rectangle>()->size().x / grid_root->get<Grid>()->tile_width();
+   int side_padding = (tile_palette_window->get<Rectangle>()->size().x - (grid_root->get<Grid>()->tile_width() * tiles_per_row)) / 2;
+   int top_padding = 20;
+
+   int i = 0;
+   for (std::vector<std::string>::const_iterator it = tile_textures.begin(); it != tile_textures.end(); ++it, ++i) {
+      sf::Vector2f tile_texture_pos(
+         (i % tiles_per_row) * grid_root->get<Grid>()->tile_width() + side_padding,
+         (i / tiles_per_row) * grid_root->get<Grid>()->tile_height() + top_padding
+      );
+
+      Entity* entity = this->create_entity(*it + "_tpw_entity");
+      this->send_message<AddToEntityMessage>(tile_palette_window->handle(), entity->handle());
+
+      entity->add<Sprite>(*it + "_sprite", this->textures().get(*it));
+      entity->get<Sprite>()->position(tile_texture_pos);
+
+      entity->add<PlayerProfile>(*it + "_playerProfile", 1);
+      entity->add<Clickable>(*it + "_clickable");
+      entity->add<Collision>(*it + "_collision", entity->get<Sprite>()->global_bounds());
+
+      // define texture button behavior
+      entity->add<Callback>(*it + "_callback");
+      entity->get<Callback>()->mouse_in([entity, tpw_hover] () {
+         tpw_hover->get<Rectangle>()->position(entity->get<Sprite>()->position());
+         tpw_hover->get<Space>()->visible(true);
+      });
+
+      entity->get<Callback>()->mouse_out([entity, tpw_hover] () {
+         tpw_hover->get<Space>()->visible(false);
+      });
+
+      entity->get<Callback>()->left_release([entity, tile_selection_maproot, map_root, grid_root] () {
+         // remove any existing tiles in the selection if they exist
+         map_root->get<TileMap>()->remove(tile_selection_maproot->get<Collision>()->volume());
+
+         // on click, fill the selected area (if it is active) with the clicked on tile
+         sf::FloatRect tsc = tile_selection_maproot->get<Collision>()->volume();
+         for (int x_pos = tsc.left; x_pos < tsc.left + tsc.width; x_pos += grid_root->get<Grid>()->tile_width()) {
+            for (int y_pos = tsc.top; y_pos < tsc.top + tsc.height; y_pos += grid_root->get<Grid>()->tile_height()) {
+               Sprite sprite(*entity->get<Sprite>());
+               sprite.position(x_pos, y_pos);
+
+               map_root->get<TileMap>()->set(sprite);
+            }
+         }
+      });
+   }
+
+   // putting this here because tpw_hover needs to be on top of all tiles
+   this->send_message<AddToEntityMessage>(tile_palette_window->handle(), tpw_hover->handle());
 }

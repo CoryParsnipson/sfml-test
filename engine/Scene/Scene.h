@@ -165,6 +165,9 @@ public:
         this->send_message<AddToEntityMessage>(this->root_, handle);
       }
 
+      // create a default bookmark (may overwrite existing bookmarks with same id...)
+      this->bookmark(e);
+
       return e;
    }
 
@@ -185,6 +188,29 @@ public:
    
    std::vector<Handle> entities() const {
       return this->entities_.get_active_handles();
+   }
+
+   // store a handle to an entity with a string identifier
+   void bookmark(const std::string& bookmark_id, Handle entity) {
+      this->bookmarks_[bookmark_id] = entity;
+   }
+
+   void bookmark(Handle entity) {
+      Entity* e = this->get_entity(entity);
+      if (!e) {
+         return; // fails silently
+      }
+
+      this->bookmarks_[e->id()] = entity;
+   }
+
+   void bookmark(Entity* entity) {
+      this->bookmarks_[entity->id()] = entity->handle();
+   }
+
+   // retrieve an entity given a string identifier (will return nullptr if bookmark does not exist)
+   Entity* bookmark(const std::string& bookmark_id) {
+      return this->get_entity(this->bookmarks_[bookmark_id]);
    }
 
    void add_system(System* system, int priority = -1) {
@@ -274,6 +300,7 @@ private:
    std::vector<System*> systems_;
 
    Handle root_;
+   std::map<std::string, Handle> bookmarks_;
 
    virtual void send_message_helper(MessagePtr message) {
       this->handle_message(message);

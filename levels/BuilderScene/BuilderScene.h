@@ -43,6 +43,11 @@ private:
 
    void load_fonts();
    void load_textures();
+
+   // helper methods
+   void create_backdrop(GraphicalSystem* gs);
+   void create_fps_display(GraphicalSystem* gs);
+   void create_tile_palette(GraphicalSystem* gs);
 };
 
 #endif
