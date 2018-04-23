@@ -197,10 +197,9 @@ void GridSystem::on_update(Game& game, Entity& e) {
 }
 
 Entity* GridSystem::create_gridline(Entity* grid_entity, std::string id, float x, float y, float width, float height) {
-   Entity* e = this->scene().create_entity();
+   Entity* e = this->scene().create_entity(id);
    this->send_message<AddToEntityMessage>(grid_entity->handle(), e->handle());
 
-   e->id(id);
    e->add<Rectangle>(id, x, y, width, height);
    e->get<Rectangle>()->color(Color(230, 230, 230, 90));
 
@@ -216,10 +215,9 @@ Entity* GridSystem::create_row(Entity* grid_entity, std::string id, float y) {
 }
 
 Entity* GridSystem::create_text_marker(Entity* grid_entity, std::string id, const sf::Vector2f& pos) {
-   Entity* e = this->scene().create_entity();
+   Entity* e = this->scene().create_entity(id);
    this->send_message<AddToEntityMessage>(grid_entity->handle(), e->handle());
    
-   e->id(id);
    e->add<Text>(id + "Text_Component", "", this->scene().fonts().get("retro"), 9);
 
    return e;
