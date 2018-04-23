@@ -167,6 +167,7 @@ public:
          std::string auto_id = "Entity" + std::to_string(handle.index());
          e->id(auto_id);
       }
+      this->bookmark(e);
       
       // let Systems know a new Entity has been made
       this->send_message<EntityCreatedMessage>(handle);
@@ -178,12 +179,6 @@ public:
       if (this->root_ != Handle() && this->root_ != handle) {
         this->send_message<AddToEntityMessage>(this->root_, handle);
       }
-
-      // create a default bookmark (and make sure entity's id is unique)
-      if (this->get_entity(e->id()) != nullptr) {
-         throw std::runtime_error("Entity ID '" + e->id() + "' is already in use!");
-      }
-      this->bookmark(e);
 
       return e;
    }
@@ -287,6 +282,10 @@ public:
 protected:
    // store a handle to an entity with a string identifier
    void bookmark(const std::string& bookmark_id, Handle entity) {
+      if (this->get_entity(bookmark_id) != nullptr) {
+         throw std::runtime_error("Entity ID '" + bookmark_id + "' is already in use!");
+      }
+
       this->bookmarks_[bookmark_id] = entity;
    }
 
@@ -296,11 +295,15 @@ protected:
          return; // fails silently
       }
 
-      this->bookmarks_[e->id()] = entity;
+      this->bookmark(e->id(), entity);
    }
 
    void bookmark(Entity* entity) {
-      this->bookmarks_[entity->id()] = entity->handle();
+      if (entity == nullptr) {
+         return;
+      }
+
+      this->bookmark(entity->id(), entity->handle());
    }
 
    void remove_bookmark(const std::string& bookmark_id) {
