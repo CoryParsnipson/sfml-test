@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 #include <cassert>
+#include <stdexcept>
 
 #include "CloseInputEvent.h"
 #include "LostFocusInputEvent.h"
@@ -146,7 +147,7 @@ public:
    }
 
    // entity component system interface
-   Entity* create_entity(const std::string& id = "Anonymous Entity") {
+   Entity* create_entity(const std::string& id = "") {
       Handle handle = this->entities_.add(id, this, &this->components_);
       assert(this->get_entity(handle) != nullptr);
 
@@ -154,6 +155,11 @@ public:
       Entity* e = this->get_entity(handle);
       e->handle(handle);
 
+      if (id == "") {
+         std::string auto_id = "Entity" + std::to_string(handle.index());
+         e->id(auto_id);
+      }
+      
       // let Systems know a new Entity has been made
       this->send_message<EntityCreatedMessage>(handle);
 
@@ -165,13 +171,16 @@ public:
         this->send_message<AddToEntityMessage>(this->root_, handle);
       }
 
-      // create a default bookmark (may overwrite existing bookmarks with same id...)
+      // create a default bookmark (and make sure entity's id is unique)
+      if (this->bookmark(e->id()) != nullptr) {
+         throw std::runtime_error("Entity ID '" + e->id() + "' is already in use!");
+      }
       this->bookmark(e);
 
       return e;
    }
 
-   Handle create_entity_handle(const std::string& id = "Anonymous Entity") {
+   Handle create_entity_handle(const std::string& id = "") {
       return this->create_entity(id)->handle();
    }
 
