@@ -118,6 +118,18 @@ public:
 
    // update interface
    virtual void update(Game& game) {
+      // handle any synchronous messages for the Scene
+      this->handle_queued_messages();
+
+      // handle any synchronous messages received by entities
+      std::vector<Handle> entities = this->entities();
+      for (std::vector<Handle>::iterator it = entities.begin(); it != entities.end(); ++it) {
+         Entity* e = this->get_entity(*it);
+         if (e) {
+            e->handle_queued_messages();
+         }
+      }
+
       // update systems
       for (std::vector<System*>::iterator it = this->systems_.begin(); it != this->systems_.end(); ++it) {
          (*it)->update(game);
