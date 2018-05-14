@@ -70,5 +70,5 @@ void Entity::handle(Handle handle) {
 
 void Entity::send_message_helper(MessagePtr message) {
    assert(this->scene_);
-   this->scene_->handle_message(message);
+   this->scene_->receive_message(message);
 }

@@ -45,6 +45,7 @@
 #include "AddToEntityMessage.h"
 #include "SetGridVisibilityMessage.h"
 #include "SetVisualDebugMessage.h"
+#include "EntityIdChangedMessage.h"
 
 BuilderScene::BuilderScene()
 : Scene("BuilderScene")
@@ -272,7 +273,7 @@ void BuilderScene::init(Game& game) {
       grid_root->get<Grid>()->zoom_factor = new_scale;
    });
 
-   mouse_cursor_script->get<Callback>()->left_click([selection_rect, &game] () {
+   mouse_cursor_script->get<Callback>()->left_click([selection_rect, &game, this] () {
       sf::Vector2f new_pos;
       new_pos.x = game.get_player(1).bindings().get<MouseXIntent>()->element()->position();
       new_pos.y = game.get_player(1).bindings().get<MouseYIntent>()->element()->position();

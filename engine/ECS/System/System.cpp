@@ -176,7 +176,7 @@ bool System::is_visible(Handle entity) {
 
 void System::send_message_helper(MessagePtr message) {
    assert(this->scene_);
-   this->scene_->handle_message(message);
+   this->scene_->receive_message(message);
 }
 
 void System::post_receive_message(MessagePtr message) {

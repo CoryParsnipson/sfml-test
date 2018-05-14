@@ -72,5 +72,5 @@ System& EntitySubscription::system() {
 
 void EntitySubscription::send_message_helper(MessagePtr message) {
    assert(this->system_);
-   this->scene().handle_message(message);
+   this->scene().receive_message(message);
 }
