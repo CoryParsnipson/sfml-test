@@ -3,6 +3,17 @@ SFML test
 
 This was originally going to be a quick isometric tile demo experiment and it has evolved horribly into some sort of homegrown 2D game engine written in C++ and SFML.
 
+Setup
+=====
+
+1. Install SFML.
+
+   On linux, with a distro that has a package manager, this is simple. sudo apt-get install sfml or something. For fedora specifically, this is "sudo dnf install SFML SFML-devel".
+
+2. Install boost. (sudo dnf install boost boost-devel)
+
+3. Run the makefile ("make" while in the same folder as Makefile)
+
 TODO
 ----
 * Encapsulate sf::Font and sf::Color into wrapper classes (for serialization and stuff)
