@@ -72,6 +72,7 @@ void GraphicalSystem::on_update(Game& game, Entity& e) {
    }
 
    if (sprite != nullptr) {
+      sprite->update(game);
       sprite->draw(*this->surface_, states);
    }
 

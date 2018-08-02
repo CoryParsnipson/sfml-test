@@ -1,5 +1,5 @@
-#ifndef FONT_DICTIONARY_H
-#define FONT_DICTIONARY_H
+#ifndef FONT_ATLAS_H
+#define FONT_ATLAS_H
 
 #include <string>
 #include <SFML/Graphics.hpp>

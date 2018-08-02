@@ -3,10 +3,12 @@
 #include "Game.h"
 #include "Entity.h"
 #include "Color.h"
+#include "Animation.h"
 
 #include "StartMenuInputSystem.h"
 
 #include "Text.h"
+#include "Sprite.h"
 #include "Rectangle.h"
 #include "Callback.h"
 #include "PlayerProfile.h"
@@ -113,6 +115,25 @@ void StartMenuScene::init(Game& game) {
          std::to_string(static_cast<int>(new_pos.y))
       );
    });
+
+   // DELETME do an animated sprite test
+   this->textures().load("megaman", "megaman.png");
+   Game::logger().msg(this->id(), Logger::INFO, this->textures());
+
+   AnimationPtr run_se = std::make_shared<Animation>("RunSouthEast", this->textures().get("megaman"));
+   run_se->add(sf::IntRect(96, 0, 96, 144), 5);
+   run_se->add(sf::IntRect(192, 0, 96, 144), 5);
+   run_se->add(sf::IntRect(288, 0, 96, 144), 5);
+   run_se->add(sf::IntRect(384, 0, 96, 144), 5);
+   run_se->add(sf::IntRect(480, 0, 96, 144), 5);
+   run_se->add(sf::IntRect(576, 0, 96, 144), 5);
+
+   Entity* animated_sprite = this->create_entity("AnimationEntity");
+   animated_sprite->add<Sprite>();
+   animated_sprite->get<Sprite>()->animation(run_se);
+
+   //this->send_message<AddToEntityMessage>(text_layer->handle(), animated_sprite->handle());
+   // END DELETME do an animated sprite test
 
    // add input system
    this->add_system(new StartMenuInputSystem());

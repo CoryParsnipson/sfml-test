@@ -2,8 +2,25 @@
 #define TEXTURE_H
 
 #include <string>
+#include <memory>
+
 #include <SFML/Graphics.hpp>
 
+// ----------------------------------------------------------------------------
+// forward declarations
+// ----------------------------------------------------------------------------
+class Texture;
+
+// ----------------------------------------------------------------------------
+// aliases
+// ----------------------------------------------------------------------------
+using TexturePtr = std::shared_ptr<Texture>;
+
+// ----------------------------------------------------------------------------
+// Texture
+//
+// This contains loaded assets like spritesheets and images.
+// ----------------------------------------------------------------------------
 class Texture {
 public:
    Texture(std::string id, std::string filename, sf::IntRect texture_area = sf::IntRect());
@@ -19,7 +36,6 @@ private:
    std::string id_;
    std::string filename_;
 
-   sf::Image texture_mask_;
    sf::Texture texture_;
 };
 

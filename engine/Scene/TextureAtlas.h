@@ -1,5 +1,5 @@
-#ifndef TEXTURE_DICTIONARY_H
-#define TEXTURE_DICTIONARY_H
+#ifndef TEXTURE_ATLAS_H
+#define TEXTURE_ATLAS_H
 
 #include <string>
 #include <SFML/Graphics.hpp>

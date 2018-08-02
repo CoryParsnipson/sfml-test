@@ -4,11 +4,7 @@ Texture::Texture(std::string id, std::string filename, sf::IntRect texture_area)
 : id_(id)
 , filename_(filename)
 {
-   this->texture_mask_.loadFromFile(filename);
-   this->texture_mask_.createMaskFromColor(sf::Color::Magenta);
-
-   this->texture_.create(texture_area.width, texture_area.height);
-   this->texture_.loadFromImage(this->texture_mask_, texture_area);
+   this->texture_.loadFromFile(filename, texture_area);
 }
 
 Texture::~Texture() {

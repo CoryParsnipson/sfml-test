@@ -10,38 +10,13 @@
 #include "Color.h"
 #include "Component.h"
 #include "Updateable.h"
+#include "Animation.h"
 
 // ----------------------------------------------------------------------------
 // forward declarations
 // ----------------------------------------------------------------------------
 class Texture;
 class RenderSurface;
-
-// ----------------------------------------------------------------------------
-// Animation
-// 
-// Supply this class to a sprite to specify animation frames within the
-// Sprite's texture.
-// ----------------------------------------------------------------------------
-class Animation {
-public:
-   Animation(const std::string& id = "Animation");
-   virtual ~Animation();
-
-   const std::string& id() const;
-   unsigned int num_frames() const;
-
-   void add(const sf::IntRect& rect, unsigned int duration);
-   void insert(int idx, const sf::IntRect& rect, unsigned int duration);
-   void remove(int idx);
-
-   const sf::IntRect& get_rect(int idx) const;
-   unsigned int get_duration(int idx) const;
-
-private:
-   std::string id_;
-   std::vector<std::tuple<sf::IntRect, unsigned int> > frames_;
-};
 
 // ----------------------------------------------------------------------------
 // Sprite
@@ -96,8 +71,11 @@ public:
    void texture(std::shared_ptr<Texture> texture);
    std::shared_ptr<Texture> texture() const;
 
-   void animation(Animation* animation);
-   const Animation& animation() const;
+   void set_texture_rect(const sf::IntRect& rectangle);
+   const sf::IntRect& get_texture_rect() const;
+
+   void animation(AnimationPtr animation);
+   AnimationPtr animation() const;
 
    // serialize interface
    virtual std::string serialize(Serializer& s);
@@ -106,11 +84,10 @@ public:
 private:
    std::shared_ptr<Texture> texture_;
    sf::Sprite drawable_;
-   Animation default_animation_;
 
    int cur_idx;
    unsigned int remaining_frame_duration_;
-   Animation* animation_;
+   AnimationPtr animation_;
 };
 
 #endif
