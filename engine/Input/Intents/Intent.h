@@ -45,6 +45,8 @@ public:
    }
 
 private:
+   // TODO: expand this into a list of device ids and input elements
+   // when querying the intent's value, add all input element values together
    InputDevice::DeviceId device_id_;
    InputElementPtr input_element_;
 };

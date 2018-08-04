@@ -53,7 +53,7 @@ INCLUDE_PATHS += $(PROJECT_DIR)/engine/Serializer
 
 INCLUDE_PATHS += $(PROJECT_DIR)/levels
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/StartMenuScene
-INCLUDE_PATHS += $(PROJECT_DIR)/levels/StartMenuScene/System
+INCLUDE_PATHS += $(PROJECT_DIR)/levels/StartMenuScene/Intent
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderScene
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderScene/Component
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderScene/Intent
@@ -80,7 +80,6 @@ CXX_FILES += $(PROJECT_DIR)/engine/Channel/*.cpp
 CXX_FILES += $(PROJECT_DIR)/engine/Serializer/*.cpp
 
 CXX_FILES += $(PROJECT_DIR)/levels/StartMenuScene/*.cpp
-CXX_FILES += $(PROJECT_DIR)/levels/StartMenuScene/System/*.cpp
 CXX_FILES += $(PROJECT_DIR)/levels/BuilderScene/*.cpp
 CXX_FILES += $(PROJECT_DIR)/levels/BuilderScene/Component/*.cpp
 CXX_FILES += $(PROJECT_DIR)/levels/BuilderScene/System/*.cpp
