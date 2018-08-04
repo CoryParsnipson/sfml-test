@@ -1,6 +1,7 @@
 #include "StartMenuScene.h"
 
 #include "BuilderScene.h"
+#include "MegamanScene.h"
 
 #include "Game.h"
 #include "Entity.h"
@@ -134,6 +135,7 @@ void StartMenuScene::init(Game& game) {
             this->switch_scene(new BuilderScene());
          break;
          case 1:
+            this->switch_scene(new MegamanScene());
          break;
          case 2:
          break;
