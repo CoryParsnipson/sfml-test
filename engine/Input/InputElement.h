@@ -41,7 +41,7 @@ public:
    }
 
    bool was_released() const {
-      return !this->is_pressed() && this->prev_position_ == 0;
+      return !this->is_pressed() && this->prev_position_ != 0;
    }
 
    int position() const { return this->position_; }
