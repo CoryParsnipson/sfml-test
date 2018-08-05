@@ -11,8 +11,8 @@ Sprite::Sprite(const std::string& id /* = "Sprite" */)
 : Component(id)
 , texture_(nullptr)
 , drawable_()
-, cur_idx(0)
-, remaining_frame_duration_(0)
+, current_frame_idx_(0)
+, current_frame_duration_(0)
 , animation_(nullptr)
 {
 }
@@ -21,8 +21,8 @@ Sprite::Sprite(const std::string& id, std::shared_ptr<Texture> texture)
 : Component(id)
 , texture_(texture)
 , drawable_(texture->get_texture())
-, cur_idx(0)
-, remaining_frame_duration_(0)
+, current_frame_idx_(0)
+, current_frame_duration_(0)
 , animation_(nullptr)
 {
 }
@@ -31,8 +31,8 @@ Sprite::Sprite(const std::string& id, std::shared_ptr<Texture> texture, const sf
 : Component(id)
 , texture_(texture)
 , drawable_(texture->get_texture(), texture_rect)
-, cur_idx(0)
-, remaining_frame_duration_(0)
+, current_frame_idx_(0)
+, current_frame_duration_(0)
 , animation_(nullptr)
 {
 }
@@ -41,8 +41,8 @@ Sprite::Sprite(const Sprite& other)
 : Component(other.id())
 , texture_(other.texture_)
 , drawable_(other.drawable_)
-, cur_idx(other.cur_idx)
-, remaining_frame_duration_(other.remaining_frame_duration_)
+, current_frame_idx_(other.current_frame_idx_)
+, current_frame_duration_(other.current_frame_duration_)
 , animation_(nullptr)
 {
 }
@@ -61,8 +61,8 @@ void Sprite::swap(Sprite& other) {
 
    this->texture_ = other.texture_;
    std::swap(this->drawable_, other.drawable_);
-   std::swap(this->cur_idx, other.cur_idx);
-   std::swap(this->remaining_frame_duration_, other.remaining_frame_duration_);
+   std::swap(this->current_frame_idx_, other.current_frame_idx_);
+   std::swap(this->current_frame_duration_, other.current_frame_duration_);
 }
 
 void Sprite::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
@@ -70,12 +70,22 @@ void Sprite::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf
 }
 
 void Sprite::update(Game& game) {
+   bool need_to_change_frame = false;
+   unsigned int delta = 1; // TODO: fix your timestep
+
    // if the animation is set, it will overwrite any manually set textures
-   if (this->animation_) {
-      this->animation_->update(1); // TODO: fix your timestep
-      
-      this->texture(this->animation_->texture());
-      this->set_texture_rect(std::get<0>(this->animation_->current_frame()));
+   if (this->animation_ && this->animation_->num_frames() > 1) {
+      this->current_frame_duration_ -= delta; // should this be delta % num_frames?
+
+      while (this->current_frame_duration_ <= 0) {
+         this->current_frame_idx_ = (this->current_frame_idx_ + 1) % this->animation_->num_frames();
+         this->current_frame_duration_ += this->animation_->duration(this->current_frame_idx_);
+         need_to_change_frame = true;
+      }
+
+      if (need_to_change_frame) {
+         this->set_texture_rect(this->animation_->frame(this->current_frame_idx_));
+      }
    }
 }
 
@@ -154,6 +164,20 @@ const sf::IntRect& Sprite::get_texture_rect() const {
 
 void Sprite::animation(AnimationPtr animation) {
    this->animation_ = animation;
+
+   if (this->animation_) {
+      // update to the animation texture
+      this->texture(this->animation_->texture());
+
+      // reset playback data
+      this->current_frame_idx_ = 0;
+      this->current_frame_duration_ = 0;
+
+      // update the sprite to show the first frame, if this animation has any frames
+      if (this->animation_->num_frames() >= 1) {
+         this->set_texture_rect(this->animation_->frame(0));
+      }
+   }
 }
 
 AnimationPtr Sprite::animation() const {

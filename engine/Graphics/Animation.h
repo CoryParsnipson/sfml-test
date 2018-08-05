@@ -37,7 +37,6 @@ public:
    const std::string& id() const;
 
    unsigned int num_frames() const;
-   const Frame& current_frame() const;
 
    const TexturePtr texture() const;
    void texture(TexturePtr texture);
@@ -51,9 +50,6 @@ public:
    unsigned int duration(unsigned int idx) const;
    void duration(unsigned int idx, unsigned int duration);
 
-   // call this to update the current frame and remaining duration
-   void update(unsigned int delta);
-
    // TODO: reset
    // TODO: reverse?
 
@@ -64,9 +60,6 @@ private:
    std::string id_;
    TexturePtr texture_;
    FrameList frames_;
-
-   unsigned int current_frame_idx_;
-   int current_duration_;
 };
 
 #endif

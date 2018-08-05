@@ -3,16 +3,12 @@
 
 Animation::Animation(const std::string& id /* = "Animation" */)
 : id_(id)
-, current_frame_idx_(0)
-, current_duration_(0)
 {
 }
 
 Animation::Animation(const std::string& id, TexturePtr texture)
 : id_(id)
 , texture_(texture)
-, current_frame_idx_(0)
-, current_duration_(0)
 {
 }
 
@@ -25,10 +21,6 @@ const std::string& Animation::id() const {
 
 unsigned int Animation::num_frames() const {
    return this->frames_.size();
-}
-
-const Animation::Frame& Animation::current_frame() const {
-   return this->frames_[this->current_frame_idx_];
 }
 
 const TexturePtr Animation::texture() const {
@@ -69,19 +61,6 @@ unsigned int Animation::duration(unsigned int idx) const {
 
 void Animation::duration(unsigned int idx, unsigned int duration) {
    this->insert(idx, this->frame(idx), duration);
-}
-
-void Animation::update(unsigned int delta) {
-   if (this->frames_.size() <= 1) {
-      return;
-   }
-
-   this->current_duration_ -= delta;
-
-   while (this->current_duration_ <= 0) {
-      this->current_frame_idx_ = (this->current_frame_idx_ + 1) % (int)this->frames_.size();
-      this->current_duration_ += this->duration(this->current_frame_idx_);
-   }
 }
 
 void Animation::id(const std::string& id) {

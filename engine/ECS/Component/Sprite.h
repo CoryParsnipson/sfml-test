@@ -85,8 +85,8 @@ private:
    std::shared_ptr<Texture> texture_;
    sf::Sprite drawable_;
 
-   int cur_idx;
-   unsigned int remaining_frame_duration_;
+   unsigned int current_frame_idx_;
+   int current_frame_duration_;
    AnimationPtr animation_;
 };
 

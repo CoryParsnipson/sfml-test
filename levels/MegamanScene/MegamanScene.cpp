@@ -79,6 +79,13 @@ void MegamanScene::init(Game& game) {
    run_l->add(sf::IntRect(400, 41, -40, 41), 5);
    run_l->add(sf::IntRect(440, 41, -40, 41), 5);
 
+   Entity* test_e = this->create_entity("TestEntity");
+   test_e->add<Sprite>("TestSprite");
+   test_e->get<Sprite>()->animation(run_r);
+   test_e->get<Sprite>()->scale(3, 3);
+
+   test_e->get<Space>()->position(100, 100);
+
    Entity* c = this->create_entity("PlayerCharacterEntity");
    c->add<Sprite>("PlayerCharacterSprite");
    c->get<Sprite>()->animation(stand_r);
@@ -98,7 +105,9 @@ void MegamanScene::init(Game& game) {
          // run transition animation for 1 frame
          c->get<Sprite>()->animation(start_run_l);
       } else if (bindings.get<MoveLeftIntent>()->element()->is_pressed()) {
-         c->get<Sprite>()->animation(run_l);
+         if (c->get<Sprite>()->animation() != run_l) {
+            c->get<Sprite>()->animation(run_l);
+         }
       } else if (bindings.get<MoveLeftIntent>()->element()->was_released()) {
          c->get<Sprite>()->animation(stand_l);
       }
