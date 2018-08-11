@@ -176,6 +176,7 @@ void Sprite::animation(AnimationPtr animation) {
       // update the sprite to show the first frame, if this animation has any frames
       if (this->animation_->num_frames() >= 1) {
          this->set_texture_rect(this->animation_->frame(0));
+         this->current_frame_duration_ = this->animation_->duration(0);
       }
    }
 }
