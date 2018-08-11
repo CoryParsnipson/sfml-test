@@ -34,54 +34,68 @@ void MegamanScene::init(Game& game) {
    game.get_player(1).bindings().set<MoveRightIntent>(1, game.input_manager().get_device(1)->get("Right"));
 
    AnimationPtr stand_r = std::make_shared<Animation>("megaman_zero_stand_r", this->textures().get("megaman_zero_spritesheet"));
-   stand_r->add(sf::IntRect(  0, 0, 40, 41), 120);
-   stand_r->add(sf::IntRect( 40, 0, 40, 41), 9);
-   stand_r->add(sf::IntRect( 80, 0, 40, 41), 30);
-   stand_r->add(sf::IntRect(120, 0, 40, 41), 9);
-   stand_r->add(sf::IntRect(160, 0, 40, 41), 9);
-   stand_r->add(sf::IntRect(200, 0, 40, 41), 9);
+   stand_r->add(sf::IntRect(  0, 0, 40, 50), 120);
+   stand_r->add(sf::IntRect( 40, 0, 40, 50), 9);
+   stand_r->add(sf::IntRect( 80, 0, 40, 50), 30);
+   stand_r->add(sf::IntRect(120, 0, 40, 50), 9);
+   stand_r->add(sf::IntRect(160, 0, 40, 50), 9);
+   stand_r->add(sf::IntRect(200, 0, 40, 50), 9);
 
    AnimationPtr stand_l = std::make_shared<Animation>("megaman_zero_stand_l", this->textures().get("megaman_zero_spritesheet"));
-   stand_l->add(sf::IntRect( 40, 0, -40, 41), 120);
-   stand_l->add(sf::IntRect( 80, 0, -40, 41), 9);
-   stand_l->add(sf::IntRect(120, 0, -40, 41), 30);
-   stand_l->add(sf::IntRect(160, 0, -40, 41), 9);
-   stand_l->add(sf::IntRect(200, 0, -40, 41), 9);
-   stand_l->add(sf::IntRect(240, 0, -40, 41), 9);
+   stand_l->add(sf::IntRect( 40, 0, -40, 50), 120);
+   stand_l->add(sf::IntRect( 80, 0, -40, 50), 9);
+   stand_l->add(sf::IntRect(120, 0, -40, 50), 30);
+   stand_l->add(sf::IntRect(160, 0, -40, 50), 9);
+   stand_l->add(sf::IntRect(200, 0, -40, 50), 9);
+   stand_l->add(sf::IntRect(240, 0, -40, 50), 9);
 
    AnimationPtr start_run_r = std::make_shared<Animation>("megaman_zero_start_run_r", this->textures().get("megaman_zero_spritesheet"));
-   start_run_r->add(sf::IntRect(  0, 41, 40, 41), 5);
+   start_run_r->add(sf::IntRect(  0, 41, 40, 50), 5);
 
    AnimationPtr run_r = std::make_shared<Animation>("megaman_zero_run_r", this->textures().get("megaman_zero_spritesheet"));
-   run_r->add(sf::IntRect( 40, 41, 40, 41), 5);
-   run_r->add(sf::IntRect( 80, 41, 40, 41), 5);
-   run_r->add(sf::IntRect(120, 41, 40, 41), 5);
-   run_r->add(sf::IntRect(160, 41, 40, 41), 5);
-   run_r->add(sf::IntRect(200, 41, 40, 41), 5);
-   run_r->add(sf::IntRect(240, 41, 40, 41), 5);
-   run_r->add(sf::IntRect(280, 41, 40, 41), 5);
-   run_r->add(sf::IntRect(320, 41, 40, 41), 5);
-   run_r->add(sf::IntRect(360, 41, 40, 41), 5);
-   run_r->add(sf::IntRect(400, 41, 40, 41), 5);
+   run_r->add(sf::IntRect( 40, 50, 40, 50), 5);
+   run_r->add(sf::IntRect( 80, 50, 40, 50), 5);
+   run_r->add(sf::IntRect(120, 50, 40, 50), 5);
+   run_r->add(sf::IntRect(160, 50, 40, 50), 5);
+   run_r->add(sf::IntRect(200, 50, 40, 50), 5);
+   run_r->add(sf::IntRect(240, 50, 40, 50), 5);
+   run_r->add(sf::IntRect(280, 50, 40, 50), 5);
+   run_r->add(sf::IntRect(320, 50, 40, 50), 5);
+   run_r->add(sf::IntRect(360, 50, 40, 50), 5);
+   run_r->add(sf::IntRect(400, 50, 40, 50), 5);
 
    AnimationPtr start_run_l = std::make_shared<Animation>("megaman_zero_start_run_l", this->textures().get("megaman_zero_spritesheet"));
-   start_run_l->add(sf::IntRect(  40, 41, -40, 41), 5);
+   start_run_l->add(sf::IntRect(  40, 41, -40, 50), 5);
    
    AnimationPtr run_l = std::make_shared<Animation>("megaman_zero_run_l", this->textures().get("megaman_zero_spritesheet"));
-   run_l->add(sf::IntRect( 80, 41, -40, 41), 5);
-   run_l->add(sf::IntRect(120, 41, -40, 41), 5);
-   run_l->add(sf::IntRect(160, 41, -40, 41), 5);
-   run_l->add(sf::IntRect(200, 41, -40, 41), 5);
-   run_l->add(sf::IntRect(240, 41, -40, 41), 5);
-   run_l->add(sf::IntRect(280, 41, -40, 41), 5);
-   run_l->add(sf::IntRect(320, 41, -40, 41), 5);
-   run_l->add(sf::IntRect(360, 41, -40, 41), 5);
-   run_l->add(sf::IntRect(400, 41, -40, 41), 5);
-   run_l->add(sf::IntRect(440, 41, -40, 41), 5);
+   run_l->add(sf::IntRect( 80, 50, -40, 50), 5);
+   run_l->add(sf::IntRect(120, 50, -40, 50), 5);
+   run_l->add(sf::IntRect(160, 50, -40, 50), 5);
+   run_l->add(sf::IntRect(200, 50, -40, 50), 5);
+   run_l->add(sf::IntRect(240, 50, -40, 50), 5);
+   run_l->add(sf::IntRect(280, 50, -40, 50), 5);
+   run_l->add(sf::IntRect(320, 50, -40, 50), 5);
+   run_l->add(sf::IntRect(360, 50, -40, 50), 5);
+   run_l->add(sf::IntRect(400, 50, -40, 50), 5);
+   run_l->add(sf::IntRect(440, 50, -40, 50), 5);
+
+   AnimationPtr jump_r = std::make_shared<Animation>("megaman_zero_jump_r", this->textures().get("megaman_zero_spritesheet"));
+   jump_r->add(sf::IntRect(  0, 100, 40, 50), 5);
+   jump_r->add(sf::IntRect( 40, 100, 40, 50), 5);
+   jump_r->add(sf::IntRect( 80, 100, 40, 50), 5);
+   jump_r->add(sf::IntRect(120, 100, 40, 50), 5);
+   jump_r->add(sf::IntRect(160, 100, 40, 50), 5);
+   jump_r->add(sf::IntRect(200, 100, 40, 50), 5);
+   jump_r->add(sf::IntRect(240, 100, 40, 50), 5);
+   jump_r->add(sf::IntRect(280, 100, 40, 50), 5);
+   jump_r->add(sf::IntRect(320, 100, 40, 50), 5);
+   jump_r->add(sf::IntRect(360, 100, 40, 50), 5);
+   jump_r->add(sf::IntRect(400, 100, 40, 50), 5);
+   jump_r->add(sf::IntRect(440, 100, 40, 50), 5);
 
    Entity* test_e = this->create_entity("TestEntity");
    test_e->add<Sprite>("TestSprite");
-   test_e->get<Sprite>()->animation(run_r);
+   test_e->get<Sprite>()->animation(jump_r);
    test_e->get<Sprite>()->scale(3, 3);
 
    test_e->get<Space>()->position(100, 100);
