@@ -50,7 +50,7 @@ void MegamanScene::init(Game& game) {
    stand_l->add(sf::IntRect(240, 0, -40, 50), 9);
 
    AnimationPtr start_run_r = std::make_shared<Animation>("megaman_zero_start_run_r", this->textures().get("megaman_zero_spritesheet"));
-   start_run_r->add(sf::IntRect(  0, 41, 40, 50), 5);
+   start_run_r->add(sf::IntRect(  0, 50, 40, 50), 5);
 
    AnimationPtr run_r = std::make_shared<Animation>("megaman_zero_run_r", this->textures().get("megaman_zero_spritesheet"));
    run_r->add(sf::IntRect( 40, 50, 40, 50), 5);
@@ -65,7 +65,7 @@ void MegamanScene::init(Game& game) {
    run_r->add(sf::IntRect(400, 50, 40, 50), 5);
 
    AnimationPtr start_run_l = std::make_shared<Animation>("megaman_zero_start_run_l", this->textures().get("megaman_zero_spritesheet"));
-   start_run_l->add(sf::IntRect(  40, 41, -40, 50), 5);
+   start_run_l->add(sf::IntRect(  40, 50, -40, 50), 5);
    
    AnimationPtr run_l = std::make_shared<Animation>("megaman_zero_run_l", this->textures().get("megaman_zero_spritesheet"));
    run_l->add(sf::IntRect( 80, 50, -40, 50), 5);
