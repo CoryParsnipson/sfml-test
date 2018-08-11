@@ -14,6 +14,7 @@
 GridSystem::GridSystem(const std::string& id, CameraPtr camera)
 : System(id)
 , is_visible_(true)
+, force_update_(false)
 , camera_(camera)
 , previous_camera_bounds_(0, 0, 0, 0)
 , previous_zoom_factor_(1.f, 1.f)
@@ -36,14 +37,12 @@ void GridSystem::on_init(Game& game) {
 
       Entity* grid_entity = this->scene().get_entity(msg.grid_entity);
       if (grid_entity) {
-         Space* grid_entity_space = grid_entity->get<Space>();
-         for (unsigned int i = 0; i < grid_entity_space->num_children(); ++i) {
-            Entity* e = this->scene().get_entity(grid_entity_space->get(i));
-            e->get<Space>()->visible(msg.visibility);
-         }
+         grid_entity->get<Space>()->visible(msg.visibility);
       }
-
       this->is_visible_ = msg.visibility;
+
+      this->force_update_ = true;
+      this->on_update(game, *grid_entity);
    });
 }
 
@@ -59,11 +58,13 @@ void GridSystem::on_update(Game& game, Entity& e) {
    sf::FloatRect camera_bounds = this->global_transform(e).getInverse().transformRect(this->camera()->bounds());
 
    // no need to update this system if the camera hasn't changed
-   if (this->previous_camera_bounds_ == camera_bounds && this->previous_zoom_factor_ == e.get<Grid>()->zoom_factor) {
+   if (!this->force_update_ && this->previous_camera_bounds_ == camera_bounds && this->previous_zoom_factor_ == e.get<Grid>()->zoom_factor) {
       return;
    }
    this->previous_camera_bounds_ = camera_bounds;
    this->previous_zoom_factor_ = e.get<Grid>()->zoom_factor;
+
+   this->force_update_ = false;
 
    // iterate through children and build list of existing rows and cols
    Space* space = e.get<Space>();
@@ -105,9 +106,9 @@ void GridSystem::on_update(Game& game, Entity& e) {
       } else {
          // modify column
          Rectangle* gridline = cols[gridline_id]->get<Rectangle>();
-         gridline->position(c, camera_bounds.top);
          gridline->size(1, camera_bounds.height);
 
+         cols[gridline_id]->get<Space>()->position(c, camera_bounds.top);
          cols[gridline_id]->get<Space>()->visible(this->is_visible_);
       }
 
@@ -131,9 +132,9 @@ void GridSystem::on_update(Game& game, Entity& e) {
       } else {
          // modify row
          Rectangle* gridline = rows[gridline_id]->get<Rectangle>();
-         gridline->position(camera_bounds.left, r);
          gridline->size(camera_bounds.width, 1);
 
+         rows[gridline_id]->get<Space>()->position(camera_bounds.left, r);
          rows[gridline_id]->get<Space>()->visible(this->is_visible_);
       }
 
@@ -154,17 +155,15 @@ void GridSystem::on_update(Game& game, Entity& e) {
    std::map<unsigned int, Entity*>::iterator tx;
    for (ty = rows.begin(); ty != rows.end(); ++ty) {
       for (tx = cols.begin(); tx != cols.end(); ++tx) {
-         float col_pos = tx->second->get<Rectangle>()->position().x;
-         float row_pos = ty->second->get<Rectangle>()->position().y;
+         float col_pos = tx->second->get<Space>()->position().x;
+         float row_pos = ty->second->get<Space>()->position().y;
 
-         sf::Vector2i grid_idx = e.get<Grid>()->grid_index(col_pos, row_pos);
+         sf::Vector2f tm_pos(col_pos, row_pos);
+         sf::Vector2i grid_idx = e.get<Grid>()->grid_index(tm_pos);
 
          if (!ty->second->get<Space>()->visible() || !tx->second->get<Space>()->visible() || std::abs(grid_idx.y) % interval != 0 || std::abs(grid_idx.x) % interval != 0) {
             continue;
          }
-
-         sf::Vector2f tm_val(col_pos, row_pos);
-         sf::Vector2f tm_pos = tm_val + sf::Vector2f(3, 3); // offset the text marker a little to the lower right
 
          if (text_markers[gridline_id] == nullptr || text_markers[gridline_id]->get<Text>() == nullptr) {
             if (text_markers[gridline_id] != nullptr && text_markers[gridline_id]->get<Text>() == nullptr) {
@@ -181,8 +180,8 @@ void GridSystem::on_update(Game& game, Entity& e) {
             ", " +
             std::to_string((int)(grid_idx.y * e.get<Grid>()->tile_height()))
          );
-         text_markers[gridline_id]->get<Text>()->position(tm_pos);
 
+         text_markers[gridline_id]->get<Space>()->position(tm_pos);
          text_markers[gridline_id]->get<Space>()->visible(this->is_visible_);
 
          ++gridline_id;
@@ -200,7 +199,9 @@ Entity* GridSystem::create_gridline(Entity* grid_entity, std::string id, float x
    Entity* e = this->scene().create_entity(id);
    this->send_message<AddToEntityMessage>(grid_entity->handle(), e->handle());
 
-   e->add<Rectangle>(id, x, y, width, height);
+   e->get<Space>()->position(x, y);
+
+   e->add<Rectangle>(id, 0, 0, width, height);
    e->get<Rectangle>()->color(Color(230, 230, 230, 90));
 
    return e;
@@ -219,6 +220,7 @@ Entity* GridSystem::create_text_marker(Entity* grid_entity, std::string id, cons
    this->send_message<AddToEntityMessage>(grid_entity->handle(), e->handle());
    
    e->add<Text>(id + "Text_Component", "", this->scene().fonts().get("retro"), 9);
+   e->get<Text>()->offset(3, 3);
 
    return e;
 }

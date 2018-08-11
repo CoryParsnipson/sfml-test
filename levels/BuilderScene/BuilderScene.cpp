@@ -164,10 +164,11 @@ void BuilderScene::init(Game& game) {
    mouse_cursor->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
 
    mouse_cursor->add<Rectangle>("MouseCursorRectangle", 0, 0, 6, 6);
+   mouse_cursor->get<Rectangle>()->offset(3, 3);
    mouse_cursor->get<Rectangle>()->color(Color(sf::Color::Red));
 
    mouse_cursor->add<Text>("MouseCursorText", "0, 0", this->fonts().get("retro"), 12);
-   mouse_cursor->get<Text>()->position(0, 10);
+   mouse_cursor->get<Text>()->offset(0, 10);
    mouse_cursor->get<Text>()->color(Color(sf::Color::White));
 
    mouse_cursor->add<Callback>("MouseCursorCallback");
@@ -179,10 +180,9 @@ void BuilderScene::init(Game& game) {
       sf::Vector2f screen_pos = map_root->get<Space>()->inverse_transform().transformPoint(new_pos);
 
       // move mouse cursor
-      mouse_cursor->get<Rectangle>()->position(new_pos - sf::Vector2f(3, 3));
+      mouse_cursor->get<Space>()->position(new_pos);
 
-      // move and update mouse cursor text
-      mouse_cursor->get<Text>()->position(new_pos + sf::Vector2f(0, 10));
+      // update mouse cursor text
       mouse_cursor->get<Text>()->string(
          std::to_string(static_cast<int>(new_pos.x)) +
          ", " +
@@ -224,9 +224,8 @@ void BuilderScene::init(Game& game) {
          end.x = std::max(sr_origin.x, new_pos.x);
          end.y = std::max(sr_origin.y, new_pos.y);
 
-         selection_rect->get<Rectangle>()->position(pos);
+         selection_rect->get<Space>()->position(pos);
          selection_rect->get<Rectangle>()->size(end - pos);
-
          selection_rect->get<Collision>()->volume(pos, end - pos);
       }
 
@@ -250,7 +249,7 @@ void BuilderScene::init(Game& game) {
 
       // adjust tile selection visual on the grid layer
       if (tile_selection->get<Space>()->visible()) {
-         sf::Vector2f pos = tile_selection->get<Rectangle>()->position();
+         sf::Vector2f pos = tile_selection->get<Space>()->position();
          sf::Vector2f end = pos + tile_selection->get<Rectangle>()->size();
 
          sf::Vector2i pos_idx = grid_root->get<Grid>()->grid_index(pos);
@@ -264,7 +263,7 @@ void BuilderScene::init(Game& game) {
          new_end.x = grid_root->get<Grid>()->tile_width() * end_idx.x * new_scale.x;
          new_end.y = grid_root->get<Grid>()->tile_height() * end_idx.y * new_scale.y;
 
-         tile_selection->get<Rectangle>()->position(new_pos);
+         tile_selection->get<Space>()->position(new_pos);
          tile_selection->get<Rectangle>()->size(new_end - new_pos);
 
          tile_selection->get<Collision>()->volume(tile_selection->get<Rectangle>()->global_bounds());
@@ -280,7 +279,7 @@ void BuilderScene::init(Game& game) {
 
       // summon selection rectangle
       selection_rect->get<Space>()->visible(true);
-      selection_rect->get<Rectangle>()->position(new_pos);
+      selection_rect->get<Space>()->position(new_pos);
       selection_rect->get<Rectangle>()->size(0, 0);
       selection_rect->get<Collision>()->volume(new_pos, sf::Vector2f(0, 0));
    });
@@ -336,10 +335,10 @@ void BuilderScene::init(Game& game) {
          }
 
          // update tile selection entity
-         tile_selection->get<Rectangle>()->position(pos);
-         tile_selection->get<Rectangle>()->size(end - pos);
-         tile_selection->get<Collision>()->volume(tile_selection->get<Rectangle>()->global_bounds());
+         tile_selection->get<Space>()->position(pos);
          tile_selection->get<Space>()->visible(true);
+         tile_selection->get<Rectangle>()->size(end - pos);
+         tile_selection->get<Collision>()->volume(pos, end - pos);
 
          // update tile selection maproot entity
          sf::Vector2i pos_idx = grid_root->get<Grid>()->grid_index(pos);
@@ -381,7 +380,7 @@ void BuilderScene::init(Game& game) {
          map_root->get<Space>()->position(0, 0);
          map_root->get<Space>()->scale(sf::Vector2f(1.f, 1.f));
 
-         sf::Vector2f pos = tile_selection->get<Rectangle>()->position();
+         sf::Vector2f pos = tile_selection->get<Space>()->position();
          sf::Vector2f end = pos + tile_selection->get<Rectangle>()->size();
 
          sf::Vector2i pos_idx = grid_root->get<Grid>()->grid_index(pos);
@@ -401,7 +400,7 @@ void BuilderScene::init(Game& game) {
          new_end.x = grid_root->get<Grid>()->tile_width() * end_idx.x;
          new_end.y = grid_root->get<Grid>()->tile_height() * end_idx.y;
 
-         tile_selection->get<Rectangle>()->position(new_pos);
+         tile_selection->get<Space>()->position(new_pos);
          tile_selection->get<Rectangle>()->size(new_end - new_pos);
 
          tile_selection->get<Collision>()->volume(tile_selection->get<Rectangle>()->global_bounds());
@@ -558,7 +557,7 @@ void BuilderScene::create_fps_display(GraphicalSystem* gs) {
       camera_bounds.x *= gs->camera()->viewport().width / gs->camera()->zoom();
       camera_bounds.y *= gs->camera()->viewport().height / gs->camera()->zoom();
 
-      fps_display->get<Text>()->position(camera_bounds - text_size - sf::Vector2f(10, 10));
+      fps_display->get<Space>()->position(camera_bounds - text_size - sf::Vector2f(10, 10));
    });
 
    fps_display->get<Callback>()->on_update([this, fps_display, gs] () {
@@ -608,7 +607,9 @@ void BuilderScene::create_tile_palette(GraphicalSystem* gs) {
    Entity* tpw_outline = this->create_entity("TilePaletteWindowDecoration");
    this->send_message<AddToEntityMessage>(tile_palette_window->handle(), tpw_outline->handle());
 
-   tpw_outline->add<Rectangle>("TilePaletteWindowOutline", 5, 10, tile_palette_window->get<Rectangle>()->size().x - 10, tile_palette_window->get<Rectangle>()->size().y - 15);
+   tpw_outline->get<Space>()->position(5, 10);
+
+   tpw_outline->add<Rectangle>("TilePaletteWindowOutline", 0, 0, tile_palette_window->get<Rectangle>()->size().x - 10, tile_palette_window->get<Rectangle>()->size().y - 15);
    tpw_outline->get<Rectangle>()->color(Color(sf::Color::Transparent));
    tpw_outline->get<Rectangle>()->outline_color(Color(211, 206, 218, 230));
    tpw_outline->get<Rectangle>()->outline_thickness(2.0);
@@ -623,9 +624,9 @@ void BuilderScene::create_tile_palette(GraphicalSystem* gs) {
    this->send_message<AddToEntityMessage>(tile_palette_window->handle(), tpw_title->handle());
 
    tpw_title->add<Text>("TilePaletteWindowTitleText", "Tileset:", this->fonts().get("retro"), 12);
-   tpw_title->get<Text>()->position(30, 2);
+   tpw_title->get<Space>()->position(30, 2);
 
-   tpw_title_back->get<Rectangle>()->position(tpw_title->get<Text>()->position() - sf::Vector2f(3, 0));
+   tpw_title_back->get<Space>()->position(tpw_title->get<Space>()->position() - sf::Vector2f(3, 0));
    tpw_title_back->get<Rectangle>()->size(tpw_title->get<Text>()->local_bounds().width + 6, tpw_title->get<Text>()->local_bounds().height);
 
    Entity* tpw_hover = this->create_entity("TilePaletteWindowHover");
@@ -675,8 +676,9 @@ void BuilderScene::create_tile_palette(GraphicalSystem* gs) {
       Entity* entity = this->create_entity(*it + "_tpw_entity");
       this->send_message<AddToEntityMessage>(tile_palette_window->handle(), entity->handle());
 
+      entity->get<Space>()->position(tile_texture_pos);
+
       entity->add<Sprite>(*it + "_sprite", this->textures().get(*it));
-      entity->get<Sprite>()->position(tile_texture_pos);
 
       entity->add<PlayerProfile>(*it + "_playerProfile", 1);
       entity->add<Clickable>(*it + "_clickable");
@@ -685,7 +687,7 @@ void BuilderScene::create_tile_palette(GraphicalSystem* gs) {
       // define texture button behavior
       entity->add<Callback>(*it + "_callback");
       entity->get<Callback>()->mouse_in([entity, tpw_hover] () {
-         tpw_hover->get<Rectangle>()->position(entity->get<Sprite>()->position());
+         tpw_hover->get<Space>()->position(entity->get<Space>()->position());
          tpw_hover->get<Space>()->visible(true);
       });
 
@@ -702,7 +704,7 @@ void BuilderScene::create_tile_palette(GraphicalSystem* gs) {
          for (int x_pos = tsc.left; x_pos < tsc.left + tsc.width; x_pos += grid_root->get<Grid>()->tile_width()) {
             for (int y_pos = tsc.top; y_pos < tsc.top + tsc.height; y_pos += grid_root->get<Grid>()->tile_height()) {
                Sprite sprite(*entity->get<Sprite>());
-               sprite.position(x_pos, y_pos);
+               sprite.offset(x_pos, y_pos);
 
                map_root->get<TileMap>()->set(sprite);
             }

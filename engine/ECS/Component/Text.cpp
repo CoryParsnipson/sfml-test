@@ -21,7 +21,7 @@ Text::Text(const Text& other)
 : Component(other.id())
 , string_(other.string_)
 , drawable_(other.drawable_)
-, position_(other.position_)
+, offset_(other.offset_)
 {
 }
 
@@ -38,7 +38,7 @@ void Text::swap(Text& other) {
    std::swap(static_cast<Component&>(*this), static_cast<Component&>(other));
    std::swap(this->string_, other.string_);
    std::swap(this->drawable_, other.drawable_);
-   std::swap(this->position_, other.position_);
+   std::swap(this->offset_, other.offset_);
 }
 
 void Text::draw(RenderSurface& surface, sf::RenderStates render_states /* = sf::RenderStates::Default */) {
@@ -53,21 +53,6 @@ sf::FloatRect Text::global_bounds() const {
    return this->drawable_.getGlobalBounds();
 }
 
-void Text::position(float x, float y) {
-   this->drawable_.setPosition(x, y);
-
-   this->position_.x = this->global_bounds().left;
-   this->position_.y = this->global_bounds().top;
-}
-
-const sf::Vector2f& Text::position() const {
-   return this->position_;
-}
-
-void Text::move(float x, float y) {
-   this->drawable_.move(x, y);
-}
-
 void Text::rotation(float angle) {
    this->drawable_.setRotation(angle);
 }
@@ -79,8 +64,8 @@ float Text::rotation() const {
 void Text::scale(float x, float y) {
    this->drawable_.setScale(x, y);
 
-   this->position_.x = this->global_bounds().left;
-   this->position_.y = this->global_bounds().top;
+   this->offset_.x = this->global_bounds().left;
+   this->offset_.y = this->global_bounds().top;
 }
 
 const sf::Vector2f& Text::scale() const {
@@ -90,12 +75,27 @@ const sf::Vector2f& Text::scale() const {
 void Text::origin(float x, float y) {
    this->drawable_.setOrigin(x, y);
 
-   this->position_.x = this->global_bounds().left;
-   this->position_.y = this->global_bounds().top;
+   this->offset_.x = this->global_bounds().left;
+   this->offset_.y = this->global_bounds().top;
 }
 
 const sf::Vector2f& Text::origin() const {
    return this->drawable_.getOrigin();
+}
+
+void Text::offset(float x, float y) {
+   this->drawable_.setPosition(x, y);
+
+   this->offset_.x = this->global_bounds().left;
+   this->offset_.y = this->global_bounds().top;
+}
+
+const sf::Vector2f& Text::offset() const {
+   return this->offset_;
+}
+
+void Text::move_offset(float x, float y) {
+   this->drawable_.move(x, y);
 }
 
 void Text::color(const sf::Color& color) {
@@ -114,8 +114,8 @@ void Text::string(const std::string& s) {
    this->string_ = s;
    this->drawable_.setString(s);
 
-   this->position_.x = this->global_bounds().left;
-   this->position_.y = this->global_bounds().top;
+   this->offset_.x = this->global_bounds().left;
+   this->offset_.y = this->global_bounds().top;
 }
 
 const std::string& Text::string() const {
@@ -128,8 +128,8 @@ void Text::font(std::shared_ptr<Font> font) {
    }
    this->drawable_.setFont(font->get_font());
 
-   this->position_.x = this->global_bounds().left;
-   this->position_.y = this->global_bounds().top;
+   this->offset_.x = this->global_bounds().left;
+   this->offset_.y = this->global_bounds().top;
 }
 
 std::shared_ptr<Font> Text::font() const {
@@ -139,8 +139,8 @@ std::shared_ptr<Font> Text::font() const {
 void Text::font_size(unsigned int size) {
    this->drawable_.setCharacterSize(size);
 
-   this->position_.x = this->global_bounds().left;
-   this->position_.y = this->global_bounds().top;
+   this->offset_.x = this->global_bounds().left;
+   this->offset_.y = this->global_bounds().top;
 }
 
 unsigned int Text::font_size() const {
@@ -150,8 +150,8 @@ unsigned int Text::font_size() const {
 void Text::style(sf::Text::Style style) {
    this->drawable_.setStyle(style);
 
-   this->position_.x = this->global_bounds().left;
-   this->position_.y = this->global_bounds().top;
+   this->offset_.x = this->global_bounds().left;
+   this->offset_.y = this->global_bounds().top;
 }
 
 sf::Text::Style Text::style() const {
@@ -178,8 +178,8 @@ std::string Text::serialize(Serializer& s) {
    data["type"] = "Text";
 
    data["id"] = this->id();
-   data["x"] = std::to_string(this->position().x);
-   data["y"] = std::to_string(this->position().y);
+   data["x"] = std::to_string(this->offset().x);
+   data["y"] = std::to_string(this->offset().y);
    data["rotation"] = std::to_string(this->rotation());
    data["origin_x"] = std::to_string(this->origin().x);
    data["origin_y"] = std::to_string(this->origin().y);
@@ -201,7 +201,7 @@ void Text::deserialize(Serializer& s, Scene& scene, std::string& d) {
    Serializer::SerialData font_data = s.deserialize(scene, data["font"]);
    
    this->id(data["id"]);
-   this->position(std::stof(data["x"]), std::stof(data["y"]));
+   this->offset(std::stof(data["x"]), std::stof(data["y"]));
    this->rotation(std::stof(data["rotation"]));
    this->origin(std::stof(data["origin_x"]), std::stof(data["origin_y"]));
    this->color(color);

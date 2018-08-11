@@ -52,18 +52,6 @@ sf::FloatRect Circle::global_bounds() const {
    return this->drawable_.getGlobalBounds();
 }
 
-void Circle::position(float x, float y) {
-   this->drawable_.setPosition(x, y);
-}
-
-const sf::Vector2f& Circle::position() const {
-   return this->drawable_.getPosition();
-}
-
-void Circle::move(float x, float y) {
-   this->drawable_.move(x, y);
-}
-
 void Circle::rotation(float angle) {
    this->drawable_.setRotation(angle);
 }
@@ -86,6 +74,18 @@ void Circle::origin(float x, float y) {
 
 const sf::Vector2f& Circle::origin() const {
    return this->drawable_.getOrigin();
+}
+
+void Circle::offset(float x, float y) {
+   this->drawable_.setPosition(x, y);
+}
+
+const sf::Vector2f& Circle::offset() const {
+   return this->drawable_.getPosition();
+}
+
+void Circle::move_offset(float x, float y) {
+   this->drawable_.move(x, y);
 }
 
 void Circle::color(const sf::Color& color) {
@@ -133,8 +133,8 @@ std::string Circle::serialize(Serializer& s) {
    data["type"] = "Circle";
    
    data["id"] = this->id();
-   data["x"] = std::to_string(this->position().x);
-   data["y"] = std::to_string(this->position().y);
+   data["x"] = std::to_string(this->offset().x);
+   data["y"] = std::to_string(this->offset().y);
    data["rotation"] = std::to_string(this->rotation());
    data["origin_x"] = std::to_string(this->origin().x);
    data["origin_y"] = std::to_string(this->origin().y);
@@ -153,7 +153,7 @@ void Circle::deserialize(Serializer& s, Scene& scene, std::string& d) {
    Color outline_color(sf::Color::Black);
 
    this->id(data["id"]);
-   this->position(std::stof(data["x"]), std::stof(data["y"]));
+   this->offset(std::stof(data["x"]), std::stof(data["y"]));
    this->rotation(std::stof(data["rotation"]));
    this->origin(std::stof(data["origin_x"]), std::stof(data["origin_y"]));
    this->color(color);

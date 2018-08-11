@@ -54,18 +54,6 @@ sf::FloatRect Rectangle::global_bounds() const {
    return this->drawable_.getGlobalBounds();
 }
 
-void Rectangle::position(float x, float y) {
-   this->drawable_.setPosition(x, y);
-}
-
-const sf::Vector2f& Rectangle::position() const {
-   return this->drawable_.getPosition();
-}
-
-void Rectangle::move(float x, float y) {
-   this->drawable_.move(x, y);
-}
-
 void Rectangle::rotation(float angle) {
    this->drawable_.setRotation(angle);
 }
@@ -88,6 +76,18 @@ void Rectangle::origin(float x, float y) {
 
 const sf::Vector2f& Rectangle::origin() const {
    return this->drawable_.getOrigin();
+}
+
+void Rectangle::offset(float x, float y) {
+   this->drawable_.setPosition(x, y);
+}
+
+const sf::Vector2f& Rectangle::offset() const {
+   return this->drawable_.getPosition();
+}
+
+void Rectangle::move_offset(float x, float y) {
+   this->drawable_.move(x, y);
 }
 
 void Rectangle::color(const sf::Color& color) {
@@ -139,8 +139,8 @@ std::string Rectangle::serialize(Serializer& s) {
    data["type"] = "Rectangle";
 
    data["id"] = this->id();
-   data["x"] = std::to_string(this->position().x);
-   data["y"] = std::to_string(this->position().y);
+   data["x"] = std::to_string(this->offset().x);
+   data["y"] = std::to_string(this->offset().y);
    data["width"] = std::to_string(this->size().x);
    data["height"] = std::to_string(this->size().y);
    data["rotation"] = std::to_string(this->rotation());
@@ -163,7 +163,7 @@ void Rectangle::deserialize(Serializer& s, Scene& scene, std::string& d) {
    outline_color.deserialize(s, scene, data["outline_color"]);
 
    this->id(data["id"]);
-   this->position(std::stof(data["x"]), std::stof(data["y"]));
+   this->offset(std::stof(data["x"]), std::stof(data["y"]));
    this->size(std::stof(data["width"]), std::stof(data["height"]));
    this->rotation(std::stof(data["rotation"]));
    this->origin(std::stof(data["origin_x"]), std::stof(data["origin_y"]));

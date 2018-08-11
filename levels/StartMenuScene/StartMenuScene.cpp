@@ -9,6 +9,7 @@
 #include "Animation.h"
 
 #include "Text.h"
+#include "Space.h"
 #include "Sprite.h"
 #include "Rectangle.h"
 #include "Callback.h"
@@ -52,7 +53,7 @@ void StartMenuScene::init(Game& game) {
       title->get<Text>()->local_bounds().top + title->get<Text>()->local_bounds().height/ 2.f
    );
 
-   title->get<Text>()->position(0, 0); // must position after changing origin
+   title->get<Space>()->position(0, 0); // must position after changing origin
 
    Entity* menu_item_1 = this->create_entity("MenuItem_BuilderScene");
    menu_item_1->add<Text>("MenuItem_BuilderScene_Text", "Builder Scene", this->fonts().get("retro"), 12);
@@ -63,7 +64,7 @@ void StartMenuScene::init(Game& game) {
       menu_item_1->get<Text>()->local_bounds().top + menu_item_1->get<Text>()->local_bounds().height/ 2.f
    );
 
-   menu_item_1->get<Text>()->position(0, 60);
+   menu_item_1->get<Space>()->position(0, 60);
 
    Entity* menu_item_2 = this->create_entity("MenuItem_MegamanScene");
    menu_item_2->add<Text>("MenuItem_MegamanScene_Text", "Megaman Scene", this->fonts().get("retro"), 12);
@@ -74,7 +75,7 @@ void StartMenuScene::init(Game& game) {
       menu_item_2->get<Text>()->local_bounds().top + menu_item_2->get<Text>()->local_bounds().height/ 2.f
    );
 
-   menu_item_2->get<Text>()->position(0, 90);
+   menu_item_2->get<Space>()->position(0, 90);
 
    Entity* menu_item_3 = this->create_entity("MenuItem_PokemonScene");
    menu_item_3->add<Text>("MenuItem_PokemonScene_Text", "Pokemon Scene", this->fonts().get("retro"), 12);
@@ -85,18 +86,28 @@ void StartMenuScene::init(Game& game) {
       menu_item_3->get<Text>()->local_bounds().top + menu_item_3->get<Text>()->local_bounds().height/ 2.f
    );
 
-   menu_item_3->get<Text>()->position(0, 120);
+   menu_item_3->get<Space>()->position(0, 120);
+
+   sf::Vector2f cursor_offset;
+   cursor_offset.x = std::max(
+      menu_item_1->get<Text>()->local_bounds().width / 2.f,
+      std::max(
+         menu_item_2->get<Text>()->local_bounds().width / 2.f,
+         menu_item_3->get<Text>()->local_bounds().width / 2.f
+      )) + 30;
+   cursor_offset.y = 12;
 
    // create menu cursor
    Entity* cursor = this->create_entity("CursorEntity");
    cursor->add<PlayerProfile>("CursorPlayerProfile", 1);
 
+   cursor->get<Space>()->position(menu_item_1->get<Space>()->position() - cursor_offset);
+
    cursor->add<Sprite>("CursorSprite", this->textures().get("cursor"));
-   cursor->get<Sprite>()->position(menu_item_1->get<Text>()->position() - sf::Vector2f(30, 7));
    cursor->get<Sprite>()->scale(3, 3);
 
    cursor->add<Callback>("CursorCallback");
-   cursor->get<Callback>()->on_update([this, cursor, &game, menu_item_1, menu_item_2, menu_item_3] () {
+   cursor->get<Callback>()->on_update([this, cursor, &game, menu_item_1, menu_item_2, menu_item_3, cursor_offset] () {
       bool was_changed = false;
       InputBinding& p1_bindings = game.get_player(1).bindings();
       
@@ -116,13 +127,13 @@ void StartMenuScene::init(Game& game) {
       if (was_changed) {
          switch (this->menu_select_) {
          case 0:
-            cursor->get<Sprite>()->position(menu_item_1->get<Text>()->position() - sf::Vector2f(30, 7));
+            cursor->get<Space>()->position(menu_item_1->get<Space>()->position() - cursor_offset);
          break;
          case 1:
-            cursor->get<Sprite>()->position(menu_item_2->get<Text>()->position() - sf::Vector2f(30, 7));
+            cursor->get<Space>()->position(menu_item_2->get<Space>()->position() - cursor_offset);
          break;
          case 2:
-            cursor->get<Sprite>()->position(menu_item_3->get<Text>()->position() - sf::Vector2f(30, 7));
+            cursor->get<Space>()->position(menu_item_3->get<Space>()->position() - cursor_offset);
          break;
          default:
          break;

@@ -34,13 +34,6 @@ public:
    virtual sf::FloatRect local_bounds() const;
    virtual sf::FloatRect global_bounds() const;
 
-   virtual void position(float x, float y);
-   virtual void position(const sf::Vector2f& pos) { this->position(pos.x, pos.y); }
-   virtual const sf::Vector2f& position() const;
-
-   virtual void move(float x, float y);
-   virtual void move(const sf::Vector2f& offset) { this->move(offset.x, offset.y); }
-
    virtual void rotation(float angle);
    virtual float rotation() const;
 
@@ -51,6 +44,13 @@ public:
    virtual void origin(float x, float y);
    virtual void origin(const sf::Vector2f& factor) { this->origin(factor.x, factor.y); }
    virtual const sf::Vector2f& origin() const;
+
+   virtual void offset(float x, float y);
+   virtual void offset(const sf::Vector2f& pos) { this->offset(pos.x, pos.y); }
+   virtual const sf::Vector2f& offset() const;
+
+   virtual void move_offset(float x, float y);
+   virtual void move_offset(const sf::Vector2f& offset) { this->move_offset(offset.x, offset.y); }
 
    virtual void color(const sf::Color& color); // gets and sets *fill* color for shapes
    virtual const sf::Color& color() const;

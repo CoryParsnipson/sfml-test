@@ -122,6 +122,15 @@ void MegamanScene::init(Game& game) {
       } else if (bindings.get<MoveRightIntent>()->element()->was_released()) {
          c->get<Sprite>()->animation(stand_r);
       }
+
+      // handle movement
+      if (bindings.get<MoveLeftIntent>()->element()->is_pressed()) {
+         c->get<Space>()->move(-5, 0);
+      }
+
+      if (bindings.get<MoveRightIntent>()->element()->is_pressed()) {
+         c->get<Space>()->move(5, 0);
+      }
    });
 }
 

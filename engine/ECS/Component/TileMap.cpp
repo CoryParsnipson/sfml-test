@@ -87,15 +87,15 @@ void TileMap::remove(const sf::FloatRect& search_area) {
 
 sf::Vector2f TileMap::get_position_from_tile(TileType& tile) {
    if (tile.type() == typeid(Circle)) {
-      return boost::get<Circle>(tile).position();
+      return boost::get<Circle>(tile).offset();
    } else if (tile.type() == typeid(Rectangle)) {
-      return boost::get<Rectangle>(tile).position();
+      return boost::get<Rectangle>(tile).offset();
    } else if (tile.type() == typeid(Sprite)) {
-      return boost::get<Sprite>(tile).position();
+      return boost::get<Sprite>(tile).offset();
    } else if (tile.type() == typeid(Text)) {
-      return boost::get<Text>(tile).position();
+      return boost::get<Text>(tile).offset();
    } else if (tile.type() == typeid(VertexList)) {
-      return boost::get<VertexList>(tile).position();
+      return boost::get<VertexList>(tile).offset();
    }
 
    throw std::domain_error("Received invalid tile type: " + std::string(tile.type().name()));

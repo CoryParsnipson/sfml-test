@@ -18,7 +18,7 @@ VertexList::VertexList(const VertexList& other)
 : Component(other.id())
 , rotation_(other.rotation_)
 , size_(other.size_)
-, position_(other.position_)
+, offset_(other.offset_)
 , scale_(other.scale_)
 , render_states_(other.render_states_)
 , drawable_(other.drawable_)
@@ -39,7 +39,7 @@ void VertexList::swap(VertexList& other) {
 
    std::swap(this->rotation_, other.rotation_);
    std::swap(this->size_, other.size_);
-   std::swap(this->position_, other.position_);
+   std::swap(this->offset_, other.offset_);
    std::swap(this->scale_, other.scale_);
    std::swap(this->render_states_, other.render_states_);
    std::swap(this->drawable_, other.drawable_);
@@ -57,28 +57,10 @@ sf::FloatRect VertexList::local_bounds() const {
 sf::FloatRect VertexList::global_bounds() const {
    sf::FloatRect bounds = this->drawable_.getBounds();
    
-   bounds.left = this->position().x;
-   bounds.top = this->position().y;
+   bounds.left = this->offset().x;
+   bounds.top = this->offset().y;
 
    return bounds;
-}
-
-void VertexList::position(float x, float y) {
-   this->move(sf::Vector2f(x, y) - this->position_);
-
-   this->position_.x = x;
-   this->position_.y = y;
-}
-
-const sf::Vector2f& VertexList::position() const {
-   return this->position_;
-}
-
-void VertexList::move(float x, float y) {
-   this->render_states_.transform.translate(sf::Vector2f(x, y));
-
-   this->position_.x += x;
-   this->position_.y += y;
 }
 
 void VertexList::rotation(float angle) {
@@ -105,11 +87,29 @@ const sf::Vector2f& VertexList::scale() const {
 }
 
 void VertexList::origin(float x, float y) {
-   this->position(x, y);
+   this->offset(x, y);
 }
 
 const sf::Vector2f& VertexList::origin() const {
-   return this->position_;
+   return this->offset_;
+}
+
+void VertexList::offset(float x, float y) {
+   this->move_offset(sf::Vector2f(x, y) - this->offset_);
+
+   this->offset_.x = x;
+   this->offset_.y = y;
+}
+
+const sf::Vector2f& VertexList::offset() const {
+   return this->offset_;
+}
+
+void VertexList::move_offset(float x, float y) {
+   this->render_states_.transform.translate(sf::Vector2f(x, y));
+
+   this->offset_.x += x;
+   this->offset_.y += y;
 }
 
 void VertexList::color(const sf::Color& color) {
@@ -184,8 +184,8 @@ std::string VertexList::serialize(Serializer& s) {
    data["type"] = "VertexList";
 
    data["id"] = this->id();
-   data["x"] = std::to_string(this->position().x);
-   data["y"] = std::to_string(this->position().y);
+   data["x"] = std::to_string(this->offset().x);
+   data["y"] = std::to_string(this->offset().y);
    data["rotation"] = std::to_string(this->rotation());
    data["origin_x"] = std::to_string(this->origin().x);
    data["origin_y"] = std::to_string(this->origin().y);
@@ -198,8 +198,8 @@ std::string VertexList::serialize(Serializer& s) {
    for (unsigned int i = 0; i < this->drawable_.getVertexCount(); ++i) {
       Color v_color(this->vertex_color(i));
 
-      data["vertex_" + std::to_string(i) + "_position_x"] = std::to_string(this->vertex_position(i).x);
-      data["vertex_" + std::to_string(i) + "_position_y"] = std::to_string(this->vertex_position(i).y);
+      data["vertex_" + std::to_string(i) + "_offset_x"] = std::to_string(this->vertex_position(i).x);
+      data["vertex_" + std::to_string(i) + "_offset_y"] = std::to_string(this->vertex_position(i).y);
       data["vertex_" + std::to_string(i) + "_color"] = v_color.serialize(s);
       data["vertex_" + std::to_string(i) + "_texture_coord_x"] = std::to_string(this->vertex_texture_coord(i).x);
       data["vertex_" + std::to_string(i) + "_texture_coord_y"] = std::to_string(this->vertex_texture_coord(i).y);
@@ -215,7 +215,7 @@ void VertexList::deserialize(Serializer& s, Scene& scene, std::string& d) {
    color.deserialize(s, scene, data["color"]);
 
    this->id(data["id"]);
-   this->position(std::stof(data["x"]), std::stof(data["y"]));
+   this->offset(std::stof(data["x"]), std::stof(data["y"]));
    this->rotation(std::stof(data["rotation"]));
    this->origin(std::stof(data["origin_x"]), std::stof(data["origin_y"]));
    this->color(color);
@@ -229,8 +229,8 @@ void VertexList::deserialize(Serializer& s, Scene& scene, std::string& d) {
       v_color.deserialize(s, scene, data["vertex_" + std::to_string(i) + "_color"]);
 
       this->vertex_position(i, sf::Vector2f(
-         std::stof(data["vertex_" + std::to_string(i) + "_position_x"]),
-         std::stof(data["vertex_" + std::to_string(i) + "_position_y"]))
+         std::stof(data["vertex_" + std::to_string(i) + "_offset_x"]),
+         std::stof(data["vertex_" + std::to_string(i) + "_offset_y"]))
       );
 
       this->vertex_color(i, v_color);
