@@ -7,10 +7,13 @@
 #include "Space.h"
 #include "Sprite.h"
 #include "Callback.h"
+#include "Velocity.h"
 #include "PlayerProfile.h"
 
 #include "MoveLeftIntent.h"
 #include "MoveRightIntent.h"
+
+#include "PhysicsSystem.h"
 
 MegamanScene::MegamanScene()
 : Scene("MegamanScene")
@@ -32,6 +35,9 @@ void MegamanScene::init(Game& game) {
 
    game.get_player(1).bindings().set<MoveLeftIntent>(1, game.input_manager().get_device(1)->get("Left"));
    game.get_player(1).bindings().set<MoveRightIntent>(1, game.input_manager().get_device(1)->get("Right"));
+
+   // setup custom systems
+   this->add_system(new PhysicsSystem("PhysicsSystem"));
 
    AnimationPtr stand_r = std::make_shared<Animation>("megaman_zero_stand_r", this->textures().get("megaman_zero_spritesheet"));
    stand_r->add(sf::IntRect(  0, 0, 40, 50), 120);
@@ -107,6 +113,8 @@ void MegamanScene::init(Game& game) {
 
    c->get<Space>()->position(300, 300);
 
+   c->add<Velocity>("PlayerCharacterVelocity");
+
    c->add<PlayerProfile>("PlayerCharacterPlayerProfile", 1);
 
    c->add<Callback>("PlayerCharacterCallback");
@@ -138,12 +146,22 @@ void MegamanScene::init(Game& game) {
       }
 
       // handle movement
-      if (bindings.get<MoveLeftIntent>()->element()->is_pressed()) {
-         c->get<Space>()->move(-5, 0);
+      if (bindings.get<MoveLeftIntent>()->element()->was_pressed()) {
+         c->get<Velocity>()->x(-5);
+         //c->get<Space>()->move(-5, 0);
       }
 
-      if (bindings.get<MoveRightIntent>()->element()->is_pressed()) {
-         c->get<Space>()->move(5, 0);
+      if (bindings.get<MoveLeftIntent>()->element()->was_released()) {
+         c->get<Velocity>()->x(0);
+      }
+
+      if (bindings.get<MoveRightIntent>()->element()->was_pressed()) {
+         c->get<Velocity>()->x(5);
+         //c->get<Space>()->move(5, 0);
+      }
+
+      if (bindings.get<MoveRightIntent>()->element()->was_released()) {
+         c->get<Velocity>()->x(0);
       }
    });
 }

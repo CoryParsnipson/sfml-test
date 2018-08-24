@@ -60,6 +60,8 @@ INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderScene/Intent
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderScene/Message
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderScene/System
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/MegamanScene
+INCLUDE_PATHS += $(PROJECT_DIR)/levels/MegamanScene/Component
+INCLUDE_PATHS += $(PROJECT_DIR)/levels/MegamanScene/System
 
 CXX_FILES =
 CXX_FILES += $(PROJECT_DIR)/*.cpp
@@ -85,6 +87,8 @@ CXX_FILES += $(PROJECT_DIR)/levels/BuilderScene/*.cpp
 CXX_FILES += $(PROJECT_DIR)/levels/BuilderScene/Component/*.cpp
 CXX_FILES += $(PROJECT_DIR)/levels/BuilderScene/System/*.cpp
 CXX_FILES += $(PROJECT_DIR)/levels/MegamanScene/*.cpp
+CXX_FILES += $(PROJECT_DIR)/levels/MegamanScene/Component/*.cpp
+CXX_FILES += $(PROJECT_DIR)/levels/MegamanScene/System/*.cpp
 
 .PHONY: profiler debug release
 .DEFAULT_GOAL := debug
