@@ -61,6 +61,7 @@ INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderScene/Message
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/BuilderScene/System
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/MegamanScene
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/MegamanScene/Component
+INCLUDE_PATHS += $(PROJECT_DIR)/levels/MegamanScene/Intent
 INCLUDE_PATHS += $(PROJECT_DIR)/levels/MegamanScene/System
 
 CXX_FILES =

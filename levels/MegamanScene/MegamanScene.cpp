@@ -7,11 +7,16 @@
 #include "Space.h"
 #include "Sprite.h"
 #include "Callback.h"
+#include "Collision.h"
 #include "Velocity.h"
+#include "Gravity.h"
+#include "Rectangle.h"
+#include "Acceleration.h"
 #include "PlayerProfile.h"
 
 #include "MoveLeftIntent.h"
 #include "MoveRightIntent.h"
+#include "JumpIntent.h"
 
 #include "PhysicsSystem.h"
 
@@ -35,6 +40,7 @@ void MegamanScene::init(Game& game) {
 
    game.get_player(1).bindings().set<MoveLeftIntent>(1, game.input_manager().get_device(1)->get("Left"));
    game.get_player(1).bindings().set<MoveRightIntent>(1, game.input_manager().get_device(1)->get("Right"));
+   game.get_player(1).bindings().set<JumpIntent>(1, game.input_manager().get_device(1)->get("Z"));
 
    // setup custom systems
    this->add_system(new PhysicsSystem("PhysicsSystem"));
@@ -106,19 +112,33 @@ void MegamanScene::init(Game& game) {
 
    test_e->get<Space>()->position(100, 100);
 
+   Entity* e_floor = this->create_entity("FloorEntity");
+   e_floor->add<Rectangle>("FloorSprite", 0, 0, 600, 50);
+   e_floor->get<Rectangle>()->color(sf::Color::Green);
+
+   e_floor->get<Space>()->position(125, 500);
+
+   e_floor->add<Collision>("FloorCollision", sf::FloatRect(0, 0, 600, 50));
+   e_floor->add<Velocity>("FloorVelocity");
+   e_floor->add<Acceleration>("FloorAcceleration");
+
    Entity* c = this->create_entity("PlayerCharacterEntity");
    c->add<Sprite>("PlayerCharacterSprite");
    c->get<Sprite>()->animation(stand_r);
-   c->get<Sprite>()->scale(3, 3);
 
    c->get<Space>()->position(300, 300);
+   c->get<Space>()->scale(3, 3);
 
+   c->add<Collision>("PlayerCharacterCollision", sf::FloatRect(0, 0, 40, 50));
    c->add<Velocity>("PlayerCharacterVelocity");
+   c->add<Acceleration>("PlayerCharacterAcceleration");
+
+   c->add<Gravity>("PlayerCharacterGravity", sf::Vector2f(0, 1));
 
    c->add<PlayerProfile>("PlayerCharacterPlayerProfile", 1);
 
    c->add<Callback>("PlayerCharacterCallback");
-   c->get<Callback>()->on_update([this, &game, c, start_run_l, start_run_r, run_r, run_l, stand_r, stand_l] () {
+   c->get<Callback>()->on_update([this, &game, c, start_run_l, start_run_r, run_r, run_l, stand_r, stand_l, jump_r] () {
       InputBinding& bindings = game.get_player(1).bindings();
       
       // NOTE: The real thing should probably be done with an animation state machine somehow
@@ -146,22 +166,18 @@ void MegamanScene::init(Game& game) {
       }
 
       // handle movement
-      if (bindings.get<MoveLeftIntent>()->element()->was_pressed()) {
-         c->get<Velocity>()->x(-5);
-         //c->get<Space>()->move(-5, 0);
+      if (bindings.get<MoveLeftIntent>()->element()->is_pressed()) {
+         c->get<Space>()->move(-5, 0);
       }
 
-      if (bindings.get<MoveLeftIntent>()->element()->was_released()) {
-         c->get<Velocity>()->x(0);
+      if (bindings.get<MoveRightIntent>()->element()->is_pressed()) {
+         c->get<Space>()->move(5, 0);
       }
 
-      if (bindings.get<MoveRightIntent>()->element()->was_pressed()) {
-         c->get<Velocity>()->x(5);
-         //c->get<Space>()->move(5, 0);
-      }
-
-      if (bindings.get<MoveRightIntent>()->element()->was_released()) {
-         c->get<Velocity>()->x(0);
+      // experimental jumping code
+      if (bindings.get<JumpIntent>()->element()->was_pressed() && c->get<Velocity>()->y() == 0) {
+         c->get<Space>()->move(0, -50); // hack...
+         c->get<Velocity>()->y(c->get<Velocity>()->y() - 20);
       }
    });
 }
