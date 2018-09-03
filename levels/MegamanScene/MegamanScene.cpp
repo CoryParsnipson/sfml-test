@@ -17,11 +17,16 @@
 #include "MoveLeftIntent.h"
 #include "MoveRightIntent.h"
 #include "JumpIntent.h"
+#include "VisualDebugIntent.h"
 
+#include "VisualDebugSystem.h"
 #include "PhysicsSystem.h"
+
+#include "SetVisualDebugMessage.h"
 
 MegamanScene::MegamanScene()
 : Scene("MegamanScene")
+, visual_debug_enable_(false)
 {
 }
 
@@ -41,9 +46,27 @@ void MegamanScene::init(Game& game) {
    game.get_player(1).bindings().set<MoveLeftIntent>(1, game.input_manager().get_device(1)->get("Left"));
    game.get_player(1).bindings().set<MoveRightIntent>(1, game.input_manager().get_device(1)->get("Right"));
    game.get_player(1).bindings().set<JumpIntent>(1, game.input_manager().get_device(1)->get("Z"));
+   game.get_player(1).bindings().set<VisualDebugIntent>(1, game.input_manager().get_device(1)->get("D"));
 
    // setup custom systems
    this->add_system(new PhysicsSystem("PhysicsSystem"));
+
+   // TODO: create a better way to get Systems
+   GraphicalSystem* gs = dynamic_cast<GraphicalSystem*>(this->get_system("GraphicalSystem"));
+
+   VisualDebugSystem* vds = new VisualDebugSystem("VisualDebugSystem", game.window(), gs->camera());
+   vds->disable(); // start with this off
+   this->add_system(vds);
+
+   Entity* root = this->get_entity(this->space_handle());
+   root->add<PlayerProfile>("RootPlayerProfile", 1);
+   root->add<Callback>("RootCallback");
+   root->get<Callback>()->on_update([this, &game] () {
+      if (game.get_player(1).bindings().get<VisualDebugIntent>()->element()->was_pressed()) {
+         this->send_message<SetVisualDebugMessage>(this->visual_debug_enable_);
+         this->visual_debug_enable_ = !this->visual_debug_enable_;
+      }
+   });
 
    AnimationPtr stand_r = std::make_shared<Animation>("megaman_zero_stand_r", this->textures().get("megaman_zero_spritesheet"));
    stand_r->add(sf::IntRect(  0, 0, 40, 50), 120);
@@ -175,8 +198,8 @@ void MegamanScene::init(Game& game) {
       }
 
       // experimental jumping code
-      if (bindings.get<JumpIntent>()->element()->was_pressed() && c->get<Velocity>()->y() == 0) {
-         c->get<Space>()->move(0, -50); // hack...
+      if (bindings.get<JumpIntent>()->element()->was_pressed()) {
+         c->get<Space>()->move(0, -5); // hack...
          c->get<Velocity>()->y(c->get<Velocity>()->y() - 20);
       }
    });

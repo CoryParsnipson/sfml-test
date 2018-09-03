@@ -13,6 +13,9 @@ public:
    virtual void init(Game& game);
    virtual void enter(Game& game);
    virtual void exit(Game& game);
+
+private:
+   bool visual_debug_enable_;
 };
 
 #endif
