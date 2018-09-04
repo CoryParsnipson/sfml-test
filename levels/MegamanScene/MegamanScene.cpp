@@ -193,8 +193,16 @@ void MegamanScene::init(Game& game) {
          c->get<Velocity>()->x(-5);
       }
 
+      if (bindings.get<MoveLeftIntent>()->element()->was_released()) {
+         c->get<Velocity>()->x(0);
+      }
+
       if (bindings.get<MoveRightIntent>()->element()->is_pressed()) {
          c->get<Velocity>()->x(5);
+      }
+
+      if (bindings.get<MoveRightIntent>()->element()->was_released()) {
+         c->get<Velocity>()->x(0);
       }
 
       // experimental jumping code

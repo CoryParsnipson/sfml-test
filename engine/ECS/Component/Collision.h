@@ -28,6 +28,8 @@ public:
 
    const sf::FloatRect& volume() const;
 
+   sf::Vector2f center();
+
 private:
    sf::FloatRect volume_;
 };

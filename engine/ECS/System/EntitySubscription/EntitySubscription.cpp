@@ -61,6 +61,10 @@ void EntitySubscription::clear() {
    this->post_clear();
 }
 
+const std::vector<Handle>& EntitySubscription::entity_list() const {
+   return this->entities_;
+}
+
 Mailbox& EntitySubscription::mailbox() {
    return this->mailbox_;
 }

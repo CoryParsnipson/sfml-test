@@ -40,34 +40,17 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
    sf::Vector2f overlap;
 
    // collect entities that could collide (not optimized)
-   std::vector<Handle> physics_entities;
-   std::vector<Handle> entities = this->scene().entities();
-   for (std::vector<Handle>::iterator it = entities.begin(); it != entities.end(); ++it) {
-      Entity* other_e = this->scene().get_entity(*it);
-      if (other_e == &e) {
+   const std::vector<Handle>& physics_entities = this->subscription().entity_list();
+   for (std::vector<Handle>::const_iterator other_it = physics_entities.begin(); other_it != physics_entities.end(); ++other_it) {
+      Entity& other_e = *(this->scene().get_entity(*other_it));
+
+      // don't collide with itself
+      if (&other_e == &e) {
          continue;
       }
 
-      if (this->subscribe_to().filter(*other_e)) {
-         physics_entities.push_back(*it);
-      }
-   }
-
-   for (std::vector<Handle>::iterator other_it = physics_entities.begin(); other_it != physics_entities.end(); ++other_it) {
-      Entity& other_e = *(this->scene().get_entity(*other_it));
-
-      sf::Vector2f e_center(
-         e.get<Collision>()->volume().left + e.get<Collision>()->volume().width / 2.f,
-         e.get<Collision>()->volume().top + e.get<Collision>()->volume().height / 2.f
-      );
-
-      sf::Vector2f other_e_center(
-         other_e.get<Collision>()->volume().left + other_e.get<Collision>()->volume().width / 2.f,
-         other_e.get<Collision>()->volume().top + other_e.get<Collision>()->volume().height / 2.f
-      );
-
-      e_center = this->global_transform(e).transformPoint(e_center);
-      other_e_center = this->global_transform(other_e).transformPoint(other_e_center);
+      sf::Vector2f e_center = this->global_transform(e).transformPoint(e.get<Collision>()->center());
+      sf::Vector2f other_e_center = this->global_transform(other_e).transformPoint(other_e.get<Collision>()->center());
 
       sf::FloatRect e_collision = this->global_transform(e).transformRect(e.get<Collision>()->volume());
       sf::FloatRect other_e_collision = this->global_transform(other_e).transformRect(other_e.get<Collision>()->volume());

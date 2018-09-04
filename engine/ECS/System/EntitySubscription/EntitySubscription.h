@@ -42,6 +42,8 @@ public:
    virtual void add(Handle entity) = 0;
    virtual void remove(Handle entity) = 0;
 
+   const std::vector<Handle>& entity_list() const;
+
 protected:
    std::vector<Handle> entities_;
 

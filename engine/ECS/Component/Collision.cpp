@@ -47,3 +47,8 @@ void Collision::volume(sf::Vector2f pos, sf::Vector2f size) {
 const sf::FloatRect& Collision::volume() const {
    return this->volume_;
 }
+
+sf::Vector2f Collision::center() {
+   sf::Vector2f center(this->volume_.left + this->volume_.width / 2.f, this->volume_.top + this->volume_.height / 2.f);
+   return center;
+}
