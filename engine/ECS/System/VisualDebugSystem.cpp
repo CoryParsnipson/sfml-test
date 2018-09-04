@@ -45,6 +45,12 @@ void VisualDebugSystem::on_update(Game& game, Entity& e) {
       r.setSize(sf::Vector2f(c->volume().width, c->volume().height));
       r.setPosition(c->volume().left, c->volume().top);
 
+      sf::RectangleShape center_dot;
+      center_dot.setFillColor(sf::Color::White);
+      center_dot.setSize(sf::Vector2f(1, 1));
+      center_dot.setPosition(c->center());
+
       this->surface()->draw(r, states);
+      this->surface()->draw(center_dot, states);
    }
 }
