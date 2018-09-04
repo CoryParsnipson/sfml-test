@@ -48,9 +48,6 @@ void MegamanScene::init(Game& game) {
    game.get_player(1).bindings().set<JumpIntent>(1, game.input_manager().get_device(1)->get("Z"));
    game.get_player(1).bindings().set<VisualDebugIntent>(1, game.input_manager().get_device(1)->get("D"));
 
-   // setup custom systems
-   this->add_system(new PhysicsSystem("PhysicsSystem"));
-
    // TODO: create a better way to get Systems
    GraphicalSystem* gs = dynamic_cast<GraphicalSystem*>(this->get_system("GraphicalSystem"));
 
@@ -58,13 +55,16 @@ void MegamanScene::init(Game& game) {
    vds->disable(); // start with this off
    this->add_system(vds);
 
+   // setup custom systems
+   this->add_system(new PhysicsSystem("PhysicsSystem"));
+
    Entity* root = this->get_entity(this->space_handle());
    root->add<PlayerProfile>("RootPlayerProfile", 1);
    root->add<Callback>("RootCallback");
    root->get<Callback>()->on_update([this, &game] () {
       if (game.get_player(1).bindings().get<VisualDebugIntent>()->element()->was_pressed()) {
-         this->send_message<SetVisualDebugMessage>(this->visual_debug_enable_);
          this->visual_debug_enable_ = !this->visual_debug_enable_;
+         this->send_message<SetVisualDebugMessage>(this->visual_debug_enable_);
       }
    });
 
@@ -190,11 +190,11 @@ void MegamanScene::init(Game& game) {
 
       // handle movement
       if (bindings.get<MoveLeftIntent>()->element()->is_pressed()) {
-         c->get<Space>()->move(-5, 0);
+         c->get<Velocity>()->x(-5);
       }
 
       if (bindings.get<MoveRightIntent>()->element()->is_pressed()) {
-         c->get<Space>()->move(5, 0);
+         c->get<Velocity>()->x(5);
       }
 
       // experimental jumping code
