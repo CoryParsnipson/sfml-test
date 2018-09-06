@@ -27,10 +27,10 @@ void PhysicsSystem::on_init(Game& game) {
    this->subscribe_to().all_of<Space, Collision, Velocity, Acceleration>();
 
    // initialize world bounds
-   this->world_bounds_.left = -100;
-   this->world_bounds_.top = -100;
-   this->world_bounds_.width = game.window().size().x + 200;
-   this->world_bounds_.height = game.window().size().y + 200;
+   this->world_bounds_.left = 0;
+   this->world_bounds_.top = 0;
+   this->world_bounds_.width = game.window().size().x;
+   this->world_bounds_.height = game.window().size().y;
 }
 
 void PhysicsSystem::on_update(Game& game, Entity& e) {
@@ -70,8 +70,6 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
          float overlap_y = (other_e_collision.height / 2.f + e_collision.height / 2.f) - std::abs(delta_y);
 
          if (overlap_x > 0 && overlap_y > 0) {
-            collision_time = 0.f;
-
             if (overlap_x < overlap_y) {
                normal = sf::Vector2f(delta_x >= 0.f ? 1.f : 0.f, 0.f);
                overlap = sf::Vector2f(overlap_x, 0);
@@ -79,8 +77,6 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
                normal = sf::Vector2f(0.f, delta_y >= 0.f ? 1.f : 0.f);
                overlap = sf::Vector2f(0, overlap_y);
             }
-         } else {
-            collision_time = 1.f;
          }
       } else {
          // perform sweptAABB (if moving)
@@ -93,25 +89,25 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
          float near_time_x = (
             e.get<Velocity>()->x() == 0.f
                ? -std::numeric_limits<float>::infinity()
-               : (other_e_center.x - sign_x * e_collision.width / 2.f - e_center.x) * scale_x
+               : (other_e_center.x - sign_x * (e_collision.width / 2.f + other_e_collision.width / 2.f) - e_center.x) * scale_x
          );
 
          float near_time_y = (
             e.get<Velocity>()->y() == 0.f
                ? -std::numeric_limits<float>::infinity()
-               : (other_e_center.y - sign_y * e_collision.height / 2.f - e_center.y) * scale_y
+               : (other_e_center.y - sign_y * (e_collision.height / 2.f + other_e_collision.height / 2.f) - e_center.y) * scale_y
          );
 
          float far_time_x = (
             e.get<Velocity>()->x() == 0.f
                ? std::numeric_limits<float>::infinity()
-               : (other_e_center.x + sign_x * e_collision.width / 2.f - e_center.x) * scale_x
+               : (other_e_center.x + sign_x * (e_collision.width / 2.f + other_e_collision.width / 2.f) - e_center.x) * scale_x
          );
 
          float far_time_y = (
             e.get<Velocity>()->y() == 0.f
                ? std::numeric_limits<float>::infinity()
-               : (other_e_center.y + sign_y * e_collision.height / 2.f - e_center.y) * scale_y
+               : (other_e_center.y + sign_y * (e_collision.height / 2.f + other_e_collision.height / 2.f) - e_center.y) * scale_y
          );
 
          float near_time = near_time_x > near_time_y ? near_time_x : near_time_y;
@@ -149,27 +145,50 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
    // update position based on velocity
    e.get<Space>()->move(e.get<Velocity>()->value());
 
+   this->clamp_entity(e);
+}
+
+void PhysicsSystem::clamp_entity(Entity& e) {
    // this will make things easier for now
-   sf::Vector2f final_pos = e.get<Space>()->position();
-   if (!this->world_bounds_.contains(final_pos)) {
-      if (final_pos.x < this->world_bounds_.left) {
-         e.get<Space>()->position(sf::Vector2f(this->world_bounds_.left, final_pos.y));
-         e.get<Velocity>()->x(0);
-         e.get<Acceleration>()->x(0);
-      } else if (final_pos.x > (this->world_bounds_.width + this->world_bounds_.left)) {
-         e.get<Space>()->position(sf::Vector2f(this->world_bounds_.left + this->world_bounds_.width, final_pos.y));
+   sf::Vector2f entity_pos = this->global_transform(e).transformPoint(0, 0);
+   sf::FloatRect world_bounds = this->world_bounds_;
+
+   sf::FloatRect collision = this->global_transform(e).transformRect(e.get<Collision>()->volume());
+
+   world_bounds.width -= collision.width;
+   world_bounds.height -= collision.height;
+
+   if (!world_bounds.contains(entity_pos)) {
+      bool was_clamped_x = false;
+      bool was_clamped_y = false;
+      sf::Vector2f final_pos = entity_pos;
+
+      final_pos.x = this->clamp(entity_pos.x, world_bounds.left, world_bounds.left + world_bounds.width, was_clamped_x);
+      if (was_clamped_x) {
          e.get<Velocity>()->x(0);
          e.get<Acceleration>()->x(0);
       }
 
-      if (final_pos.y < this->world_bounds_.top) {
-         e.get<Space>()->position(sf::Vector2f(final_pos.x, this->world_bounds_.top));
-         e.get<Velocity>()->y(0);
-         e.get<Acceleration>()->y(0);
-      } else if (final_pos.y > (this->world_bounds_.top + this->world_bounds_.height)) {
-         e.get<Space>()->position(sf::Vector2f(final_pos.x, this->world_bounds_.top + this->world_bounds_.height));
+      final_pos.y = this->clamp(entity_pos.y, world_bounds.top, world_bounds.top + world_bounds.height, was_clamped_y);
+      if (was_clamped_y) {
          e.get<Velocity>()->y(0);
          e.get<Acceleration>()->y(0);
       }
+
+      e.get<Space>()->position(final_pos);
    }
+}
+
+float PhysicsSystem::clamp(float value, float min, float max, bool& was_clamped) {
+   was_clamped = false;
+
+   if (value < min) {
+      was_clamped = true;
+      return min;
+   } else if (value > max) {
+      was_clamped = true;
+      return max;
+   }
+
+   return value;
 }

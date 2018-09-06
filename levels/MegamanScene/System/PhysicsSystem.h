@@ -12,6 +12,9 @@ private:
    virtual void on_init(Game& game);
    virtual void on_update(Game& game, Entity& e);
 
+   void clamp_entity(Entity& e);
+   float clamp(float value, float min, float max, bool& was_clamped);
+
    sf::FloatRect world_bounds_;
 };
 
