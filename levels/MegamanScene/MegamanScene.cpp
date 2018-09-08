@@ -136,12 +136,12 @@ void MegamanScene::init(Game& game) {
    test_e->get<Space>()->position(100, 100);
 
    Entity* e_floor = this->create_entity("FloorEntity");
-   e_floor->add<Rectangle>("FloorSprite", 0, 0, 600, 50);
+   e_floor->add<Rectangle>("FloorSprite", 0, 0, 400, 50);
    e_floor->get<Rectangle>()->color(sf::Color::Green);
 
-   e_floor->get<Space>()->position(125, 500);
+   e_floor->get<Space>()->position(200, 350);
 
-   e_floor->add<Collision>("FloorCollision", sf::FloatRect(0, 0, 600, 50));
+   e_floor->add<Collision>("FloorCollision", sf::FloatRect(0, 0, 400, 50));
    e_floor->add<Velocity>("FloorVelocity");
    e_floor->add<Acceleration>("FloorAcceleration");
 
@@ -149,8 +149,8 @@ void MegamanScene::init(Game& game) {
    c->add<Sprite>("PlayerCharacterSprite");
    c->get<Sprite>()->animation(stand_r);
 
-   c->get<Space>()->position(300, 300);
-   c->get<Space>()->scale(3, 3);
+   c->get<Space>()->position(300, 100);
+   //c->get<Space>()->scale(3, 3);
 
    c->add<Collision>("PlayerCharacterCollision", sf::FloatRect(0, 0, 40, 50));
    c->add<Velocity>("PlayerCharacterVelocity");

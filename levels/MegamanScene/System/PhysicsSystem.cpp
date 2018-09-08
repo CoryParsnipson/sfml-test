@@ -39,27 +39,53 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
    sf::Vector2f normal;
    sf::Vector2f overlap;
 
+   float scale_x;
+   float scale_y;
+
+   int sign_x;
+   int sign_y;
+
+   float near_time_x;
+   float near_time_y;
+
+   float far_time_x;
+   float far_time_y;
+
+   float near_time;
+   float far_time;
+
+   sf::Vector2f e_center;
+   sf::Vector2f other_e_center;
+
+   sf::FloatRect e_collision;
+   sf::FloatRect other_e_collision;
+
    // collect entities that could collide (not optimized)
    const std::vector<Handle>& physics_entities = this->subscription().entity_list();
    for (std::vector<Handle>::const_iterator other_it = physics_entities.begin(); other_it != physics_entities.end(); ++other_it) {
       Entity& other_e = *(this->scene().get_entity(*other_it));
 
-      // don't collide with itself
+      // don't collide with self
       if (&other_e == &e) {
          continue;
       }
 
-      sf::Vector2f e_center = this->global_transform(e).transformPoint(e.get<Collision>()->center());
-      sf::Vector2f other_e_center = this->global_transform(other_e).transformPoint(other_e.get<Collision>()->center());
+      e_center = this->global_transform(e).transformPoint(e.get<Collision>()->center());
+      other_e_center = this->global_transform(other_e).transformPoint(other_e.get<Collision>()->center());
 
-      sf::FloatRect e_collision = this->global_transform(e).transformRect(e.get<Collision>()->volume());
-      sf::FloatRect other_e_collision = this->global_transform(other_e).transformRect(other_e.get<Collision>()->volume());
+      e_collision = this->global_transform(e).transformRect(e.get<Collision>()->volume());
+      other_e_collision = this->global_transform(other_e).transformRect(other_e.get<Collision>()->volume());
 
       e_collision.left -= this->global_transform(e).transformPoint(sf::Vector2f(0, 0)).x;
       e_collision.top -= this->global_transform(e).transformPoint(sf::Vector2f(0, 0)).y;
 
       other_e_collision.left -= this->global_transform(other_e).transformPoint(sf::Vector2f(0, 0)).x;
       other_e_collision.top -= this->global_transform(other_e).transformPoint(sf::Vector2f(0, 0)).y;
+
+      if (e.get<Velocity>()->value() == sf::Vector2f(0, 0) && other_e.get<Velocity>()->value() != sf::Vector2f(0, 0)) {
+         // if this isn't moving and the other entity is, skip this (collision will be handled by other entity)
+         continue;
+      }
 
       if (e.get<Velocity>()->value() == sf::Vector2f(0, 0)) {
          // do AABB intersection (if not moving)
@@ -70,6 +96,8 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
          float overlap_y = (other_e_collision.height / 2.f + e_collision.height / 2.f) - std::abs(delta_y);
 
          if (overlap_x > 0 && overlap_y > 0) {
+            collision_time = 0.f;
+
             if (overlap_x < overlap_y) {
                normal = sf::Vector2f(delta_x >= 0.f ? 1.f : 0.f, 0.f);
                overlap = sf::Vector2f(overlap_x, 0);
@@ -80,38 +108,38 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
          }
       } else {
          // perform sweptAABB (if moving)
-         float scale_x = e.get<Velocity>()->x() == 0.f ? 1.f : 1.f / e.get<Velocity>()->x();
-         float scale_y = e.get<Velocity>()->y() == 0.f ? 1.f : 1.f / e.get<Velocity>()->y();
+         scale_x = e.get<Velocity>()->x() == 0.f ? 1.f : 1.f / e.get<Velocity>()->x();
+         scale_y = e.get<Velocity>()->y() == 0.f ? 1.f : 1.f / e.get<Velocity>()->y();
 
-         int sign_x = (e.get<Velocity>()->x() >= 0 ? 1 : -1);
-         int sign_y = (e.get<Velocity>()->y() >= 0 ? 1 : -1);
+         sign_x = (e.get<Velocity>()->x() >= 0 ? 1 : -1);
+         sign_y = (e.get<Velocity>()->y() >= 0 ? 1 : -1);
 
-         float near_time_x = (
+         near_time_x = (
             e.get<Velocity>()->x() == 0.f
                ? -std::numeric_limits<float>::infinity()
                : (other_e_center.x - sign_x * (e_collision.width / 2.f + other_e_collision.width / 2.f) - e_center.x) * scale_x
          );
 
-         float near_time_y = (
+         near_time_y = (
             e.get<Velocity>()->y() == 0.f
                ? -std::numeric_limits<float>::infinity()
                : (other_e_center.y - sign_y * (e_collision.height / 2.f + other_e_collision.height / 2.f) - e_center.y) * scale_y
          );
 
-         float far_time_x = (
+         far_time_x = (
             e.get<Velocity>()->x() == 0.f
                ? std::numeric_limits<float>::infinity()
                : (other_e_center.x + sign_x * (e_collision.width / 2.f + other_e_collision.width / 2.f) - e_center.x) * scale_x
          );
 
-         float far_time_y = (
+         far_time_y = (
             e.get<Velocity>()->y() == 0.f
                ? std::numeric_limits<float>::infinity()
                : (other_e_center.y + sign_y * (e_collision.height / 2.f + other_e_collision.height / 2.f) - e_center.y) * scale_y
          );
 
-         float near_time = near_time_x > near_time_y ? near_time_x : near_time_y;
-         float far_time = far_time_x < far_time_y ? far_time_x : far_time_y;
+         near_time = near_time_x > near_time_y ? near_time_x : near_time_y;
+         far_time = far_time_x < far_time_y ? far_time_x : far_time_y;
 
          if (!(near_time_x > far_time_y || near_time_y > far_time_x) && !(near_time >= 1 || far_time <= 0)) {
             if (near_time_x > near_time_y) {
@@ -126,20 +154,27 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
       }
    }
 
-   sf::Vector2f total_acceleration = e.get<Acceleration>()->value();
-
-   // add gravity to accleration
-   if (e.get<Gravity>() != nullptr) {
-      total_acceleration += e.get<Gravity>()->value();
-   }
-
-   e.get<Velocity>()->value(e.get<Velocity>()->value() + total_acceleration);
-
    // collision response (change velocity and back out box)
    if (collision_time != 1.f) {
-      float dotprod = (e.get<Velocity>()->x() * normal.x + e.get<Velocity>()->y() * normal.y) * collision_time;
-      e.get<Velocity>()->x(dotprod * normal.x);
-      e.get<Velocity>()->y(dotprod * normal.y);
+      sf::Vector2f pos_delta;
+      float dotprod = (e.get<Velocity>()->x() * normal.y + e.get<Velocity>()->y() * normal.x) * collision_time;
+
+      e.get<Velocity>()->x(dotprod * normal.y);
+      e.get<Velocity>()->y(dotprod * normal.x);
+
+      //pos_delta.x = dotprod * e.get<Velocity>()->x();
+      //pos_delta.y = dotprod * e.get<Velocity>()->y();
+
+      //e.get<Space>()->move(pos_delta);
+   } else {
+      sf::Vector2f total_acceleration = e.get<Acceleration>()->value();
+
+      // add gravity to accleration
+      if (e.get<Gravity>() != nullptr) {
+         total_acceleration += e.get<Gravity>()->value();
+      }
+
+      e.get<Velocity>()->value(e.get<Velocity>()->value() + total_acceleration);
    }
 
    // update position based on velocity
