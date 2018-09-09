@@ -60,7 +60,7 @@ public:
    : Messageable(id)
    , id_(id)
    , is_initialized_(false)
-   , entities_(id + "EntityPool", 20000, [this](){ return Entity("entity", this, &this->components_); })
+   , entities_(id + "EntityPool", 20000, Entity("entity", this, &this->components_))
    {
       // TODO: this value should come from config
       this->components_.create_pool<Space>("", 20000);

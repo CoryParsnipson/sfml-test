@@ -2,6 +2,7 @@
 #define FILE_CHANNEL_H
 
 #include <fstream>
+#include <algorithm>
 
 #include "Channel.h"
 

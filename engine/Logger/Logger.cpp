@@ -3,16 +3,17 @@
 #include <time.h>
 
 // initialize static member variables
-Logger::category_map_t Logger::category_string = Logger::category_map_t();
+Logger::category_map_t Logger::category_string = {
+	{ Logger::CATEGORY::INFO, "INFO" },
+	{ Logger::CATEGORY::ALWAYS, "ALWAYS" },
+	{ Logger::CATEGORY::WARNING, "WARNING (!!)" },
+	{ Logger::CATEGORY::ERROR, "***ERROR***" }
+};
 
 Logger::Logger()
 : enabled_(true)
 , new_tag_enabled_(true)
 {
-   this->category_string[INFO] = "INFO";
-   this->category_string[ALWAYS] = "ALWAYS";
-   this->category_string[WARNING] = "WARNING (!!)";
-   this->category_string[ERROR] = "***ERROR***";
 }
 
 Logger::~Logger() {

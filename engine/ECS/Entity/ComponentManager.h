@@ -24,13 +24,7 @@ public:
       typename ComponentType,
       typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*  = nullptr
    >
-   using EntryAllocator = std::function<ComponentType()>;
-
-   template <
-      typename ComponentType,
-      typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*  = nullptr
-   >
-   void create_pool(std::string pool_id = "", unsigned int size = ObjectPool<ComponentType>::default_size, const EntryAllocator<ComponentType>& allocator = {});
+   void create_pool(std::string pool_id = "", unsigned int size = ObjectPool<ComponentType>::default_size, ComponentType allocator = ComponentType());
 
    template <
       typename ComponentType,
@@ -62,18 +56,14 @@ template <
    typename ComponentType,
    typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*  = nullptr
 >
-void ComponentManager::create_pool(std::string pool_id /* = "" */, unsigned int size /* = ObjectPool<ComponentType>::default_size */, const EntryAllocator<ComponentType>& allocator /* = {}*/) {
+void ComponentManager::create_pool(std::string pool_id /* = "" */, unsigned int size /* = ObjectPool<ComponentType>::default_size */, ComponentType allocator /* = ComponentType() */) {
    ObjectPoolBasePtr pool;
  
    if (pool_id.empty()) {
       pool_id = typeid(ComponentType).name();
    }
 
-   if (!allocator) {
-      this->components_[std::type_index(typeid(ComponentType))] = ObjectPoolBasePtr(new ObjectPool<ComponentType>(pool_id, size));
-   } else {
-      this->components_[std::type_index(typeid(ComponentType))] = ObjectPoolBasePtr(new ObjectPool<ComponentType>(pool_id, size, allocator));
-   }
+   this->components_[std::type_index(typeid(ComponentType))] = ObjectPoolBasePtr(new ObjectPool<ComponentType>(pool_id, size, allocator));
 }
 
 template <

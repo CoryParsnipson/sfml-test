@@ -91,12 +91,10 @@ public:
 template <typename ObjectType>
 class ObjectPool final : public ObjectPoolBase {
 public:
-   using EntryAllocator = std::function<ObjectType()>;
-
    static const unsigned int default_size = 1000;
 
    // TODO: this allocator thing can be done better (rewrite to allow for non-default constructor. Also to allow for object types with private constructors by only having objectpool as friend)
-   ObjectPool(const std::string& id = "ObjectPool", unsigned int size = ObjectPool::default_size, const EntryAllocator& allocator = [](){ return ObjectType(); });
+   ObjectPool(const std::string& id = "ObjectPool", unsigned int size = ObjectPool::default_size, ObjectType allocator = ObjectType());
    virtual ~ObjectPool();
 
    void reset();
@@ -144,7 +142,7 @@ private:
    std::vector<Handle> active_handles_;
    std::vector<Entry> pool_;
 
-   EntryAllocator allocator_;
+   ObjectType allocator_;
 };
 
 // -----------------------------------------------------------------------------
@@ -179,11 +177,11 @@ ObjectPool<ObjectType>::Entry::~Entry() {
 // ObjectPool implementation
 // -----------------------------------------------------------------------------
 template <typename ObjectType>
-ObjectPool<ObjectType>::ObjectPool(const std::string& id /* = "ObjectPool" */, unsigned int size /* = ObjectPool::default_size */, const EntryAllocator& allocator /* = [](){ return ObjectType(); } */)
+ObjectPool<ObjectType>::ObjectPool(const std::string& id /* = "ObjectPool" */, unsigned int size /* = ObjectPool::default_size */, ObjectType allocator /* = ObjectType() */)
 : ObjectPoolBase()
 , id_(id)
 , active_handles_()
-, pool_(size, Entry(size, allocator()))
+, pool_(size, Entry(size, allocator))
 , allocator_(allocator)
 {
    this->reset();
@@ -204,7 +202,7 @@ void ObjectPool<ObjectType>::reset() {
       (*it).active_ = false;
       (*it).version_ = 0;
       (*it).next_free_index_ = next_free_index;
-      (*it).data_ = this->allocator_();
+      (*it).data_ = this->allocator_;
 
       ++next_free_index;
    }
@@ -354,7 +352,7 @@ void ObjectPool<ObjectType>::resize(unsigned int size) {
       }
    }
 
-   this->pool_.resize(size, this->allocator_());
+   this->pool_.resize(size, this->allocator_);
 }
 
 template <typename ObjectType>
