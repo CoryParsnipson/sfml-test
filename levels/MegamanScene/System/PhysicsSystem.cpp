@@ -14,8 +14,31 @@
 #include "Acceleration.h"
 #include "Gravity.h"
 
+#include <SFML/Graphics.hpp>
+
 PhysicsSystem::PhysicsSystem(const std::string& id)
 : System(id, new PreorderEntitySubscription(this, id + "EntitySubscription"))
+, collision_time(1.f)
+, normal()
+, overlap()
+, algorithm()
+, scale_x(0.f)
+, scale_y(0.f)
+, sign_x(0)
+, sign_y(0)
+, near_time_x(0.f)
+, near_time_y(0.f)
+, far_time_x(0.f)
+, far_time_y(0.f)
+, delta_x(0.f)
+, delta_y(0.f)
+, overlap_x(0.f)
+, overlap_y(0.f)
+, dotprod(0.f)
+, e_center()
+, other_e_center()
+, e_collision()
+, other_e_collision()
 , world_bounds_()
 {
 }
@@ -34,32 +57,6 @@ void PhysicsSystem::on_init(Game& game) {
 }
 
 void PhysicsSystem::on_update(Game& game, Entity& e) {
-   // collision detection stuff
-   float collision_time = 1.f;
-   sf::Vector2f normal;
-   sf::Vector2f overlap;
-
-   float scale_x;
-   float scale_y;
-
-   int sign_x;
-   int sign_y;
-
-   float near_time_x;
-   float near_time_y;
-
-   float far_time_x;
-   float far_time_y;
-
-   float near_time;
-   float far_time;
-
-   sf::Vector2f e_center;
-   sf::Vector2f other_e_center;
-
-   sf::FloatRect e_collision;
-   sf::FloatRect other_e_collision;
-
    // collect entities that could collide (not optimized)
    const std::vector<Handle>& physics_entities = this->subscription().entity_list();
    for (std::vector<Handle>::const_iterator other_it = physics_entities.begin(); other_it != physics_entities.end(); ++other_it) {
@@ -70,17 +67,26 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
          continue;
       }
 
-      e_center = this->global_transform(e).transformPoint(e.get<Collision>()->center());
-      other_e_center = this->global_transform(other_e).transformPoint(other_e.get<Collision>()->center());
+      this->e_center = this->global_transform(e).transformPoint(e.get<Collision>()->center());
+      this->other_e_center = this->global_transform(other_e).transformPoint(other_e.get<Collision>()->center());
 
-      e_collision = this->global_transform(e).transformRect(e.get<Collision>()->volume());
-      other_e_collision = this->global_transform(other_e).transformRect(other_e.get<Collision>()->volume());
+      this->e_collision = this->global_transform(e).transformRect(e.get<Collision>()->volume());
+      this->other_e_collision = this->global_transform(other_e).transformRect(other_e.get<Collision>()->volume());
 
-      e_collision.left -= this->global_transform(e).transformPoint(sf::Vector2f(0, 0)).x;
-      e_collision.top -= this->global_transform(e).transformPoint(sf::Vector2f(0, 0)).y;
+      this->e_collision.left -= this->global_transform(e).transformPoint(sf::Vector2f(0, 0)).x;
+      this->e_collision.top -= this->global_transform(e).transformPoint(sf::Vector2f(0, 0)).y;
 
-      other_e_collision.left -= this->global_transform(other_e).transformPoint(sf::Vector2f(0, 0)).x;
-      other_e_collision.top -= this->global_transform(other_e).transformPoint(sf::Vector2f(0, 0)).y;
+      this->other_e_collision.left -= this->global_transform(other_e).transformPoint(sf::Vector2f(0, 0)).x;
+      this->other_e_collision.top -= this->global_transform(other_e).transformPoint(sf::Vector2f(0, 0)).y;
+
+      // accelerate if there's no collision
+      sf::Vector2f total_acceleration = e.get<Acceleration>()->value();
+
+      // add gravity to accleration
+      if (e.get<Gravity>() != nullptr) {
+         total_acceleration += e.get<Gravity>()->value();
+      }
+      e.get<Velocity>()->value(e.get<Velocity>()->value() + total_acceleration);
 
       if (e.get<Velocity>()->value() == sf::Vector2f(0, 0) && other_e.get<Velocity>()->value() != sf::Vector2f(0, 0)) {
          // if this isn't moving and the other entity is, skip this (collision will be handled by other entity)
@@ -88,99 +94,121 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
       }
 
       if (e.get<Velocity>()->value() == sf::Vector2f(0, 0)) {
+         this->algorithm = "AABB Intersection";
+
          // do AABB intersection (if not moving)
-         float delta_x = other_e_center.x - e_center.x;
-         float overlap_x = (other_e_collision.width / 2.f + e_collision.width / 2.f) - std::abs(delta_x);
+         this->delta_x = this->other_e_center.x - this->e_center.x;
+         this->overlap_x = (this->other_e_collision.width / 2.f + this->e_collision.width / 2.f) - std::abs(this->delta_x);
 
-         float delta_y = other_e_center.y - e_center.y;
-         float overlap_y = (other_e_collision.height / 2.f + e_collision.height / 2.f) - std::abs(delta_y);
+         this->delta_y = this->other_e_center.y - this->e_center.y;
+         this->overlap_y = (this->other_e_collision.height / 2.f + this->e_collision.height / 2.f) - std::abs(this->delta_y);
 
-         if (overlap_x > 0 && overlap_y > 0) {
-            collision_time = 0.f;
+         if (this->overlap_x > 0 && this->overlap_y > 0) {
+            this->collision_time = 0.f;
 
-            if (overlap_x < overlap_y) {
-               normal = sf::Vector2f(delta_x >= 0.f ? 1.f : 0.f, 0.f);
-               overlap = sf::Vector2f(overlap_x, 0);
+            if (this->overlap_x < this->overlap_y) {
+               this->normal = sf::Vector2f(this->delta_x >= 0.f ? 1.f : 0.f, 0.f);
+               this->overlap = sf::Vector2f(this->overlap_x, 0);
             } else {
-               normal = sf::Vector2f(0.f, delta_y >= 0.f ? 1.f : 0.f);
-               overlap = sf::Vector2f(0, overlap_y);
+               this->normal = sf::Vector2f(0.f, this->delta_y >= 0.f ? 1.f : 0.f);
+               this->overlap = sf::Vector2f(0, this->overlap_y);
             }
+         } else {
+            this->collision_time = 1.f;
          }
       } else {
+         this->algorithm = "Swept AABB";
+
          // perform sweptAABB (if moving)
-         scale_x = e.get<Velocity>()->x() == 0.f ? 1.f : 1.f / e.get<Velocity>()->x();
-         scale_y = e.get<Velocity>()->y() == 0.f ? 1.f : 1.f / e.get<Velocity>()->y();
+         this->scale_x = e.get<Velocity>()->x() == 0.f ? 1.f : 1.f / e.get<Velocity>()->x();
+         this->scale_y = e.get<Velocity>()->y() == 0.f ? 1.f : 1.f / e.get<Velocity>()->y();
 
-         sign_x = (e.get<Velocity>()->x() >= 0 ? 1 : -1);
-         sign_y = (e.get<Velocity>()->y() >= 0 ? 1 : -1);
+         this->sign_x = (e.get<Velocity>()->x() >= 0 ? 1.f : -1.f);
+         this->sign_y = (e.get<Velocity>()->y() >= 0 ? 1.f : -1.f);
 
-         near_time_x = (
+         this->near_time_x = (
             e.get<Velocity>()->x() == 0.f
                ? -std::numeric_limits<float>::infinity()
-               : (other_e_center.x - sign_x * (e_collision.width / 2.f + other_e_collision.width / 2.f) - e_center.x) * scale_x
+               : (this->other_e_center.x - this->sign_x * (this->e_collision.width / 2.f + this->other_e_collision.width / 2.f) - this->e_center.x) * this->scale_x
          );
 
-         near_time_y = (
+         this->near_time_y = (
             e.get<Velocity>()->y() == 0.f
                ? -std::numeric_limits<float>::infinity()
-               : (other_e_center.y - sign_y * (e_collision.height / 2.f + other_e_collision.height / 2.f) - e_center.y) * scale_y
+               : (this->other_e_center.y - this->sign_y * (this->e_collision.height / 2.f + this->other_e_collision.height / 2.f) - this->e_center.y) * this->scale_y
          );
 
-         far_time_x = (
+         this->far_time_x = (
             e.get<Velocity>()->x() == 0.f
                ? std::numeric_limits<float>::infinity()
-               : (other_e_center.x + sign_x * (e_collision.width / 2.f + other_e_collision.width / 2.f) - e_center.x) * scale_x
+               : (this->other_e_center.x + this->sign_x * (this->e_collision.width / 2.f + this->other_e_collision.width / 2.f) - this->e_center.x) * this->scale_x
          );
 
-         far_time_y = (
+         this->far_time_y = (
             e.get<Velocity>()->y() == 0.f
                ? std::numeric_limits<float>::infinity()
-               : (other_e_center.y + sign_y * (e_collision.height / 2.f + other_e_collision.height / 2.f) - e_center.y) * scale_y
+               : (this->other_e_center.y + this->sign_y * (this->e_collision.height / 2.f + this->other_e_collision.height / 2.f) - this->e_center.y) * this->scale_y
          );
 
-         near_time = near_time_x > near_time_y ? near_time_x : near_time_y;
-         far_time = far_time_x < far_time_y ? far_time_x : far_time_y;
+         float near_time = std::max(this->near_time_x, this->near_time_y);
+         float far_time = std::min(this->far_time_x, this->far_time_y);
 
-         if (!(near_time_x > far_time_y || near_time_y > far_time_x) && !(near_time >= 1 || far_time <= 0)) {
-            if (near_time_x > near_time_y) {
-               normal = sf::Vector2f(near_time_x < 0 ? 1.f : -1.f, 0.f);
+         //if (!(this->near_time_x > this->far_time_y || this->near_time_y > this->far_time_x) && !(near_time >= 1) && !(far_time <= 0)) {
+         if (!(this->near_time_x > this->far_time_y || this->near_time_y > this->far_time_x) && !(near_time_x >= 1) && !(near_time_y >= 1)) {
+            if (this->near_time_x > this->near_time_y) {
+               this->normal = sf::Vector2f(this->sign_x, 0.f);
             } else {
-               normal = sf::Vector2f(0.f, near_time_y < 0 ? 1.f : -1.f);
+               this->normal = sf::Vector2f(0.f, this->sign_y);
             }
 
-            collision_time = near_time;
-            overlap = sf::Vector2f(e.get<Velocity>()->x() * scale_x, e.get<Velocity>()->y() * scale_y);
+            this->collision_time = near_time;
+            this->overlap = sf::Vector2f(e.get<Velocity>()->x() * this->scale_x, e.get<Velocity>()->y() * this->scale_y);
+         } else {
+            this->collision_time = 1.f;
          }
       }
-   }
 
-   // collision response (change velocity and back out box)
-   if (collision_time != 1.f) {
-      sf::Vector2f pos_delta;
-      float dotprod = (e.get<Velocity>()->x() * normal.y + e.get<Velocity>()->y() * normal.x) * collision_time;
+      // temporary
+      sf::VertexArray center_line(sf::LineStrip, 2);
+      center_line[0].position = this->e_center;
+      center_line[0].color = sf::Color::Blue;
+      center_line[1].position = this->e_center + e.get<Velocity>()->value() * 3.f;
+      center_line[1].color = sf::Color::Blue;
 
-      e.get<Velocity>()->x(dotprod * normal.y);
-      e.get<Velocity>()->y(dotprod * normal.x);
+      game.window().draw(center_line);
+      // end temporary
 
-      //pos_delta.x = dotprod * e.get<Velocity>()->x();
-      //pos_delta.y = dotprod * e.get<Velocity>()->y();
+      // collision response
+      sf::Vector2f position_delta;
 
-      //e.get<Space>()->move(pos_delta);
-   } else {
-      sf::Vector2f total_acceleration = e.get<Acceleration>()->value();
+      // 1. move entity to scaled velocity
+      position_delta.x = e.get<Velocity>()->x() * this->collision_time;
+      position_delta.y = e.get<Velocity>()->y() * this->collision_time;
 
-      // add gravity to accleration
-      if (e.get<Gravity>() != nullptr) {
-         total_acceleration += e.get<Gravity>()->value();
+      float remaining_time = 1.f - this->collision_time;
+
+      // 2. slide the rest of the way
+      if (remaining_time > 0.f) {
+         this->dotprod = (e.get<Velocity>()->x() * this->normal.y + e.get<Velocity>()->y() * this->normal.x) * this->collision_time;
+
+         position_delta.x += this->dotprod * this->normal.y;
+         position_delta.y += this->dotprod * this->normal.x;
+
+         if (this->normal.x != 0.f) {
+            e.get<Acceleration>()->x(0);
+         }
+
+         if (this->normal.y != 0.f) {
+            e.get<Acceleration>()->y(0);
+         }
       }
 
-      e.get<Velocity>()->value(e.get<Velocity>()->value() + total_acceleration);
+      // update position based on velocity
+      e.get<Space>()->move(position_delta);
+      // end collision response
+
+      this->clamp_entity(e);
    }
-
-   // update position based on velocity
-   e.get<Space>()->move(e.get<Velocity>()->value());
-
-   this->clamp_entity(e);
 }
 
 void PhysicsSystem::clamp_entity(Entity& e) {

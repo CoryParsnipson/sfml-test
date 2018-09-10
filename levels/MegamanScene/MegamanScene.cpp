@@ -5,6 +5,7 @@
 #include "Animation.h"
 
 #include "Space.h"
+#include "Text.h"
 #include "Sprite.h"
 #include "Callback.h"
 #include "Collision.h"
@@ -56,17 +57,8 @@ void MegamanScene::init(Game& game) {
    this->add_system(vds);
 
    // setup custom systems
-   this->add_system(new PhysicsSystem("PhysicsSystem"));
-
-   Entity* root = this->get_entity(this->space_handle());
-   root->add<PlayerProfile>("RootPlayerProfile", 1);
-   root->add<Callback>("RootCallback");
-   root->get<Callback>()->on_update([this, &game] () {
-      if (game.get_player(1).bindings().get<VisualDebugIntent>()->element()->was_pressed()) {
-         this->visual_debug_enable_ = !this->visual_debug_enable_;
-         this->send_message<SetVisualDebugMessage>(this->visual_debug_enable_);
-      }
-   });
+   PhysicsSystem* ps = new PhysicsSystem("PhysicsSystem");
+   this->add_system(ps);
 
    AnimationPtr stand_r = std::make_shared<Animation>("megaman_zero_stand_r", this->textures().get("megaman_zero_spritesheet"));
    stand_r->add(sf::IntRect(  0, 0, 40, 50), 120);
@@ -133,13 +125,13 @@ void MegamanScene::init(Game& game) {
    test_e->get<Sprite>()->animation(jump_r);
    test_e->get<Sprite>()->scale(3, 3);
 
-   test_e->get<Space>()->position(100, 100);
+   test_e->get<Space>()->position(400, 100);
 
    Entity* e_floor = this->create_entity("FloorEntity");
    e_floor->add<Rectangle>("FloorSprite", 0, 0, 400, 50);
    e_floor->get<Rectangle>()->color(sf::Color::Green);
 
-   e_floor->get<Space>()->position(200, 350);
+   e_floor->get<Space>()->position(200, 450);
 
    e_floor->add<Collision>("FloorCollision", sf::FloatRect(0, 0, 400, 50));
    e_floor->add<Velocity>("FloorVelocity");
@@ -193,15 +185,15 @@ void MegamanScene::init(Game& game) {
          c->get<Velocity>()->x(-5);
       }
 
-      if (bindings.get<MoveLeftIntent>()->element()->was_released()) {
+      if (bindings.get<MoveLeftIntent>()->element()->was_released() && !bindings.get<MoveRightIntent>()->element()->is_pressed()) {
          c->get<Velocity>()->x(0);
       }
 
-      if (bindings.get<MoveRightIntent>()->element()->is_pressed()) {
+      if (bindings.get<MoveRightIntent>()->element()->was_pressed()) {
          c->get<Velocity>()->x(5);
       }
 
-      if (bindings.get<MoveRightIntent>()->element()->was_released()) {
+      if (bindings.get<MoveRightIntent>()->element()->was_released() && !bindings.get<MoveLeftIntent>()->element()->is_pressed()) {
          c->get<Velocity>()->x(0);
       }
 
@@ -211,6 +203,50 @@ void MegamanScene::init(Game& game) {
          c->get<Velocity>()->y(c->get<Velocity>()->y() - 20);
       }
    });
+
+   Entity* root = this->get_entity(this->space_handle());
+   root->add<PlayerProfile>("RootPlayerProfile", 1);
+
+   root->add<Text>("DiagnosticText", "", this->fonts().get("retro"), 12);
+   root->get<Text>()->color(sf::Color::White);
+   root->get<Text>()->offset(10, 10);
+
+   root->add<Callback>("RootCallback");
+   root->get<Callback>()->on_update([this, c, root, ps, &game] () {
+      if (game.get_player(1).bindings().get<VisualDebugIntent>()->element()->was_pressed()) {
+         this->visual_debug_enable_ = !this->visual_debug_enable_;
+         this->send_message<SetVisualDebugMessage>(this->visual_debug_enable_);
+      }
+
+      std::string line;
+
+      line  = "Velocity: (" + std::to_string(c->get<Velocity>()->x()) + ", " + std::to_string(c->get<Velocity>()->y()) + ")\n";
+      line += "Position: (" + std::to_string((int)c->get<Space>()->position().x) + ", " + std::to_string((int)c->get<Space>()->position().y) + ")\n";
+      line += "Collision time: " + std::to_string(ps->collision_time) + "\n";
+      line += "normal: (" + std::to_string((int)ps->normal.x) + ", " + std::to_string((int)ps->normal.y) + ")\n";
+      line += "overlap: (" + std::to_string((int)ps->overlap.x) + ", " + std::to_string((int)ps->overlap.y) + ")\n";
+      line += "scale_x: " + std::to_string(ps->scale_x) + "\n";
+      line += "scale_y: " + std::to_string(ps->scale_y) + "\n";
+      line += "sign_x: " + std::to_string(ps->sign_x) + "\n";
+      line += "sign_y: " + std::to_string(ps->sign_y) + "\n";
+      line += "near_time_x: " + std::to_string(ps->near_time_x) + "\n";
+      line += "near_time_y: " + std::to_string(ps->near_time_y) + "\n";
+      line += "far_time_x: " + std::to_string(ps->far_time_x) + "\n";
+      line += "far_time_y: " + std::to_string(ps->far_time_y) + "\n";
+      line += "delta_x: " + std::to_string(ps->delta_x) + "\n";
+      line += "delta_y: " + std::to_string(ps->delta_y) + "\n";
+      line += "overlap_x: " + std::to_string(ps->overlap_x) + "\n";
+      line += "overlap_y: " + std::to_string(ps->overlap_y) + "\n";
+      line += "dotprod: " + std::to_string(ps->dotprod) + "\n";
+      line += "e_center: (" + std::to_string((int)ps->e_center.x) + ", " + std::to_string((int)ps->e_center.y) + ")\n";
+      line += "other_e_center: (" + std::to_string((int)ps->other_e_center.x) + ", " + std::to_string((int)ps->other_e_center.y) + ")\n";
+      line += "e_collision: ( top -> " + std::to_string((int)ps->e_collision.top) + ", left -> " + std::to_string((int)ps->e_collision.left) + ", width -> " + std::to_string((int)ps->e_collision.width) + ", height -> " + std::to_string((int)ps->e_collision.height) + ")\n";
+      line += "other_e_collision: ( top -> " + std::to_string((int)ps->other_e_collision.top) + ", left -> " + std::to_string((int)ps->other_e_collision.left) + ", width -> " + std::to_string((int)ps->other_e_collision.width) + ", height -> " + std::to_string((int)ps->other_e_collision.height) + ")\n";
+      line += "Algorithm: " + ps->algorithm + "\n";
+
+      root->get<Text>()->string(line);
+   });
+
 }
 
 void MegamanScene::enter(Game& game) {
