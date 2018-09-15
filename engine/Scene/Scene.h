@@ -238,6 +238,20 @@ public:
       }
    }
 
+   System* remove_system(std::string id) {
+      System* s;
+      for (std::vector<System*>::const_iterator it = this->systems_.begin(); it != this->systems_.end(); ++it) {
+         if ((*it)->id() == id) {
+            s = *it;
+
+            this->systems_.erase(it);
+            return s;
+         }
+      }
+
+      return nullptr;
+   }
+
    System* get_system(std::string id) const {
       for (std::vector<System*>::const_iterator it = this->systems_.begin(); it != this->systems_.end(); ++it) {
          if ((*it)->id() == id) {

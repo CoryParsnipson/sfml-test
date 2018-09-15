@@ -23,6 +23,7 @@
 #include "StepIntent.h"
 
 #include "VisualDebugSystem.h"
+#include "CallbackSystem.h"
 #include "PhysicsSystem.h"
 
 #include "SetVisualDebugMessage.h"

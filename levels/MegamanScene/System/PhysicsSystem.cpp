@@ -144,7 +144,13 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
          float near_time = std::max(this->near_time_x, this->near_time_y);
          float far_time = std::min(this->far_time_x, this->far_time_y);
 
-         if (!(this->near_time_x > this->far_time_y || this->near_time_y > this->far_time_x) && !(near_time_x >= 1) && !(near_time_y >= 1) && !(near_time_x < 0.f && near_time_y < 0.f)) {
+         if ((this->near_time_x > this->far_time_y || this->near_time_y > this->far_time_x)
+             || this->near_time_x >= 1
+             || this->near_time_y >= 1
+             || (this->near_time_x < 0.f && this->near_time_y < 0.f)
+         ) {
+            this->collision_time = 1.f;
+         } else {
             if (this->near_time_x > this->near_time_y) {
                this->normal = sf::Vector2f(-1.f * this->sign_x, 0.f);
             } else {
@@ -153,8 +159,6 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
 
             this->collision_time = near_time;
             this->overlap = sf::Vector2f(e.get<Velocity>()->x() * this->scale_x, e.get<Velocity>()->y() * this->scale_y);
-         } else {
-            this->collision_time = 1.f;
          }
       }
 
