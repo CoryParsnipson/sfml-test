@@ -14,11 +14,13 @@
 #include "Rectangle.h"
 #include "Acceleration.h"
 #include "PlayerProfile.h"
+#include "VertexList.h"
 
+#include "VisualDebugIntent.h"
 #include "MoveLeftIntent.h"
 #include "MoveRightIntent.h"
 #include "JumpIntent.h"
-#include "VisualDebugIntent.h"
+#include "StepIntent.h"
 
 #include "VisualDebugSystem.h"
 #include "PhysicsSystem.h"
@@ -28,6 +30,7 @@
 MegamanScene::MegamanScene()
 : Scene("MegamanScene")
 , visual_debug_enable_(false)
+, need_step_(false)
 {
 }
 
@@ -47,6 +50,7 @@ void MegamanScene::init(Game& game) {
    game.get_player(1).bindings().set<MoveLeftIntent>(1, game.input_manager().get_device(1)->get("Left"));
    game.get_player(1).bindings().set<MoveRightIntent>(1, game.input_manager().get_device(1)->get("Right"));
    game.get_player(1).bindings().set<JumpIntent>(1, game.input_manager().get_device(1)->get("Z"));
+   game.get_player(1).bindings().set<StepIntent>(1, game.input_manager().get_device(1)->get("Escape"));
    game.get_player(1).bindings().set<VisualDebugIntent>(1, game.input_manager().get_device(1)->get("D"));
 
    // TODO: create a better way to get Systems
@@ -153,7 +157,7 @@ void MegamanScene::init(Game& game) {
    c->add<PlayerProfile>("PlayerCharacterPlayerProfile", 1);
 
    c->add<Callback>("PlayerCharacterCallback");
-   c->get<Callback>()->on_update([this, &game, c, start_run_l, start_run_r, run_r, run_l, stand_r, stand_l, jump_r] () {
+   c->get<Callback>()->on_update([this, &game, c, ps, start_run_l, start_run_r, run_r, run_l, stand_r, stand_l, jump_r] () {
       InputBinding& bindings = game.get_player(1).bindings();
       
       // NOTE: The real thing should probably be done with an animation state machine somehow
@@ -198,11 +202,111 @@ void MegamanScene::init(Game& game) {
       }
 
       // experimental jumping code
-      if (bindings.get<JumpIntent>()->element()->was_pressed()) {
+      if (bindings.get<JumpIntent>()->element()->was_pressed() && c->get<Velocity>()->y() == 0.f) {
          c->get<Space>()->move(0, -5); // hack...
          c->get<Velocity>()->y(c->get<Velocity>()->y() - 20);
       }
+
+      if (this->need_step_) {
+         ps->disable();
+         this->need_step_ = false;
+      }
+
+      // stepping code
+      if (bindings.get<StepIntent>()->element()->was_pressed()) {
+         if (ps->is_enabled()) {
+            ps->disable();
+            this->need_step_ = false;
+         } else {
+            ps->enable();
+            this->need_step_ = true;
+         }
+
+         Game::logger().msg("Stepper", Logger::INFO, "Stepping PhysicsSystem");
+      }
+
+      // draw physics system vectors
+      Entity* dv1 = this->get_entity("DebugVector1");
+      dv1->get<VertexList>()->vertex_color(0, sf::Color::White);
+      dv1->get<VertexList>()->vertex_color(1, sf::Color::White);
+
+      dv1->get<VertexList>()->vertex_position(0, ps->e_center);
+      dv1->get<VertexList>()->vertex_position(1, ps->other_e_center);
+
+      sf::Vector2f near_time_x_start;
+      sf::Vector2f near_time_x_end;
+
+      near_time_x_start.x = ps->e_center.x - ps->sign_x * ps->e_collision.width / 2.f;
+      near_time_x_start.y = ps->e_center.y;
+
+      near_time_x_end.x = ps->other_e_center.x - ps->sign_x * ps->other_e_collision.width / 2.f;
+      near_time_x_end.y = ps->e_center.y;
+
+      Entity* dv2 = this->get_entity("DebugVector2");
+      dv2->get<VertexList>()->vertex_color(0, sf::Color::Red);
+      dv2->get<VertexList>()->vertex_color(1, sf::Color::Red);
+
+      dv2->get<VertexList>()->vertex_position(0, near_time_x_start);
+      dv2->get<VertexList>()->vertex_position(1, near_time_x_end);
+
+      sf::Vector2f near_time_y_start;
+      sf::Vector2f near_time_y_end;
+
+      near_time_y_start.x = ps->e_center.x;
+      near_time_y_start.y = ps->e_center.y - ps->sign_y * ps->e_collision.height / 2.f;
+
+      near_time_y_end.x = ps->e_center.x;
+      near_time_y_end.y = ps->other_e_center.y - ps->sign_y * ps->other_e_collision.height / 2.f;
+
+      Entity* dv3 = this->get_entity("DebugVector3");
+      dv3->get<VertexList>()->vertex_color(0, sf::Color::Yellow);
+      dv3->get<VertexList>()->vertex_color(1, sf::Color::Yellow);
+
+      dv3->get<VertexList>()->vertex_position(0, near_time_y_start);
+      dv3->get<VertexList>()->vertex_position(1, near_time_y_end);
+
+      sf::Vector2f far_time_x_start, far_time_x_end;
+
+      far_time_x_start.x = ps->e_center.x + ps->sign_x * ps->e_collision.width / 2.f;
+      far_time_x_start.y = ps->e_center.y;
+
+      far_time_x_end.x = ps->other_e_center.x + ps->sign_x * ps->other_e_collision.width / 2.f;
+      far_time_x_end.y = ps->e_center.y;
+
+      Entity* dv4 = this->get_entity("DebugVector4");
+      dv4->get<VertexList>()->vertex_color(0, sf::Color::Cyan);
+      dv4->get<VertexList>()->vertex_color(1, sf::Color::Cyan);
+
+      dv4->get<VertexList>()->vertex_position(0, far_time_x_start);
+      dv4->get<VertexList>()->vertex_position(1, far_time_x_end);
+
+      sf::Vector2f far_time_y_start, far_time_y_end;
+
+      far_time_y_start.x = ps->e_center.x;
+      far_time_y_start.y =  ps->e_center.y + ps->sign_y * ps->e_collision.height / 2.f;
+
+      far_time_y_end.x = ps->e_center.x;
+      far_time_y_end.y = ps->other_e_center.y + ps->sign_y * ps->other_e_collision.height / 2.f;
+
+      Entity* dv5 = this->get_entity("DebugVector5");
+      dv5->get<VertexList>()->vertex_color(0, sf::Color::Magenta);
+      dv5->get<VertexList>()->vertex_color(1, sf::Color::Magenta);
+
+      dv5->get<VertexList>()->vertex_position(0, far_time_y_start);
+      dv5->get<VertexList>()->vertex_position(1, far_time_y_end);
    });
+
+   Entity* dv1 = this->create_entity("DebugVector1");
+   Entity* dv2 = this->create_entity("DebugVector2");
+   Entity* dv3 = this->create_entity("DebugVector3");
+   Entity* dv4 = this->create_entity("DebugVector4");
+   Entity* dv5 = this->create_entity("DebugVector5");
+
+   dv1->add<VertexList>("DebugVectorVertexList", sf::LineStrip, 2);
+   dv2->add<VertexList>("DebugVectorVertexList", sf::LineStrip, 2);
+   dv3->add<VertexList>("DebugVectorVertexList", sf::LineStrip, 2);
+   dv4->add<VertexList>("DebugVectorVertexList", sf::LineStrip, 2);
+   dv5->add<VertexList>("DebugVectorVertexList", sf::LineStrip, 2);
 
    Entity* root = this->get_entity(this->space_handle());
    root->add<PlayerProfile>("RootPlayerProfile", 1);
@@ -243,6 +347,7 @@ void MegamanScene::init(Game& game) {
       line += "e_collision: ( top -> " + std::to_string((int)ps->e_collision.top) + ", left -> " + std::to_string((int)ps->e_collision.left) + ", width -> " + std::to_string((int)ps->e_collision.width) + ", height -> " + std::to_string((int)ps->e_collision.height) + ")\n";
       line += "other_e_collision: ( top -> " + std::to_string((int)ps->other_e_collision.top) + ", left -> " + std::to_string((int)ps->other_e_collision.left) + ", width -> " + std::to_string((int)ps->other_e_collision.width) + ", height -> " + std::to_string((int)ps->other_e_collision.height) + ")\n";
       line += "Algorithm: " + ps->algorithm + "\n";
+      line += "Physics enabled: " + std::string(ps->is_enabled() ? "ENABLED" : "DISABLED") + "\n";
 
       root->get<Text>()->string(line);
    });

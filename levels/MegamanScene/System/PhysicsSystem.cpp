@@ -79,15 +79,6 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
       this->other_e_collision.left -= this->global_transform(other_e).transformPoint(sf::Vector2f(0, 0)).x;
       this->other_e_collision.top -= this->global_transform(other_e).transformPoint(sf::Vector2f(0, 0)).y;
 
-      // accelerate if there's no collision
-      sf::Vector2f total_acceleration = e.get<Acceleration>()->value();
-
-      // add gravity to accleration
-      if (e.get<Gravity>() != nullptr) {
-         total_acceleration += e.get<Gravity>()->value();
-      }
-      e.get<Velocity>()->value(e.get<Velocity>()->value() + total_acceleration);
-
       if (e.get<Velocity>()->value() == sf::Vector2f(0, 0) && other_e.get<Velocity>()->value() != sf::Vector2f(0, 0)) {
          // if this isn't moving and the other entity is, skip this (collision will be handled by other entity)
          continue;
@@ -103,7 +94,7 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
          this->delta_y = this->other_e_center.y - this->e_center.y;
          this->overlap_y = (this->other_e_collision.height / 2.f + this->e_collision.height / 2.f) - std::abs(this->delta_y);
 
-         if (this->overlap_x > 0 && this->overlap_y > 0) {
+         if (this->overlap_x >= 0 && this->overlap_y >= 0) {
             this->collision_time = 0.f;
 
             if (this->overlap_x < this->overlap_y) {
@@ -153,12 +144,11 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
          float near_time = std::max(this->near_time_x, this->near_time_y);
          float far_time = std::min(this->far_time_x, this->far_time_y);
 
-         //if (!(this->near_time_x > this->far_time_y || this->near_time_y > this->far_time_x) && !(near_time >= 1) && !(far_time <= 0)) {
-         if (!(this->near_time_x > this->far_time_y || this->near_time_y > this->far_time_x) && !(near_time_x >= 1) && !(near_time_y >= 1)) {
+         if (!(this->near_time_x > this->far_time_y || this->near_time_y > this->far_time_x) && !(near_time_x >= 1) && !(near_time_y >= 1) && !(near_time_x < 0.f && near_time_y < 0.f)) {
             if (this->near_time_x > this->near_time_y) {
-               this->normal = sf::Vector2f(this->sign_x, 0.f);
+               this->normal = sf::Vector2f(-1.f * this->sign_x, 0.f);
             } else {
-               this->normal = sf::Vector2f(0.f, this->sign_y);
+               this->normal = sf::Vector2f(0.f, -1.f * this->sign_y);
             }
 
             this->collision_time = near_time;
@@ -167,16 +157,6 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
             this->collision_time = 1.f;
          }
       }
-
-      // temporary
-      sf::VertexArray center_line(sf::LineStrip, 2);
-      center_line[0].position = this->e_center;
-      center_line[0].color = sf::Color::Blue;
-      center_line[1].position = this->e_center + e.get<Velocity>()->value() * 3.f;
-      center_line[1].color = sf::Color::Blue;
-
-      game.window().draw(center_line);
-      // end temporary
 
       // collision response
       sf::Vector2f position_delta;
@@ -189,16 +169,18 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
 
       // 2. slide the rest of the way
       if (remaining_time > 0.f) {
-         this->dotprod = (e.get<Velocity>()->x() * this->normal.y + e.get<Velocity>()->y() * this->normal.x) * this->collision_time;
+         this->dotprod = (e.get<Velocity>()->x() * this->normal.y + e.get<Velocity>()->y() * this->normal.x) * remaining_time;
 
          position_delta.x += this->dotprod * this->normal.y;
          position_delta.y += this->dotprod * this->normal.x;
 
          if (this->normal.x != 0.f) {
+            e.get<Velocity>()->x(0);
             e.get<Acceleration>()->x(0);
          }
 
          if (this->normal.y != 0.f) {
+            e.get<Velocity>()->y(0);
             e.get<Acceleration>()->y(0);
          }
       }
@@ -206,9 +188,20 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
       // update position based on velocity
       e.get<Space>()->move(position_delta);
       // end collision response
-
-      this->clamp_entity(e);
    }
+
+   if (this->collision_time == 1.f) {
+      // accelerate if there's no collision
+      sf::Vector2f total_acceleration = e.get<Acceleration>()->value();
+
+      // add gravity to accleration
+      if (e.get<Gravity>() != nullptr) {
+         total_acceleration += e.get<Gravity>()->value();
+      }
+      e.get<Velocity>()->value(e.get<Velocity>()->value() + total_acceleration);
+   }
+
+   this->clamp_entity(e);
 }
 
 void PhysicsSystem::clamp_entity(Entity& e) {
