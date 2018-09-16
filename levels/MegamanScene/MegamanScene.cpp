@@ -194,7 +194,7 @@ void MegamanScene::init(Game& game) {
          c->get<Velocity>()->x(0);
       }
 
-      if (bindings.get<MoveRightIntent>()->element()->was_pressed()) {
+      if (bindings.get<MoveRightIntent>()->element()->is_pressed()) {
          c->get<Velocity>()->x(5);
       }
 
@@ -208,12 +208,12 @@ void MegamanScene::init(Game& game) {
          c->get<Velocity>()->y(c->get<Velocity>()->y() - 20);
       }
 
+      // stepping code
       if (this->need_step_) {
          ps->disable();
          this->need_step_ = false;
       }
 
-      // stepping code
       if (bindings.get<StepIntent>()->element()->was_pressed()) {
          if (ps->is_enabled()) {
             ps->disable();
