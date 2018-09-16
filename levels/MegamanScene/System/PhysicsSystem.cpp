@@ -67,6 +67,11 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
          continue;
       }
 
+      if (e.get<Velocity>()->value() == sf::Vector2f(0, 0) && other_e.get<Velocity>()->value() != sf::Vector2f(0, 0)) {
+         // if this isn't moving and the other entity is, skip this (collision will be handled by other entity)
+         continue;
+      }
+
       this->e_center = this->global_transform(e).transformPoint(e.get<Collision>()->center());
       this->other_e_center = this->global_transform(other_e).transformPoint(other_e.get<Collision>()->center());
 
@@ -79,21 +84,16 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
       this->other_e_collision.left -= this->global_transform(other_e).transformPoint(sf::Vector2f(0, 0)).x;
       this->other_e_collision.top -= this->global_transform(other_e).transformPoint(sf::Vector2f(0, 0)).y;
 
-      if (e.get<Velocity>()->value() == sf::Vector2f(0, 0) && other_e.get<Velocity>()->value() != sf::Vector2f(0, 0)) {
-         // if this isn't moving and the other entity is, skip this (collision will be handled by other entity)
-         continue;
-      }
+      this->delta_x = this->other_e_center.x - this->e_center.x;
+      this->overlap_x = (this->other_e_collision.width / 2.f + this->e_collision.width / 2.f) - std::abs(this->delta_x);
+
+      this->delta_y = this->other_e_center.y - this->e_center.y;
+      this->overlap_y = (this->other_e_collision.height / 2.f + this->e_collision.height / 2.f) - std::abs(this->delta_y);
 
       if (e.get<Velocity>()->value() == sf::Vector2f(0, 0)) {
          this->algorithm = "AABB Intersection";
 
          // do AABB intersection (if not moving)
-         this->delta_x = this->other_e_center.x - this->e_center.x;
-         this->overlap_x = (this->other_e_collision.width / 2.f + this->e_collision.width / 2.f) - std::abs(this->delta_x);
-
-         this->delta_y = this->other_e_center.y - this->e_center.y;
-         this->overlap_y = (this->other_e_collision.height / 2.f + this->e_collision.height / 2.f) - std::abs(this->delta_y);
-
          if (this->overlap_x >= 0 && this->overlap_y >= 0) {
             this->collision_time = 0.f;
 
@@ -144,10 +144,11 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
          float near_time = std::max(this->near_time_x, this->near_time_y);
          float far_time = std::min(this->far_time_x, this->far_time_y);
 
-         if ((this->near_time_x > this->far_time_y || this->near_time_y > this->far_time_x)
-             || this->near_time_x >= 1
-             || this->near_time_y >= 1
-             || (this->near_time_x < 0.f && this->near_time_y < 0.f)
+         if (((this->near_time_x > this->far_time_y || this->near_time_y > this->far_time_x)
+             || near_time >= 1
+             || far_time <= 0.f)
+             || (this->near_time_x == -std::numeric_limits<float>::infinity() && this->overlap_x <= 0.f) // these two conditions solve "ghost collisions" on each axis
+             || (this->near_time_y == -std::numeric_limits<float>::infinity() && this->overlap_y <= 0.f) // (these aren't on the algorithm references. If you use broad phase culling, you can allegedly remove these conditions)
          ) {
             this->collision_time = 1.f;
          } else {

@@ -203,7 +203,7 @@ void MegamanScene::init(Game& game) {
       }
 
       // experimental jumping code
-      if (bindings.get<JumpIntent>()->element()->was_pressed() && c->get<Velocity>()->y() == 0.f) {
+      if (bindings.get<JumpIntent>()->element()->was_pressed() && (c->get<Velocity>()->y() >= 0.f && c->get<Velocity>()->y() <= 1.f)) {
          c->get<Space>()->move(0, -5); // hack...
          c->get<Velocity>()->y(c->get<Velocity>()->y() - 20);
       }
