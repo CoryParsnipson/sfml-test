@@ -72,6 +72,18 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
          continue;
       }
 
+      // --------------------------------
+      // handle inverse euler update
+      // accelerate if there's no collision
+      sf::Vector2f total_acceleration = e.get<Acceleration>()->value();
+
+      // add gravity to accleration
+      if (e.get<Gravity>() != nullptr) {
+         total_acceleration += e.get<Gravity>()->value();
+      }
+      e.get<Velocity>()->value(e.get<Velocity>()->value() + total_acceleration);
+      // --------------------------------
+
       this->e_center = this->global_transform(e).transformPoint(e.get<Collision>()->center());
       this->other_e_center = this->global_transform(other_e).transformPoint(other_e.get<Collision>()->center());
 
@@ -193,17 +205,6 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
       // update position based on velocity
       e.get<Space>()->move(position_delta);
       // end collision response
-   }
-
-   if (this->collision_time == 1.f) {
-      // accelerate if there's no collision
-      sf::Vector2f total_acceleration = e.get<Acceleration>()->value();
-
-      // add gravity to accleration
-      if (e.get<Gravity>() != nullptr) {
-         total_acceleration += e.get<Gravity>()->value();
-      }
-      e.get<Velocity>()->value(e.get<Velocity>()->value() + total_acceleration);
    }
 
    this->clamp_entity(e);
