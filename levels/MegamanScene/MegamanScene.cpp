@@ -168,7 +168,7 @@ void MegamanScene::init(Game& game) {
 
    c->get<Space>()->position(300, 100);
 
-   c->add<Collision>("PlayerCharacterCollision", sf::FloatRect(0, 0, 40, 50));
+   c->add<Collision>("PlayerCharacterCollision", sf::FloatRect(0, 10, 40, 40));
    c->add<Velocity>("PlayerCharacterVelocity");
    c->add<Acceleration>("PlayerCharacterAcceleration");
 
@@ -206,7 +206,7 @@ void MegamanScene::init(Game& game) {
 
       // handle movement
       if (bindings.get<MoveLeftIntent>()->element()->is_pressed()) {
-         c->get<Velocity>()->x(-5);
+         c->get<Velocity>()->x(-4);
       }
 
       if (bindings.get<MoveLeftIntent>()->element()->was_released() && !bindings.get<MoveRightIntent>()->element()->is_pressed()) {
@@ -214,7 +214,7 @@ void MegamanScene::init(Game& game) {
       }
 
       if (bindings.get<MoveRightIntent>()->element()->is_pressed()) {
-         c->get<Velocity>()->x(5);
+         c->get<Velocity>()->x(4);
       }
 
       if (bindings.get<MoveRightIntent>()->element()->was_released() && !bindings.get<MoveLeftIntent>()->element()->is_pressed()) {
