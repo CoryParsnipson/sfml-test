@@ -57,6 +57,22 @@ void PhysicsSystem::on_init(Game& game) {
 }
 
 void PhysicsSystem::on_update(Game& game, Entity& e) {
+   bool update_final_position = true;
+   sf::Vector2f final_position;
+   sf::Vector2f final_position_delta;
+
+   // --------------------------------
+   // handle inverse euler update
+   // accelerate if there's no collision
+   sf::Vector2f total_acceleration = e.get<Acceleration>()->value();
+
+   // add gravity to accleration
+   if (e.get<Gravity>() != nullptr) {
+      total_acceleration += e.get<Gravity>()->value();
+   }
+   e.get<Velocity>()->value(e.get<Velocity>()->value() + total_acceleration);
+   // --------------------------------
+
    // collect entities that could collide (not optimized)
    const std::vector<Handle>& physics_entities = this->subscription().entity_list();
    for (std::vector<Handle>::const_iterator other_it = physics_entities.begin(); other_it != physics_entities.end(); ++other_it) {
@@ -71,18 +87,6 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
          // if this isn't moving and the other entity is, skip this (collision will be handled by other entity)
          continue;
       }
-
-      // --------------------------------
-      // handle inverse euler update
-      // accelerate if there's no collision
-      sf::Vector2f total_acceleration = e.get<Acceleration>()->value();
-
-      // add gravity to accleration
-      if (e.get<Gravity>() != nullptr) {
-         total_acceleration += e.get<Gravity>()->value();
-      }
-      e.get<Velocity>()->value(e.get<Velocity>()->value() + total_acceleration);
-      // --------------------------------
 
       this->e_center = this->global_transform(e).transformPoint(e.get<Collision>()->center());
       this->other_e_center = this->global_transform(other_e).transformPoint(other_e.get<Collision>()->center());
@@ -176,20 +180,25 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
       }
 
       // collision response
-      sf::Vector2f position_delta;
-
       // 1. move entity to scaled velocity
-      position_delta.x = e.get<Velocity>()->x() * this->collision_time;
-      position_delta.y = e.get<Velocity>()->y() * this->collision_time;
+      if (update_final_position) {
+         final_position.x = e.get<Velocity>()->x() * this->collision_time;
+         final_position.y = e.get<Velocity>()->y() * this->collision_time;
+
+         // stop updating the final position if collision_time isn't 1.f (note: this is a hack. Probably need to replace this for loop with some sort of constraint solver)
+         update_final_position = (this->collision_time == 1.f);
+      }
 
       float remaining_time = 1.f - this->collision_time;
 
       // 2. slide the rest of the way
       if (remaining_time > 0.f) {
+         sf::Vector2f response_delta;
+
          this->dotprod = (e.get<Velocity>()->x() * this->normal.y + e.get<Velocity>()->y() * this->normal.x) * remaining_time;
 
-         position_delta.x += this->dotprod * this->normal.y;
-         position_delta.y += this->dotprod * this->normal.x;
+         response_delta.x += this->dotprod * this->normal.y;
+         response_delta.y += this->dotprod * this->normal.x;
 
          if (this->normal.x != 0.f) {
             e.get<Velocity>()->x(0);
@@ -200,13 +209,13 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
             e.get<Velocity>()->y(0);
             e.get<Acceleration>()->y(0);
          }
-      }
 
-      // update position based on velocity
-      e.get<Space>()->move(position_delta);
+         final_position_delta += response_delta;
+      }
       // end collision response
    }
 
+   e.get<Space>()->move(final_position + final_position_delta);
    this->clamp_entity(e);
 }
 

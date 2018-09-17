@@ -128,9 +128,9 @@ void MegamanScene::init(Game& game) {
    Entity* test_e = this->create_entity("TestEntity");
    test_e->add<Sprite>("TestSprite");
    test_e->get<Sprite>()->animation(jump_r);
-   test_e->get<Sprite>()->scale(3, 3);
 
    test_e->get<Space>()->position(400, 100);
+   test_e->get<Space>()->scale(3, 3);
 
    Entity* e_floor = this->create_entity("FloorEntity");
    e_floor->add<Rectangle>("FloorSprite", 0, 0, 400, 50);
@@ -142,12 +142,31 @@ void MegamanScene::init(Game& game) {
    e_floor->add<Velocity>("FloorVelocity");
    e_floor->add<Acceleration>("FloorAcceleration");
 
+   Entity* e_platform2 = this->create_entity("Platform2Entity");
+   e_platform2->add<Rectangle>("Platform2Sprite", 0, 0, 800, 50);
+   e_platform2->get<Rectangle>()->color(sf::Color::Green);
+
+   e_platform2->get<Space>()->position(0, 580);
+
+   e_platform2->add<Collision>("Platform2Collision", sf::FloatRect(0, 0, 800, 50));
+   e_platform2->add<Velocity>("Platform2Velocity");
+   e_platform2->add<Acceleration>("Platform2Acceleration");
+
+   Entity* e_platform3 = this->create_entity("Platform3Entity");
+   e_platform3->add<Rectangle>("Platform3Sprite", 0, 0, 200, 50);
+   e_platform3->get<Rectangle>()->color(sf::Color::Green);
+
+   e_platform3->get<Space>()->position(500, 300);
+
+   e_platform3->add<Collision>("Platform3Collision", sf::FloatRect(0, 0, 200, 50));
+   e_platform3->add<Velocity>("Platform3Velocity");
+   e_platform3->add<Acceleration>("Platform3Acceleration");
+
    Entity* c = this->create_entity("PlayerCharacterEntity");
    c->add<Sprite>("PlayerCharacterSprite");
    c->get<Sprite>()->animation(stand_r);
 
    c->get<Space>()->position(300, 100);
-   //c->get<Space>()->scale(3, 3);
 
    c->add<Collision>("PlayerCharacterCollision", sf::FloatRect(0, 0, 40, 50));
    c->add<Velocity>("PlayerCharacterVelocity");
@@ -204,7 +223,6 @@ void MegamanScene::init(Game& game) {
 
       // experimental jumping code
       if (bindings.get<JumpIntent>()->element()->was_pressed() && (c->get<Velocity>()->y() >= 0.f && c->get<Velocity>()->y() <= 1.f)) {
-         c->get<Space>()->move(0, -5); // hack...
          c->get<Velocity>()->y(c->get<Velocity>()->y() - 20);
       }
 
