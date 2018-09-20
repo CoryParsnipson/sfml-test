@@ -15,6 +15,7 @@
 #include "Acceleration.h"
 #include "PlayerProfile.h"
 #include "VertexList.h"
+#include "CameraAnchor.h"
 
 #include "VisualDebugIntent.h"
 #include "MoveLeftIntent.h"
@@ -25,6 +26,7 @@
 #include "VisualDebugSystem.h"
 #include "CallbackSystem.h"
 #include "PhysicsSystem.h"
+#include "CameraSystem.h"
 
 #include "SetVisualDebugMessage.h"
 
@@ -64,6 +66,9 @@ void MegamanScene::init(Game& game) {
    // setup custom systems
    PhysicsSystem* ps = new PhysicsSystem("PhysicsSystem");
    this->add_system(ps);
+
+   CameraSystem* cs = new CameraSystem("CameraSystem", gs->camera());
+   this->add_system(cs);
 
    AnimationPtr stand_r = std::make_shared<Animation>("megaman_zero_stand_r", this->textures().get("megaman_zero_spritesheet"));
    stand_r->add(sf::IntRect(  0, 0, 40, 50), 120);
@@ -167,6 +172,8 @@ void MegamanScene::init(Game& game) {
    c->get<Sprite>()->animation(stand_r);
 
    c->get<Space>()->position(300, 100);
+
+   c->add<CameraAnchor>("PlayerCharacterCameraAnchor");
 
    c->add<Collision>("PlayerCharacterCollision", sf::FloatRect(0, 10, 40, 40));
    c->add<Velocity>("PlayerCharacterVelocity");
