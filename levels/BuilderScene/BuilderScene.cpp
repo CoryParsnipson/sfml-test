@@ -508,6 +508,74 @@ void BuilderScene::load_textures() {
    Game::logger().msg(this->id(), Logger::INFO, this->textures());
 }
 
+Handle BuilderScene::create_panel(std::string entity_id, sf::FloatRect bounds, std::string label /* = "" */) {
+   Entity* panel = this->create_entity(entity_id);
+
+   // UI colors
+   Color panel_bg_color(113, 94, 122, 255);
+   Color panel_bg_highlight(211, 206, 218, 230);
+   Color panel_bg_transparent(sf::Color::Transparent);
+
+   // calculate label offsets
+   int label_offset_top = 0;
+   int label_offset_left = 27;
+   
+   int label_padding_top = 2;
+   int label_padding_bottom = 0;
+   int label_padding_left = 3;
+   int label_padding_right = 3;
+
+   int padding_top = (label != "" ? 10 : 5);
+   int padding_bottom = 5;
+   int padding_left = 5;
+   int padding_right = 5;
+
+   // create panel background
+   panel->add<Rectangle>(entity_id + "Rectangle", 0, 0, bounds.width, bounds.height);
+   panel->get<Rectangle>()->color(panel_bg_color);
+   panel->get<Space>()->position(bounds.left, bounds.top);
+
+   // create panel decoration
+   Entity* panel_outline = this->create_entity(entity_id + "Decoration");
+   panel_outline->add<Rectangle>(
+      entity_id + "DecorationRectangle",
+      0,
+      0,
+      bounds.width - padding_left - padding_right,
+      bounds.height - padding_top - padding_bottom
+   );
+   panel_outline->get<Rectangle>()->color(panel_bg_transparent);
+   panel_outline->get<Rectangle>()->outline_color(panel_bg_highlight);
+   panel_outline->get<Rectangle>()->outline_thickness(2.0);
+
+   panel_outline->get<Space>()->position(padding_left, padding_top);
+
+   this->send_message<AddToEntityMessage>(panel->handle(), panel_outline->handle());
+
+   // create label if necessary
+   if (label != "") {
+      Entity* panel_title_back = this->create_entity(entity_id + "LabelBackground");
+      panel_title_back->add<Rectangle>(entity_id + "LabelBackgroundRectangle", 0, 0, 0, 0);
+      panel_title_back->get<Rectangle>()->color(panel_bg_color);
+      panel_title_back->get<Space>()->position(label_offset_left, label_offset_top);
+
+      this->send_message<AddToEntityMessage>(panel->handle(), panel_title_back->handle());
+
+      Entity* panel_title = this->create_entity(entity_id + "Label");
+      panel_title->add<Text>(entity_id + "LabelText", label, this->fonts().get("retro"), 12);
+      panel_title->get<Space>()->position(label_offset_left + label_padding_left, label_offset_top + label_padding_top);
+
+      this->send_message<AddToEntityMessage>(panel->handle(), panel_title->handle());
+
+      panel_title_back->get<Rectangle>()->size(
+         panel_title->get<Text>()->local_bounds().width + label_padding_left + label_padding_right,
+         panel_title->get<Text>()->local_bounds().height + label_padding_top + label_padding_bottom
+      );
+   }
+
+   return panel->handle();
+}
+
 void BuilderScene::create_backdrop(GraphicalSystem* gs) {
    Entity* backdrop = this->create_entity("Backdrop Entity");
    this->send_message<AddToEntityMessage>(this->space_handle(), backdrop->handle(), 0);

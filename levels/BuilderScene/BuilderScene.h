@@ -45,6 +45,8 @@ private:
    void load_textures();
 
    // helper methods
+   Handle create_panel(std::string entity_id, sf::FloatRect bounds, std::string label = "");
+
    void create_backdrop(GraphicalSystem* gs);
    void create_fps_display(GraphicalSystem* gs);
    void create_tile_palette(GraphicalSystem* gs);
