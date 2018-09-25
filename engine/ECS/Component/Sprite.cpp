@@ -190,9 +190,8 @@ std::string Sprite::serialize(Serializer& s) {
 
    Color color(this->color());
 
-   data["type"] = "Sprite";
-
    data["id"] = this->id();
+   data["type"] = "Sprite";
    data["x"] = std::to_string(this->offset().x);
    data["y"] = std::to_string(this->offset().y);
    data["rotation"] = std::to_string(this->rotation());
@@ -200,6 +199,10 @@ std::string Sprite::serialize(Serializer& s) {
    data["origin_y"] = std::to_string(this->origin().y);
    data["color"] = color.serialize(s);
    data["texture"] = (this->texture_ ? this->texture_->id() : "");
+   data["texture_rect_top"] = std::to_string(this->get_texture_rect().top);
+   data["texture_rect_left"] = std::to_string(this->get_texture_rect().left);
+   data["texture_rect_width"] = std::to_string(this->get_texture_rect().width);
+   data["texture_rect_height"] = std::to_string(this->get_texture_rect().height);
 
    return s.serialize(data);
 }
@@ -219,5 +222,13 @@ void Sprite::deserialize(Serializer& s, Scene& scene, std::string& d) {
    std::shared_ptr<Texture> texture = scene.textures().get(data["texture"]);
    if (texture) {
       this->texture(texture);
+
+      sf::IntRect texture_rect;
+      texture_rect.top = std::stoi(data["texture_rect_top"]);
+      texture_rect.left = std::stoi(data["texture_rect_left"]);
+      texture_rect.width = std::stoi(data["texture_rect_width"]);
+      texture_rect.height = std::stoi(data["texture_rect_height"]);
+
+      this->set_texture_rect(texture_rect);
    }
 }

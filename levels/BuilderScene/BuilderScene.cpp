@@ -97,19 +97,24 @@ void BuilderScene::init(Game& game) {
 
    // load or create a tile map
    JSONSerializer serializer;
-   FileChannel map_file("tilemap_test.txt");
+   FileChannel save_file("tilemap_test.txt");
 
-   map_file.seek(0);
-   std::string tilemap_data = serializer.read(map_file);
+   // TODO: should this be in scene serialize/deserialize?
+   save_file.seek(0);
+   std::string raw_save_file = serializer.read(save_file);
+   Serializer::SerialData scene_data = serializer.deserialize(*this, raw_save_file);
 
    map_root->add<TileMap>();
-   if (!tilemap_data.empty()) {
-      map_root->get<TileMap>()->deserialize(static_cast<Serializer&>(serializer), *this, tilemap_data);
+   if (scene_data.find("Tilemap0") != scene_data.end()) {
+      map_root->get<TileMap>()->deserialize(static_cast<Serializer&>(serializer), *this, scene_data["Tilemap0"]);
    }
 
    // load or create a grid
    Entity* grid_root = this->create_entity("GridRootEntity");
-   grid_root->add<Grid>("GridRoot Grid Component", sf::Vector2f(0, 0), 64, 64);
+   grid_root->add<Grid>("GridRoot Grid Component");
+   if (scene_data.find("Grid0") != scene_data.end()) {
+      grid_root->get<Grid>()->deserialize(static_cast<Serializer&>(serializer), *this, scene_data["Grid0"]);
+   }
 
    // put grid_root under hud_root but over map_root
    this->send_message<AddToEntityMessage>(this->space_handle(), grid_root->handle(), 1);
@@ -148,11 +153,11 @@ void BuilderScene::init(Game& game) {
 
    tile_selection_maproot->add<Collision>("TileSelectionMapRootCollider", sf::FloatRect(0, 0, 0, 0));
 
-   this->create_tile_palette(gs);
-   assert(this->get_entity("TilePaletteWindow"));
+   this->create_tile_palette(gs, scene_data["Tileset0"]);
+   assert(this->get_entity("TilePalette"));
    
    // put tile palette window on top of mouse cursor and selection_rect
-   this->send_message<AddToEntityMessage>(hud_root->handle(), this->get_entity("TilePaletteWindow")->handle());
+   this->send_message<AddToEntityMessage>(hud_root->handle(), this->get_entity("TilePalette")->handle());
 
    // create mouse cursor
    Entity* mouse_cursor = this->create_entity("MouseCursorEntity");
@@ -269,7 +274,7 @@ void BuilderScene::init(Game& game) {
          tile_selection->get<Collision>()->volume(tile_selection->get<Rectangle>()->global_bounds());
       }
 
-      grid_root->get<Grid>()->zoom_factor = new_scale;
+      grid_root->get<Grid>()->zoom_factor(new_scale);
    });
 
    mouse_cursor_script->get<Callback>()->left_click([selection_rect, &game, this] () {
@@ -316,8 +321,8 @@ void BuilderScene::init(Game& game) {
          tile_selection->get<Space>()->visible(false);
          tile_selection_maproot->get<Collision>()->volume(sf::FloatRect(0, 0, 0, 0));
       } else {
-         float tile_width = grid_root->get<Grid>()->tile_width() * grid_root->get<Grid>()->zoom_factor.x;
-         float tile_height = grid_root->get<Grid>()->tile_height() * grid_root->get<Grid>()->zoom_factor.y;
+         float tile_width = grid_root->get<Grid>()->tile_width() * grid_root->get<Grid>()->zoom_factor().x;
+         float tile_height = grid_root->get<Grid>()->tile_height() * grid_root->get<Grid>()->zoom_factor().y;
 
          // make this at least 1 tile big (if you provide grid with value that falls
          // directly on gridline it can give identical values for floor and ceil)
@@ -388,8 +393,7 @@ void BuilderScene::init(Game& game) {
 
          // reset grid
          grid_root->get<Space>()->position(0, 0);
-         grid_root->get<Grid>()->zoom_factor.x = 1.f;
-         grid_root->get<Grid>()->zoom_factor.y = 1.f;
+         grid_root->get<Grid>()->zoom_factor(1.f, 1.f);
 
          // recalculate tile selection visual
          sf::Vector2f new_pos;
@@ -438,15 +442,26 @@ void BuilderScene::init(Game& game) {
       }
 
       if (p1_bindings.get<SerializeMapIntent>()->element()->was_pressed()) {
-         TileMap* tilemap = map_root->get<TileMap>();
          FileChannel* fc = new FileChannel("tilemap_test.txt");
          Serializer* serializer = new JSONSerializer(3);
 
+         fc->seek(0);
+         std::string old_file_contents = serializer->read(static_cast<Channel&>(*fc));
+
+         // TODO: this should go in scene serialize/deserialize function?
+         Serializer::SerialData scene_data = serializer->deserialize(*this, old_file_contents);
+
+         // modify the tilemap0 entry
+         scene_data["Tilemap0"] = map_root->get<TileMap>()->serialize(*serializer);
+
+         // write back to file
          fc->remove();
          fc->seek(0);
-         fc->send(tilemap->serialize(*serializer));
+         fc->send(serializer->serialize(scene_data));
 
          Game::logger().msg("BuilderSceneInputSystem", Logger::INFO, "Saving map to file '" + fc->filename());
+
+         delete serializer;
       }
    });
 }
@@ -484,27 +499,7 @@ void BuilderScene::load_fonts() {
 
 void BuilderScene::load_textures() {
    // load textures
-   this->textures().load("tile_grass", "pkmn_tiles_outdoor1.png", sf::IntRect(0, 0, 64, 64));
-   this->textures().load("tile_worn_grass", "pkmn_tiles_outdoor1.png", sf::IntRect(64, 0, 64, 64));
-   this->textures().load("tile_sign", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 0, 64, 64));
-   this->textures().load("tile_dirt_ul", "pkmn_tiles_outdoor1.png", sf::IntRect(0, 64, 64, 64));
-   this->textures().load("tile_dirt_um", "pkmn_tiles_outdoor1.png", sf::IntRect(64, 64, 64, 64));
-   this->textures().load("tile_dirt_ur", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 64, 64, 64));
-   this->textures().load("tile_dirt_ml", "pkmn_tiles_outdoor1.png", sf::IntRect(0, 128, 64, 64));
-   this->textures().load("tile_dirt_mm", "pkmn_tiles_outdoor1.png", sf::IntRect(64, 128, 64, 64));
-   this->textures().load("tile_dirt_mr", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 128, 64, 64));
-   this->textures().load("tile_dirt_bl", "pkmn_tiles_outdoor1.png", sf::IntRect(0, 192, 64, 64));
-   this->textures().load("tile_dirt_bm", "pkmn_tiles_outdoor1.png", sf::IntRect(64, 192, 64, 64));
-   this->textures().load("tile_dirt_br", "pkmn_tiles_outdoor1.png", sf::IntRect(128, 192, 64, 64));
-   this->textures().load("tile_water_ul", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 64, 64, 64));
-   this->textures().load("tile_water_um", "pkmn_tiles_outdoor1.png", sf::IntRect(256, 64, 64, 64));
-   this->textures().load("tile_water_ur", "pkmn_tiles_outdoor1.png", sf::IntRect(320, 64, 64, 64));
-   this->textures().load("tile_water_ml", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 128, 64, 64));
-   this->textures().load("tile_water_mm", "pkmn_tiles_outdoor1.png", sf::IntRect(256, 128, 64, 64));
-   this->textures().load("tile_water_mr", "pkmn_tiles_outdoor1.png", sf::IntRect(320, 128, 64, 64));
-   this->textures().load("tile_water_bl", "pkmn_tiles_outdoor1.png", sf::IntRect(192, 192, 64, 64));
-   this->textures().load("tile_water_bm", "pkmn_tiles_outdoor1.png", sf::IntRect(256, 192, 64, 64));
-   this->textures().load("tile_water_br", "pkmn_tiles_outdoor1.png", sf::IntRect(320, 192, 64, 64));
+   this->textures().load("pokemon_tileset", "pkmn_tiles_outdoor1.png");
    Game::logger().msg(this->id(), Logger::INFO, this->textures());
 }
 
@@ -641,119 +636,79 @@ void BuilderScene::create_fps_display(GraphicalSystem* gs) {
    });
 }
 
-void BuilderScene::create_tile_palette(GraphicalSystem* gs) {
+void BuilderScene::create_tile_palette(GraphicalSystem* gs, std::string& tileset_data) {
    Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
-   assert(tile_selection_maproot);
-
    Entity* map_root = this->get_entity("MapRootEntity");
-   assert(map_root);
-
    Entity* grid_root = this->get_entity("GridRootEntity");
+
+   assert(tile_selection_maproot);
+   assert(map_root);
    assert(grid_root);
 
-   Entity* tile_palette_window = this->create_entity("TilePaletteWindow");
+   // create hover sprite
+   Entity* tpw_hover = this->create_entity("TilePaletteHover");
 
-   tile_palette_window->add<Rectangle>("TilePaletteWindowRectangle", 0, 0, 220, 480);
-   tile_palette_window->get<Rectangle>()->color(Color(113, 94, 122, 255));
-
-   tile_palette_window->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
-
-   tile_palette_window->add<Callback>("TilePaletteWindowCallback", false);
-   tile_palette_window->add<Clickable>("TilePaletteWindowClickable");
-   tile_palette_window->add<Collision>("TilePaletteWindowCollision", tile_palette_window->get<Rectangle>()->global_bounds());
-
-   // readjust tile palette window (and children) when the camera is resized
-   tile_palette_window->get<Callback>()->camera_resize([tile_palette_window, gs] () {
-      float camera_width = gs->camera()->size().x * gs->camera()->viewport().width / gs->camera()->zoom();
-      sf::Vector2f new_pos(camera_width - tile_palette_window->get<Rectangle>()->size().x - 10, 10);
-      sf::Vector2f old_pos(tile_palette_window->get<Space>()->position());
-
-      // move to the upper right corner
-      tile_palette_window->get<Space>()->move(new_pos - old_pos);
-   });
-
-   Entity* tpw_outline = this->create_entity("TilePaletteWindowDecoration");
-   this->send_message<AddToEntityMessage>(tile_palette_window->handle(), tpw_outline->handle());
-
-   tpw_outline->get<Space>()->position(5, 10);
-
-   tpw_outline->add<Rectangle>("TilePaletteWindowOutline", 0, 0, tile_palette_window->get<Rectangle>()->size().x - 10, tile_palette_window->get<Rectangle>()->size().y - 15);
-   tpw_outline->get<Rectangle>()->color(Color(sf::Color::Transparent));
-   tpw_outline->get<Rectangle>()->outline_color(Color(211, 206, 218, 230));
-   tpw_outline->get<Rectangle>()->outline_thickness(2.0);
-
-   Entity* tpw_title_back = this->create_entity("TilePaletteWindowTitleBack");
-   this->send_message<AddToEntityMessage>(tile_palette_window->handle(), tpw_title_back->handle());
-
-   tpw_title_back->add<Rectangle>("TilePaletteWindowTitleBack", 0, 0, 0, 0);
-   tpw_title_back->get<Rectangle>()->color(Color(113, 94, 122, 255));
-
-   Entity* tpw_title = this->create_entity("TilePaletteWindowTitle");
-   this->send_message<AddToEntityMessage>(tile_palette_window->handle(), tpw_title->handle());
-
-   tpw_title->add<Text>("TilePaletteWindowTitleText", "Tileset:", this->fonts().get("retro"), 12);
-   tpw_title->get<Space>()->position(30, 2);
-
-   tpw_title_back->get<Space>()->position(tpw_title->get<Space>()->position() - sf::Vector2f(3, 0));
-   tpw_title_back->get<Rectangle>()->size(tpw_title->get<Text>()->local_bounds().width + 6, tpw_title->get<Text>()->local_bounds().height);
-
-   Entity* tpw_hover = this->create_entity("TilePaletteWindowHover");
-   
    tpw_hover->get<Space>()->visible(false);
-   
-   tpw_hover->add<Rectangle>("TilePaletteWindowRectangle", 0, 0, grid_root->get<Grid>()->tile_width(), grid_root->get<Grid>()->tile_height());
+   tpw_hover->add<Rectangle>("TilePaletteRectangle", 0, 0, grid_root->get<Grid>()->tile_width(), grid_root->get<Grid>()->tile_height());
    tpw_hover->get<Rectangle>()->color(Color(255, 255, 255, 100));
    tpw_hover->get<Rectangle>()->outline_color(Color(108, 46, 167, 100));
    tpw_hover->get<Rectangle>()->outline_thickness(2.f);
 
-   // add tile textures to the tile palette window
-   std::vector<std::string> tile_textures;
-   tile_textures.push_back("tile_grass");
-   tile_textures.push_back("tile_worn_grass");
-   tile_textures.push_back("tile_sign");
-   tile_textures.push_back("tile_dirt_ul");
-   tile_textures.push_back("tile_dirt_um");
-   tile_textures.push_back("tile_dirt_ur");
-   tile_textures.push_back("tile_dirt_ml");
-   tile_textures.push_back("tile_dirt_mm");
-   tile_textures.push_back("tile_dirt_mr");
-   tile_textures.push_back("tile_dirt_bl");
-   tile_textures.push_back("tile_dirt_bm");
-   tile_textures.push_back("tile_dirt_br");
-   tile_textures.push_back("tile_water_ul");
-   tile_textures.push_back("tile_water_um");
-   tile_textures.push_back("tile_water_ur");
-   tile_textures.push_back("tile_water_ml");
-   tile_textures.push_back("tile_water_mm");
-   tile_textures.push_back("tile_water_mr");
-   tile_textures.push_back("tile_water_bl");
-   tile_textures.push_back("tile_water_bm");
-   tile_textures.push_back("tile_water_br");
+   // create tile palette
+   Entity* tile_palette = this->get_entity(this->create_panel("TilePalette", sf::FloatRect(0, 0, 220, 480), "Tileset"));
 
-   int tiles_per_row = tile_palette_window->get<Rectangle>()->size().x / grid_root->get<Grid>()->tile_width();
-   int side_padding = (tile_palette_window->get<Rectangle>()->size().x - (grid_root->get<Grid>()->tile_width() * tiles_per_row)) / 2;
+   tile_palette->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
+   tile_palette->add<Clickable>("TilePaletteClickable");
+   tile_palette->add<Collision>("TilePaletteCollision", tile_palette->get<Rectangle>()->global_bounds());
+
+   tile_palette->add<Callback>("TilePaletteCallback", false);
+
+   // readjust tile palette window (and children) when the camera is resized
+   tile_palette->get<Callback>()->camera_resize([tile_palette, gs] () {
+      float camera_width = gs->camera()->size().x * gs->camera()->viewport().width / gs->camera()->zoom();
+      sf::Vector2f new_pos(camera_width - tile_palette->get<Rectangle>()->size().x - 10, 10);
+      sf::Vector2f old_pos(tile_palette->get<Space>()->position());
+
+      // move to the upper right corner
+      tile_palette->get<Space>()->move(new_pos - old_pos);
+   });
+
+   // load tileset from provided data
+   JSONSerializer serializer;
+   Serializer::SerialData tileset = serializer.deserialize(*this, tileset_data);
+
+   // add tile textures to the tile palette window
+   int tiles_per_row = tile_palette->get<Rectangle>()->size().x / grid_root->get<Grid>()->tile_width();
+   int side_padding = (tile_palette->get<Rectangle>()->size().x - (grid_root->get<Grid>()->tile_width() * tiles_per_row)) / 2;
    int top_padding = 20;
 
-   int i = 0;
-   for (std::vector<std::string>::const_iterator it = tile_textures.begin(); it != tile_textures.end(); ++it, ++i) {
-      sf::Vector2f tile_texture_pos(
-         (i % tiles_per_row) * grid_root->get<Grid>()->tile_width() + side_padding,
-         (i / tiles_per_row) * grid_root->get<Grid>()->tile_height() + top_padding
+   for (int tile_idx = 0; tile_idx < std::stoi(tileset["num_tiles"]); ++tile_idx) {
+      // TODO: move this to some sort of tileset object?
+      Serializer::SerialData tile_data = serializer.deserialize(*this, tileset["tile_" + std::to_string(tile_idx)]);
+
+      sf::IntRect tile_texture_rect(
+         std::stoi(tile_data["top"]),
+         std::stoi(tile_data["left"]),
+         std::stoi(tile_data["width"]),
+         std::stoi(tile_data["height"])
       );
 
-      Entity* entity = this->create_entity(*it + "_tpw_entity");
-      this->send_message<AddToEntityMessage>(tile_palette_window->handle(), entity->handle());
+      sf::Vector2f tile_texture_pos(
+         (tile_idx % tiles_per_row) * grid_root->get<Grid>()->tile_width() + side_padding,
+         (tile_idx / tiles_per_row) * grid_root->get<Grid>()->tile_height() + top_padding
+      );
+
+      Entity* entity = this->create_entity(tile_data["id"] + "_tile_palette_button");
+      this->send_message<AddToEntityMessage>(tile_palette->handle(), entity->handle());
 
       entity->get<Space>()->position(tile_texture_pos);
-
-      entity->add<Sprite>(*it + "_sprite", this->textures().get(*it));
-
-      entity->add<PlayerProfile>(*it + "_playerProfile", 1);
-      entity->add<Clickable>(*it + "_clickable");
-      entity->add<Collision>(*it + "_collision", entity->get<Sprite>()->global_bounds());
+      entity->add<Sprite>(tile_data["id"] + "_sprite", this->textures().get(tileset["id"]), tile_texture_rect);
+      entity->add<PlayerProfile>(tile_data["id"] + "_playerProfile", 1);
+      entity->add<Clickable>(tile_data["id"] + "_clickable");
+      entity->add<Collision>(tile_data["id"] + "_collision", entity->get<Sprite>()->global_bounds());
 
       // define texture button behavior
-      entity->add<Callback>(*it + "_callback");
+      entity->add<Callback>(tile_data["id"] + "_callback");
       entity->get<Callback>()->mouse_in([entity, tpw_hover] () {
          tpw_hover->get<Space>()->position(entity->get<Space>()->position());
          tpw_hover->get<Space>()->visible(true);
@@ -781,5 +736,5 @@ void BuilderScene::create_tile_palette(GraphicalSystem* gs) {
    }
 
    // putting this here because tpw_hover needs to be on top of all tiles
-   this->send_message<AddToEntityMessage>(tile_palette_window->handle(), tpw_hover->handle());
+   this->send_message<AddToEntityMessage>(tile_palette->handle(), tpw_hover->handle());
 }

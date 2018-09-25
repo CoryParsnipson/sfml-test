@@ -19,11 +19,19 @@ public:
    Grid& operator=(const Grid& other);
    void swap(Grid& other);
 
+   void origin(sf::Vector2f origin);
+   void origin(float origin_x, float origin_y);
+   const sf::Vector2f& origin() const;
+
    float tile_width() const;
    void tile_width(float width);
 
    float tile_height() const;
    void tile_height(float height);
+
+   void zoom_factor(sf::Vector2f zoom_factor);
+   void zoom_factor(float zoom_factor_x, float zoom_factor_y);
+   const sf::Vector2f& zoom_factor() const;
 
    sf::Vector2f floor(const sf::Vector2f& pos);
    sf::Vector2f round(const sf::Vector2f& pos);
@@ -33,13 +41,17 @@ public:
    sf::Vector2i grid_index(const sf::Vector2f& pos);
    sf::Vector2i grid_index(float x, float y);
 
-   sf::Vector2f zoom_factor;
+   // serialize interface
+   virtual std::string serialize(Serializer& s);
+   virtual void deserialize(Serializer& s, Scene& scene, std::string& d);
 
 private:
    sf::Vector2f origin_;
 
    float tile_width_;
    float tile_height_;
+
+   sf::Vector2f zoom_factor_;
 };
 
 #endif
