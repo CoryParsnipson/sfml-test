@@ -1,6 +1,8 @@
 #ifndef BUILDER_SCENE_H
 #define BUILDER_SCENE_H
 
+#include <functional>
+
 #include "Scene.h"
 #include "Settings.h"
 
@@ -45,7 +47,8 @@ private:
    void load_textures();
 
    // helper methods
-   Handle create_panel(std::string entity_id, sf::FloatRect bounds, std::string label = "");
+   Handle create_panel(std::string entity_id, sf::FloatRect bounds, bool create_decoration = false, std::string label = "");
+   Handle create_button(std::string entity_id, sf::FloatRect bounds, std::string button_text = "Button", std::function<void()> action = nullptr);
 
    void create_hud(Game& game);
 

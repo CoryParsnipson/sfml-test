@@ -102,7 +102,9 @@ void BuilderScene::init(Game& game) {
 
    this->create_hud(game); // make all UI entities
 
+   this->create_mouse_entity(game);
    this->create_backdrop(gs);
+
    this->setup_keybindings(game);
 }
 
@@ -143,7 +145,7 @@ void BuilderScene::load_textures() {
    Game::logger().msg(this->id(), Logger::INFO, this->textures());
 }
 
-Handle BuilderScene::create_panel(std::string entity_id, sf::FloatRect bounds, std::string label /* = "" */) {
+Handle BuilderScene::create_panel(std::string entity_id, sf::FloatRect bounds, bool create_decoration /* = false */, std::string label /* = "" */) {
    Entity* panel = this->create_entity(entity_id);
 
    // UI colors
@@ -170,24 +172,25 @@ Handle BuilderScene::create_panel(std::string entity_id, sf::FloatRect bounds, s
    panel->get<Rectangle>()->color(panel_bg_color);
    panel->get<Space>()->position(bounds.left, bounds.top);
 
-   // create panel decoration
-   Entity* panel_outline = this->create_entity(entity_id + "Decoration");
-   panel_outline->add<Rectangle>(
-      entity_id + "DecorationRectangle",
-      0,
-      0,
-      bounds.width - padding_left - padding_right,
-      bounds.height - padding_top - padding_bottom
-   );
-   panel_outline->get<Rectangle>()->color(panel_bg_transparent);
-   panel_outline->get<Rectangle>()->outline_color(panel_bg_highlight);
-   panel_outline->get<Rectangle>()->outline_thickness(2.0);
+   // create label and decoration if necessary
+   if (create_decoration) {
+      Entity* panel_outline = this->create_entity(entity_id + "Decoration");
+      panel_outline->add<Rectangle>(
+         entity_id + "DecorationRectangle",
+         0,
+         0,
+         bounds.width - padding_left - padding_right,
+         bounds.height - padding_top - padding_bottom
+      );
+      panel_outline->get<Rectangle>()->color(panel_bg_transparent);
+      panel_outline->get<Rectangle>()->outline_color(panel_bg_highlight);
+      panel_outline->get<Rectangle>()->outline_thickness(2.0);
 
-   panel_outline->get<Space>()->position(padding_left, padding_top);
+      panel_outline->get<Space>()->position(padding_left, padding_top);
 
-   this->send_message<AddToEntityMessage>(panel->handle(), panel_outline->handle());
+      this->send_message<AddToEntityMessage>(panel->handle(), panel_outline->handle());
+   }
 
-   // create label if necessary
    if (label != "") {
       Entity* panel_title_back = this->create_entity(entity_id + "LabelBackground");
       panel_title_back->add<Rectangle>(entity_id + "LabelBackgroundRectangle", 0, 0, 0, 0);
@@ -209,6 +212,77 @@ Handle BuilderScene::create_panel(std::string entity_id, sf::FloatRect bounds, s
    }
 
    return panel->handle();
+}
+
+Handle BuilderScene::create_button(std::string entity_id, sf::FloatRect bounds, std::string button_text /* = "Button" */, std::function<void()> action /* = nullptr */) {
+   Color button_bg_color(113, 94, 122, 255);
+   Color button_bg_highlight(141, 116, 153, 255);
+   Color button_bg_down(87, 72, 94, 255);
+
+   Entity* button_text_entity = this->create_entity(entity_id + "ButtonText");
+
+   button_text_entity->add<Text>(entity_id + "ButtonTextText", button_text, this->fonts().get("retro"), 12);
+
+   if (bounds.width == 0) {
+      // assume this means fit to button text width
+      bounds.width = button_text_entity->get<Text>()->local_bounds().width + 20;
+   }
+
+   if (bounds.height == 0) {
+      // assume this means fit to button text height
+      bounds.height = button_text_entity->get<Text>()->local_bounds().height + 20;
+   }
+
+   Entity* button = this->get_entity(this->create_panel(entity_id, bounds, true));
+
+   button->add<PlayerProfile>(entity_id + "PlayerProfile", 1);
+   button->add<Collision>(entity_id + "Collision", button->get<Rectangle>()->local_bounds());
+   button->add<Clickable>(entity_id + "Clickable");
+
+   button->add<Callback>(entity_id + "Callback", false);
+   if (action) {
+      button->get<Callback>()->left_release(action);
+   }
+   
+   // put common callback functions on a different entity on top of the button entity
+   // so that users who override callbacks on the button won't overwrite these
+   // NOTE: if the size of the button changes, you need to remember to change the
+   // size of this entity's collision volume too...
+   Entity* button_script_overlay = this->create_entity(entity_id + "ScriptOverlay");
+
+   button_script_overlay->add<PlayerProfile>(entity_id + "PlayerProfile", 1);
+   button_script_overlay->add<Collision>(entity_id + "Collision", button->get<Rectangle>()->local_bounds());
+   button_script_overlay->add<Clickable>(entity_id + "Clickable");
+   button_script_overlay->add<Callback>(entity_id + "Callback", true);
+
+   button_script_overlay->get<Callback>()->mouse_in([button, button_bg_highlight] () {
+      button->get<Rectangle>()->color(button_bg_highlight);
+   });
+
+   button_script_overlay->get<Callback>()->mouse_out([button, button_bg_color] () {
+      button->get<Rectangle>()->color(button_bg_color);
+   });
+
+   button_script_overlay->get<Callback>()->left_click([button, button_bg_down] () {
+      button->get<Rectangle>()->color(button_bg_down);
+   });
+
+   button_script_overlay->get<Callback>()->left_release([button, button_bg_color] () {
+      button->get<Rectangle>()->color(button_bg_color);
+   });
+
+   this->send_message<AddToEntityMessage>(button->handle(), button_script_overlay->handle());
+
+   // center button text
+   button_text_entity->get<Text>()->origin(
+      button_text_entity->get<Text>()->local_bounds().left + button_text_entity->get<Text>()->local_bounds().width / 2.f,
+      button_text_entity->get<Text>()->local_bounds().top + button_text_entity->get<Text>()->local_bounds().height/ 2.f
+   );
+   button_text_entity->get<Text>()->offset(button->get<Rectangle>()->size() / 2.f);
+
+   this->send_message<AddToEntityMessage>(button->handle(), button_text_entity->handle());
+
+   return button->handle();
 }
 
 void BuilderScene::create_hud(Game& game) {
@@ -261,7 +335,34 @@ void BuilderScene::create_hud(Game& game) {
    // put tile palette window over selection_rect but under mouse cursor
    this->send_message<AddToEntityMessage>(hud_root->handle(), this->get_entity("TilePalette")->handle());
 
-   this->create_mouse_entity(game);
+   // create menu panel
+   Entity* menu_panel = this->get_entity(this->create_panel("Menu", sf::FloatRect(0, 0, game.window().size().x, 30)));
+   
+   menu_panel->add<PlayerProfile>("MenuPanelPlayerProfile", 1);
+   menu_panel->add<Clickable>("MenuPanelClickable");
+   menu_panel->add<Collision>("MenuPanelCollision", menu_panel->get<Rectangle>()->local_bounds());
+   menu_panel->add<Callback>("MenuPanelCallback", false);
+   
+   menu_panel->get<Callback>()->camera_resize([menu_panel, gs] () {
+      // make menu_panel always take up the entire width of the screen
+      float camera_width = gs->camera()->size().x * gs->camera()->viewport().width / gs->camera()->zoom();
+      menu_panel->get<Rectangle>()->size(camera_width, menu_panel->get<Rectangle>()->size().y);
+
+      // and don't forget to update the collision volume too
+      menu_panel->get<Collision>()->volume(
+         sf::FloatRect(
+            menu_panel->get<Collision>()->volume().top,
+            menu_panel->get<Collision>()->volume().left,
+            camera_width,
+            menu_panel->get<Collision>()->volume().height
+         )
+      );
+   });
+
+   this->send_message<AddToEntityMessage>(hud_root->handle(), menu_panel->handle());
+
+   Handle test_button = this->create_button("TestButton", sf::FloatRect(0, 0, 0, 30));
+   this->send_message<AddToEntityMessage>(menu_panel->handle(), test_button);
 }
 
 void BuilderScene::setup_keybindings(Game& game) {
@@ -693,18 +794,18 @@ void BuilderScene::create_tile_palette(GraphicalSystem* gs, std::string& tileset
    tpw_hover->get<Rectangle>()->outline_thickness(2.f);
 
    // create tile palette
-   Entity* tile_palette = this->get_entity(this->create_panel("TilePalette", sf::FloatRect(0, 0, 220, 480), "Tileset"));
+   Entity* tile_palette = this->get_entity(this->create_panel("TilePalette", sf::FloatRect(0, 0, 220, 480), true, "Tileset"));
 
    tile_palette->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
    tile_palette->add<Clickable>("TilePaletteClickable");
-   tile_palette->add<Collision>("TilePaletteCollision", tile_palette->get<Rectangle>()->global_bounds());
+   tile_palette->add<Collision>("TilePaletteCollision", tile_palette->get<Rectangle>()->local_bounds());
 
    tile_palette->add<Callback>("TilePaletteCallback", false);
 
    // readjust tile palette window (and children) when the camera is resized
    tile_palette->get<Callback>()->camera_resize([tile_palette, gs] () {
       float camera_width = gs->camera()->size().x * gs->camera()->viewport().width / gs->camera()->zoom();
-      sf::Vector2f new_pos(camera_width - tile_palette->get<Rectangle>()->size().x - 10, 10);
+      sf::Vector2f new_pos(camera_width - tile_palette->get<Rectangle>()->size().x - 10, 40);
       sf::Vector2f old_pos(tile_palette->get<Space>()->position());
 
       // move to the upper right corner
