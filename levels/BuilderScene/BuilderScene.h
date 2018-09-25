@@ -47,6 +47,11 @@ private:
    // helper methods
    Handle create_panel(std::string entity_id, sf::FloatRect bounds, std::string label = "");
 
+   void create_hud(Game& game);
+
+   void setup_keybindings(Game& game);
+
+   void create_mouse_entity(Game& game);
    void create_backdrop(GraphicalSystem* gs);
    void create_fps_display(GraphicalSystem* gs);
    void create_tile_palette(GraphicalSystem* gs, std::string& tileset_data);

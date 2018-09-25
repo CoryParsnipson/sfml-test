@@ -65,28 +65,10 @@ void BuilderScene::init(Game& game) {
    this->load_fonts();
    this->load_textures();
 
-   // setup player's input mapping
-   game.add_player(1);
-   game.get_player(1).bindings().set<MouseXIntent>(0, game.input_manager().get_device(0)->get("PositionX"));
-   game.get_player(1).bindings().set<MouseYIntent>(0, game.input_manager().get_device(0)->get("PositionY"));
-   game.get_player(1).bindings().set<MouseWheelIntent>(0, game.input_manager().get_device(0)->get("Wheel"));
-   game.get_player(1).bindings().set<LeftClickIntent>(0, game.input_manager().get_device(0)->get("Left"));
-   game.get_player(1).bindings().set<RightClickIntent>(0, game.input_manager().get_device(0)->get("Right"));
-
-   game.get_player(1).bindings().set<GridVisibilityToggleIntent>(1, game.input_manager().get_device(1)->get("G"));
-   game.get_player(1).bindings().set<VisualDebugIntent>(1, game.input_manager().get_device(1)->get("D"));
-   game.get_player(1).bindings().set<ResetViewIntent>(1, game.input_manager().get_device(1)->get("R"));
-   game.get_player(1).bindings().set<RemoveTilesIntent>(1, game.input_manager().get_device(1)->get("Delete"));
-   game.get_player(1).bindings().set<SerializeMapIntent>(1, game.input_manager().get_device(1)->get("S"));
-
-   game.get_player(1).bindings().set<MoveUpIntent>(1, game.input_manager().get_device(1)->get("Up"));
-   game.get_player(1).bindings().set<MoveLeftIntent>(1, game.input_manager().get_device(1)->get("Left"));
-   game.get_player(1).bindings().set<MoveRightIntent>(1, game.input_manager().get_device(1)->get("Right"));
-   game.get_player(1).bindings().set<MoveDownIntent>(1, game.input_manager().get_device(1)->get("Down"));
-
-   // make a map root entity and hud root entity
+   // make map_root, grid_root, and hud_root (ordering is important here for layering reasons)
    Entity* map_root = this->create_entity("MapRootEntity");
-   Entity* hud_root = this->create_entity("HudRootEntity");
+   Entity* grid_root = this->create_entity("GridRootEntity");
+   this->create_entity("HudRootEntity");
 
    // TODO: create a better way to get Systems
    GraphicalSystem* gs = dynamic_cast<GraphicalSystem*>(this->get_system("GraphicalSystem"));
@@ -110,19 +92,131 @@ void BuilderScene::init(Game& game) {
    }
 
    // load or create a grid
-   Entity* grid_root = this->create_entity("GridRootEntity");
    grid_root->add<Grid>("GridRoot Grid Component");
    if (scene_data.find("Grid0") != scene_data.end()) {
       grid_root->get<Grid>()->deserialize(static_cast<Serializer&>(serializer), *this, scene_data["Grid0"]);
    }
 
-   // put grid_root under hud_root but over map_root
-   this->send_message<AddToEntityMessage>(this->space_handle(), grid_root->handle(), 1);
-
    // add grid system
    this->add_system(new GridSystem("GridSystem", gs->camera()));
 
+   this->create_hud(game); // make all UI entities
+
    this->create_backdrop(gs);
+   this->setup_keybindings(game);
+}
+
+void BuilderScene::enter(Game& game) {
+   Game::logger().msg(this->id(), Logger::INFO, "Entering builder state.");
+}
+
+void BuilderScene::exit(Game& game) {
+   Game::logger().msg(this->id(), Logger::INFO, "Exiting builder state.");
+}
+
+void BuilderScene::process(Game& game, CloseInputEvent& e) {
+   game.unload_scene();
+}
+
+void BuilderScene::process(Game& game, MouseEnteredInputEvent& e) {
+   Entity* cursor = this->get_entity(this->mouse_cursor_);
+   if (cursor) {
+      cursor->get<Space>()->visible(true);
+   }
+}
+
+void BuilderScene::process(Game& game, MouseLeftInputEvent& e) {
+   Entity* cursor = this->get_entity(this->mouse_cursor_);
+   if (cursor) {
+      cursor->get<Space>()->visible(false);
+   }
+}
+
+void BuilderScene::load_fonts() {
+   // load fonts
+   this->fonts().load("retro", "retro.ttf");
+}
+
+void BuilderScene::load_textures() {
+   // load textures
+   this->textures().load("pokemon_tileset", "pkmn_tiles_outdoor1.png");
+   Game::logger().msg(this->id(), Logger::INFO, this->textures());
+}
+
+Handle BuilderScene::create_panel(std::string entity_id, sf::FloatRect bounds, std::string label /* = "" */) {
+   Entity* panel = this->create_entity(entity_id);
+
+   // UI colors
+   Color panel_bg_color(113, 94, 122, 255);
+   Color panel_bg_highlight(211, 206, 218, 230);
+   Color panel_bg_transparent(sf::Color::Transparent);
+
+   // calculate label offsets
+   int label_offset_top = 0;
+   int label_offset_left = 27;
+   
+   int label_padding_top = 2;
+   int label_padding_bottom = 0;
+   int label_padding_left = 3;
+   int label_padding_right = 3;
+
+   int padding_top = (label != "" ? 10 : 5);
+   int padding_bottom = 5;
+   int padding_left = 5;
+   int padding_right = 5;
+
+   // create panel background
+   panel->add<Rectangle>(entity_id + "Rectangle", 0, 0, bounds.width, bounds.height);
+   panel->get<Rectangle>()->color(panel_bg_color);
+   panel->get<Space>()->position(bounds.left, bounds.top);
+
+   // create panel decoration
+   Entity* panel_outline = this->create_entity(entity_id + "Decoration");
+   panel_outline->add<Rectangle>(
+      entity_id + "DecorationRectangle",
+      0,
+      0,
+      bounds.width - padding_left - padding_right,
+      bounds.height - padding_top - padding_bottom
+   );
+   panel_outline->get<Rectangle>()->color(panel_bg_transparent);
+   panel_outline->get<Rectangle>()->outline_color(panel_bg_highlight);
+   panel_outline->get<Rectangle>()->outline_thickness(2.0);
+
+   panel_outline->get<Space>()->position(padding_left, padding_top);
+
+   this->send_message<AddToEntityMessage>(panel->handle(), panel_outline->handle());
+
+   // create label if necessary
+   if (label != "") {
+      Entity* panel_title_back = this->create_entity(entity_id + "LabelBackground");
+      panel_title_back->add<Rectangle>(entity_id + "LabelBackgroundRectangle", 0, 0, 0, 0);
+      panel_title_back->get<Rectangle>()->color(panel_bg_color);
+      panel_title_back->get<Space>()->position(label_offset_left, label_offset_top);
+
+      this->send_message<AddToEntityMessage>(panel->handle(), panel_title_back->handle());
+
+      Entity* panel_title = this->create_entity(entity_id + "Label");
+      panel_title->add<Text>(entity_id + "LabelText", label, this->fonts().get("retro"), 12);
+      panel_title->get<Space>()->position(label_offset_left + label_padding_left, label_offset_top + label_padding_top);
+
+      this->send_message<AddToEntityMessage>(panel->handle(), panel_title->handle());
+
+      panel_title_back->get<Rectangle>()->size(
+         panel_title->get<Text>()->local_bounds().width + label_padding_left + label_padding_right,
+         panel_title->get<Text>()->local_bounds().height + label_padding_top + label_padding_bottom
+      );
+   }
+
+   return panel->handle();
+}
+
+void BuilderScene::create_hud(Game& game) {
+   Entity* hud_root = this->get_entity("HudRootEntity");
+   Entity* map_root = this->get_entity("MapRootEntity");
+   Entity* grid_root = this->get_entity("GridRootEntity");
+
+   GraphicalSystem* gs = dynamic_cast<GraphicalSystem*>(this->get_system("GraphicalSystem"));
    this->create_fps_display(gs);
 
    // create selection rect
@@ -153,11 +247,162 @@ void BuilderScene::init(Game& game) {
 
    tile_selection_maproot->add<Collision>("TileSelectionMapRootCollider", sf::FloatRect(0, 0, 0, 0));
 
+   // this is the window that contains tiles you click on to populate the tilemap
+   JSONSerializer serializer;
+   FileChannel save_file("tilemap_test.txt");
+   save_file.seek(0);
+   std::string raw_save_file = serializer.read(save_file);
+
+   Serializer::SerialData scene_data = serializer.deserialize(*this, raw_save_file);
+
    this->create_tile_palette(gs, scene_data["Tileset0"]);
    assert(this->get_entity("TilePalette"));
-   
-   // put tile palette window on top of mouse cursor and selection_rect
+
+   // put tile palette window over selection_rect but under mouse cursor
    this->send_message<AddToEntityMessage>(hud_root->handle(), this->get_entity("TilePalette")->handle());
+
+   this->create_mouse_entity(game);
+}
+
+void BuilderScene::setup_keybindings(Game& game) {
+   // TODO: not sure about this pattern. Seems fragile
+   Entity* hud_root = this->get_entity("HudRootEntity");
+   Entity* map_root = this->get_entity("MapRootEntity");
+   Entity* grid_root = this->get_entity("GridRootEntity");
+   Entity* tile_selection = this->get_entity("TileSelectionEntity");
+   Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
+
+   // setup player's input mapping
+   game.add_player(1);
+   game.get_player(1).bindings().set<MouseXIntent>(0, game.input_manager().get_device(0)->get("PositionX"));
+   game.get_player(1).bindings().set<MouseYIntent>(0, game.input_manager().get_device(0)->get("PositionY"));
+   game.get_player(1).bindings().set<MouseWheelIntent>(0, game.input_manager().get_device(0)->get("Wheel"));
+   game.get_player(1).bindings().set<LeftClickIntent>(0, game.input_manager().get_device(0)->get("Left"));
+   game.get_player(1).bindings().set<RightClickIntent>(0, game.input_manager().get_device(0)->get("Right"));
+
+   game.get_player(1).bindings().set<GridVisibilityToggleIntent>(1, game.input_manager().get_device(1)->get("G"));
+   game.get_player(1).bindings().set<VisualDebugIntent>(1, game.input_manager().get_device(1)->get("D"));
+   game.get_player(1).bindings().set<ResetViewIntent>(1, game.input_manager().get_device(1)->get("R"));
+   game.get_player(1).bindings().set<RemoveTilesIntent>(1, game.input_manager().get_device(1)->get("Delete"));
+   game.get_player(1).bindings().set<SerializeMapIntent>(1, game.input_manager().get_device(1)->get("S"));
+
+   game.get_player(1).bindings().set<MoveUpIntent>(1, game.input_manager().get_device(1)->get("Up"));
+   game.get_player(1).bindings().set<MoveLeftIntent>(1, game.input_manager().get_device(1)->get("Left"));
+   game.get_player(1).bindings().set<MoveRightIntent>(1, game.input_manager().get_device(1)->get("Right"));
+   game.get_player(1).bindings().set<MoveDownIntent>(1, game.input_manager().get_device(1)->get("Down"));
+
+   // add responses to keyboard inputs
+   hud_root->add<Callback>("HudRootCallback");
+   hud_root->add<PlayerProfile>("HudRootPlayerProfile", 1);
+
+   hud_root->get<Callback>()->on_update([this, grid_root, map_root, tile_selection, tile_selection_maproot, &game] () {
+      InputBinding& p1_bindings = game.get_player(1).bindings();
+
+      if (p1_bindings.get<GridVisibilityToggleIntent>()->element()->was_pressed()) {
+         this->send_message<SetGridVisibilityMessage>(grid_root->handle(), this->grid_visible_);
+         this->grid_visible_ = !this->grid_visible_;
+      }
+
+      if (p1_bindings.get<VisualDebugIntent>()->element()->was_pressed()) {
+         this->send_message<SetVisualDebugMessage>(this->visual_debug_enable_);
+         this->visual_debug_enable_ = !this->visual_debug_enable_;
+      }
+
+      if (p1_bindings.get<ResetViewIntent>()->element()->was_pressed()) {
+         map_root->get<Space>()->position(0, 0);
+         map_root->get<Space>()->scale(sf::Vector2f(1.f, 1.f));
+
+         sf::Vector2f pos = tile_selection->get<Space>()->position();
+         sf::Vector2f end = pos + tile_selection->get<Rectangle>()->size();
+
+         sf::Vector2i pos_idx = grid_root->get<Grid>()->grid_index(pos);
+         sf::Vector2i end_idx = grid_root->get<Grid>()->grid_index(end);
+
+         // reset grid
+         grid_root->get<Space>()->position(0, 0);
+         grid_root->get<Grid>()->zoom_factor(1.f, 1.f);
+
+         // recalculate tile selection visual
+         sf::Vector2f new_pos;
+         new_pos.x = grid_root->get<Grid>()->tile_width() * pos_idx.x;
+         new_pos.y = grid_root->get<Grid>()->tile_height() * pos_idx.y;
+
+         sf::Vector2f new_end;
+         new_end.x = grid_root->get<Grid>()->tile_width() * end_idx.x;
+         new_end.y = grid_root->get<Grid>()->tile_height() * end_idx.y;
+
+         tile_selection->get<Space>()->position(new_pos);
+         tile_selection->get<Rectangle>()->size(new_end - new_pos);
+
+         tile_selection->get<Collision>()->volume(tile_selection->get<Rectangle>()->global_bounds());
+      }
+
+      if (p1_bindings.get<MoveUpIntent>()->element()->is_pressed()) {
+         map_root->get<Space>()->move(sf::Vector2f(0, -10));
+         grid_root->get<Space>()->move(sf::Vector2f(0, -10));
+      }
+
+      if (p1_bindings.get<MoveLeftIntent>()->element()->is_pressed()) {
+         map_root->get<Space>()->move(sf::Vector2f(-10, 0));
+         grid_root->get<Space>()->move(sf::Vector2f(-10, 0));
+      }
+
+      if (p1_bindings.get<MoveRightIntent>()->element()->is_pressed()) {
+         map_root->get<Space>()->move(sf::Vector2f(10, 0));
+         grid_root->get<Space>()->move(sf::Vector2f(10, 0));
+      }
+
+      if (p1_bindings.get<MoveDownIntent>()->element()->is_pressed()) {
+         map_root->get<Space>()->move(sf::Vector2f(0, 10));
+         grid_root->get<Space>()->move(sf::Vector2f(0, 10));
+      }
+
+      if (p1_bindings.get<RemoveTilesIntent>()->element()->was_pressed()) {
+         if (map_root && tile_selection_maproot) {
+            TileMap* map = map_root->get<TileMap>();
+            Collision* collision = tile_selection_maproot->get<Collision>();
+
+            if (map && collision) {
+               map->remove(collision->volume());
+            }
+         }
+      }
+
+      if (p1_bindings.get<SerializeMapIntent>()->element()->was_pressed()) {
+         FileChannel* fc = new FileChannel("tilemap_test.txt");
+         Serializer* serializer = new JSONSerializer(3);
+
+         fc->seek(0);
+         std::string old_file_contents = serializer->read(static_cast<Channel&>(*fc));
+
+         // TODO: this should go in scene serialize/deserialize function?
+         Serializer::SerialData scene_data = serializer->deserialize(*this, old_file_contents);
+
+         // modify the tilemap0 entry
+         scene_data["Tilemap0"] = map_root->get<TileMap>()->serialize(*serializer);
+
+         // write back to file
+         fc->remove();
+         fc->seek(0);
+         fc->send(serializer->serialize(scene_data));
+
+         Game::logger().msg("BuilderSceneInputSystem", Logger::INFO, "Saving map to file '" + fc->filename());
+
+         delete serializer;
+      }
+   });
+}
+
+void BuilderScene::create_mouse_entity(Game& game) {
+   // TODO: not sure about this pattern. Seems fragile
+   Entity* hud_root = this->get_entity("HudRootEntity");
+   Entity* map_root = this->get_entity("MapRootEntity");
+   Entity* grid_root = this->get_entity("GridRootEntity");
+   Entity* selection_rect = this->get_entity("SelectionRectangleEntity");
+   Entity* tile_selection = this->get_entity("TileSelectionEntity");
+   Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
+
+   GraphicalSystem* gs = dynamic_cast<GraphicalSystem*>(this->get_system("GraphicalSystem"));
 
    // create mouse cursor
    Entity* mouse_cursor = this->create_entity("MouseCursorEntity");
@@ -201,12 +446,11 @@ void BuilderScene::init(Game& game) {
    // This is an invisible entity that sits at the bottom of the hud layer to handle mouse behavior
    Entity* mouse_cursor_script = this->create_entity("MouseCursorScriptEntity");
 
-   this->send_message<AddToEntityMessage>(hud_root->handle(), mouse_cursor_script->handle(), 0);
-
    mouse_cursor_script->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
-
    mouse_cursor_script->add<Clickable>("MouseCursorClickable");
    mouse_cursor_script->add<Collision>("MouseCursorCollision", sf::FloatRect(0, 0, game.window().size().x, game.window().size().y));
+
+   this->send_message<AddToEntityMessage>(hud_root->handle(), mouse_cursor_script->handle(), 0);
 
    // define pan and selection tool behavior
    mouse_cursor_script->add<Callback>("MouseCursorScriptCallback");
@@ -363,212 +607,6 @@ void BuilderScene::init(Game& game) {
       // make sure the mouse cursor script collision volume fills the whole camera
       mouse_cursor_script->get<Collision>()->volume(sf::Vector2f(0, 0), new_size);
    });
-
-   // add keyboard inputs
-   hud_root->add<Callback>("HudRootCallback");
-   hud_root->add<PlayerProfile>("HudRootPlayerProfile", 1);
-
-   hud_root->get<Callback>()->on_update([this, grid_root, map_root, tile_selection, tile_selection_maproot, &game] () {
-      InputBinding& p1_bindings = game.get_player(1).bindings();
-
-      if (p1_bindings.get<GridVisibilityToggleIntent>()->element()->was_pressed()) {
-         this->send_message<SetGridVisibilityMessage>(grid_root->handle(), this->grid_visible_);
-         this->grid_visible_ = !this->grid_visible_;
-      }
-
-      if (p1_bindings.get<VisualDebugIntent>()->element()->was_pressed()) {
-         this->send_message<SetVisualDebugMessage>(this->visual_debug_enable_);
-         this->visual_debug_enable_ = !this->visual_debug_enable_;
-      }
-
-      if (p1_bindings.get<ResetViewIntent>()->element()->was_pressed()) {
-         map_root->get<Space>()->position(0, 0);
-         map_root->get<Space>()->scale(sf::Vector2f(1.f, 1.f));
-
-         sf::Vector2f pos = tile_selection->get<Space>()->position();
-         sf::Vector2f end = pos + tile_selection->get<Rectangle>()->size();
-
-         sf::Vector2i pos_idx = grid_root->get<Grid>()->grid_index(pos);
-         sf::Vector2i end_idx = grid_root->get<Grid>()->grid_index(end);
-
-         // reset grid
-         grid_root->get<Space>()->position(0, 0);
-         grid_root->get<Grid>()->zoom_factor(1.f, 1.f);
-
-         // recalculate tile selection visual
-         sf::Vector2f new_pos;
-         new_pos.x = grid_root->get<Grid>()->tile_width() * pos_idx.x;
-         new_pos.y = grid_root->get<Grid>()->tile_height() * pos_idx.y;
-
-         sf::Vector2f new_end;
-         new_end.x = grid_root->get<Grid>()->tile_width() * end_idx.x;
-         new_end.y = grid_root->get<Grid>()->tile_height() * end_idx.y;
-
-         tile_selection->get<Space>()->position(new_pos);
-         tile_selection->get<Rectangle>()->size(new_end - new_pos);
-
-         tile_selection->get<Collision>()->volume(tile_selection->get<Rectangle>()->global_bounds());
-      }
-
-      if (p1_bindings.get<MoveUpIntent>()->element()->is_pressed()) {
-         map_root->get<Space>()->move(sf::Vector2f(0, -10));
-         grid_root->get<Space>()->move(sf::Vector2f(0, -10));
-      }
-
-      if (p1_bindings.get<MoveLeftIntent>()->element()->is_pressed()) {
-         map_root->get<Space>()->move(sf::Vector2f(-10, 0));
-         grid_root->get<Space>()->move(sf::Vector2f(-10, 0));
-      }
-
-      if (p1_bindings.get<MoveRightIntent>()->element()->is_pressed()) {
-         map_root->get<Space>()->move(sf::Vector2f(10, 0));
-         grid_root->get<Space>()->move(sf::Vector2f(10, 0));
-      }
-
-      if (p1_bindings.get<MoveDownIntent>()->element()->is_pressed()) {
-         map_root->get<Space>()->move(sf::Vector2f(0, 10));
-         grid_root->get<Space>()->move(sf::Vector2f(0, 10));
-      }
-
-      if (p1_bindings.get<RemoveTilesIntent>()->element()->was_pressed()) {
-         if (map_root && tile_selection_maproot) {
-            TileMap* map = map_root->get<TileMap>();
-            Collision* collision = tile_selection_maproot->get<Collision>();
-
-            if (map && collision) {
-               map->remove(collision->volume());
-            }
-         }
-      }
-
-      if (p1_bindings.get<SerializeMapIntent>()->element()->was_pressed()) {
-         FileChannel* fc = new FileChannel("tilemap_test.txt");
-         Serializer* serializer = new JSONSerializer(3);
-
-         fc->seek(0);
-         std::string old_file_contents = serializer->read(static_cast<Channel&>(*fc));
-
-         // TODO: this should go in scene serialize/deserialize function?
-         Serializer::SerialData scene_data = serializer->deserialize(*this, old_file_contents);
-
-         // modify the tilemap0 entry
-         scene_data["Tilemap0"] = map_root->get<TileMap>()->serialize(*serializer);
-
-         // write back to file
-         fc->remove();
-         fc->seek(0);
-         fc->send(serializer->serialize(scene_data));
-
-         Game::logger().msg("BuilderSceneInputSystem", Logger::INFO, "Saving map to file '" + fc->filename());
-
-         delete serializer;
-      }
-   });
-}
-
-void BuilderScene::enter(Game& game) {
-   Game::logger().msg(this->id(), Logger::INFO, "Entering builder state.");
-}
-
-void BuilderScene::exit(Game& game) {
-   Game::logger().msg(this->id(), Logger::INFO, "Exiting builder state.");
-}
-
-void BuilderScene::process(Game& game, CloseInputEvent& e) {
-   game.unload_scene();
-}
-
-void BuilderScene::process(Game& game, MouseEnteredInputEvent& e) {
-   Entity* cursor = this->get_entity(this->mouse_cursor_);
-   if (cursor) {
-      cursor->get<Space>()->visible(true);
-   }
-}
-
-void BuilderScene::process(Game& game, MouseLeftInputEvent& e) {
-   Entity* cursor = this->get_entity(this->mouse_cursor_);
-   if (cursor) {
-      cursor->get<Space>()->visible(false);
-   }
-}
-
-void BuilderScene::load_fonts() {
-   // load fonts
-   this->fonts().load("retro", "retro.ttf");
-}
-
-void BuilderScene::load_textures() {
-   // load textures
-   this->textures().load("pokemon_tileset", "pkmn_tiles_outdoor1.png");
-   Game::logger().msg(this->id(), Logger::INFO, this->textures());
-}
-
-Handle BuilderScene::create_panel(std::string entity_id, sf::FloatRect bounds, std::string label /* = "" */) {
-   Entity* panel = this->create_entity(entity_id);
-
-   // UI colors
-   Color panel_bg_color(113, 94, 122, 255);
-   Color panel_bg_highlight(211, 206, 218, 230);
-   Color panel_bg_transparent(sf::Color::Transparent);
-
-   // calculate label offsets
-   int label_offset_top = 0;
-   int label_offset_left = 27;
-   
-   int label_padding_top = 2;
-   int label_padding_bottom = 0;
-   int label_padding_left = 3;
-   int label_padding_right = 3;
-
-   int padding_top = (label != "" ? 10 : 5);
-   int padding_bottom = 5;
-   int padding_left = 5;
-   int padding_right = 5;
-
-   // create panel background
-   panel->add<Rectangle>(entity_id + "Rectangle", 0, 0, bounds.width, bounds.height);
-   panel->get<Rectangle>()->color(panel_bg_color);
-   panel->get<Space>()->position(bounds.left, bounds.top);
-
-   // create panel decoration
-   Entity* panel_outline = this->create_entity(entity_id + "Decoration");
-   panel_outline->add<Rectangle>(
-      entity_id + "DecorationRectangle",
-      0,
-      0,
-      bounds.width - padding_left - padding_right,
-      bounds.height - padding_top - padding_bottom
-   );
-   panel_outline->get<Rectangle>()->color(panel_bg_transparent);
-   panel_outline->get<Rectangle>()->outline_color(panel_bg_highlight);
-   panel_outline->get<Rectangle>()->outline_thickness(2.0);
-
-   panel_outline->get<Space>()->position(padding_left, padding_top);
-
-   this->send_message<AddToEntityMessage>(panel->handle(), panel_outline->handle());
-
-   // create label if necessary
-   if (label != "") {
-      Entity* panel_title_back = this->create_entity(entity_id + "LabelBackground");
-      panel_title_back->add<Rectangle>(entity_id + "LabelBackgroundRectangle", 0, 0, 0, 0);
-      panel_title_back->get<Rectangle>()->color(panel_bg_color);
-      panel_title_back->get<Space>()->position(label_offset_left, label_offset_top);
-
-      this->send_message<AddToEntityMessage>(panel->handle(), panel_title_back->handle());
-
-      Entity* panel_title = this->create_entity(entity_id + "Label");
-      panel_title->add<Text>(entity_id + "LabelText", label, this->fonts().get("retro"), 12);
-      panel_title->get<Space>()->position(label_offset_left + label_padding_left, label_offset_top + label_padding_top);
-
-      this->send_message<AddToEntityMessage>(panel->handle(), panel_title->handle());
-
-      panel_title_back->get<Rectangle>()->size(
-         panel_title->get<Text>()->local_bounds().width + label_padding_left + label_padding_right,
-         panel_title->get<Text>()->local_bounds().height + label_padding_top + label_padding_bottom
-      );
-   }
-
-   return panel->handle();
 }
 
 void BuilderScene::create_backdrop(GraphicalSystem* gs) {
@@ -719,9 +757,6 @@ void BuilderScene::create_tile_palette(GraphicalSystem* gs, std::string& tileset
       });
 
       entity->get<Callback>()->left_release([entity, tile_selection_maproot, map_root, grid_root] () {
-         // remove any existing tiles in the selection if they exist
-         map_root->get<TileMap>()->remove(tile_selection_maproot->get<Collision>()->volume());
-
          // on click, fill the selected area (if it is active) with the clicked on tile
          sf::FloatRect tsc = tile_selection_maproot->get<Collision>()->volume();
          for (int x_pos = tsc.left; x_pos < tsc.left + tsc.width; x_pos += grid_root->get<Grid>()->tile_width()) {
