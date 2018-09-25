@@ -217,7 +217,7 @@ Handle BuilderScene::create_panel(std::string entity_id, sf::FloatRect bounds, b
 Handle BuilderScene::create_button(std::string entity_id, sf::FloatRect bounds, std::string button_text /* = "Button" */, std::function<void()> action /* = nullptr */) {
    Color button_bg_color(113, 94, 122, 255);
    Color button_bg_highlight(141, 116, 153, 255);
-   Color button_bg_down(87, 72, 94, 255);
+   Color button_bg_down(103, 84, 112, 255);
 
    Entity* button_text_entity = this->create_entity(entity_id + "ButtonText");
 
@@ -267,8 +267,13 @@ Handle BuilderScene::create_button(std::string entity_id, sf::FloatRect bounds, 
       button->get<Rectangle>()->color(button_bg_down);
    });
 
-   button_script_overlay->get<Callback>()->left_release([button, button_bg_color] () {
-      button->get<Rectangle>()->color(button_bg_color);
+   button_script_overlay->get<Callback>()->left_release([button, button_bg_color, button_bg_highlight, this] () {
+      sf::Vector2f mouse_pos(
+         this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position(),
+         this->game().get_player(1).bindings().get<MouseYIntent>()->element()->position()
+      );
+
+      button->get<Rectangle>()->color(button->get<Collision>()->volume().contains(mouse_pos) ? button_bg_highlight : button_bg_color);
    });
 
    this->send_message<AddToEntityMessage>(button->handle(), button_script_overlay->handle());
@@ -396,8 +401,8 @@ void BuilderScene::setup_keybindings(Game& game) {
    hud_root->add<Callback>("HudRootCallback");
    hud_root->add<PlayerProfile>("HudRootPlayerProfile", 1);
 
-   hud_root->get<Callback>()->on_update([this, grid_root, map_root, tile_selection, tile_selection_maproot, &game] () {
-      InputBinding& p1_bindings = game.get_player(1).bindings();
+   hud_root->get<Callback>()->on_update([this, grid_root, map_root, tile_selection, tile_selection_maproot] () {
+      InputBinding& p1_bindings = this->game().get_player(1).bindings();
 
       if (p1_bindings.get<GridVisibilityToggleIntent>()->element()->was_pressed()) {
          this->send_message<SetGridVisibilityMessage>(grid_root->handle(), this->grid_visible_);
@@ -515,7 +520,7 @@ void BuilderScene::create_mouse_entity(Game& game) {
    mouse_cursor->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
 
    mouse_cursor->add<Rectangle>("MouseCursorRectangle", 0, 0, 6, 6);
-   mouse_cursor->get<Rectangle>()->offset(3, 3);
+   mouse_cursor->get<Rectangle>()->offset(-3, -3);
    mouse_cursor->get<Rectangle>()->color(Color(sf::Color::Red));
 
    mouse_cursor->add<Text>("MouseCursorText", "0, 0", this->fonts().get("retro"), 12);
@@ -523,10 +528,10 @@ void BuilderScene::create_mouse_entity(Game& game) {
    mouse_cursor->get<Text>()->color(Color(sf::Color::White));
 
    mouse_cursor->add<Callback>("MouseCursorCallback");
-   mouse_cursor->get<Callback>()->mouse_move([mouse_cursor, map_root, &game] () {
+   mouse_cursor->get<Callback>()->mouse_move([mouse_cursor, map_root, this] () {
       sf::Vector2f new_pos;
-      new_pos.x = game.get_player(1).bindings().get<MouseXIntent>()->element()->position();
-      new_pos.y = game.get_player(1).bindings().get<MouseYIntent>()->element()->position();
+      new_pos.x = this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position();
+      new_pos.y = this->game().get_player(1).bindings().get<MouseYIntent>()->element()->position();
 
       sf::Vector2f screen_pos = map_root->get<Space>()->inverse_transform().transformPoint(new_pos);
 
@@ -555,10 +560,10 @@ void BuilderScene::create_mouse_entity(Game& game) {
 
    // define pan and selection tool behavior
    mouse_cursor_script->add<Callback>("MouseCursorScriptCallback");
-   mouse_cursor_script->get<Callback>()->mouse_move([mouse_cursor_script, selection_rect, map_root, grid_root, &game] () {
+   mouse_cursor_script->get<Callback>()->mouse_move([mouse_cursor_script, selection_rect, map_root, grid_root, this] () {
       sf::Vector2f new_pos;
-      new_pos.x = game.get_player(1).bindings().get<MouseXIntent>()->element()->position();
-      new_pos.y = game.get_player(1).bindings().get<MouseYIntent>()->element()->position();
+      new_pos.x = this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position();
+      new_pos.y = this->game().get_player(1).bindings().get<MouseYIntent>()->element()->position();
 
       Clickable* clickable = mouse_cursor_script->get<Clickable>();
       if (clickable && clickable->is_left_clicked()) {
@@ -587,8 +592,8 @@ void BuilderScene::create_mouse_entity(Game& game) {
       }
    });
 
-   mouse_cursor_script->get<Callback>()->mouse_wheel([mouse_cursor_script, tile_selection, map_root, grid_root, &game] () {
-      float mouse_wheel_pos = game.get_player(1).bindings().get<MouseWheelIntent>()->element()->position();
+   mouse_cursor_script->get<Callback>()->mouse_wheel([mouse_cursor_script, tile_selection, map_root, grid_root, this] () {
+      float mouse_wheel_pos = this->game().get_player(1).bindings().get<MouseWheelIntent>()->element()->position();
       float wheel_delta = mouse_wheel_pos - mouse_cursor_script->get<Callback>()->prev_mouse_wheel_pos();
 
       sf::Vector2f new_scale(map_root->get<Space>()->scale() + sf::Vector2f(wheel_delta / 12.5f, wheel_delta / 12.5f));
@@ -622,10 +627,10 @@ void BuilderScene::create_mouse_entity(Game& game) {
       grid_root->get<Grid>()->zoom_factor(new_scale);
    });
 
-   mouse_cursor_script->get<Callback>()->left_click([selection_rect, &game, this] () {
+   mouse_cursor_script->get<Callback>()->left_click([selection_rect, this] () {
       sf::Vector2f new_pos;
-      new_pos.x = game.get_player(1).bindings().get<MouseXIntent>()->element()->position();
-      new_pos.y = game.get_player(1).bindings().get<MouseYIntent>()->element()->position();
+      new_pos.x = this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position();
+      new_pos.y = this->game().get_player(1).bindings().get<MouseYIntent>()->element()->position();
 
       // summon selection rectangle
       selection_rect->get<Space>()->visible(true);
@@ -634,10 +639,10 @@ void BuilderScene::create_mouse_entity(Game& game) {
       selection_rect->get<Collision>()->volume(new_pos, sf::Vector2f(0, 0));
    });
 
-   mouse_cursor_script->get<Callback>()->left_release([selection_rect, tile_selection, tile_selection_maproot, mouse_cursor_script, map_root, grid_root, &game] () {
+   mouse_cursor_script->get<Callback>()->left_release([selection_rect, tile_selection, tile_selection_maproot, mouse_cursor_script, map_root, grid_root, this] () {
       sf::Vector2f release_pos;
-      release_pos.x = game.get_player(1).bindings().get<MouseXIntent>()->element()->position();
-      release_pos.y = game.get_player(1).bindings().get<MouseYIntent>()->element()->position();
+      release_pos.x = this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position();
+      release_pos.y = this->game().get_player(1).bindings().get<MouseYIntent>()->element()->position();
       release_pos = grid_root->get<Space>()->inverse_transform().transformPoint(release_pos);
 
       Clickable* clickable = mouse_cursor_script->get<Clickable>();
