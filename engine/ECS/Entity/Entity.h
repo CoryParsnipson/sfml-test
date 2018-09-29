@@ -32,6 +32,8 @@ public:
    std::string to_string();
    Handle handle() const;
 
+   void reset(); // deallocate all components from this entity
+
    template <
       typename ComponentType,       
       typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*  = nullptr

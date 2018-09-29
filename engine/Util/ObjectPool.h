@@ -77,8 +77,9 @@ private:
 // -----------------------------------------------------------------------------
 class ObjectPoolBase {
 public:
-   virtual ~ObjectPoolBase() {
-   }
+   virtual ~ObjectPoolBase() {}
+
+   virtual void remove(const Handle& handle) = 0;
 };
 
 // -----------------------------------------------------------------------------
@@ -108,7 +109,7 @@ public:
    bool get(Handle& handle, ObjectType*& out);
 
    template <typename... ComponentArgs> Handle add(ComponentArgs&&... args);
-   void remove(const Handle& handle);
+   virtual void remove(const Handle& handle);
 
    std::vector<ObjectType*> get_active_objects() const;
    const std::vector<Handle>& get_active_handles() const;

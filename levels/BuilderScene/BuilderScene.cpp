@@ -121,14 +121,14 @@ void BuilderScene::process(Game& game, CloseInputEvent& e) {
 }
 
 void BuilderScene::process(Game& game, MouseEnteredInputEvent& e) {
-   Entity* cursor = this->get_entity(this->mouse_cursor_);
+   Entity* cursor = this->get_entity("MouseCursorEntity");
    if (cursor) {
       cursor->get<Space>()->visible(true);
    }
 }
 
 void BuilderScene::process(Game& game, MouseLeftInputEvent& e) {
-   Entity* cursor = this->get_entity(this->mouse_cursor_);
+   Entity* cursor = this->get_entity("MouseCursorEntity");
    if (cursor) {
       cursor->get<Space>()->visible(false);
    }
@@ -366,8 +366,51 @@ void BuilderScene::create_hud(Game& game) {
 
    this->send_message<AddToEntityMessage>(hud_root->handle(), menu_panel->handle());
 
-   Handle test_button = this->create_button("TestButton", sf::FloatRect(0, 0, 0, 30));
-   this->send_message<AddToEntityMessage>(menu_panel->handle(), test_button);
+   Entity* test_button = this->get_entity(this->create_button("TestButton", sf::FloatRect(0, 0, 0, 30)));
+   this->send_message<AddToEntityMessage>(menu_panel->handle(), test_button->handle());
+
+   test_button->get<Callback>()->left_release([this] () {
+      Entity* hud_root = this->get_entity("HudRootEntity");
+      Entity* notification_root = this->create_entity("NotificationRootEntity");
+
+      notification_root->add<Rectangle>("NotificationBackdrop", 0, 0, this->game().window().size().x, this->game().window().size().y);
+      notification_root->get<Rectangle>()->color(sf::Color(0, 0, 0, 64));
+
+      notification_root->add<PlayerProfile>("NotificationPlayerProfile", 1);
+      notification_root->add<Clickable>("NotificationClickable");
+      notification_root->add<Collision>("NotificationCollision", notification_root->get<Rectangle>()->local_bounds());
+      notification_root->add<Callback>("NotificationCallback", false);
+
+      notification_root->get<Callback>()->left_release([notification_root] () {
+         notification_root->get<Space>()->visible(false);
+      });
+
+      notification_root->get<Callback>()->right_release([notification_root] () {
+         notification_root->get<Space>()->visible(false);
+      });
+
+      notification_root->get<Callback>()->camera_resize([this, notification_root] () {
+         notification_root->get<Rectangle>()->size(this->game().window().size());
+      });
+
+      this->send_message<AddToEntityMessage>(hud_root->handle(), notification_root->handle());
+
+      Entity* notification_box = this->get_entity(this->create_panel("NotificationBox", sf::FloatRect(this->game().window().size().x / 2.f - 150, this->game().window().size().y / 2.f - 75, 300, 150), true));
+
+      notification_box->add<PlayerProfile>("NotificationBoxPlayerProfile", 1);
+      notification_box->add<Callback>("NotificationBoxCallback");
+
+      notification_box->get<Callback>()->camera_resize([this, notification_box] () {
+         sf::Vector2f screen_center(this->game().window().size() / 2.f);
+         notification_box->get<Space>()->position(screen_center - notification_box->get<Rectangle>()->size() / 2.f);
+      });
+
+      this->send_message<AddToEntityMessage>(notification_root->handle(), notification_box->handle());
+
+      // TEST
+      this->remove_entity(notification_root->handle());
+      // END TEST
+   });
 }
 
 void BuilderScene::setup_keybindings(Game& game) {
@@ -510,12 +553,8 @@ void BuilderScene::create_mouse_entity(Game& game) {
 
    GraphicalSystem* gs = dynamic_cast<GraphicalSystem*>(this->get_system("GraphicalSystem"));
 
-   // create mouse cursor
+   // create mouse cursor (this adds to scene graph root by default, which will be on top of everything)
    Entity* mouse_cursor = this->create_entity("MouseCursorEntity");
-   this->mouse_cursor_ = mouse_cursor->handle();
-
-   // add mouse_cursor to the hud_root
-   this->send_message<AddToEntityMessage>(hud_root->handle(), mouse_cursor->handle()); // added this last to put it on top
 
    mouse_cursor->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
 
@@ -549,7 +588,7 @@ void BuilderScene::create_mouse_entity(Game& game) {
       );
    });
 
-   // This is an invisible entity that sits at the bottom of the hud layer to handle mouse behavior
+   // This is an invisible entity that sits at the bottom of the hud layer to handle tilemap mouse interactions
    Entity* mouse_cursor_script = this->create_entity("MouseCursorScriptEntity");
 
    mouse_cursor_script->add<PlayerProfile>("MouseCursorPlayerProfile", 1);

@@ -208,9 +208,10 @@ public:
    }
 
    void remove_entity(Handle handle) {
-      // let Systems know a new Entity has been made
+      // let Systems know a new Entity has been deallocated
       this->send_message<EntityDestroyedMessage>(handle);
 
+      this->entities_.get(handle)->reset();
       this->entities_.remove(handle);
    }
    

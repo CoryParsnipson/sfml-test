@@ -33,8 +33,6 @@ public:
    virtual void process(Game& game, MouseLeftInputEvent& e);
 
 private:
-   Handle mouse_cursor_;
-
    bool grid_visible_;
    bool visual_debug_enable_;
 

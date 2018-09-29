@@ -45,6 +45,8 @@ public:
    >
    void remove(Handle handle);
 
+   void remove(std::type_index component_type, Handle handle);
+
 private:
    ComponentPools components_;
 };
