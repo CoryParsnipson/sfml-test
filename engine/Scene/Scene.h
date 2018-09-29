@@ -207,12 +207,50 @@ public:
       return this->get_entity(this->bookmarks_[id]);
    }
 
-   void remove_entity(Handle handle) {
-      // let Systems know a new Entity has been deallocated
-      this->send_message<EntityDestroyedMessage>(handle);
+   void remove_entity(Handle handle, bool recursive = false) {
+      Entity* e = this->get_entity(handle);
+      if (!e) {
+         // fail silently
+         return;
+      }
 
-      this->entities_.get(handle)->reset();
-      this->entities_.remove(handle);
+      if (!recursive) {
+         // let Systems know a new Entity has been deallocated
+         this->send_message<EntityDestroyedMessage>(handle);
+
+         this->entities_.get(handle)->reset();
+         this->entities_.remove(handle);
+      } else {
+         // if recursive is set, delete all children of handle too
+         std::vector<Handle> entities;
+         std::vector<Handle> postorder;
+
+         entities.push_back(handle);
+
+         while (!entities.empty()) {
+            Entity* current = this->get_entity(entities.back());
+            entities.pop_back();
+
+            if (!current) {
+               continue;
+            }
+
+            postorder.push_back(current->handle());
+            Space* space = current->get<Space>();
+
+            for (unsigned int i = 0; i < space->num_children(); ++i) {
+               entities.push_back(space->get(i));
+            }
+         }
+
+         for (std::vector<Handle>::reverse_iterator it = postorder.rbegin(); it != postorder.rend(); ++it) {
+            // let Systems know a new Entity has been deallocated
+            this->send_message<EntityDestroyedMessage>(*it);
+
+            this->entities_.get(*it)->reset();
+            this->entities_.remove(*it);
+         }
+      }
    }
    
    std::vector<Handle> entities() const {

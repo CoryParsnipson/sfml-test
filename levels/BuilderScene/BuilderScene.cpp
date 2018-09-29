@@ -370,46 +370,7 @@ void BuilderScene::create_hud(Game& game) {
    this->send_message<AddToEntityMessage>(menu_panel->handle(), test_button->handle());
 
    test_button->get<Callback>()->left_release([this] () {
-      Entity* hud_root = this->get_entity("HudRootEntity");
-      Entity* notification_root = this->create_entity("NotificationRootEntity");
-
-      notification_root->add<Rectangle>("NotificationBackdrop", 0, 0, this->game().window().size().x, this->game().window().size().y);
-      notification_root->get<Rectangle>()->color(sf::Color(0, 0, 0, 64));
-
-      notification_root->add<PlayerProfile>("NotificationPlayerProfile", 1);
-      notification_root->add<Clickable>("NotificationClickable");
-      notification_root->add<Collision>("NotificationCollision", notification_root->get<Rectangle>()->local_bounds());
-      notification_root->add<Callback>("NotificationCallback", false);
-
-      notification_root->get<Callback>()->left_release([notification_root] () {
-         notification_root->get<Space>()->visible(false);
-      });
-
-      notification_root->get<Callback>()->right_release([notification_root] () {
-         notification_root->get<Space>()->visible(false);
-      });
-
-      notification_root->get<Callback>()->camera_resize([this, notification_root] () {
-         notification_root->get<Rectangle>()->size(this->game().window().size());
-      });
-
-      this->send_message<AddToEntityMessage>(hud_root->handle(), notification_root->handle());
-
-      Entity* notification_box = this->get_entity(this->create_panel("NotificationBox", sf::FloatRect(this->game().window().size().x / 2.f - 150, this->game().window().size().y / 2.f - 75, 300, 150), true));
-
-      notification_box->add<PlayerProfile>("NotificationBoxPlayerProfile", 1);
-      notification_box->add<Callback>("NotificationBoxCallback");
-
-      notification_box->get<Callback>()->camera_resize([this, notification_box] () {
-         sf::Vector2f screen_center(this->game().window().size() / 2.f);
-         notification_box->get<Space>()->position(screen_center - notification_box->get<Rectangle>()->size() / 2.f);
-      });
-
-      this->send_message<AddToEntityMessage>(notification_root->handle(), notification_box->handle());
-
-      // TEST
-      this->remove_entity(notification_root->handle());
-      // END TEST
+      this->get_entity(this->create_notification());
    });
 }
 
@@ -917,4 +878,47 @@ void BuilderScene::create_tile_palette(GraphicalSystem* gs, std::string& tileset
 
    // putting this here because tpw_hover needs to be on top of all tiles
    this->send_message<AddToEntityMessage>(tile_palette->handle(), tpw_hover->handle());
+}
+
+Handle BuilderScene::create_notification() {
+   Entity* hud_root = this->get_entity("HudRootEntity");
+   Entity* notification_root = this->create_entity("NotificationRootEntity");
+
+   notification_root->add<Rectangle>("NotificationBackdrop", 0, 0, this->game().window().size().x, this->game().window().size().y);
+   notification_root->get<Rectangle>()->color(sf::Color(0, 0, 0, 96));
+
+   notification_root->add<PlayerProfile>("NotificationPlayerProfile", 1);
+   notification_root->add<Clickable>("NotificationClickable");
+   notification_root->add<Collision>("NotificationCollision", notification_root->get<Rectangle>()->local_bounds());
+   notification_root->add<Callback>("NotificationCallback");
+
+   notification_root->get<Callback>()->left_release([this, notification_root] () {
+      this->remove_entity(notification_root->handle(), true);
+   });
+
+   notification_root->get<Callback>()->right_release([this, notification_root] () {
+      this->remove_entity(notification_root->handle(), true);
+   });
+
+   notification_root->get<Callback>()->camera_resize([this, notification_root] () {
+      notification_root->get<Rectangle>()->size(this->game().window().size());
+   });
+
+   this->send_message<AddToEntityMessage>(hud_root->handle(), notification_root->handle());
+
+   Entity* notification_box = this->get_entity(this->create_panel("NotificationBox", sf::FloatRect(this->game().window().size().x / 2.f - 150, this->game().window().size().y / 2.f - 75, 300, 150), true));
+
+   notification_box->add<PlayerProfile>("NotificationBoxPlayerProfile", 1);
+   notification_box->add<Clickable>("NotificationBoxClickable");
+   notification_box->add<Collision>("NotificationBoxCollision", notification_box->get<Rectangle>()->local_bounds());
+   notification_box->add<Callback>("NotificationBoxCallback", false);
+
+   notification_box->get<Callback>()->camera_resize([this, notification_box] () {
+      sf::Vector2f screen_center(this->game().window().size() / 2.f);
+      notification_box->get<Space>()->position(screen_center - notification_box->get<Rectangle>()->size() / 2.f);
+   });
+
+   this->send_message<AddToEntityMessage>(notification_root->handle(), notification_box->handle());
+
+   return notification_box->handle();
 }
