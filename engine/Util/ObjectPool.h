@@ -66,10 +66,6 @@ private:
 };
 
 // -----------------------------------------------------------------------------
-// Handle class member functions
-// -----------------------------------------------------------------------------
-
-// -----------------------------------------------------------------------------
 // ObjectPoolBase
 //
 // This is a mostly empty base class for ObjectPool for polymorphic storage
@@ -79,6 +75,7 @@ class ObjectPoolBase {
 public:
    virtual ~ObjectPoolBase() {}
 
+   // TODO: probably want to pull up more functions from ObjectPool
    virtual void remove(const Handle& handle) = 0;
 };
 
