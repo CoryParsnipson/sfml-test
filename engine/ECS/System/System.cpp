@@ -59,17 +59,6 @@ void System::init(Game& game) {
    // filter in subscription list should be initialized in pre_init() or on_init()
    this->subscription_->init();
 
-   // add some reasonable defaults to certain message types
-   this->install_message_handler<ComponentAddedMessage>([this](ComponentAddedMessage& msg) {
-      this->subscription().clear();
-      this->subscription().init();
-   });
-
-   this->install_message_handler<ComponentRemovedMessage>([this](ComponentRemovedMessage& msg) {
-      this->subscription().clear();
-      this->subscription().init();
-   });
-
    this->post_init(game);
 }
 
@@ -79,6 +68,9 @@ void System::update(Game& game) {
    }
 
    assert(this->scene_ != nullptr);
+
+   // TODO: don't init subscription every update loop! Tremendous optimization opportunity here
+   this->subscription_->init();
 
    this->pre_update(game);
    this->handle_queued_messages();

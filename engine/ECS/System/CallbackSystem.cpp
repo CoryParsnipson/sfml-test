@@ -66,6 +66,7 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
    InputBinding& bindings(game.get_player(pid).bindings());
 
    assert(callback != nullptr);
+   assert(e.get<PlayerProfile>() != nullptr);
 
    prev_pos = e.get<Callback>()->prev_mouse_pos();
    if (bindings.get<MouseXIntent>() && bindings.get<MouseYIntent>()) {

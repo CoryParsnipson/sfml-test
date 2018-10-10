@@ -14,30 +14,6 @@ PostorderEntitySubscription::PostorderEntitySubscription(System* system, const s
 : EntitySubscription(system, id)
 , reverse_children_(reverse_children)
 {
-   // set some messaging callbacks for when to update the entity list
-   this->install_message_handler<EntityDestroyedMessage>([this](EntityDestroyedMessage& msg) {
-      this->init(); // rebuild entire entity list (is there an algorithm that can do better?)
-   });
-
-   this->install_message_handler<AddToEntityMessage>([this](AddToEntityMessage& msg) {
-      this->init(); // rebuild entire entity list (is there an algorithm that can do better?)
-   });
-
-   this->install_message_handler<RemoveFromEntityMessage>([this](RemoveFromEntityMessage& msg) {
-      this->init(); // rebuild entire entity list (is there an algorithm that can do better?)
-   });
-
-   this->install_message_handler<ComponentAddedMessage>([this](ComponentAddedMessage& msg) {
-      if (this->filter(msg.entity) && std::find(this->entities_.begin(), this->entities_.end(), msg.entity) == this->entities_.end()) {
-         this->init(); // rebuild entire entity list (is there an algorithm that can do better?)
-      }
-   });
-
-   this->install_message_handler<ComponentRemovedMessage>([this](ComponentRemovedMessage& msg) {
-      if (this->filter(msg.entity) && std::find(this->entities_.begin(), this->entities_.end(), msg.entity) != this->entities_.end()) {
-         this->init(); // rebuild entire entity list (is there an algorithm that can do better?)
-      }
-   });
 }
 
 PostorderEntitySubscription::~PostorderEntitySubscription() {
