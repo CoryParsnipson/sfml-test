@@ -12,7 +12,7 @@
 // ----------------------------------------------------------------------------
 class Grid : public Component {
 public:
-   explicit Grid(const std::string& id = "Grid Component", sf::Vector2f origin = sf::Vector2f(0, 0), float width = 1.f, float height = 1.f);
+   explicit Grid(const std::string& id = "Grid Component", sf::Vector2f origin = sf::Vector2f(0, 0), float width = 32.f, float height = 32.f);
    Grid(const Grid& other);
    virtual ~Grid();
 

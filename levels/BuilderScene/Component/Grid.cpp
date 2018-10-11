@@ -3,7 +3,7 @@
 
 #include "Grid.h"
 
-Grid::Grid(const std::string& id /* = "Grid Component" */, sf::Vector2f origin /* = sf::Vector2f(0, 0) */, float width /* = 1.f */, float height /* = 1.f */)
+Grid::Grid(const std::string& id /* = "Grid Component" */, sf::Vector2f origin /* = sf::Vector2f(0, 0) */, float width /* = 32.f */, float height /* = 32.f */)
 : Component(id)
 , origin_(origin)
 , tile_width_(width)

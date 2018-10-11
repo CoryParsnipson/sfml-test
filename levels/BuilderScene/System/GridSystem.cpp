@@ -28,6 +28,10 @@ CameraPtr GridSystem::camera() {
    return this->camera_;
 }
 
+void GridSystem::force_update() {
+   this->force_update_ = true;
+}
+
 void GridSystem::on_init(Game& game) {
    this->subscribe_to().all_of<Space, Grid>();
 

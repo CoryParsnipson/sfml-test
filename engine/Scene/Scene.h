@@ -207,6 +207,10 @@ public:
       return this->get_entity(this->bookmarks_[id]);
    }
 
+   Handle get_entity_handle(const std::string& id) {
+      return this->bookmarks_[id];
+   }
+
    void remove_entity(Handle handle, bool recursive = false) {
       Entity* e = this->get_entity(handle);
       if (!e) {

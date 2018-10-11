@@ -18,6 +18,8 @@ public:
 
    CameraPtr camera();
 
+   void force_update();
+
 private:
    virtual void on_init(Game& game);
    virtual void on_update(Game& game, Entity& e);

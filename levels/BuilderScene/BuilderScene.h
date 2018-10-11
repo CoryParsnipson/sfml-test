@@ -51,14 +51,15 @@ private:
    void create_hud(Game& game);
 
    void setup_keybindings(Game& game);
+   void load_from_file(std::string filename);
 
    void create_mouse_entity(Game& game);
    void create_backdrop(GraphicalSystem* gs);
    void create_fps_display(GraphicalSystem* gs);
-   void create_tile_palette(GraphicalSystem* gs, std::string& tileset_data);
+   void create_tile_palette(GraphicalSystem* gs);
 
    Handle create_notification(float width, float height);
-   Handle create_textbox(std::string entity_id, float width, int charsize = 12, bool auto_focus = false, unsigned int max_len = 30);
+   Handle create_textbox(std::string entity_id, float width, int charsize = 12, unsigned int max_len = 30);
 };
 
 #endif
