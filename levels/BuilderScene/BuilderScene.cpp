@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include <SFML/Graphics.hpp>
 
 #include "BuilderScene.h"
@@ -17,6 +19,7 @@
 #include "PlayerProfile.h"
 #include "TileMap.h"
 #include "Grid.h"
+#include "Focus.h"
 
 #include "FileChannel.h"
 #include "JSONSerializer.h"
@@ -35,6 +38,7 @@
 #include "MoveRightIntent.h"
 #include "MoveDownIntent.h"
 #include "SerializeMapIntent.h"
+#include "ModalIntent.h"
 
 #include "PreorderEntitySubscription.h"
 
@@ -46,6 +50,11 @@
 #include "SetGridVisibilityMessage.h"
 #include "SetVisualDebugMessage.h"
 #include "EntityIdChangedMessage.h"
+
+#define KB_CAPTURE(keycode, key, shifted_key) \
+   if (keyboard->get(keycode)->was_pressed()) { \
+      new_char = keyboard->get("LShift")->is_pressed() || keyboard->get("RShift")->is_pressed() ? shifted_key : key; \
+   }
 
 BuilderScene::BuilderScene()
 : Scene("BuilderScene")
@@ -370,7 +379,19 @@ void BuilderScene::create_hud(Game& game) {
    this->send_message<AddToEntityMessage>(menu_panel->handle(), test_button->handle());
 
    test_button->get<Callback>()->left_release([this] () {
-      this->get_entity(this->create_notification());
+      Entity* n_box = this->get_entity(this->create_notification(300, 150));
+
+      Entity* n_box_title = this->create_entity("n_box_title");
+
+      n_box_title->add<Text>("n_box_title_text", "Load from File", this->fonts().get("retro"), 12);
+      n_box_title->get<Space>()->position(10, 10);
+
+      this->send_message<AddToEntityMessage>(n_box->handle(), n_box_title->handle());
+
+      Entity* textbox = this->get_entity(this->create_textbox("FileLoadTextbox", 200, 12, true));
+      textbox->get<Space>()->position(15, 40);
+
+      this->send_message_sync<AddToEntityMessage>(n_box->handle(), textbox->handle());
    });
 }
 
@@ -384,11 +405,14 @@ void BuilderScene::setup_keybindings(Game& game) {
 
    // setup player's input mapping
    game.add_player(1);
+
    game.get_player(1).bindings().set<MouseXIntent>(0, game.input_manager().get_device(0)->get("PositionX"));
    game.get_player(1).bindings().set<MouseYIntent>(0, game.input_manager().get_device(0)->get("PositionY"));
    game.get_player(1).bindings().set<MouseWheelIntent>(0, game.input_manager().get_device(0)->get("Wheel"));
    game.get_player(1).bindings().set<LeftClickIntent>(0, game.input_manager().get_device(0)->get("Left"));
    game.get_player(1).bindings().set<RightClickIntent>(0, game.input_manager().get_device(0)->get("Right"));
+
+   game.get_player(1).bindings().set<ModalIntent>(0, game.input_manager().get_device(1)->get("LCtrl"));
 
    game.get_player(1).bindings().set<GridVisibilityToggleIntent>(1, game.input_manager().get_device(1)->get("G"));
    game.get_player(1).bindings().set<VisualDebugIntent>(1, game.input_manager().get_device(1)->get("D"));
@@ -408,17 +432,17 @@ void BuilderScene::setup_keybindings(Game& game) {
    hud_root->get<Callback>()->on_update([this, grid_root, map_root, tile_selection, tile_selection_maproot] () {
       InputBinding& p1_bindings = this->game().get_player(1).bindings();
 
-      if (p1_bindings.get<GridVisibilityToggleIntent>()->element()->was_pressed()) {
+      if (p1_bindings.get<GridVisibilityToggleIntent>()->element()->was_pressed() && p1_bindings.get<ModalIntent>()->element()->is_pressed()) {
          this->send_message<SetGridVisibilityMessage>(grid_root->handle(), this->grid_visible_);
          this->grid_visible_ = !this->grid_visible_;
       }
 
-      if (p1_bindings.get<VisualDebugIntent>()->element()->was_pressed()) {
+      if (p1_bindings.get<VisualDebugIntent>()->element()->was_pressed() && p1_bindings.get<ModalIntent>()->element()->is_pressed()) {
          this->send_message<SetVisualDebugMessage>(this->visual_debug_enable_);
          this->visual_debug_enable_ = !this->visual_debug_enable_;
       }
 
-      if (p1_bindings.get<ResetViewIntent>()->element()->was_pressed()) {
+      if (p1_bindings.get<ResetViewIntent>()->element()->was_pressed() && p1_bindings.get<ModalIntent>()->element()->is_pressed()) {
          map_root->get<Space>()->position(0, 0);
          map_root->get<Space>()->scale(sf::Vector2f(1.f, 1.f));
 
@@ -478,7 +502,7 @@ void BuilderScene::setup_keybindings(Game& game) {
          }
       }
 
-      if (p1_bindings.get<SerializeMapIntent>()->element()->was_pressed()) {
+      if (p1_bindings.get<SerializeMapIntent>()->element()->was_pressed() && p1_bindings.get<ModalIntent>()->element()->is_pressed()) {
          FileChannel* fc = new FileChannel("tilemap_test.txt");
          Serializer* serializer = new JSONSerializer(3);
 
@@ -880,7 +904,7 @@ void BuilderScene::create_tile_palette(GraphicalSystem* gs, std::string& tileset
    this->send_message<AddToEntityMessage>(tile_palette->handle(), tpw_hover->handle());
 }
 
-Handle BuilderScene::create_notification() {
+Handle BuilderScene::create_notification(float width, float height) {
    Entity* hud_root = this->get_entity("HudRootEntity");
    Entity* notification_root = this->create_entity("NotificationRootEntity");
 
@@ -906,7 +930,7 @@ Handle BuilderScene::create_notification() {
 
    this->send_message<AddToEntityMessage>(hud_root->handle(), notification_root->handle());
 
-   Entity* notification_box = this->get_entity(this->create_panel("NotificationBox", sf::FloatRect(this->game().window().size().x / 2.f - 150, this->game().window().size().y / 2.f - 75, 300, 150), true));
+   Entity* notification_box = this->get_entity(this->create_panel("NotificationBox", sf::FloatRect(this->game().window().size().x / 2.f - width / 2.f, this->game().window().size().y / 2.f - height / 2.f, width, height), true));
 
    notification_box->add<PlayerProfile>("NotificationBoxPlayerProfile", 1);
    notification_box->add<Clickable>("NotificationBoxClickable");
@@ -921,4 +945,119 @@ Handle BuilderScene::create_notification() {
    this->send_message<AddToEntityMessage>(notification_root->handle(), notification_box->handle());
 
    return notification_box->handle();
+}
+
+Handle BuilderScene::create_textbox(
+   std::string entity_id,
+   float width,
+   int charsize /* = 12 */,
+   bool auto_focus /* = false */,
+   unsigned int max_len /* = 30 */
+) {
+   int textbox_height = std::ceil(charsize * 1.2f) + 3;
+   Color textbox_bg(89, 74, 96, 255);
+   Color textbox_outline(196, 191, 203, 230);
+
+   Entity* tb = this->create_entity(entity_id);
+   
+   tb->add<Rectangle>(entity_id + "Rectangle", 0, 0, width, textbox_height);
+   tb->get<Rectangle>()->color(textbox_bg);
+   tb->get<Rectangle>()->outline_color(textbox_outline);
+   tb->get<Rectangle>()->outline_thickness(2.0);
+
+   tb->add<Text>(entity_id + "Text", "", this->fonts().get("retro"), 12);
+   tb->get<Text>()->offset(10, 2);
+   tb->get<Text>()->color(textbox_outline);
+
+   if (auto_focus) {
+      tb->add<Focus>(entity_id + "Focus");
+   }
+
+   tb->add<PlayerProfile>(entity_id + "PlayerProfile", 1);
+   tb->add<Clickable>(entity_id + "Clickable");
+   tb->add<Collision>(entity_id + "Collision", tb->get<Rectangle>()->local_bounds());
+   tb->add<Callback>(entity_id + "Callback");
+
+   tb->get<Callback>()->on_update([this, tb, max_len] () {
+      if (!tb->get<Focus>()) {
+         return;
+      }
+
+      assert(tb->get<Text>());
+
+      InputDevice* keyboard = this->game().input_manager().get_device(1);
+
+      std::string new_char;
+      std::string new_value = tb->get<Text>()->string();
+
+      KB_CAPTURE("A", "a", "A");
+      KB_CAPTURE("B", "b", "B");
+      KB_CAPTURE("C", "c", "C");
+      KB_CAPTURE("D", "d", "D");
+      KB_CAPTURE("E", "e", "E");
+      KB_CAPTURE("F", "f", "F");
+      KB_CAPTURE("G", "g", "G");
+      KB_CAPTURE("H", "h", "H");
+      KB_CAPTURE("I", "i", "I");
+      KB_CAPTURE("J", "j", "J");
+      KB_CAPTURE("K", "k", "K");
+      KB_CAPTURE("L", "l", "L");
+      KB_CAPTURE("M", "m", "M");
+      KB_CAPTURE("N", "n", "N");
+      KB_CAPTURE("O", "o", "O");
+      KB_CAPTURE("P", "p", "P");
+      KB_CAPTURE("Q", "q", "Q");
+      KB_CAPTURE("R", "r", "R");
+      KB_CAPTURE("S", "s", "S");
+      KB_CAPTURE("T", "t", "T");
+      KB_CAPTURE("U", "u", "U");
+      KB_CAPTURE("V", "v", "V");
+      KB_CAPTURE("W", "w", "W");
+      KB_CAPTURE("X", "x", "X");
+      KB_CAPTURE("Y", "y", "Y");
+      KB_CAPTURE("Z", "z", "Z");
+      KB_CAPTURE("Num0", "0", ")");
+      KB_CAPTURE("Num1", "1", "!");
+      KB_CAPTURE("Num2", "2", "@");
+      KB_CAPTURE("Num3", "3", "#");
+      KB_CAPTURE("Num4", "4", "$");
+      KB_CAPTURE("Num5", "5", "%");
+      KB_CAPTURE("Num6", "6", "^");
+      KB_CAPTURE("Num7", "7", "&");
+      KB_CAPTURE("Num8", "8", "*");
+      KB_CAPTURE("Num9", "9", "(");
+      KB_CAPTURE("Numpad0", "0", "0");
+      KB_CAPTURE("Numpad1", "1", "1");
+      KB_CAPTURE("Numpad2", "2", "2");
+      KB_CAPTURE("Numpad3", "3", "3");
+      KB_CAPTURE("Numpad4", "4", "4");
+      KB_CAPTURE("Numpad5", "5", "5");
+      KB_CAPTURE("Numpad6", "6", "6");
+      KB_CAPTURE("Numpad7", "7", "7");
+      KB_CAPTURE("Numpad8", "8", "8");
+      KB_CAPTURE("Numpad9", "9", "9");
+      KB_CAPTURE("Dash", "-", "_");
+      KB_CAPTURE("Equal", "=", "+");
+      KB_CAPTURE("Space", " ", " ");
+      KB_CAPTURE("SemiColon", ";", ":");
+      KB_CAPTURE("Comma", ",", "<");
+      KB_CAPTURE("Period", ".", ">");
+      KB_CAPTURE("Slash", "/", "?");
+      KB_CAPTURE("BackSlash", "\\", "|");
+
+      if (keyboard->get("Backspace")->was_pressed() && new_value.size() > 0) {
+         new_value.pop_back();
+         tb->get<Text>()->string(new_value);
+      }
+
+      if (new_char != "") {
+         if (new_value.size() < max_len) {
+            new_value += new_char;
+         }
+
+         tb->get<Text>()->string(new_value);
+      }
+   });
+
+   return tb->handle();
 }

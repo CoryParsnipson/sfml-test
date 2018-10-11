@@ -57,7 +57,8 @@ private:
    void create_fps_display(GraphicalSystem* gs);
    void create_tile_palette(GraphicalSystem* gs, std::string& tileset_data);
 
-   Handle create_notification();
+   Handle create_notification(float width, float height);
+   Handle create_textbox(std::string entity_id, float width, int charsize = 12, bool auto_focus = false, unsigned int max_len = 30);
 };
 
 #endif
