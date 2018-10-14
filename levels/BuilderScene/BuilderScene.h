@@ -41,8 +41,9 @@ private:
    int frame_measurement_interval;
    int frame_count;
 
+   std::string scene_data_filename;
+
    void load_fonts();
-   void load_textures();
 
    // helper methods
    Handle create_panel(std::string entity_id, sf::FloatRect bounds, bool create_decoration = false, std::string label = "");

@@ -63,6 +63,7 @@ BuilderScene::BuilderScene()
 , last_frame_time(0)
 , frame_measurement_interval(6)
 , frame_count(0)
+, scene_data_filename()
 {
 }
 
@@ -71,7 +72,6 @@ BuilderScene::~BuilderScene() {
 
 void BuilderScene::init(Game& game) {
    this->load_fonts();
-   this->load_textures();
 
    // make map_root, grid_root, and hud_root (ordering is important here for layering reasons)
    Entity* map_root = this->create_entity("MapRootEntity");
@@ -131,12 +131,6 @@ void BuilderScene::process(Game& game, MouseLeftInputEvent& e) {
 void BuilderScene::load_fonts() {
    // load fonts
    this->fonts().load("retro", "retro.ttf");
-}
-
-void BuilderScene::load_textures() {
-   // load textures
-   this->textures().load("pokemon_tileset", "pkmn_tiles_outdoor1.png");
-   Game::logger().msg(this->id(), Logger::INFO, this->textures());
 }
 
 Handle BuilderScene::create_panel(std::string entity_id, sf::FloatRect bounds, bool create_decoration /* = false */, std::string label /* = "" */) {
@@ -508,7 +502,11 @@ void BuilderScene::setup_keybindings(Game& game) {
       }
 
       if (p1_bindings.get<SerializeMapIntent>()->element()->was_pressed() && p1_bindings.get<ModalIntent>()->element()->is_pressed()) {
-         FileChannel* fc = new FileChannel("tilemap_test.txt");
+         if (this->scene_data_filename == "") {
+            return;
+         }
+
+         FileChannel* fc = new FileChannel(this->scene_data_filename);
          Serializer* serializer = new JSONSerializer(3);
 
          fc->seek(0);
@@ -587,6 +585,16 @@ void BuilderScene::load_from_file(std::string filename) {
    // TODO: catch parse errors
    Serializer::SerialData scene_data = serializer.deserialize(*this, raw_save_file);
 
+   this->scene_data_filename = filename;
+
+   // load in map textures
+   Serializer::SerialData texture_data = serializer.deserialize(*this, scene_data["Textures"]);
+   for (Serializer::SerialData::iterator it = texture_data.begin(); it != texture_data.end(); ++it) {
+      Serializer::SerialData texture_item = serializer.deserialize(*this, it->second);
+      this->textures().load(texture_item["id"], texture_item["filename"]);
+   }
+   Game::logger().msg(this->id(), Logger::INFO, this->textures());
+
    // deserialize tilemap
    if (scene_data.find("Tilemap0") != scene_data.end()) {
       map_root->get<TileMap>()->deserialize(static_cast<Serializer&>(serializer), *this, scene_data["Tilemap0"]);
@@ -617,8 +625,8 @@ void BuilderScene::load_from_file(std::string filename) {
       Serializer::SerialData tile_data = serializer.deserialize(*this, tileset_data["tile_" + std::to_string(tile_idx)]);
 
       sf::IntRect tile_texture_rect(
-         std::stoi(tile_data["top"]),
          std::stoi(tile_data["left"]),
+         std::stoi(tile_data["top"]),
          std::stoi(tile_data["width"]),
          std::stoi(tile_data["height"])
       );

@@ -46,6 +46,7 @@ void MegamanScene::init(Game& game) {
 
    // load textures
    this->textures().load("megaman_zero_spritesheet", "megaman_zero.png");
+   this->textures().load("megaman_zero_tileset", "megaman_zero_bg.png");
 
    // setup player's input mapping
    game.add_player(1);
