@@ -150,8 +150,8 @@ void GridSystem::on_update(Game& game, Entity& e) {
       rows[r]->get<Space>()->visible(false);
    }
 
-   // make the text marker interval inversely dependent on grid zoom
-   unsigned int interval = std::max(1, static_cast<int>(6 / e.get<Grid>()->zoom_factor().x));
+   // make the text marker interval about every 200 pixels
+   unsigned int interval = std::round(200 / (std::min(e.get<Grid>()->tile_height(), e.get<Grid>()->tile_width()) * e.get<Grid>()->zoom_factor().x));
 
    // update the text markers
    gridline_id = 0;
