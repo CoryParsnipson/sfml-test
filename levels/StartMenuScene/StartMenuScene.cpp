@@ -161,8 +161,7 @@ void StartMenuScene::init(Game& game) {
    text_layer->add<PlayerProfile>("RootPlayerProfile", 1);
    text_layer->add<Callback>("RootCallback");
    
-   // TODO: create a better way to get Systems
-   GraphicalSystem* gs = dynamic_cast<GraphicalSystem*>(this->get_system("GraphicalSystem"));
+   GraphicalSystem* gs = this->get_system<GraphicalSystem>("GraphicalSystem");
 
    text_layer->get<Callback>()->camera_resize([text_layer, gs] () {
       text_layer->get<Space>()->position(gs->camera()->center() - sf::Vector2f(0, 30));

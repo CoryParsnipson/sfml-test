@@ -84,8 +84,7 @@ void BuilderScene::init(Game& game) {
    
    this->create_entity("HudRootEntity");
 
-   // TODO: create a better way to get Systems
-   GraphicalSystem* gs = dynamic_cast<GraphicalSystem*>(this->get_system("GraphicalSystem"));
+   GraphicalSystem* gs = this->get_system<GraphicalSystem>("GraphicalSystem");
 
    VisualDebugSystem* vds = new VisualDebugSystem("VisualDebugSystem", game.window(), gs->camera());
    vds->disable(); // start with this off
@@ -283,7 +282,7 @@ void BuilderScene::create_hud(Game& game) {
    Entity* map_root = this->get_entity("MapRootEntity");
    Entity* grid_root = this->get_entity("GridRootEntity");
 
-   GraphicalSystem* gs = dynamic_cast<GraphicalSystem*>(this->get_system("GraphicalSystem"));
+   GraphicalSystem* gs = this->get_system<GraphicalSystem>("GraphicalSystem");
    this->create_fps_display(gs);
 
    // create selection rect
@@ -673,11 +672,9 @@ void BuilderScene::load_from_file(std::string filename) {
       });
    }
 
-   // TODO: create a better way to get Systems
-   GridSystem* grid_system = dynamic_cast<GridSystem*>(this->get_system("GridSystem"));
-
    // refresh the grid, it won't refresh since the camera hasn't changed
    // (this might not be the best solution)
+   GridSystem* grid_system = this->get_system<GridSystem>("GridSystem");
    grid_system->force_update(); 
 }
 
@@ -690,7 +687,7 @@ void BuilderScene::create_mouse_entity(Game& game) {
    Entity* tile_selection = this->get_entity("TileSelectionEntity");
    Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
 
-   GraphicalSystem* gs = dynamic_cast<GraphicalSystem*>(this->get_system("GraphicalSystem"));
+   GraphicalSystem* gs = this->get_system<GraphicalSystem>("GraphicalSystem");
 
    // create mouse cursor (this adds to scene graph root by default, which will be on top of everything)
    Entity* mouse_cursor = this->create_entity("MouseCursorEntity");

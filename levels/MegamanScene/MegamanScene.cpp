@@ -57,8 +57,7 @@ void MegamanScene::init(Game& game) {
    game.get_player(1).bindings().set<StepIntent>(1, game.input_manager().get_device(1)->get("Escape"));
    game.get_player(1).bindings().set<VisualDebugIntent>(1, game.input_manager().get_device(1)->get("D"));
 
-   // TODO: create a better way to get Systems
-   GraphicalSystem* gs = dynamic_cast<GraphicalSystem*>(this->get_system("GraphicalSystem"));
+   GraphicalSystem* gs = this->get_system<GraphicalSystem>("GraphicalSystem");
 
    VisualDebugSystem* vds = new VisualDebugSystem("VisualDebugSystem", game.window(), gs->camera());
    vds->disable(); // start with this off

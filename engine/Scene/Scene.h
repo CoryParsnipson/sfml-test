@@ -6,6 +6,7 @@
 #include <memory>
 #include <cassert>
 #include <stdexcept>
+#include <typeindex>
 
 #include "CloseInputEvent.h"
 #include "LostFocusInputEvent.h"
@@ -56,6 +57,8 @@ class Scene
 , public Messageable
 {
 public:
+   using SystemHash = std::map<std::type_index, std::map<std::string, System*>>;
+
    Scene(std::string id)
    : Messageable(id)
    , id_(id)
@@ -72,6 +75,11 @@ public:
          delete *it;
       }
       this->systems_.clear();
+
+      for (SystemHash::iterator it = this->system_hash_.begin(); it != this->system_hash_.end(); ++it) {
+         it->second.clear();
+      }
+      this->system_hash_.clear();
    }
 
    virtual std::string id() { return this->id_; }
@@ -261,7 +269,11 @@ public:
       return this->entities_.get_active_handles();
    }
 
-   void add_system(System* system, int priority = -1) {
+   template <
+      typename SystemType,
+      typename std::enable_if<std::is_base_of<System, SystemType>::value>::type* = nullptr
+   >
+   void add_system(SystemType* system, int priority = -1) {
       assert(this->game_ != nullptr);
 
       if (!system) {
@@ -269,9 +281,20 @@ public:
          return;
       }
 
+      // do unique string id check
+      for (std::vector<System*>::const_iterator it = this->systems_.begin(); it != this->systems_.end(); ++it) {
+         if ((*it)->id() == system->id()) {
+            throw std::range_error("Cannot add system of type '" + std::string(typeid(SystemType).name()) + "': id '" + system->id() + "' already in use.");
+         }
+      }
+
       // don't forget to initialize system
       system->init(*this->game_);
 
+      // add to systems hash
+      this->system_hash_[std::type_index(typeid(SystemType))][system->id()] = system;
+
+      // add to priority list
       if (priority < 0 || static_cast<unsigned int>(priority) >= this->systems_.size()) {
          this->systems_.push_back(system);
          this->game_->logger().msg(this->id(), Logger::INFO, "Adding system '" + system->id() + "' to end of systems vector.");
@@ -279,27 +302,36 @@ public:
          this->systems_.insert(this->systems_.begin() + priority, system);
          this->game_->logger().msg(this->id(), Logger::INFO, "Adding system '" + system->id() + "' to position " + std::to_string(priority) + " of systems vector.");
       }
+
    }
 
-   System* remove_system(std::string id) {
-      System* s;
+   template <
+      typename SystemType,
+      typename std::enable_if<std::is_base_of<System, SystemType>::value>::type* = nullptr
+   >
+   void remove_system(std::string id) {
+      SystemHash::iterator it = this->system_hash_.find(std::type_index(typeid(SystemType)));
+      if (it == this->system_hash_.end() || it->second.find(id) == it->second.end()) {
+         return;
+      }
+      it->second.erase(id);
+
       for (std::vector<System*>::const_iterator it = this->systems_.begin(); it != this->systems_.end(); ++it) {
          if ((*it)->id() == id) {
-            s = *it;
-
             this->systems_.erase(it);
-            return s;
+            break;
          }
       }
-
-      return nullptr;
    }
 
-   System* get_system(std::string id) const {
-      for (std::vector<System*>::const_iterator it = this->systems_.begin(); it != this->systems_.end(); ++it) {
-         if ((*it)->id() == id) {
-            return *it;
-         }
+   template <
+      typename SystemType,
+      typename std::enable_if<std::is_base_of<System, SystemType>::value>::type* = nullptr
+   >
+   SystemType* get_system(std::string id) const {
+      SystemHash::const_iterator it = this->system_hash_.find(std::type_index(typeid(SystemType)));
+      if (it != this->system_hash_.end() && it->second.find(id) != it->second.end()) {
+         return static_cast<SystemType*>(it->second.at(id));
       }
 
       return nullptr;
@@ -380,7 +412,8 @@ private:
 
    ObjectPool<Entity> entities_;
    ComponentManager components_;
-   std::vector<System*> systems_;
+   std::vector<System*> systems_; // use this to update systems in priority order
+   SystemHash system_hash_; // use this to add/remove systems
 
    Handle root_;
    std::map<std::string, Handle> bookmarks_;
