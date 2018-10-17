@@ -604,20 +604,25 @@ void BuilderScene::load_from_file(std::string filename) {
       grid_root->get<Grid>()->deserialize(static_cast<Serializer&>(serializer), *this, scene_data["Grid0"]);
    }
 
+   Serializer::SerialData tileset_data = serializer.deserialize(*this, scene_data["Tileset0"]);
+
    // add tile textures to the tile palette window
    Entity* tile_palette = this->get_entity("TilePalette");
    Entity* tile_palette_layer1 = this->get_entity("TilePaletteLayer1");
    Entity* tile_palette_hover = this->get_entity("TilePaletteHover");
+   Entity* tile_palette_outline = this->get_entity("TilePaletteDecoration");
    assert(tile_palette && tile_palette_layer1 && tile_palette_hover);
 
-   // resize tile palette hover entity to match the deserialized grid
-   tile_palette_hover->get<Rectangle>()->size(grid_root->get<Grid>()->tile_width(), grid_root->get<Grid>()->tile_height());
-
-   int tiles_per_row = tile_palette->get<Rectangle>()->size().x / grid_root->get<Grid>()->tile_width();
-   int side_padding = (tile_palette->get<Rectangle>()->size().x - (grid_root->get<Grid>()->tile_width() * tiles_per_row)) / 2;
+   int tile_scale_factor = std::round(64 / std::max(grid_root->get<Grid>()->tile_width(), grid_root->get<Grid>()->tile_height()));
+   int tiles_per_row = tile_palette->get<Rectangle>()->size().x / (tile_scale_factor * grid_root->get<Grid>()->tile_width());
+   int side_padding = (tile_palette->get<Rectangle>()->size().x - (tile_scale_factor * grid_root->get<Grid>()->tile_width() * tiles_per_row)) / 2;
    int top_padding = 20;
+   int bottom_padding = 10;
 
-   Serializer::SerialData tileset_data = serializer.deserialize(*this, scene_data["Tileset0"]);
+   // resize tile palette to be tall enough
+   int tile_palette_height = top_padding + bottom_padding + (tile_scale_factor * grid_root->get<Grid>()->tile_height()) * std::ceil(std::stoi(tileset_data["num_tiles"]) / static_cast<float>(tiles_per_row));
+   tile_palette->get<Rectangle>()->size(tile_palette->get<Rectangle>()->size().x, tile_palette_height);
+   tile_palette_outline->get<Rectangle>()->size(tile_palette_outline->get<Rectangle>()->size().x, tile_palette_height - 15);
 
    for (int tile_idx = 0; tile_idx < std::stoi(tileset_data["num_tiles"]); ++tile_idx) {
       // TODO: move this to some sort of tileset object?
@@ -631,15 +636,19 @@ void BuilderScene::load_from_file(std::string filename) {
       );
 
       sf::Vector2f tile_texture_pos(
-         (tile_idx % tiles_per_row) * grid_root->get<Grid>()->tile_width() + side_padding,
-         (tile_idx / tiles_per_row) * grid_root->get<Grid>()->tile_height() + top_padding
+         (tile_idx % tiles_per_row) * tile_scale_factor * grid_root->get<Grid>()->tile_width() + side_padding,
+         (tile_idx / tiles_per_row) * tile_scale_factor * grid_root->get<Grid>()->tile_height() + top_padding
       );
 
       Entity* entity = this->create_entity(tile_data["id"] + "_tile_palette_button");
       this->send_message<AddToEntityMessage>(tile_palette_layer1->handle(), entity->handle());
 
       entity->get<Space>()->position(tile_texture_pos);
+
+      // scale tile sprites to normalize them so it's easy to look at and click on
       entity->add<Sprite>(tile_data["id"] + "_sprite", this->textures().get(tileset_data["id"]), tile_texture_rect);
+      entity->get<Sprite>()->scale(tile_scale_factor, tile_scale_factor);
+
       entity->add<PlayerProfile>(tile_data["id"] + "_playerProfile", 1);
       entity->add<Clickable>(tile_data["id"] + "_clickable");
       entity->add<Collision>(tile_data["id"] + "_collision", entity->get<Sprite>()->global_bounds());
@@ -665,12 +674,16 @@ void BuilderScene::load_from_file(std::string filename) {
             for (int y_pos = tsc.top; y_pos < tsc.top + tsc.height; y_pos += grid_root->get<Grid>()->tile_height()) {
                Sprite sprite(*entity->get<Sprite>());
                sprite.offset(x_pos, y_pos);
+               sprite.scale(1.f, 1.f); // reset any scaling done on palette tiles
 
                map_root->get<TileMap>()->set(sprite);
             }
          }
       });
    }
+
+   // resize tile palette hover entity to match the deserialized grid
+   tile_palette_hover->get<Rectangle>()->size(static_cast<float>(tile_scale_factor) * sf::Vector2f(grid_root->get<Grid>()->tile_width(), grid_root->get<Grid>()->tile_height()));
 
    // refresh the grid, it won't refresh since the camera hasn't changed
    // (this might not be the best solution)
