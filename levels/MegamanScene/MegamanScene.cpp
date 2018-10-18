@@ -7,6 +7,7 @@
 #include "Space.h"
 #include "Text.h"
 #include "Sprite.h"
+#include "TileMap.h"
 #include "Callback.h"
 #include "Collision.h"
 #include "Velocity.h"
@@ -30,6 +31,9 @@
 
 #include "SetVisualDebugMessage.h"
 
+#include "FileChannel.h"
+#include "JSONSerializer.h"
+
 MegamanScene::MegamanScene()
 : Scene("MegamanScene")
 , visual_debug_enable_(false)
@@ -46,7 +50,6 @@ void MegamanScene::init(Game& game) {
 
    // load textures
    this->textures().load("megaman_zero_spritesheet", "megaman_zero.png");
-   this->textures().load("megaman_zero_tileset", "megaman_zero_bg.png");
 
    // setup player's input mapping
    game.add_player(1);
@@ -69,6 +72,12 @@ void MegamanScene::init(Game& game) {
 
    CameraSystem* cs = new CameraSystem("CameraSystem", gs->camera());
    this->add_system(cs);
+
+   Entity* map_root = this->create_entity("MapRootEntity");
+   map_root->add<TileMap>();
+
+   // load in scene data
+   this->load_scene_data();
 
    AnimationPtr stand_r = std::make_shared<Animation>("megaman_zero_stand_r", this->textures().get("megaman_zero_spritesheet"));
    stand_r->add(sf::IntRect(  0, 0, 40, 50), 120);
@@ -137,41 +146,31 @@ void MegamanScene::init(Game& game) {
    test_e->get<Space>()->position(400, 100);
    test_e->get<Space>()->scale(3, 3);
 
-   Entity* e_floor = this->create_entity("FloorEntity");
-   e_floor->add<Rectangle>("FloorSprite", 0, 0, 400, 50);
-   e_floor->get<Rectangle>()->color(sf::Color::Green);
+   Entity* floor1 = this->create_entity("Floor1Entity");
 
-   e_floor->get<Space>()->position(200, 450);
+   floor1->get<Space>()->position(16, 256);
 
-   e_floor->add<Collision>("FloorCollision", sf::FloatRect(0, 0, 400, 50));
-   e_floor->add<Velocity>("FloorVelocity");
-   e_floor->add<Acceleration>("FloorAcceleration");
+   floor1->add<Rectangle>("Floor1Sprite", 0, 0, 128, 80);
+   floor1->get<Rectangle>()->color(sf::Color::Transparent);
+   floor1->add<Collision>("Floor1Collision", floor1->get<Rectangle>()->local_bounds());
+   floor1->add<Velocity>("Floor1Velocity");
+   floor1->add<Acceleration>("Floor1Acceleration");
 
-   Entity* e_platform2 = this->create_entity("Platform2Entity");
-   e_platform2->add<Rectangle>("Platform2Sprite", 0, 0, 800, 50);
-   e_platform2->get<Rectangle>()->color(sf::Color::Green);
+   Entity* floor2 = this->create_entity("Floor2Entity");
 
-   e_platform2->get<Space>()->position(0, 580);
+   floor2->get<Space>()->position(144, 224);
 
-   e_platform2->add<Collision>("Platform2Collision", sf::FloatRect(0, 0, 800, 50));
-   e_platform2->add<Velocity>("Platform2Velocity");
-   e_platform2->add<Acceleration>("Platform2Acceleration");
-
-   Entity* e_platform3 = this->create_entity("Platform3Entity");
-   e_platform3->add<Rectangle>("Platform3Sprite", 0, 0, 200, 50);
-   e_platform3->get<Rectangle>()->color(sf::Color::Green);
-
-   e_platform3->get<Space>()->position(500, 300);
-
-   e_platform3->add<Collision>("Platform3Collision", sf::FloatRect(0, 0, 200, 50));
-   e_platform3->add<Velocity>("Platform3Velocity");
-   e_platform3->add<Acceleration>("Platform3Acceleration");
+   floor2->add<Rectangle>("Floor2Sprite", 0, 0, 144, 112);
+   floor2->get<Rectangle>()->color(sf::Color::Transparent);
+   floor2->add<Collision>("Floor2Collision", floor2->get<Rectangle>()->local_bounds());
+   floor2->add<Velocity>("Floor2Velocity");
+   floor2->add<Acceleration>("Floor2Acceleration");
 
    Entity* c = this->create_entity("PlayerCharacterEntity");
    c->add<Sprite>("PlayerCharacterSprite");
    c->get<Sprite>()->animation(stand_r);
 
-   c->get<Space>()->position(300, 100);
+   c->get<Space>()->position(32, 200);
 
    c->add<CameraAnchor>("PlayerCharacterCameraAnchor");
 
@@ -386,4 +385,39 @@ void MegamanScene::enter(Game& game) {
 
 void MegamanScene::exit(Game& game) {
    Game::logger().msg(this->id(), Logger::INFO, "Exiting MegamanScene.");
+}
+
+void MegamanScene::load_scene_data() {
+   std::string filename = "scenedata_megaman.txt";
+
+   Entity* map_root = this->get_entity("MapRootEntity");
+   assert (map_root);
+
+   // load or create a tile map
+   JSONSerializer serializer;
+   FileChannel save_file(filename);
+
+   // TODO: loading scene data should be in scene's serialization/deserialization?
+   save_file.seek(0);
+   std::string raw_save_file = serializer.read(save_file);
+
+   if (raw_save_file == "") {
+      Game::logger().msg(this->id(), Logger::ERROR, "Invalid scene data file '" + filename + "' provided.");
+      return;
+   }
+
+   Serializer::SerialData scene_data = serializer.deserialize(*this, raw_save_file);
+
+   // load in map textures
+   Serializer::SerialData texture_data = serializer.deserialize(*this, scene_data["Textures"]);
+   for (Serializer::SerialData::iterator it = texture_data.begin(); it != texture_data.end(); ++it) {
+      Serializer::SerialData texture_item = serializer.deserialize(*this, it->second);
+      this->textures().load(texture_item["id"], texture_item["filename"]);
+   }
+   Game::logger().msg(this->id(), Logger::INFO, this->textures());
+
+   // deserialize tilemap
+   if (scene_data.find("Tilemap0") != scene_data.end()) {
+      map_root->get<TileMap>()->deserialize(static_cast<Serializer&>(serializer), *this, scene_data["Tilemap0"]);
+   }
 }

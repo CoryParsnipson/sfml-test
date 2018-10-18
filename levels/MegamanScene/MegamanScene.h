@@ -17,6 +17,8 @@ public:
 private:
    bool visual_debug_enable_;
    bool need_step_;
+
+   void load_scene_data();
 };
 
 #endif
