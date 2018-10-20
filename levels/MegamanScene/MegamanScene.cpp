@@ -79,6 +79,13 @@ void MegamanScene::init(Game& game) {
    // load in scene data
    this->load_scene_data();
 
+   // backdrop
+   Entity* backdrop = this->create_entity("BackdropEntity");
+   this->send_message<AddToEntityMessage>(this->space_handle(), backdrop->handle(), 0);
+
+   backdrop->add<Sprite>("BackdropSprite", this->textures().get("megaman_tileset"), sf::IntRect(0, 16, 240, 160));
+   backdrop->get<Sprite>()->scale(1.75, 1.75);
+
    AnimationPtr stand_r = std::make_shared<Animation>("megaman_zero_stand_r", this->textures().get("megaman_zero_spritesheet"));
    stand_r->add(sf::IntRect(  0, 0, 40, 50), 120);
    stand_r->add(sf::IntRect( 40, 0, 40, 50), 9);
