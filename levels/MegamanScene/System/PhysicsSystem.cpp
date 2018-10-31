@@ -210,6 +210,29 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
             e.get<Acceleration>()->y(0);
          }
 
+         // This is another hack (when you have multiple objects colliding at the same time,
+         // sometimes the collision slide response can slide the entity into one of the colliding
+         // objects). This section of code tries to catch this.
+         sf::FloatRect end_pos = this->global_transform(e).transformRect(e.get<Collision>()->volume());
+
+         end_pos.left += final_position.x + final_position_delta.x + response_delta.x;
+         end_pos.top += final_position.y + final_position_delta.y + response_delta.y;
+
+         for (std::vector<Handle>::const_iterator other_it = physics_entities.begin(); other_it != physics_entities.end(); ++other_it) {
+            Entity& third_e = *(this->scene().get_entity(*other_it));
+            sf::FloatRect third_e_collision = this->global_transform(third_e).transformRect(third_e.get<Collision>()->volume());
+
+            if (&third_e == &other_e || &third_e == &e) {
+               continue;
+            }
+
+            if (third_e_collision.intersects(end_pos)) {
+               response_delta.x = 0;
+               response_delta.y = 0;
+               break;
+            }
+         }
+
          final_position_delta += response_delta;
       }
       // end collision response
