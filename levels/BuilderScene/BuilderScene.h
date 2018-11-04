@@ -50,6 +50,7 @@ private:
    Handle create_button(std::string entity_id, sf::FloatRect bounds, std::string button_text = "Button", std::function<void()> action = nullptr);
 
    void create_hud(Game& game);
+   void file_dialog_box();
 
    void setup_keybindings(Game& game);
    void load_from_file(std::string filename);

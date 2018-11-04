@@ -353,47 +353,55 @@ void BuilderScene::create_hud(Game& game) {
    this->send_message<AddToEntityMessage>(menu_panel->handle(), file_load_button->handle());
 
    file_load_button->get<Callback>()->left_release([this] () {
-      Entity* n_box = this->get_entity(this->create_notification(300, 110));
+      this->file_dialog_box();
+   });
+}
 
-      Entity* n_box_title = this->create_entity("n_box_title");
+void BuilderScene::file_dialog_box() {
+   Entity* n_box = this->get_entity(this->create_notification(300, 110));
 
-      n_box_title->add<Text>("n_box_title_text", "Load from File", this->fonts().get("retro"), 12);
-      n_box_title->get<Space>()->position(10, 10);
+   Entity* n_box_title = this->create_entity("n_box_title");
 
-      this->send_message<AddToEntityMessage>(n_box->handle(), n_box_title->handle());
+   n_box_title->add<Text>("n_box_title_text", "Load from File", this->fonts().get("retro"), 12);
+   n_box_title->get<Space>()->position(10, 10);
 
-      Entity* textbox = this->get_entity(this->create_textbox("FileLoadTextbox", 250, 12));
-      textbox->get<Space>()->position((n_box->get<Rectangle>()->local_bounds().width - textbox->get<Rectangle>()->local_bounds().width) / 2.f, 40);
+   this->send_message<AddToEntityMessage>(n_box->handle(), n_box_title->handle());
 
-      this->send_message<AddToEntityMessage>(n_box->handle(), textbox->handle());
+   Entity* textbox = this->get_entity(this->create_textbox("FileLoadTextbox", 250, 12));
+   textbox->get<Space>()->position((n_box->get<Rectangle>()->local_bounds().width - textbox->get<Rectangle>()->local_bounds().width) / 2.f, 40);
 
-      Entity* submit_button = this->get_entity(this->create_button("FileLoadSubmitButton", sf::FloatRect(0, 0, 0, 30), "Submit"));
-      submit_button->get<Space>()->position(
-         (n_box->get<Rectangle>()->local_bounds().width - submit_button->get<Rectangle>()->local_bounds().width) / 2.f,
-         40 + textbox->get<Rectangle>()->local_bounds().height + 10
-      );
+   this->send_message<AddToEntityMessage>(n_box->handle(), textbox->handle());
 
-      submit_button->get<Callback>()->left_release([this, textbox] () {
+   Entity* submit_button = this->get_entity(this->create_button("FileLoadSubmitButton", sf::FloatRect(0, 0, 0, 30), "Submit"));
+   submit_button->get<Space>()->position(
+      (n_box->get<Rectangle>()->local_bounds().width - submit_button->get<Rectangle>()->local_bounds().width) / 2.f,
+      40 + textbox->get<Rectangle>()->local_bounds().height + 10
+   );
+
+   submit_button->get<Callback>()->left_release([this, textbox] () {
+      std::string filename = textbox->get<Text>()->string();
+
+      this->remove_entity(this->get_entity_handle("NotificationRootEntity"), true);
+      this->load_from_file(filename);
+   });
+
+   // do the same thing as left_release if enter is pressed
+   submit_button->get<Callback>()->on_update([this, textbox] () {
+      InputDevice* keyboard = this->game().input_manager().get_device(1);
+
+      if (keyboard->get("Return")->was_pressed()) {
          std::string filename = textbox->get<Text>()->string();
 
          this->remove_entity(this->get_entity_handle("NotificationRootEntity"), true);
          this->load_from_file(filename);
-      });
+      }
 
-      // do the same thing as left_release if enter is pressed
-      submit_button->get<Callback>()->on_update([this, textbox] () {
-         InputDevice* keyboard = this->game().input_manager().get_device(1);
-
-         if (keyboard->get("Return")->was_pressed()) {
-            std::string filename = textbox->get<Text>()->string();
-
-            this->remove_entity(this->get_entity_handle("NotificationRootEntity"), true);
-            this->load_from_file(filename);
-         }
-      });
-
-      this->send_message<AddToEntityMessage>(n_box->handle(), submit_button->handle());
+      if (keyboard->get("Escape")->was_pressed()) {
+         this->remove_entity(this->get_entity_handle("NotificationRootEntity"), true);
+      }
    });
+
+   this->send_message<AddToEntityMessage>(n_box->handle(), submit_button->handle());
 }
 
 void BuilderScene::setup_keybindings(Game& game) {
@@ -529,6 +537,10 @@ void BuilderScene::setup_keybindings(Game& game) {
          Game::logger().msg("BuilderSceneInputSystem", Logger::INFO, "Saving map to file '" + fc->filename());
 
          delete serializer;
+      }
+
+      if (this->game().input_manager().get_device(1)->get("F")->was_pressed() && p1_bindings.get<ModalIntent>()->element()->is_pressed()) {
+         this->file_dialog_box();
       }
    });
 }
