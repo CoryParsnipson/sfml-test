@@ -861,7 +861,7 @@ void BuilderScene::create_mouse_entity(Game& game) {
 
          new_pos = grid_root->get<Space>()->transform().transformPoint(new_pos);
 
-         tile_popup->get<Space>()->position(new_pos + sf::Vector2f(10, 10));
+         tile_popup->get<Space>()->position(new_pos + sf::Vector2f(10, 5));
       }
    });
 
@@ -1029,9 +1029,9 @@ void BuilderScene::create_mouse_entity(Game& game) {
 
             sf::FloatRect panel_pos(
                panel_origin.x + tile_width + 10,
-               panel_origin.y + 10, 
-               grid_entity->get<Grid>()->tile_width() + 20,
-               tiles.size() * grid_entity->get<Grid>()->tile_height() + 30
+               panel_origin.y + 5, 
+               64 + 20,
+               tiles.size() * 64 + 30
             );
 
             if (tile_popup) {
@@ -1061,18 +1061,48 @@ void BuilderScene::create_mouse_entity(Game& game) {
                if ((*it)->type() == typeid(Circle)) {
                   t->add<Circle>(boost::get<Circle>(**it));
                   t->get<Circle>()->offset(0, 0);
+
+                  sf::Vector2f new_scale;
+                  new_scale.x = 64 / t->get<Circle>()->local_bounds().width * t->get<Circle>()->scale().x;
+                  new_scale.y = 64 / t->get<Circle>()->local_bounds().height * t->get<Circle>()->scale().y;
+
+                  t->get<Circle>()->scale(new_scale);
                } else if ((*it)->type() == typeid(Rectangle)) {
                   t->add<Rectangle>(boost::get<Rectangle>(**it));
                   t->get<Rectangle>()->offset(0, 0);
+
+                  sf::Vector2f new_scale;
+                  new_scale.x = 64 / t->get<Rectangle>()->local_bounds().width * t->get<Rectangle>()->scale().x;
+                  new_scale.y = 64 / t->get<Rectangle>()->local_bounds().height * t->get<Rectangle>()->scale().y;
+
+                  t->get<Rectangle>()->scale(new_scale);
                } else if ((*it)->type() == typeid(Sprite)) {
                   t->add<Sprite>(boost::get<Sprite>(**it));
                   t->get<Sprite>()->offset(0, 0);
+
+                  sf::Vector2f new_scale;
+                  new_scale.x = 64 / t->get<Sprite>()->local_bounds().width * t->get<Sprite>()->scale().x;
+                  new_scale.y = 64 / t->get<Sprite>()->local_bounds().height * t->get<Sprite>()->scale().y;
+
+                  t->get<Sprite>()->scale(new_scale);
                } else if ((*it)->type() == typeid(Text)) {
                   t->add<Text>(boost::get<Text>(**it));
                   t->get<Text>()->offset(0, 0);
+
+                  sf::Vector2f new_scale;
+                  new_scale.x = 64 / t->get<Text>()->local_bounds().width * t->get<Text>()->scale().x;
+                  new_scale.y = 64 / t->get<Text>()->local_bounds().height * t->get<Text>()->scale().y;
+
+                  t->get<Text>()->scale(new_scale);
                } else if ((*it)->type() == typeid(VertexList)) {
                   t->add<VertexList>(boost::get<VertexList>(**it));
                   t->get<VertexList>()->offset(0, 0);
+
+                  sf::Vector2f new_scale;
+                  new_scale.x = 64 / t->get<VertexList>()->local_bounds().width * t->get<VertexList>()->scale().x;
+                  new_scale.y = 64 / t->get<VertexList>()->local_bounds().height * t->get<VertexList>()->scale().y;
+
+                  t->get<VertexList>()->scale(new_scale);
                }
 
                t->get<Space>()->position(10, grid_entity->get<Grid>()->tile_height() * layer_idx + 20);
