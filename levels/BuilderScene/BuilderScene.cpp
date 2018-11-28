@@ -479,6 +479,12 @@ void BuilderScene::setup_keybindings(Game& game) {
          tile_selection->get<Rectangle>()->size(new_end - new_pos);
 
          tile_selection->get<Collision>()->volume(tile_selection->get<Rectangle>()->global_bounds());
+
+         // remove tile popup
+         Entity* tile_popup = this->get_entity("TilePopup");
+         if (tile_popup) {
+            this->remove_entity(tile_popup->handle(), true);
+         }
       }
 
       if (p1_bindings.get<MoveUpIntent>()->element()->is_pressed()) {
@@ -837,15 +843,26 @@ void BuilderScene::create_mouse_entity(Game& game) {
       grid_entity->get<Grid>()->zoom_factor(new_scale);
 
       // adjust tile popup if exists
-      //Entity* tile_popup = this->get_entity("TilePopup");
-      //if (tile_popup) {
-      //   sf::Vector2f pos = tile_popup->get<Space>()->position();
+      Entity* tile_popup = this->get_entity("TilePopup");
+      if (tile_popup) {
+         Entity* grid_root = this->get_entity("GridRootEntity");
 
-      //   pos.x *= new_scale.x;
-      //   pos.y *= new_scale.y;
+         sf::Vector2f pos = tile_popup->get<Space>()->position();
+         pos = grid_root->get<Space>()->inverse_transform().transformPoint(pos);
 
-      //   tile_popup->get<Space>()->position(pos);
-      //}
+         sf::Vector2i pos_idx = grid_entity->get<Grid>()->grid_index(pos);
+         if (wheel_delta < 0) {
+            pos_idx = grid_entity->get<Grid>()->grid_index(grid_entity->get<Grid>()->floor(pos));
+         }
+
+         sf::Vector2f new_pos;
+         new_pos.x = grid_entity->get<Grid>()->tile_width() * pos_idx.x * new_scale.x;
+         new_pos.y = grid_entity->get<Grid>()->tile_height() * pos_idx.y * new_scale.y;
+
+         new_pos = grid_root->get<Space>()->transform().transformPoint(new_pos);
+
+         tile_popup->get<Space>()->position(new_pos + sf::Vector2f(10, 10));
+      }
    });
 
    mouse_cursor_script->get<Callback>()->left_click([selection_rect, this] () {
@@ -1007,9 +1024,12 @@ void BuilderScene::create_mouse_entity(Game& game) {
          std::vector<TileMap::TileType*> tiles = map_root->get<TileMap>()->find(search_area);
 
          if (tiles.size() > 0) {
+            sf::Vector2f panel_origin(clicked_tile.x * tile_width, clicked_tile.y * tile_height);
+            panel_origin = grid_root->get<Space>()->transform().transformPoint(panel_origin);
+
             sf::FloatRect panel_pos(
-               hud_click_pos.x + 10,
-               hud_click_pos.y + 10,
+               panel_origin.x + tile_width + 10,
+               panel_origin.y + 10, 
                grid_entity->get<Grid>()->tile_width() + 20,
                tiles.size() * grid_entity->get<Grid>()->tile_height() + 30
             );
