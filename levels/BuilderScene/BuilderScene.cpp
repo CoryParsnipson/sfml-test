@@ -836,9 +836,15 @@ void BuilderScene::create_mouse_entity(Game& game) {
 
       grid_entity->get<Grid>()->zoom_factor(new_scale);
 
-      //// adjust tile popup if exists
+      // adjust tile popup if exists
       //Entity* tile_popup = this->get_entity("TilePopup");
       //if (tile_popup) {
+      //   sf::Vector2f pos = tile_popup->get<Space>()->position();
+
+      //   pos.x *= new_scale.x;
+      //   pos.y *= new_scale.y;
+
+      //   tile_popup->get<Space>()->position(pos);
       //}
    });
 
@@ -976,7 +982,21 @@ void BuilderScene::create_mouse_entity(Game& game) {
       bool is_drag_gesture = (end.x - pos.x >= grid_entity->get<Grid>()->tile_width() / 3.f ||
                               end.y - pos.y >= grid_entity->get<Grid>()->tile_height() / 3.f);
 
+      Entity* tile_popup = this->get_entity("TilePopup");
+
+      float tile_width = grid_entity->get<Grid>()->tile_width() * grid_entity->get<Grid>()->zoom_factor().x;
+      float tile_height = grid_entity->get<Grid>()->tile_height() * grid_entity->get<Grid>()->zoom_factor().y;
+
       if (!is_drag_gesture) {
+         // if the tile popup is already up and we right click on the popup square, remove it
+         if (tile_popup && tile_selection->get<Collision>()->contains(release_pos)) {
+            tile_selection->get<Space>()->visible(false);
+            tile_selection_maproot->get<Collision>()->volume(sf::FloatRect(0, 0, 0, 0));
+            this->remove_entity(tile_popup->handle(), true);
+
+            return;
+         }
+
          sf::Vector2i clicked_tile = grid_entity->get<Grid>()->grid_index(grid_entity->get<Grid>()->floor(release_pos));
          sf::FloatRect search_area(
             clicked_tile.x * grid_entity->get<Grid>()->tile_width(),
@@ -987,12 +1007,13 @@ void BuilderScene::create_mouse_entity(Game& game) {
          std::vector<TileMap::TileType*> tiles = map_root->get<TileMap>()->find(search_area);
 
          if (tiles.size() > 0) {
-            sf::FloatRect panel_pos(hud_click_pos.x + 10, hud_click_pos.y + 10, 0, 0);
+            sf::FloatRect panel_pos(
+               hud_click_pos.x + 10,
+               hud_click_pos.y + 10,
+               grid_entity->get<Grid>()->tile_width() + 20,
+               tiles.size() * grid_entity->get<Grid>()->tile_height() + 30
+            );
 
-            panel_pos.width = grid_entity->get<Grid>()->tile_width() + 20;
-            panel_pos.height = tiles.size() * grid_entity->get<Grid>()->tile_height() + 30;
-
-            Entity* tile_popup = this->get_entity("TilePopup");
             if (tile_popup) {
                this->remove_entity(tile_popup->handle(), true);
             }
@@ -1041,10 +1062,6 @@ void BuilderScene::create_mouse_entity(Game& game) {
             }
 
             // we right clicked (not dragged) so highlight this tile with the tile cursor
-            float tile_width = grid_entity->get<Grid>()->tile_width() * grid_entity->get<Grid>()->zoom_factor().x;
-            float tile_height = grid_entity->get<Grid>()->tile_height() * grid_entity->get<Grid>()->zoom_factor().y;
-
-            // round rectangle to nearest grid point
             pos = grid_entity->get<Grid>()->floor(pos);
 
             // update tile selection entity
