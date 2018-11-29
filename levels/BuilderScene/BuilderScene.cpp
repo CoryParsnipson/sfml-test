@@ -816,6 +816,17 @@ void BuilderScene::create_mouse_entity(Game& game) {
       new_scale.x = std::max(new_scale.x, 0.25f);
       new_scale.y = std::max(new_scale.y, 0.25f);
 
+      Entity* tile_popup = this->get_entity("TilePopup");
+      Entity* grid_root = this->get_entity("GridRootEntity");
+      sf::Vector2i pos_idx;
+
+      if (tile_popup) {
+         // need to get original grid index for tile popup adjustment
+         sf::Vector2f pos = tile_popup->get<Space>()->position();
+         pos = grid_root->get<Space>()->inverse_transform().transformPoint(pos);
+         pos_idx = grid_entity->get<Grid>()->grid_index(grid_entity->get<Grid>()->floor(pos));
+      }
+
       map_root->get<Space>()->scale(new_scale);
 
       // adjust tile selection visual on the grid layer
@@ -843,18 +854,7 @@ void BuilderScene::create_mouse_entity(Game& game) {
       grid_entity->get<Grid>()->zoom_factor(new_scale);
 
       // adjust tile popup if exists
-      Entity* tile_popup = this->get_entity("TilePopup");
       if (tile_popup) {
-         Entity* grid_root = this->get_entity("GridRootEntity");
-
-         sf::Vector2f pos = tile_popup->get<Space>()->position();
-         pos = grid_root->get<Space>()->inverse_transform().transformPoint(pos);
-
-         sf::Vector2i pos_idx = grid_entity->get<Grid>()->grid_index(pos);
-         if (wheel_delta < 0) {
-            pos_idx = grid_entity->get<Grid>()->grid_index(grid_entity->get<Grid>()->floor(pos));
-         }
-
          sf::Vector2f new_pos;
          new_pos.x = grid_entity->get<Grid>()->tile_width() * pos_idx.x * new_scale.x;
          new_pos.y = grid_entity->get<Grid>()->tile_height() * pos_idx.y * new_scale.y;
