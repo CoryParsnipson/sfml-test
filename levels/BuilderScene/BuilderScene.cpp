@@ -1105,7 +1105,7 @@ void BuilderScene::create_mouse_entity(Game& game) {
                   t->get<VertexList>()->scale(new_scale);
                }
 
-               t->get<Space>()->position(10, grid_entity->get<Grid>()->tile_height() * layer_idx + 20);
+               t->get<Space>()->position(10, 64 * layer_idx + 20);
 
                this->send_message<AddToEntityMessage>(tile_popup->handle(), t->handle());
                ++layer_idx;
