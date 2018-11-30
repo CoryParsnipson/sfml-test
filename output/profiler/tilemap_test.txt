@@ -1,0 +1,3914 @@
+{
+   "Grid0": {
+      "id": "Grid Component",
+      "origin_x": "0.000000",
+      "origin_y": "0.000000",
+      "tile_height": "64.000000",
+      "tile_width": "64.000000",
+      "type": "Grid"
+   },
+   "Textures": {
+      "texture0": {
+         "filename": "pkmn_tiles_outdoor1.png",
+         "id": "pokemon_tileset"
+      }
+   },
+   "Tilemap0": {
+      "id": "TileMap Component",
+      "num_tiles": "187",
+      "tile_0": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "0.000000",
+         "y": "0.000000"
+      },
+      "tile_1": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "0.000000",
+         "y": "64.000000"
+      },
+      "tile_10": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "0.000000",
+         "y": "640.000000"
+      },
+      "tile_100": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_bm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "192",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "576.000000",
+         "y": "256.000000"
+      },
+      "tile_101": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_bm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "192",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "640.000000",
+         "y": "256.000000"
+      },
+      "tile_102": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_bm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "192",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "704.000000",
+         "y": "256.000000"
+      },
+      "tile_103": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_bm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "192",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "768.000000",
+         "y": "256.000000"
+      },
+      "tile_104": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_bm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "192",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "832.000000",
+         "y": "256.000000"
+      },
+      "tile_105": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_bm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "192",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "896.000000",
+         "y": "256.000000"
+      },
+      "tile_106": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_ml_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "448.000000",
+         "y": "128.000000"
+      },
+      "tile_107": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_ml_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "448.000000",
+         "y": "192.000000"
+      },
+      "tile_108": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_ul_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "64",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "448.000000",
+         "y": "64.000000"
+      },
+      "tile_109": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_bl_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "192",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "448.000000",
+         "y": "256.000000"
+      },
+      "tile_11": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "64.000000",
+         "y": "0.000000"
+      },
+      "tile_110": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "128.000000",
+         "y": "256.000000"
+      },
+      "tile_111": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "128.000000",
+         "y": "320.000000"
+      },
+      "tile_112": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "128.000000",
+         "y": "384.000000"
+      },
+      "tile_113": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "128.000000",
+         "y": "448.000000"
+      },
+      "tile_114": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "128.000000",
+         "y": "512.000000"
+      },
+      "tile_115": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "192.000000",
+         "y": "256.000000"
+      },
+      "tile_116": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "192.000000",
+         "y": "320.000000"
+      },
+      "tile_117": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "192.000000",
+         "y": "384.000000"
+      },
+      "tile_118": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "192.000000",
+         "y": "448.000000"
+      },
+      "tile_119": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "192.000000",
+         "y": "512.000000"
+      },
+      "tile_12": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "64.000000",
+         "y": "128.000000"
+      },
+      "tile_120": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "256.000000",
+         "y": "256.000000"
+      },
+      "tile_121": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "256.000000",
+         "y": "320.000000"
+      },
+      "tile_122": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "256.000000",
+         "y": "384.000000"
+      },
+      "tile_123": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "256.000000",
+         "y": "448.000000"
+      },
+      "tile_124": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "256.000000",
+         "y": "512.000000"
+      },
+      "tile_125": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "320.000000",
+         "y": "448.000000"
+      },
+      "tile_126": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "320.000000",
+         "y": "512.000000"
+      },
+      "tile_127": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "384.000000",
+         "y": "448.000000"
+      },
+      "tile_128": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "384.000000",
+         "y": "512.000000"
+      },
+      "tile_129": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "448.000000",
+         "y": "448.000000"
+      },
+      "tile_13": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "64.000000",
+         "y": "640.000000"
+      },
+      "tile_130": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "448.000000",
+         "y": "512.000000"
+      },
+      "tile_131": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "512.000000",
+         "y": "448.000000"
+      },
+      "tile_132": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "512.000000",
+         "y": "512.000000"
+      },
+      "tile_133": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "576.000000",
+         "y": "448.000000"
+      },
+      "tile_134": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "576.000000",
+         "y": "512.000000"
+      },
+      "tile_135": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "640.000000",
+         "y": "448.000000"
+      },
+      "tile_136": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "640.000000",
+         "y": "512.000000"
+      },
+      "tile_137": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "704.000000",
+         "y": "448.000000"
+      },
+      "tile_138": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "704.000000",
+         "y": "512.000000"
+      },
+      "tile_139": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "768.000000",
+         "y": "448.000000"
+      },
+      "tile_14": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "128.000000",
+         "y": "0.000000"
+      },
+      "tile_140": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "768.000000",
+         "y": "512.000000"
+      },
+      "tile_141": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "832.000000",
+         "y": "448.000000"
+      },
+      "tile_142": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "832.000000",
+         "y": "512.000000"
+      },
+      "tile_143": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "896.000000",
+         "y": "448.000000"
+      },
+      "tile_144": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "896.000000",
+         "y": "512.000000"
+      },
+      "tile_145": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "320.000000",
+         "y": "384.000000"
+      },
+      "tile_146": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_um_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "64",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "384.000000",
+         "y": "384.000000"
+      },
+      "tile_147": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_um_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "64",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "448.000000",
+         "y": "384.000000"
+      },
+      "tile_148": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_um_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "64",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "512.000000",
+         "y": "384.000000"
+      },
+      "tile_149": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_um_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "64",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "576.000000",
+         "y": "384.000000"
+      },
+      "tile_15": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "128.000000",
+         "y": "64.000000"
+      },
+      "tile_150": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_um_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "64",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "640.000000",
+         "y": "384.000000"
+      },
+      "tile_151": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_um_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "64",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "704.000000",
+         "y": "384.000000"
+      },
+      "tile_152": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_um_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "64",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "768.000000",
+         "y": "384.000000"
+      },
+      "tile_153": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_um_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "64",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "832.000000",
+         "y": "384.000000"
+      },
+      "tile_154": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_um_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "64",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "896.000000",
+         "y": "384.000000"
+      },
+      "tile_155": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_ur_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "320",
+         "texture_rect_top": "64",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "960.000000",
+         "y": "384.000000"
+      },
+      "tile_156": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mr_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "320",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "960.000000",
+         "y": "448.000000"
+      },
+      "tile_157": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mr_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "320",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "960.000000",
+         "y": "512.000000"
+      },
+      "tile_158": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_br_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "320",
+         "texture_rect_top": "192",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "960.000000",
+         "y": "576.000000"
+      },
+      "tile_159": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_bm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "192",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "128.000000",
+         "y": "576.000000"
+      },
+      "tile_16": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "128.000000",
+         "y": "128.000000"
+      },
+      "tile_160": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_bm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "192",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "192.000000",
+         "y": "576.000000"
+      },
+      "tile_161": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_bm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "192",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "256.000000",
+         "y": "576.000000"
+      },
+      "tile_162": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_bm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "192",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "320.000000",
+         "y": "576.000000"
+      },
+      "tile_163": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_bm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "192",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "384.000000",
+         "y": "576.000000"
+      },
+      "tile_164": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_bm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "192",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "448.000000",
+         "y": "576.000000"
+      },
+      "tile_165": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_bm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "192",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "512.000000",
+         "y": "576.000000"
+      },
+      "tile_166": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_bm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "192",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "576.000000",
+         "y": "576.000000"
+      },
+      "tile_167": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_bm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "192",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "640.000000",
+         "y": "576.000000"
+      },
+      "tile_168": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_bm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "192",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "704.000000",
+         "y": "576.000000"
+      },
+      "tile_169": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_bm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "192",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "768.000000",
+         "y": "576.000000"
+      },
+      "tile_17": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "128.000000",
+         "y": "640.000000"
+      },
+      "tile_170": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_bm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "192",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "832.000000",
+         "y": "576.000000"
+      },
+      "tile_171": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_bm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "192",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "896.000000",
+         "y": "576.000000"
+      },
+      "tile_172": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_ml_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "192",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "64.000000",
+         "y": "256.000000"
+      },
+      "tile_173": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_ml_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "192",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "64.000000",
+         "y": "320.000000"
+      },
+      "tile_174": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_ml_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "192",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "64.000000",
+         "y": "384.000000"
+      },
+      "tile_175": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_ml_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "192",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "64.000000",
+         "y": "448.000000"
+      },
+      "tile_176": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_ml_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "192",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "64.000000",
+         "y": "512.000000"
+      },
+      "tile_177": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_ul_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "192",
+         "texture_rect_top": "64",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "64.000000",
+         "y": "192.000000"
+      },
+      "tile_178": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_bl_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "192",
+         "texture_rect_top": "192",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "64.000000",
+         "y": "576.000000"
+      },
+      "tile_179": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_um_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "64",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "128.000000",
+         "y": "192.000000"
+      },
+      "tile_18": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "192.000000",
+         "y": "0.000000"
+      },
+      "tile_180": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_um_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "64",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "192.000000",
+         "y": "192.000000"
+      },
+      "tile_181": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_um_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "256",
+         "texture_rect_top": "64",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "256.000000",
+         "y": "192.000000"
+      },
+      "tile_182": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_ur_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "320",
+         "texture_rect_top": "64",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "320.000000",
+         "y": "192.000000"
+      },
+      "tile_183": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mr_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "320",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "320.000000",
+         "y": "256.000000"
+      },
+      "tile_184": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_water_mr_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "320",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "320.000000",
+         "y": "320.000000"
+      },
+      "tile_185": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_sign_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "128",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "64.000000",
+         "y": "64.000000"
+      },
+      "tile_186": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_worn_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "192.000000",
+         "y": "64.000000"
+      },
+      "tile_19": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "192.000000",
+         "y": "128.000000"
+      },
+      "tile_2": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "0.000000",
+         "y": "128.000000"
+      },
+      "tile_20": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "192.000000",
+         "y": "640.000000"
+      },
+      "tile_21": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "256.000000",
+         "y": "0.000000"
+      },
+      "tile_22": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "256.000000",
+         "y": "64.000000"
+      },
+      "tile_23": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "256.000000",
+         "y": "128.000000"
+      },
+      "tile_24": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "256.000000",
+         "y": "640.000000"
+      },
+      "tile_25": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "320.000000",
+         "y": "0.000000"
+      },
+      "tile_26": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "320.000000",
+         "y": "64.000000"
+      },
+      "tile_27": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "320.000000",
+         "y": "128.000000"
+      },
+      "tile_28": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "320.000000",
+         "y": "640.000000"
+      },
+      "tile_29": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "384.000000",
+         "y": "0.000000"
+      },
+      "tile_3": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "0.000000",
+         "y": "192.000000"
+      },
+      "tile_30": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "384.000000",
+         "y": "256.000000"
+      },
+      "tile_31": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "384.000000",
+         "y": "320.000000"
+      },
+      "tile_32": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "384.000000",
+         "y": "640.000000"
+      },
+      "tile_33": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "448.000000",
+         "y": "0.000000"
+      },
+      "tile_34": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "448.000000",
+         "y": "320.000000"
+      },
+      "tile_35": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "448.000000",
+         "y": "640.000000"
+      },
+      "tile_36": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "512.000000",
+         "y": "0.000000"
+      },
+      "tile_37": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "512.000000",
+         "y": "320.000000"
+      },
+      "tile_38": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "512.000000",
+         "y": "640.000000"
+      },
+      "tile_39": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "576.000000",
+         "y": "0.000000"
+      },
+      "tile_4": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "0.000000",
+         "y": "256.000000"
+      },
+      "tile_40": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "576.000000",
+         "y": "320.000000"
+      },
+      "tile_41": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "576.000000",
+         "y": "640.000000"
+      },
+      "tile_42": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "640.000000",
+         "y": "0.000000"
+      },
+      "tile_43": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "640.000000",
+         "y": "320.000000"
+      },
+      "tile_44": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "640.000000",
+         "y": "640.000000"
+      },
+      "tile_45": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "704.000000",
+         "y": "0.000000"
+      },
+      "tile_46": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "704.000000",
+         "y": "320.000000"
+      },
+      "tile_47": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "704.000000",
+         "y": "640.000000"
+      },
+      "tile_48": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "768.000000",
+         "y": "0.000000"
+      },
+      "tile_49": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "768.000000",
+         "y": "320.000000"
+      },
+      "tile_5": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "0.000000",
+         "y": "320.000000"
+      },
+      "tile_50": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "768.000000",
+         "y": "640.000000"
+      },
+      "tile_51": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "832.000000",
+         "y": "0.000000"
+      },
+      "tile_52": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "832.000000",
+         "y": "320.000000"
+      },
+      "tile_53": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "832.000000",
+         "y": "640.000000"
+      },
+      "tile_54": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "896.000000",
+         "y": "0.000000"
+      },
+      "tile_55": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "896.000000",
+         "y": "320.000000"
+      },
+      "tile_56": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "896.000000",
+         "y": "640.000000"
+      },
+      "tile_57": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "960.000000",
+         "y": "0.000000"
+      },
+      "tile_58": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "960.000000",
+         "y": "320.000000"
+      },
+      "tile_59": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "960.000000",
+         "y": "640.000000"
+      },
+      "tile_6": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "0.000000",
+         "y": "384.000000"
+      },
+      "tile_60": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "1024.000000",
+         "y": "0.000000"
+      },
+      "tile_61": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "1024.000000",
+         "y": "64.000000"
+      },
+      "tile_62": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "1024.000000",
+         "y": "128.000000"
+      },
+      "tile_63": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "1024.000000",
+         "y": "192.000000"
+      },
+      "tile_64": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "1024.000000",
+         "y": "256.000000"
+      },
+      "tile_65": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "1024.000000",
+         "y": "320.000000"
+      },
+      "tile_66": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "1024.000000",
+         "y": "384.000000"
+      },
+      "tile_67": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "1024.000000",
+         "y": "448.000000"
+      },
+      "tile_68": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "1024.000000",
+         "y": "512.000000"
+      },
+      "tile_69": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "1024.000000",
+         "y": "576.000000"
+      },
+      "tile_7": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "0.000000",
+         "y": "448.000000"
+      },
+      "tile_70": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "1024.000000",
+         "y": "640.000000"
+      },
+      "tile_71": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "512.000000",
+         "y": "128.000000"
+      },
+      "tile_72": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "576.000000",
+         "y": "128.000000"
+      },
+      "tile_73": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "640.000000",
+         "y": "128.000000"
+      },
+      "tile_74": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "704.000000",
+         "y": "128.000000"
+      },
+      "tile_75": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "768.000000",
+         "y": "128.000000"
+      },
+      "tile_76": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "832.000000",
+         "y": "128.000000"
+      },
+      "tile_77": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "896.000000",
+         "y": "128.000000"
+      },
+      "tile_78": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_mr_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "128",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "960.000000",
+         "y": "128.000000"
+      },
+      "tile_79": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_um_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "64",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "512.000000",
+         "y": "64.000000"
+      },
+      "tile_8": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "0.000000",
+         "y": "512.000000"
+      },
+      "tile_80": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_um_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "64",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "576.000000",
+         "y": "64.000000"
+      },
+      "tile_81": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_um_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "64",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "640.000000",
+         "y": "64.000000"
+      },
+      "tile_82": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_um_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "64",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "704.000000",
+         "y": "64.000000"
+      },
+      "tile_83": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_um_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "64",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "768.000000",
+         "y": "64.000000"
+      },
+      "tile_84": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_um_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "64",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "832.000000",
+         "y": "64.000000"
+      },
+      "tile_85": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_um_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "64",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "896.000000",
+         "y": "64.000000"
+      },
+      "tile_86": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_ur_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "128",
+         "texture_rect_top": "64",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "960.000000",
+         "y": "64.000000"
+      },
+      "tile_87": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "384.000000",
+         "y": "64.000000"
+      },
+      "tile_88": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "384.000000",
+         "y": "128.000000"
+      },
+      "tile_89": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "384.000000",
+         "y": "192.000000"
+      },
+      "tile_9": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_grass_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "0.000000",
+         "y": "576.000000"
+      },
+      "tile_90": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "512.000000",
+         "y": "192.000000"
+      },
+      "tile_91": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "576.000000",
+         "y": "192.000000"
+      },
+      "tile_92": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "640.000000",
+         "y": "192.000000"
+      },
+      "tile_93": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "704.000000",
+         "y": "192.000000"
+      },
+      "tile_94": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "768.000000",
+         "y": "192.000000"
+      },
+      "tile_95": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "832.000000",
+         "y": "192.000000"
+      },
+      "tile_96": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_mm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "896.000000",
+         "y": "192.000000"
+      },
+      "tile_97": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_mr_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "128",
+         "texture_rect_top": "128",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "960.000000",
+         "y": "192.000000"
+      },
+      "tile_98": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_br_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "128",
+         "texture_rect_top": "192",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "960.000000",
+         "y": "256.000000"
+      },
+      "tile_99": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "tile_dirt_bm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "pokemon_tileset",
+         "texture_rect_height": "64",
+         "texture_rect_left": "64",
+         "texture_rect_top": "192",
+         "texture_rect_width": "64",
+         "type": "Sprite",
+         "x": "512.000000",
+         "y": "256.000000"
+      },
+      "type": "TileMap"
+   },
+   "Tileset0": {
+      "filename": "pkmn_tiles_outdoor1.png",
+      "id": "pokemon_tileset",
+      "num_tiles": "21",
+      "tile_0": {
+         "height": "64",
+         "id": "tile_grass",
+         "left": "0",
+         "top": "0",
+         "width": "64"
+      },
+      "tile_1": {
+         "height": "64",
+         "id": "tile_worn_grass",
+         "left": "64",
+         "top": "0",
+         "width": "64"
+      },
+      "tile_10": {
+         "height": "64",
+         "id": "tile_dirt_bm",
+         "left": "64",
+         "top": "192",
+         "width": "64"
+      },
+      "tile_11": {
+         "height": "64",
+         "id": "tile_dirt_br",
+         "left": "128",
+         "top": "192",
+         "width": "64"
+      },
+      "tile_12": {
+         "height": "64",
+         "id": "tile_water_ul",
+         "left": "192",
+         "top": "64",
+         "width": "64"
+      },
+      "tile_13": {
+         "height": "64",
+         "id": "tile_water_um",
+         "left": "256",
+         "top": "64",
+         "width": "64"
+      },
+      "tile_14": {
+         "height": "64",
+         "id": "tile_water_ur",
+         "left": "320",
+         "top": "64",
+         "width": "64"
+      },
+      "tile_15": {
+         "height": "64",
+         "id": "tile_water_ml",
+         "left": "192",
+         "top": "128",
+         "width": "64"
+      },
+      "tile_16": {
+         "height": "64",
+         "id": "tile_water_mm",
+         "left": "256",
+         "top": "128",
+         "width": "64"
+      },
+      "tile_17": {
+         "height": "64",
+         "id": "tile_water_mr",
+         "left": "320",
+         "top": "128",
+         "width": "64"
+      },
+      "tile_18": {
+         "height": "64",
+         "id": "tile_water_bl",
+         "left": "192",
+         "top": "192",
+         "width": "64"
+      },
+      "tile_19": {
+         "height": "64",
+         "id": "tile_water_bm",
+         "left": "256",
+         "top": "192",
+         "width": "64"
+      },
+      "tile_2": {
+         "height": "64",
+         "id": "tile_sign",
+         "left": "128",
+         "top": "0",
+         "width": "64"
+      },
+      "tile_20": {
+         "height": "64",
+         "id": "tile_water_br",
+         "left": "320",
+         "top": "192",
+         "width": "64"
+      },
+      "tile_3": {
+         "height": "64",
+         "id": "tile_dirt_ul",
+         "left": "0",
+         "top": "64",
+         "width": "64"
+      },
+      "tile_4": {
+         "height": "64",
+         "id": "tile_dirt_um",
+         "left": "64",
+         "top": "64",
+         "width": "64"
+      },
+      "tile_5": {
+         "height": "64",
+         "id": "tile_dirt_ur",
+         "left": "128",
+         "top": "64",
+         "width": "64"
+      },
+      "tile_6": {
+         "height": "64",
+         "id": "tile_dirt_ml",
+         "left": "0",
+         "top": "128",
+         "width": "64"
+      },
+      "tile_7": {
+         "height": "64",
+         "id": "tile_dirt_mm",
+         "left": "64",
+         "top": "128",
+         "width": "64"
+      },
+      "tile_8": {
+         "height": "64",
+         "id": "tile_dirt_mr",
+         "left": "128",
+         "top": "128",
+         "width": "64"
+      },
+      "tile_9": {
+         "height": "64",
+         "id": "tile_dirt_bl",
+         "left": "0",
+         "top": "192",
+         "width": "64"
+      },
+      "type": ""
+   }
+}
