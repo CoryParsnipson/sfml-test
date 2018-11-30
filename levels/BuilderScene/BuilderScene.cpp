@@ -1127,6 +1127,17 @@ void BuilderScene::create_mouse_entity(Game& game) {
             sf::Vector2f maproot_pos(grid_entity->get<Grid>()->tile_width() * pos_idx.x, grid_entity->get<Grid>()->tile_height() * pos_idx.y);
             sf::Vector2f maproot_end(grid_entity->get<Grid>()->tile_width() * end_idx.x, grid_entity->get<Grid>()->tile_height() * end_idx.y);
             tile_selection_maproot->get<Collision>()->volume(maproot_pos, maproot_end - maproot_pos);
+
+            // add little tail to the tile popup pointing to the tile selection
+            tile_popup->add<VertexList>("TilePopupTail", sf::TrianglesStrip, 3);
+
+            tile_popup->get<VertexList>()->vertex_color(0, Color(113, 94, 122, 255));
+            tile_popup->get<VertexList>()->vertex_color(1, Color(113, 94, 122, 255));
+            tile_popup->get<VertexList>()->vertex_color(2, Color(113, 94, 122, 255));
+
+            tile_popup->get<VertexList>()->vertex_position(0, sf::Vector2f(0, 5));
+            tile_popup->get<VertexList>()->vertex_position(1, sf::Vector2f(-7, 12));
+            tile_popup->get<VertexList>()->vertex_position(2, sf::Vector2f(0, 19));
          }
       }
    });
