@@ -961,8 +961,6 @@ void BuilderScene::create_mouse_entity(Game& game) {
       Entity* grid_root = this->get_entity("GridRootEntity");
       Entity* grid_entity = this->get_entity("GridEntity");
       Entity* selection_rect = this->get_entity("SelectionRectangleEntity");
-      Entity* tile_selection = this->get_entity("TileSelectionEntity");
-      Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
 
       sf::Vector2f hud_click_pos;
       hud_click_pos.x = this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position();
@@ -1000,17 +998,15 @@ void BuilderScene::create_mouse_entity(Game& game) {
                               end.y - pos.y >= grid_entity->get<Grid>()->tile_height() / 3.f);
 
       Entity* tile_popup = this->get_entity("TilePopup");
+      Entity* tile_popup_cursor = this->get_entity("TilePopupCursor");
 
       float tile_width = grid_entity->get<Grid>()->tile_width() * grid_entity->get<Grid>()->zoom_factor().x;
       float tile_height = grid_entity->get<Grid>()->tile_height() * grid_entity->get<Grid>()->zoom_factor().y;
 
       if (!is_drag_gesture) {
          // if the tile popup is already up and we right click on the popup square, remove it
-         if (tile_popup && tile_selection->get<Collision>()->contains(release_pos)) {
-            tile_selection->get<Space>()->visible(false);
-            tile_selection_maproot->get<Collision>()->volume(sf::FloatRect(0, 0, 0, 0));
+         if (tile_popup && tile_popup_cursor && tile_popup_cursor->get<Collision>()->contains(release_pos)) {
             this->remove_entity(tile_popup->handle(), true);
-
             return;
          }
 
@@ -1114,19 +1110,20 @@ void BuilderScene::create_mouse_entity(Game& game) {
             // we right clicked (not dragged) so highlight this tile with the tile cursor
             pos = grid_entity->get<Grid>()->floor(pos);
 
-            // update tile selection entity
-            tile_selection->get<Space>()->position(pos);
-            tile_selection->get<Space>()->visible(true);
-            tile_selection->get<Rectangle>()->size(tile_width, tile_height);
-            tile_selection->get<Collision>()->volume(pos, sf::Vector2f(tile_width, tile_height));
+            // create a tile popup cursor
+            tile_popup_cursor = this->create_entity("TilePopupCursor");
+            tile_popup_cursor->get<Space>()->position(panel_origin - sf::Vector2f(panel_pos.left, panel_pos.top));
 
-            // update tile selection maproot entity
-            sf::Vector2i pos_idx = grid_entity->get<Grid>()->grid_index(pos);
-            sf::Vector2i end_idx = pos_idx + sf::Vector2i(1, 1);
+            tile_popup_cursor->add<Rectangle>("TilePopupCursorRectangle", 0, 0, 0, 0);
+            tile_popup_cursor->get<Rectangle>()->size(tile_width, tile_height);
+            tile_popup_cursor->get<Rectangle>()->color(Color(113, 94, 122, 127));
+            tile_popup_cursor->get<Rectangle>()->outline_color(Color(211, 206, 218, 127));
+            tile_popup_cursor->get<Rectangle>()->outline_thickness(2.0);
 
-            sf::Vector2f maproot_pos(grid_entity->get<Grid>()->tile_width() * pos_idx.x, grid_entity->get<Grid>()->tile_height() * pos_idx.y);
-            sf::Vector2f maproot_end(grid_entity->get<Grid>()->tile_width() * end_idx.x, grid_entity->get<Grid>()->tile_height() * end_idx.y);
-            tile_selection_maproot->get<Collision>()->volume(maproot_pos, maproot_end - maproot_pos);
+            tile_popup_cursor->add<Collision>("TilePopupCursorCollision", sf::FloatRect(0, 0, 0, 0));
+            tile_popup_cursor->get<Collision>()->volume(pos, sf::Vector2f(tile_width, tile_height));
+
+            this->send_message<AddToEntityMessage>(tile_popup->handle(), tile_popup_cursor->handle());
 
             // add little tail to the tile popup pointing to the tile selection
             tile_popup->add<VertexList>("TilePopupTail", sf::TrianglesStrip, 3);
