@@ -912,18 +912,18 @@ void BuilderScene::create_mouse_entity(Game& game) {
          float tile_width = grid_entity->get<Grid>()->tile_width() * grid_entity->get<Grid>()->zoom_factor().x;
          float tile_height = grid_entity->get<Grid>()->tile_height() * grid_entity->get<Grid>()->zoom_factor().y;
 
+         // round rectangle to nearest grid point
+         pos = grid_entity->get<Grid>()->floor(pos);
+         end = grid_entity->get<Grid>()->ceil(end);
+
          // make this at least 1 tile big (if you provide grid with value that falls
          // directly on gridline it can give identical values for floor and ceil)
-         if (end.x - pos.x < tile_width || end.y - pos.y < tile_height) {
-            end = pos + sf::Vector2f(tile_width, tile_height);
+         if (end.x - pos.x < tile_width) {
+            end.x = pos.x + tile_width;
+         }
 
-            // round rectangle to nearest grid point
-            pos = grid_entity->get<Grid>()->floor(pos);
-            end = grid_entity->get<Grid>()->floor(end);
-         } else {
-            // round rectangle to nearest grid point
-            pos = grid_entity->get<Grid>()->floor(pos);
-            end = grid_entity->get<Grid>()->ceil(end);
+         if (end.y - pos.y < tile_height) {
+            end.y = pos.y + tile_height;
          }
 
          // update tile selection entity
@@ -961,6 +961,8 @@ void BuilderScene::create_mouse_entity(Game& game) {
       Entity* grid_root = this->get_entity("GridRootEntity");
       Entity* grid_entity = this->get_entity("GridEntity");
       Entity* selection_rect = this->get_entity("SelectionRectangleEntity");
+      Entity* tile_selection = this->get_entity("TileSelectionEntity");
+      Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
 
       sf::Vector2f hud_click_pos;
       hud_click_pos.x = this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position();
@@ -1109,6 +1111,10 @@ void BuilderScene::create_mouse_entity(Game& game) {
 
             // we right clicked (not dragged) so highlight this tile with the tile cursor
             pos = grid_entity->get<Grid>()->floor(pos);
+
+            // get rid of tile selection if present
+            tile_selection->get<Space>()->visible(false);
+            tile_selection_maproot->get<Collision>()->volume(sf::FloatRect(0, 0, 0, 0));
 
             // create a tile popup cursor
             tile_popup_cursor = this->create_entity("TilePopupCursor");
