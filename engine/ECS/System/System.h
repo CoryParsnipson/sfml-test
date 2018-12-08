@@ -53,6 +53,9 @@ public:
    Handle root() const;
    void root(Handle root);
 
+   sf::Transform local_transform(Entity& e);
+   sf::Transform global_transform(Entity& e);
+
 protected:
    friend Scene& EntitySubscription::scene() const;
 
@@ -60,9 +63,6 @@ protected:
    Mailbox& mailbox();
 
    EntityFilter& subscribe_to();
-
-   sf::Transform local_transform(Entity& e);
-   sf::Transform global_transform(Entity& e);
 
    bool is_visible(Handle entity);
 

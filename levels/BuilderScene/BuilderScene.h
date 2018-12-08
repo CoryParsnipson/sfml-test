@@ -60,6 +60,11 @@ private:
    void create_fps_display(GraphicalSystem* gs);
    void create_tile_palette(GraphicalSystem* gs);
 
+   void mouse_script_add_zoom_behavior(Game& game, Handle mouse_entity);
+   void mouse_script_add_pan_behavior(Game& game, Handle mouse_entity);
+   void mouse_script_add_select_behavior(Game& game, Handle mouse_entity);
+   void mouse_script_add_move_behavior(Game& game, Handle mouse_entity);
+
    Handle create_notification(float width, float height);
    Handle create_textbox(std::string entity_id, float width, int charsize = 12, unsigned int max_len = 30);
 };
