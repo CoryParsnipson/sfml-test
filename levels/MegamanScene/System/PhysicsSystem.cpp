@@ -12,10 +12,12 @@
 #include "Acceleration.h"
 #include "Gravity.h"
 
+#include "PreorderEntitySubscription.h"
+
 #include <SFML/Graphics.hpp>
 
 PhysicsSystem::PhysicsSystem(const std::string& id)
-: System(id)
+: System(id, new PreorderEntitySubscription(this, id + "EntitySubscription"))
 , collision_time(1.f)
 , normal()
 , overlap()
