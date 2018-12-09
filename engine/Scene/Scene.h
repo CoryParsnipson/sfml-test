@@ -341,15 +341,11 @@ public:
          return;
       }
 
-      if (child->parent() && child->parent()->entity() == parent->entity()) {
-         parent->remove(child);
-      }
-
-      parent->add(child, idx);
       if (child->parent()) {
          child->parent()->remove(child);
       }
       child->parent(parent);
+      parent->add(child, idx);
    }
    
    std::vector<Handle> entities() const {
