@@ -999,6 +999,8 @@ void BuilderScene::mouse_script_add_zoom_behavior(Game& game, Handle mouse_entit
 
       // adjust tile popup if exists
       if (tile_popup) {
+         Entity* tile_popup_cursor = this->get_entity("TilePopupCursor");
+
          sf::Vector2f new_pos;
          new_pos.x = grid_entity->get<Grid>()->tile_width() * pos_idx.x * new_scale.x;
          new_pos.y = grid_entity->get<Grid>()->tile_height() * pos_idx.y * new_scale.y;
@@ -1006,6 +1008,12 @@ void BuilderScene::mouse_script_add_zoom_behavior(Game& game, Handle mouse_entit
          new_pos = grid_root->space()->transform().transformPoint(new_pos);
 
          tile_popup->space()->position(new_pos + sf::Vector2f(10, 5));
+
+         tile_popup_cursor->get<Rectangle>()->size(grid_entity->get<Grid>()->tile_width() * new_scale.x, grid_entity->get<Grid>()->tile_height() * new_scale.y);
+         tile_popup_cursor->get<Collision>()->volume(tile_popup_cursor->get<Rectangle>()->local_bounds());
+
+         // I'm not sure how this is working... (offset calculation is VERY messy)
+         tile_popup_cursor->space()->position(sf::Vector2f(-1 * grid_entity->get<Grid>()->tile_width() * new_scale.x, 0) - sf::Vector2f(10, 5));
       }
    });
 }
@@ -1052,7 +1060,7 @@ void BuilderScene::mouse_script_add_pan_behavior(Game& game, Handle mouse_entity
       }
    });
 
-   // this should go in a "tile_inspector_behavior function"
+   // TODO: this should go in a "tile_inspector_behavior function"
    mouse_cursor_script->get<Callback>()->right_release([mouse_cursor_script, this] () {
       Entity* map_root = this->get_entity("MapRootEntity");
       Entity* hud_root = this->get_entity("HudRootEntity");
