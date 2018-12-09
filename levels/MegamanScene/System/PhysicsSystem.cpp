@@ -2,13 +2,11 @@
 #include <cassert>
 
 #include "PhysicsSystem.h"
-#include "PreorderEntitySubscription.h"
 
 #include "Game.h"
 #include "Scene.h"
 #include "Entity.h"
 
-#include "Space.h"
 #include "Collision.h"
 #include "Velocity.h"
 #include "Acceleration.h"
@@ -17,7 +15,7 @@
 #include <SFML/Graphics.hpp>
 
 PhysicsSystem::PhysicsSystem(const std::string& id)
-: System(id, new PreorderEntitySubscription(this, id + "EntitySubscription"))
+: System(id)
 , collision_time(1.f)
 , normal()
 , overlap()
@@ -47,7 +45,7 @@ PhysicsSystem::~PhysicsSystem() {
 }
 
 void PhysicsSystem::on_init(Game& game) {
-   this->subscribe_to().all_of<Space, Collision, Velocity, Acceleration>();
+   this->subscribe_to().all_of<Collision, Velocity, Acceleration>();
 
    // initialize world bounds
    this->world_bounds_.left = 0;
@@ -238,7 +236,7 @@ void PhysicsSystem::on_update(Game& game, Entity& e) {
       // end collision response
    }
 
-   e.get<Space>()->move(final_position + final_position_delta);
+   e.space()->move(final_position + final_position_delta);
    this->clamp_entity(e);
 }
 
@@ -269,7 +267,7 @@ void PhysicsSystem::clamp_entity(Entity& e) {
          e.get<Acceleration>()->y(0);
       }
 
-      e.get<Space>()->position(final_pos);
+      e.space()->position(final_pos);
    }
 }
 

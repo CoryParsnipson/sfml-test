@@ -3,7 +3,6 @@
 #include "CallbackSystem.h"
 #include "Game.h"
 #include "Scene.h"
-#include "Space.h"
 #include "Collision.h"
 #include "Clickable.h"
 #include "PlayerProfile.h"
@@ -96,7 +95,7 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
             callback->mouse_wheel();
 
             // propagate this event upward in the scene graph
-            Entity* parent_entity = game.current_scene()->get_entity(e.get<Space>()->parent());
+            Entity* parent_entity = e.space()->parent() ? game.current_scene()->get_entity(e.space()->parent()->entity()) : nullptr;
             bool propagate = callback->propagate();
             while (parent_entity && propagate) {
                if (parent_entity->get<Callback>()) {
@@ -104,7 +103,7 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
                   propagate = parent_entity->get<Callback>()->propagate();
                }
 
-               parent_entity = game.current_scene()->get_entity(parent_entity->get<Space>()->parent());
+               parent_entity = parent_entity->space()->parent() ? game.current_scene()->get_entity(parent_entity->space()->parent()->entity()) : nullptr;
             }
          }
       }
@@ -129,7 +128,7 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
          callback->left_click();
 
          // propagate this event upward in the scene graph
-         Entity* parent_entity = game.current_scene()->get_entity(e.get<Space>()->parent());
+         Entity* parent_entity = e.space()->parent() ? game.current_scene()->get_entity(e.space()->parent()->entity()) : nullptr;
          bool propagate = callback->propagate();
          while (parent_entity && propagate) {
             if (parent_entity->get<Callback>() && parent_entity->get<Clickable>()) {
@@ -140,7 +139,7 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
                propagate = parent_entity->get<Callback>()->propagate();
             }
 
-            parent_entity = game.current_scene()->get_entity(parent_entity->get<Space>()->parent());
+            parent_entity = parent_entity->space()->parent() ? game.current_scene()->get_entity(parent_entity->space()->parent()->entity()) : nullptr;
          }
       }
 
@@ -159,7 +158,7 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
          callback->right_click();
 
          // propagate this event upward in the scene graph
-         Entity* parent_entity = game.current_scene()->get_entity(e.get<Space>()->parent());
+         Entity* parent_entity = e.space()->parent() ? game.current_scene()->get_entity(e.space()->parent()->entity()) : nullptr;
          bool propagate = callback->propagate();
          while (parent_entity && propagate) {
             if (parent_entity->get<Callback>() && parent_entity->get<Clickable>()) {
@@ -170,7 +169,7 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
                propagate = parent_entity->get<Callback>()->propagate();
             }
 
-            parent_entity = game.current_scene()->get_entity(parent_entity->get<Space>()->parent());
+            parent_entity = parent_entity->space()->parent() ? game.current_scene()->get_entity(parent_entity->space()->parent()->entity()) : nullptr;
          }
       }
       

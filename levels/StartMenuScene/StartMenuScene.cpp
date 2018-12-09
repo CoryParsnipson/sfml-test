@@ -9,7 +9,6 @@
 #include "Animation.h"
 
 #include "Text.h"
-#include "Space.h"
 #include "Sprite.h"
 #include "Rectangle.h"
 #include "Callback.h"
@@ -53,7 +52,7 @@ void StartMenuScene::init(Game& game) {
       title->get<Text>()->local_bounds().top + title->get<Text>()->local_bounds().height/ 2.f
    );
 
-   title->get<Space>()->position(0, 0); // must position after changing origin
+   title->space()->position(0, 0); // must position after changing origin
 
    Entity* menu_item_1 = this->create_entity("MenuItem_BuilderScene");
    menu_item_1->add<Text>("MenuItem_BuilderScene_Text", "Builder Scene", this->fonts().get("retro"), 12);
@@ -64,7 +63,7 @@ void StartMenuScene::init(Game& game) {
       menu_item_1->get<Text>()->local_bounds().top + menu_item_1->get<Text>()->local_bounds().height/ 2.f
    );
 
-   menu_item_1->get<Space>()->position(0, 60);
+   menu_item_1->space()->position(0, 60);
 
    Entity* menu_item_2 = this->create_entity("MenuItem_MegamanScene");
    menu_item_2->add<Text>("MenuItem_MegamanScene_Text", "Megaman Scene", this->fonts().get("retro"), 12);
@@ -75,7 +74,7 @@ void StartMenuScene::init(Game& game) {
       menu_item_2->get<Text>()->local_bounds().top + menu_item_2->get<Text>()->local_bounds().height/ 2.f
    );
 
-   menu_item_2->get<Space>()->position(0, 90);
+   menu_item_2->space()->position(0, 90);
 
    Entity* menu_item_3 = this->create_entity("MenuItem_PokemonScene");
    menu_item_3->add<Text>("MenuItem_PokemonScene_Text", "Pokemon Scene", this->fonts().get("retro"), 12);
@@ -86,7 +85,7 @@ void StartMenuScene::init(Game& game) {
       menu_item_3->get<Text>()->local_bounds().top + menu_item_3->get<Text>()->local_bounds().height/ 2.f
    );
 
-   menu_item_3->get<Space>()->position(0, 120);
+   menu_item_3->space()->position(0, 120);
 
    sf::Vector2f cursor_offset;
    cursor_offset.x = std::max(
@@ -101,7 +100,7 @@ void StartMenuScene::init(Game& game) {
    Entity* cursor = this->create_entity("CursorEntity");
    cursor->add<PlayerProfile>("CursorPlayerProfile", 1);
 
-   cursor->get<Space>()->position(menu_item_1->get<Space>()->position() - cursor_offset);
+   cursor->space()->position(menu_item_1->space()->position() - cursor_offset);
 
    cursor->add<Sprite>("CursorSprite", this->textures().get("cursor"));
    cursor->get<Sprite>()->scale(3, 3);
@@ -127,13 +126,13 @@ void StartMenuScene::init(Game& game) {
       if (was_changed) {
          switch (this->menu_select_) {
          case 0:
-            cursor->get<Space>()->position(menu_item_1->get<Space>()->position() - cursor_offset);
+            cursor->space()->position(menu_item_1->space()->position() - cursor_offset);
          break;
          case 1:
-            cursor->get<Space>()->position(menu_item_2->get<Space>()->position() - cursor_offset);
+            cursor->space()->position(menu_item_2->space()->position() - cursor_offset);
          break;
          case 2:
-            cursor->get<Space>()->position(menu_item_3->get<Space>()->position() - cursor_offset);
+            cursor->space()->position(menu_item_3->space()->position() - cursor_offset);
          break;
          default:
          break;
@@ -164,14 +163,14 @@ void StartMenuScene::init(Game& game) {
    GraphicalSystem* gs = this->get_system<GraphicalSystem>("GraphicalSystem");
 
    text_layer->get<Callback>()->camera_resize([text_layer, gs] () {
-      text_layer->get<Space>()->position(gs->camera()->center() - sf::Vector2f(0, 30));
+      text_layer->space()->position(gs->camera()->center() - sf::Vector2f(0, 30));
    });
 
-   this->send_message<AddToEntityMessage>(text_layer->handle(), title->handle());
-   this->send_message<AddToEntityMessage>(text_layer->handle(), menu_item_1->handle());
-   this->send_message<AddToEntityMessage>(text_layer->handle(), menu_item_2->handle());
-   this->send_message<AddToEntityMessage>(text_layer->handle(), menu_item_3->handle());
-   this->send_message<AddToEntityMessage>(text_layer->handle(), cursor->handle());
+   this->add_to_scene_node(text_layer, title);
+   this->add_to_scene_node(text_layer, menu_item_1);
+   this->add_to_scene_node(text_layer, menu_item_2);
+   this->add_to_scene_node(text_layer, menu_item_3);
+   this->add_to_scene_node(text_layer, cursor);
 }
 
 void StartMenuScene::enter(Game& game) {

@@ -5,8 +5,6 @@
 #include "Entity.h"
 
 #include "EntityDestroyedMessage.h"
-#include "AddToEntityMessage.h"
-#include "RemoveFromEntityMessage.h"
 #include "ComponentAddedMessage.h"
 #include "ComponentRemovedMessage.h"
 
@@ -24,7 +22,7 @@ void PostorderEntitySubscription::init() {
    std::vector<Handle> postorder_result;
 
    entities_to_visit.push_back(
-      this->system().root() == Handle() ? this->scene().space_handle() : this->system().root()
+      this->system().root() == Handle() ? this->scene().root_entity() : this->system().root()
    );
 
    this->clear();
@@ -41,7 +39,7 @@ void PostorderEntitySubscription::init() {
          continue;
       }
    
-      Space* space = e->get<Space>();
+      SceneNode* space = e->space();
 
       // push to the top of the second "stack"
       postorder_result.push_back(current);
@@ -49,7 +47,7 @@ void PostorderEntitySubscription::init() {
       // push children in reverse order to entities_to_visit
       for (int i = space->num_children() - 1; i >= 0; --i) {
          entities_to_visit.push_back(
-            space->get(this->reverse_children_ ? (space->num_children() - 1 - i) : i)
+            space->get_child(this->reverse_children_ ? (space->num_children() - 1 - i) : i)->entity()
          );
       }
    }

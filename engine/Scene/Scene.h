@@ -27,20 +27,18 @@
 #include "FontAtlas.h"
 #include "TextureAtlas.h"
 
-#include "Space.h"
+#include "SceneNode.h"
 
 #include "ComponentManager.h"
 
 #include "System.h"
 #include "Messageable.h"
 
-#include "SpatialSystem.h"
 #include "CallbackSystem.h"
 #include "GraphicalSystem.h"
 
 #include "EntityCreatedMessage.h"
 #include "EntityDestroyedMessage.h"
-#include "AddToEntityMessage.h"
 #include "ResizeCameraMessage.h"
 #include "EntityIdChangedMessage.h"
 
@@ -64,9 +62,9 @@ public:
    , id_(id)
    , is_initialized_(false)
    , entities_(id + "EntityPool", 20000, Entity("entity", this, &this->components_))
+   , root_()
+   , scene_graph_(nullptr)
    {
-      // TODO: this value should come from config
-      this->components_.create_pool<Space>("", 20000);
    }
 
    virtual ~Scene() {
@@ -80,6 +78,22 @@ public:
          it->second.clear();
       }
       this->system_hash_.clear();
+
+      // destroy scene graph
+      if (this->scene_graph()) {
+         std::vector<SceneNode*> graph_nodes;
+         graph_nodes.push_back(this->scene_graph());
+
+         while (!graph_nodes.empty()) {
+            SceneNode* current = graph_nodes.front();
+            graph_nodes.erase(graph_nodes.begin());
+
+            for (unsigned int i = 0; i < current->num_children(); ++i) {
+               graph_nodes.push_back(current->get_child(i));
+            }
+            delete current;
+         }
+      }
    }
 
    virtual std::string id() { return this->id_; }
@@ -89,11 +103,10 @@ public:
       this->game_ = &game; // set game pointer
 
       // create scene graph root entity
-      this->root_ = this->create_entity_handle(this->id() + "RootEntity");
-      this->get_entity(this->root_)->get<Space>()->id("RootSpace");
+      assert(this->root_ == Handle() && !this->scene_graph_);
+      this->create_entity_handle(this->id() + "RootEntity");
 
       // add some default systems
-      this->add_system(new SpatialSystem());
       this->add_system(new CallbackSystem());
       this->add_system(new GraphicalSystem("GraphicalSystem", game.window(), std::make_shared<Camera>("Default Camera")));
 
@@ -192,14 +205,20 @@ public:
       // let Systems know a new Entity has been made
       this->send_message<EntityCreatedMessage>(handle);
 
-      // add Spatial component, every Entity should always have one
-      e->add<Space>();
+      // add scene graph node
+      SceneNode* node = new SceneNode();
+      node->entity(handle);
+      e->space(node);
 
-      // now add this entity as a child of the scene graph root
-      if (this->root_ != Handle() && this->root_ != handle) {
-        this->send_message<AddToEntityMessage>(this->root_, handle);
+      // if we aren't creating the root node, automatically add this entity as a child of the root
+      if (this->root_ != Handle()) {
+         assert(this->scene_graph_);
+         this->add_to_scene_node(this->root_entity(), e);
+      } else {
+         this->root_ = handle;
+         this->scene_graph_ = node;
       }
-
+      
       return e;
    }
 
@@ -226,9 +245,31 @@ public:
          return;
       }
 
+      // remove scene graph node
+      SceneNode* space = e->space();
+      assert(space->entity() == handle);
+
+      int parent_idx = -1;
+      SceneNode* parent = space->parent();
+      assert (parent); // don't allow deletion of root node
+
+      for (unsigned int i = 0; i < parent->num_children(); ++i) {
+         if (space == parent->get_child(i)) {
+            parent_idx = i;
+            break;
+         }
+      }
+      parent->remove(parent_idx);
+
       if (!recursive) {
          // let Systems know a new Entity has been deallocated
          this->send_message<EntityDestroyedMessage>(handle);
+
+         for (unsigned int i = 0; i < space->num_children(); ++i) {
+            space->parent()->add(space->get_child(i), parent_idx + i);
+            space->get_child(i)->parent(space->parent());
+         }
+         delete space;
 
          this->entities_.get(handle)->reset();
          this->entities_.remove(handle);
@@ -236,6 +277,7 @@ public:
          // if recursive is set, delete all children of handle too
          std::vector<Handle> entities;
          std::vector<Handle> postorder;
+         std::vector<SceneNode*> nodes;
 
          entities.push_back(handle);
 
@@ -248,10 +290,10 @@ public:
             }
 
             postorder.push_back(current->handle());
-            Space* space = current->get<Space>();
+            nodes.push_back(current->space());
 
-            for (unsigned int i = 0; i < space->num_children(); ++i) {
-               entities.push_back(space->get(i));
+            for (unsigned int i = 0; i < current->space()->num_children(); ++i) {
+               entities.push_back(current->space()->get_child(i)->entity());
             }
          }
 
@@ -262,11 +304,76 @@ public:
             this->entities_.get(*it)->reset();
             this->entities_.remove(*it);
          }
+
+         for (std::vector<SceneNode*>::reverse_iterator it = nodes.rbegin(); it != nodes.rend(); ++it) {
+            delete *it;
+         }
       }
+   }
+
+   void add_to_scene_node(Handle parent, Handle child, int idx = -1) {
+      Entity* p = this->get_entity(parent);
+      Entity* c = this->get_entity(child);
+      add_to_scene_node(p->space(), c->space(), idx);
+   }
+
+   void add_to_scene_node(Entity* parent, Handle child, int idx = -1) {
+      Entity* c = this->get_entity(child);
+      add_to_scene_node(parent->space(), c->space(), idx);
+   }
+
+   void add_to_scene_node(Handle parent, Entity* child, int idx = -1) {
+      Entity* p = this->get_entity(parent);
+      add_to_scene_node(p->space(), child->space(), idx);
+   }
+
+   void add_to_scene_node(Entity* parent, Entity* child, int idx = -1) {
+      add_to_scene_node(parent->space(), child->space(), idx);
+   }
+
+   void add_to_scene_node(SceneNode* parent, Entity* child, int idx = -1) {
+      add_to_scene_node(parent, child->space(), idx);
+   }
+
+   void add_to_scene_node(SceneNode* parent, SceneNode* child, int idx = -1) {
+      if (!parent || !child) {
+         this->game_->logger().msg(this->id(), Logger::WARNING, "add_to_scene_node() received nullptr to entity. Ignoring.");
+         return;
+      }
+
+      if (child->parent() && child->parent()->entity() == parent->entity()) {
+         parent->remove(child);
+      }
+
+      parent->add(child, idx);
+      if (child->parent()) {
+         child->parent()->remove(child);
+      }
+      child->parent(parent);
    }
    
    std::vector<Handle> entities() const {
       return this->entities_.get_active_handles();
+   }
+
+   Handle root_entity() const {
+      return this->root_;
+   }
+
+   SceneNode* scene_graph() const {
+      return this->scene_graph_;
+   }
+
+   sf::Transform global_transform(Entity& e) {
+      sf::Transform g_transform = sf::Transform();
+      SceneNode* space = e.space();
+
+      while (space != nullptr) {
+         g_transform *= space->transform();
+         space = space->parent();
+      }
+
+      return g_transform;
    }
 
    template <
@@ -355,17 +462,6 @@ public:
    virtual void process(Game& game, MouseWheelInputEvent& e) {}
    virtual void process(Game& game, MouseButtonInputEvent& e) {}
 
-   Space& space() {
-      assert(this->get_entity(this->root_));
-      assert(this->get_entity(this->root_)->get<Space>());
-
-      return *this->get_entity(this->root_)->get<Space>();
-   }
-
-   Handle space_handle() {
-      return this->root_;
-   }
-
 protected:
    // store a handle to an entity with a string identifier
    void bookmark(const std::string& bookmark_id, Handle entity) {
@@ -417,6 +513,8 @@ private:
 
    Handle root_;
    std::map<std::string, Handle> bookmarks_;
+
+   SceneNode* scene_graph_;
 
    // whenever Scene receives a message, we want to propagate it to messageables inside
    virtual void post_receive_message(MessagePtr message) {

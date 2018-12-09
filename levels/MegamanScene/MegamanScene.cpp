@@ -4,7 +4,6 @@
 #include "Entity.h"
 #include "Animation.h"
 
-#include "Space.h"
 #include "Text.h"
 #include "Sprite.h"
 #include "TileMap.h"
@@ -81,8 +80,8 @@ void MegamanScene::init(Game& game) {
 
    // backdrop
    Entity* backdrop = this->create_entity("BackdropEntity");
-   this->send_message<AddToEntityMessage>(this->space_handle(), backdrop->handle(), 0);
-
+   this->add_to_scene_node(this->scene_graph(), backdrop, 0);
+   
    backdrop->add<Sprite>("BackdropSprite", this->textures().get("megaman_tileset"), sf::IntRect(0, 16, 240, 160));
    backdrop->get<Sprite>()->scale(1.75, 1.75);
 
@@ -150,12 +149,12 @@ void MegamanScene::init(Game& game) {
    test_e->add<Sprite>("TestSprite");
    test_e->get<Sprite>()->animation(jump_r);
 
-   test_e->get<Space>()->position(400, 100);
-   test_e->get<Space>()->scale(3, 3);
+   test_e->space()->position(400, 100);
+   test_e->space()->scale(3, 3);
 
    Entity* floor1 = this->create_entity("Floor1Entity");
 
-   floor1->get<Space>()->position(16, 256);
+   floor1->space()->position(16, 256);
 
    floor1->add<Rectangle>("Floor1Sprite", 0, 0, 128, 80);
    floor1->get<Rectangle>()->color(sf::Color::Transparent);
@@ -165,7 +164,7 @@ void MegamanScene::init(Game& game) {
 
    Entity* floor2 = this->create_entity("Floor2Entity");
 
-   floor2->get<Space>()->position(144, 224);
+   floor2->space()->position(144, 224);
 
    floor2->add<Rectangle>("Floor2Sprite", 0, 0, 144, 112);
    floor2->get<Rectangle>()->color(sf::Color::Transparent);
@@ -177,7 +176,7 @@ void MegamanScene::init(Game& game) {
    c->add<Sprite>("PlayerCharacterSprite");
    c->get<Sprite>()->animation(stand_r);
 
-   c->get<Space>()->position(32, 200);
+   c->space()->position(32, 200);
 
    c->add<CameraAnchor>("PlayerCharacterCameraAnchor");
 
@@ -340,7 +339,7 @@ void MegamanScene::init(Game& game) {
    dv4->add<VertexList>("DebugVectorVertexList", sf::LineStrip, 2);
    dv5->add<VertexList>("DebugVectorVertexList", sf::LineStrip, 2);
 
-   Entity* root = this->get_entity(this->space_handle());
+   Entity* root = this->get_entity(this->root_entity());
    root->add<PlayerProfile>("RootPlayerProfile", 1);
 
    root->add<Text>("DiagnosticText", "", this->fonts().get("retro"), 12);
@@ -357,7 +356,7 @@ void MegamanScene::init(Game& game) {
       std::string line;
 
       line  = "Velocity: (" + std::to_string(c->get<Velocity>()->x()) + ", " + std::to_string(c->get<Velocity>()->y()) + ")\n";
-      line += "Position: (" + std::to_string((int)c->get<Space>()->position().x) + ", " + std::to_string((int)c->get<Space>()->position().y) + ")\n";
+      line += "Position: (" + std::to_string((int)c->space()->position().x) + ", " + std::to_string((int)c->space()->position().y) + ")\n";
       line += "Collision time: " + std::to_string(ps->collision_time) + "\n";
       line += "normal: (" + std::to_string((int)ps->normal.x) + ", " + std::to_string((int)ps->normal.y) + ")\n";
       line += "overlap: (" + std::to_string((int)ps->overlap.x) + ", " + std::to_string((int)ps->overlap.y) + ")\n";

@@ -1,38 +1,35 @@
-#ifndef SPACE_H
-#define SPACE_H
+#ifndef SCENE_NODE_H
+#define SCENE_NODE_H
 
-#include <string>
 #include <SFML/Graphics.hpp>
 
-#include "Component.h"
 #include "ObjectPool.h"
 
 // ----------------------------------------------------------------------------
-// Space
-// 
-// This is a spatial component. Entities need to have one of these components
-// to be part of the current Scene's scene graph.
+// forward declarations
 // ----------------------------------------------------------------------------
-class Space : public Component {
+class Entity;
+
+// ----------------------------------------------------------------------------
+// SceneNode
+// ----------------------------------------------------------------------------
+class SceneNode {
 public:
-   explicit Space(const std::string& id = "Space Component");
-   Space(const Space& other);
-   virtual ~Space();
+   SceneNode();
+   ~SceneNode();
 
-   Space& operator=(const Space& other);
-   void swap(Space& other);
+   Handle entity() const;
+   void entity(Handle entity);
 
-   Handle parent() const;
-   void parent(Handle parent);
+   SceneNode* parent() const;
+   void parent(SceneNode* parent);
 
-   Handle add(unsigned int idx) const;
-   void add(Handle child, int idx = -1);
+   void add(SceneNode* child, int idx = -1);
 
-   void remove(Handle child);
+   void remove(SceneNode* child);
    void remove(unsigned int idx);
 
-   Handle get(unsigned int idx) const;
-
+   SceneNode* get_child(unsigned int idx) const;
    unsigned int num_children() const;
 
    bool visible() const;
@@ -47,7 +44,7 @@ public:
    float rotation() const;
 
    void scale(float x, float y);
-   void scale(const sf::Vector2f& factors);
+   void scale(const sf::Vector2f& scale);
    const sf::Vector2f& scale() const;
 
    void origin(float x, float y);
@@ -62,16 +59,13 @@ public:
    const sf::Transform& transform() const;
    const sf::Transform& inverse_transform() const;
 
-   // serialize interface
-   virtual std::string serialize(Serializer& s);
-   virtual void deserialize(Serializer& s, Scene& scene, std::string& d);
-
 private:
    bool visible_;
+   Handle entity_;
    sf::Transformable transform_;
 
-   Handle parent_;
-   std::vector<Handle> children_;
+   SceneNode* parent_;
+   std::vector<SceneNode*> children_;
 };
 
 #endif

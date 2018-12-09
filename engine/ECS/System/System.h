@@ -53,9 +53,6 @@ public:
    Handle root() const;
    void root(Handle root);
 
-   sf::Transform local_transform(Entity& e);
-   sf::Transform global_transform(Entity& e);
-
 protected:
    friend Scene& EntitySubscription::scene() const;
 
@@ -65,6 +62,14 @@ protected:
    EntityFilter& subscribe_to();
 
    bool is_visible(Handle entity);
+   sf::Transform global_transform(Entity& e);
+
+   void add_to_scene_node(Handle parent, Handle child, int idx = -1);
+   void add_to_scene_node(Entity* parent, Handle child, int idx = -1);
+   void add_to_scene_node(Handle parent, Entity* child, int idx = -1);
+   void add_to_scene_node(Entity* parent, Entity* child, int idx = -1);
+   void add_to_scene_node(SceneNode* parent, Entity* child, int idx = -1);
+   void add_to_scene_node(SceneNode* parent, SceneNode* child, int idx = -1);
 
 private:
    std::string id_;

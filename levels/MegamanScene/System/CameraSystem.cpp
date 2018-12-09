@@ -3,8 +3,6 @@
 #include "PlayerProfile.h"
 #include "CameraAnchor.h"
 
-#include "Space.h"
-
 CameraSystem::CameraSystem(const std::string& id, CameraPtr camera)
 : System(id)
 , camera_(camera)
@@ -24,5 +22,5 @@ void CameraSystem::on_init(Game& game) {
 
 void CameraSystem::on_update(Game& game, Entity& e) {
    this->camera_->zoom(1 / 2.f); // scale everything by 2x
-   this->camera_->center(e.get<Space>()->position());
+   this->camera_->center(e.space()->position());
 }

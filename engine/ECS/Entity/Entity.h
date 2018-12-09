@@ -8,6 +8,8 @@
 #include "ComponentAddedMessage.h"
 #include "ComponentRemovedMessage.h"
 
+#include "SceneNode.h"
+
 #include "ComponentManager.h"
 #include "ObjectPool.h"
 #include "Component.h"
@@ -28,6 +30,9 @@ public:
 
    const std::string& id() const;
    void id(std::string id);
+
+   SceneNode* space() const;
+   void space(SceneNode* node);
 
    std::string to_string();
    Handle handle() const;
@@ -73,6 +78,7 @@ private:
    Handle handle_;
 
    Scene* scene_;
+   SceneNode* node_;
 
    ComponentList components_;
    ComponentManager* component_manager_;

@@ -56,6 +56,14 @@ void Entity::id(std::string id) {
    this->send_message<EntityIdChangedMessage>(this->handle(), old_id);
 }
 
+SceneNode* Entity::space() const {
+   return this->node_;
+}
+
+void Entity::space(SceneNode* node) {
+   this->node_ = node;
+}
+
 std::string Entity::to_string() {
    return "[Entity \"" + this->id() + "\"]";
 }

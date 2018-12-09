@@ -6,8 +6,6 @@
 #include "Entity.h"
 
 #include "EntityDestroyedMessage.h"
-#include "AddToEntityMessage.h"
-#include "RemoveFromEntityMessage.h"
 #include "ComponentAddedMessage.h"
 #include "ComponentRemovedMessage.h"
 
@@ -17,14 +15,6 @@ PreorderEntitySubscription::PreorderEntitySubscription(System* system, const std
 {
    // set some messaging callbacks for when to update the entity list
    this->install_message_handler<EntityDestroyedMessage>([this](EntityDestroyedMessage& msg) {
-      this->init(); // rebuild entire entity list (is there an algorithm that can do better?)
-   });
-
-   this->install_message_handler<AddToEntityMessage>([this](AddToEntityMessage& msg) {
-      this->init(); // rebuild entire entity list (is there an algorithm that can do better?)
-   });
-
-   this->install_message_handler<RemoveFromEntityMessage>([this](RemoveFromEntityMessage& msg) {
       this->init(); // rebuild entire entity list (is there an algorithm that can do better?)
    });
 
@@ -47,7 +37,7 @@ PreorderEntitySubscription::~PreorderEntitySubscription() {
 void PreorderEntitySubscription::init() {
    std::vector<Handle> entities_to_visit;
    entities_to_visit.push_back(
-      this->system().root() == Handle() ? this->scene().space_handle() : this->system().root()
+      this->system().root() == Handle() ? this->scene().root_entity() : this->system().root()
    );
 
    this->clear();
@@ -59,16 +49,16 @@ void PreorderEntitySubscription::init() {
 
       Entity* e = this->scene().get_entity(current);
       if (e != nullptr) {
-         Space* space = e->get<Space>();
+         SceneNode* space = e->space();
          assert(space != nullptr);
 
          if (this->reverse_children_) {
             for (unsigned int i = 0; i < space->num_children(); ++i) {
-               entities_to_visit.push_back(space->get(i));
+               entities_to_visit.push_back(space->get_child(i)->entity());
             }
          } else {
             for (int i = space->num_children() - 1; i >= 0; --i) {
-               entities_to_visit.push_back(space->get(i));
+               entities_to_visit.push_back(space->get_child(i)->entity());
             }
          }
 

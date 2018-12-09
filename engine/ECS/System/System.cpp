@@ -5,8 +5,6 @@
 #include "Game.h"
 #include "Scene.h"
 
-#include "AddToEntityMessage.h"
-#include "RemoveFromEntityMessage.h"
 #include "ComponentAddedMessage.h"
 #include "ComponentRemovedMessage.h"
 
@@ -126,44 +124,49 @@ EntityFilter& System::subscribe_to() {
    return this->subscription_->filter();
 }
 
-sf::Transform System::local_transform(Entity& e) {
-   Space* space = e.get<Space>();
-   if (space != nullptr) {
-      return space->transform();
-   }
-
-   return sf::Transform();
-}
-
-sf::Transform System::global_transform(Entity& e) {
-   sf::Transform g_transform = sf::Transform();
-   Space* space = e.get<Space>();
-   Entity* entity = &e;
-
-   while (space != nullptr) {
-      g_transform *= space->transform();
-
-      entity = this->scene().get_entity(space->parent());
-      if (entity != nullptr) {
-         space = entity->get<Space>();
-      } else {
-         break;
-      }
-   }
-
-   return g_transform;
-}
-
 bool System::is_visible(Handle entity) {
    bool visible = true;
    Entity* e = this->scene().get_entity(entity);
+   if (!e) {
+      return false;
+   }
 
-   while (e != nullptr && visible) {
-      visible = visible && e->get<Space>()->visible();
-      e = this->scene().get_entity(e->get<Space>()->parent());
+   SceneNode* space = e->space();
+
+   while (space && visible) {
+      visible = visible && space->visible();
+      space = space->parent();
    }
 
    return visible;
+}
+
+sf::Transform System::global_transform(Entity& e) {
+   return this->scene().global_transform(e);
+}
+
+void System::add_to_scene_node(Handle parent, Handle child, int idx /* = -1 */) {
+   this->scene().add_to_scene_node(parent, child, idx);
+}
+
+void System::add_to_scene_node(Entity* parent, Handle child, int idx /* = -1 */) {
+   this->scene().add_to_scene_node(parent, child, idx);
+}
+
+void System::add_to_scene_node(Handle parent, Entity* child, int idx /* = -1 */) {
+   this->scene().add_to_scene_node(parent, child, idx);
+}
+
+void System::add_to_scene_node(Entity* parent, Entity* child, int idx /* = -1 */) {
+   this->scene().add_to_scene_node(parent, child, idx);
+}
+
+void System::add_to_scene_node(SceneNode* parent, Entity* child, int idx /* = -1 */) {
+   this->scene().add_to_scene_node(parent, child, idx);
+}
+
+void System::add_to_scene_node(SceneNode* parent, SceneNode* child, int idx /* = -1 */) {
+   this->scene().add_to_scene_node(parent, child, idx);
 }
 
 void System::send_message_helper(MessagePtr message) {

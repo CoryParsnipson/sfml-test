@@ -11,7 +11,6 @@
 #include "Text.h"
 #include "VertexList.h"
 #include "TileMap.h"
-#include "Space.h"
 #include "PreorderEntitySubscription.h"
 #include "Scene.h"
 #include "ResizeCameraMessage.h"
@@ -40,7 +39,6 @@ RenderSurface* GraphicalSystem::surface() const {
 
 void GraphicalSystem::on_init(Game& game) {
    this->subscribe_to().one_of<Circle, Rectangle, Sprite, Text, VertexList, TileMap>();
-   this->subscribe_to().all_of<Space>();
 }
 
 void GraphicalSystem::pre_update(Game& game) {

@@ -9,7 +9,6 @@
 
 #include "Color.h"
 
-#include "Space.h"
 #include "Text.h"
 #include "Rectangle.h"
 #include "VertexList.h"
@@ -39,13 +38,10 @@
 #include "SerializeMapIntent.h"
 #include "ModalIntent.h"
 
-#include "PreorderEntitySubscription.h"
-
 #include "GraphicalSystem.h"
 #include "VisualDebugSystem.h"
 #include "GridSystem.h"
 
-#include "AddToEntityMessage.h"
 #include "SetGridVisibilityMessage.h"
 #include "SetVisualDebugMessage.h"
 #include "EntityIdChangedMessage.h"
@@ -76,14 +72,14 @@ void BuilderScene::init(Game& game) {
    // make map_root, grid_root, and hud_root (ordering is important here for layering reasons)
    Entity* map_root = this->create_entity("MapRootEntity");
    map_root->add<TileMap>();
-   map_root->get<Space>()->position(0, 30); // move so origin is not obscured by menubar
+   map_root->space()->position(0, 30); // move so origin is not obscured by menubar
 
    Entity* grid_root = this->create_entity("GridRootEntity");
-   grid_root->get<Space>()->position(0, 30); // move so origin is not obscured by menubar
+   grid_root->space()->position(0, 30); // move so origin is not obscured by menubar
 
    Entity* grid_entity = this->create_entity("GridEntity");
    grid_entity->add<Grid>("Grid Component");
-   this->send_message<AddToEntityMessage>(grid_root->handle(), grid_entity->handle());
+   this->add_to_scene_node(grid_root, grid_entity);
 
    this->create_entity("HudRootEntity");
 
@@ -119,14 +115,14 @@ void BuilderScene::process(Game& game, CloseInputEvent& e) {
 void BuilderScene::process(Game& game, MouseEnteredInputEvent& e) {
    Entity* cursor = this->get_entity("MouseCursorEntity");
    if (cursor) {
-      cursor->get<Space>()->visible(true);
+      cursor->space()->visible(true);
    }
 }
 
 void BuilderScene::process(Game& game, MouseLeftInputEvent& e) {
    Entity* cursor = this->get_entity("MouseCursorEntity");
    if (cursor) {
-      cursor->get<Space>()->visible(false);
+      cursor->space()->visible(false);
    }
 }
 
@@ -160,7 +156,7 @@ Handle BuilderScene::create_panel(std::string entity_id, sf::FloatRect bounds, b
    // create panel background
    panel->add<Rectangle>(entity_id + "Rectangle", 0, 0, bounds.width, bounds.height);
    panel->get<Rectangle>()->color(panel_bg_color);
-   panel->get<Space>()->position(bounds.left, bounds.top);
+   panel->space()->position(bounds.left, bounds.top);
 
    // create label and decoration if necessary
    if (create_decoration) {
@@ -176,24 +172,24 @@ Handle BuilderScene::create_panel(std::string entity_id, sf::FloatRect bounds, b
       panel_outline->get<Rectangle>()->outline_color(panel_bg_highlight);
       panel_outline->get<Rectangle>()->outline_thickness(2.0);
 
-      panel_outline->get<Space>()->position(padding_left, padding_top);
+      panel_outline->space()->position(padding_left, padding_top);
 
-      this->send_message<AddToEntityMessage>(panel->handle(), panel_outline->handle());
+      this->add_to_scene_node(panel, panel_outline);
    }
 
    if (label != "") {
       Entity* panel_title_back = this->create_entity(entity_id + "LabelBackground");
       panel_title_back->add<Rectangle>(entity_id + "LabelBackgroundRectangle", 0, 0, 0, 0);
       panel_title_back->get<Rectangle>()->color(panel_bg_color);
-      panel_title_back->get<Space>()->position(label_offset_left, label_offset_top);
+      panel_title_back->space()->position(label_offset_left, label_offset_top);
 
-      this->send_message<AddToEntityMessage>(panel->handle(), panel_title_back->handle());
+      this->add_to_scene_node(panel, panel_title_back);
 
       Entity* panel_title = this->create_entity(entity_id + "Label");
       panel_title->add<Text>(entity_id + "LabelText", label, this->fonts().get("retro"), 12);
-      panel_title->get<Space>()->position(label_offset_left + label_padding_left, label_offset_top + label_padding_top);
+      panel_title->space()->position(label_offset_left + label_padding_left, label_offset_top + label_padding_top);
 
-      this->send_message<AddToEntityMessage>(panel->handle(), panel_title->handle());
+      this->add_to_scene_node(panel, panel_title);
 
       panel_title_back->get<Rectangle>()->size(
          panel_title->get<Text>()->local_bounds().width + label_padding_left + label_padding_right,
@@ -262,12 +258,12 @@ Handle BuilderScene::create_button(std::string entity_id, sf::FloatRect bounds, 
          this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position(),
          this->game().get_player(1).bindings().get<MouseYIntent>()->element()->position()
       );
-      sf::FloatRect button_volume = this->get_system<SpatialSystem>("SpatialSystem")->global_transform(*button).transformRect(button->get<Collision>()->volume());
+      sf::FloatRect button_volume = this->global_transform(*button).transformRect(button->get<Collision>()->volume());
 
       button->get<Rectangle>()->color(button_volume.contains(mouse_pos) ? button_bg_highlight : button_bg_color);
    });
 
-   this->send_message<AddToEntityMessage>(button->handle(), button_script_overlay->handle());
+   this->add_to_scene_node(button, button_script_overlay);
 
    // center button text
    button_text_entity->get<Text>()->origin(
@@ -276,7 +272,7 @@ Handle BuilderScene::create_button(std::string entity_id, sf::FloatRect bounds, 
    );
    button_text_entity->get<Text>()->offset(button->get<Rectangle>()->size() / 2.f);
 
-   this->send_message<AddToEntityMessage>(button->handle(), button_text_entity->handle());
+   this->add_to_scene_node(button, button_text_entity);
 
    return button->handle();
 }
@@ -291,7 +287,7 @@ void BuilderScene::create_hud(Game& game) {
 
    // create selection rect
    Entity* selection_rect = this->create_entity("SelectionRectangleEntity");
-   this->send_message<AddToEntityMessage>(hud_root->handle(), selection_rect->handle(), 0);
+   this->add_to_scene_node(hud_root, selection_rect, 0);
 
    selection_rect->add<Rectangle>("SelectionRectangle", 0, 0, 0, 0);
    selection_rect->get<Rectangle>()->color(Color(66, 108, 167, 175));
@@ -302,7 +298,7 @@ void BuilderScene::create_hud(Game& game) {
 
    // create tile selection visual
    Entity* tile_selection = this->create_entity("TileSelectionEntity");
-   this->send_message<AddToEntityMessage>(grid_root->handle(), tile_selection->handle(), 0);
+   this->add_to_scene_node(grid_root, tile_selection, 0);
 
    tile_selection->add<Rectangle>("TileSelectionRectangle", 0, 0, 0, 0);
    tile_selection->get<Rectangle>()->color(Color(255, 255, 255, 128));
@@ -313,7 +309,7 @@ void BuilderScene::create_hud(Game& game) {
 
    // create tile selection map_root portion
    Entity* tile_selection_maproot = this->create_entity("TileSelectionMapRootEntity");
-   this->send_message<AddToEntityMessage>(map_root->handle(), tile_selection_maproot->handle(), 0);
+   this->add_to_scene_node(map_root, tile_selection_maproot, 0);
 
    tile_selection_maproot->add<Collision>("TileSelectionMapRootCollider", sf::FloatRect(0, 0, 0, 0));
 
@@ -322,7 +318,7 @@ void BuilderScene::create_hud(Game& game) {
    assert(this->get_entity("TilePalette"));
 
    // put tile palette window over selection_rect but under mouse cursor
-   this->send_message<AddToEntityMessage>(hud_root->handle(), this->get_entity("TilePalette")->handle());
+   this->add_to_scene_node(hud_root, this->get_entity("TilePalette"));
 
    // create menu panel
    Entity* menu_panel = this->get_entity(this->create_panel("Menu", sf::FloatRect(0, 0, game.window().size().x, 30)));
@@ -347,25 +343,24 @@ void BuilderScene::create_hud(Game& game) {
          )
       );
    });
-
-   this->send_message<AddToEntityMessage>(hud_root->handle(), menu_panel->handle());
+   this->add_to_scene_node(hud_root, menu_panel);
 
    Entity* file_load_button = this->get_entity(this->create_button("FileLoadButton", sf::FloatRect(0, 0, 0, 30), "File"));
-   this->send_message<AddToEntityMessage>(menu_panel->handle(), file_load_button->handle());
+   this->add_to_scene_node(menu_panel, file_load_button);
 
    file_load_button->get<Callback>()->left_release([this] () {
       this->file_dialog_box();
    });
 
    sf::FloatRect mms_area(
-      file_load_button->get<Space>()->position().x + file_load_button->get<Rectangle>()->local_bounds().width,
+      file_load_button->space()->position().x + file_load_button->get<Rectangle>()->local_bounds().width,
       0,
       0,
       30
    );
 
    Entity* mouse_mode_select_button = this->get_entity(this->create_button("MouseModeSelectButton", mms_area, "Tools"));
-   this->send_message<AddToEntityMessage>(menu_panel->handle(), mouse_mode_select_button->handle());
+   this->add_to_scene_node(menu_panel, mouse_mode_select_button);
 
    mouse_mode_select_button->get<Callback>()->left_release([this] () {
       Entity* menu_panel = this->get_entity("Menu");
@@ -383,8 +378,8 @@ void BuilderScene::create_hud(Game& game) {
             this->create_panel(
                "MouseModeSelectDropdown",
                sf::FloatRect(
-                  mouse_mode_select_button->get<Space>()->position().x,
-                  menu_panel->get<Space>()->position().y + menu_panel->get<Rectangle>()->local_bounds().height,
+                  mouse_mode_select_button->space()->position().x,
+                  menu_panel->space()->position().y + menu_panel->get<Rectangle>()->local_bounds().height,
                   150,
                   100
                )
@@ -396,10 +391,10 @@ void BuilderScene::create_hud(Game& game) {
          dropdown->add<Collision>("MouseModeSelectDropdownCollision", dropdown->get<Rectangle>()->local_bounds());
          dropdown->add<Callback>("MouseModeSelectDropdownCallback", false);
    
-         this->send_message<AddToEntityMessage>(menu_panel->handle(), dropdown->handle());
+         this->add_to_scene_node(menu_panel, dropdown);
 
          Handle select_button = this->create_button("SelectToolButton", sf::FloatRect(0, 10, 150, 30), "Select Tool");
-         this->send_message<AddToEntityMessage>(dropdown->handle(), select_button);
+         this->add_to_scene_node(dropdown, select_button);
       }
    });
 }
@@ -410,17 +405,17 @@ void BuilderScene::file_dialog_box() {
    Entity* n_box_title = this->create_entity("n_box_title");
 
    n_box_title->add<Text>("n_box_title_text", "Load from File", this->fonts().get("retro"), 12);
-   n_box_title->get<Space>()->position(10, 10);
+   n_box_title->space()->position(10, 10);
 
-   this->send_message<AddToEntityMessage>(n_box->handle(), n_box_title->handle());
+   this->add_to_scene_node(n_box, n_box_title);
 
    Entity* textbox = this->get_entity(this->create_textbox("FileLoadTextbox", 250, 12));
-   textbox->get<Space>()->position((n_box->get<Rectangle>()->local_bounds().width - textbox->get<Rectangle>()->local_bounds().width) / 2.f, 40);
+   textbox->space()->position((n_box->get<Rectangle>()->local_bounds().width - textbox->get<Rectangle>()->local_bounds().width) / 2.f, 40);
 
-   this->send_message<AddToEntityMessage>(n_box->handle(), textbox->handle());
+   this->add_to_scene_node(n_box, textbox);
 
    Entity* submit_button = this->get_entity(this->create_button("FileLoadSubmitButton", sf::FloatRect(0, 0, 0, 30), "Submit"));
-   submit_button->get<Space>()->position(
+   submit_button->space()->position(
       (n_box->get<Rectangle>()->local_bounds().width - submit_button->get<Rectangle>()->local_bounds().width) / 2.f,
       40 + textbox->get<Rectangle>()->local_bounds().height + 10
    );
@@ -448,7 +443,7 @@ void BuilderScene::file_dialog_box() {
       }
    });
 
-   this->send_message<AddToEntityMessage>(n_box->handle(), submit_button->handle());
+   this->add_to_scene_node(n_box, submit_button);
 }
 
 void BuilderScene::setup_keybindings(Game& game) {
@@ -500,17 +495,17 @@ void BuilderScene::setup_keybindings(Game& game) {
       }
 
       if (p1_bindings.get<ResetViewIntent>()->element()->was_pressed() && p1_bindings.get<ModalIntent>()->element()->is_pressed()) {
-         map_root->get<Space>()->position(0, 30); // reset to point which is not obscured by menubar
-         map_root->get<Space>()->scale(sf::Vector2f(1.f, 1.f));
+         map_root->space()->position(0, 30); // reset to point which is not obscured by menubar
+         map_root->space()->scale(sf::Vector2f(1.f, 1.f));
 
-         sf::Vector2f pos = tile_selection->get<Space>()->position();
+         sf::Vector2f pos = tile_selection->space()->position();
          sf::Vector2f end = pos + tile_selection->get<Rectangle>()->size();
 
          sf::Vector2i pos_idx = grid_entity->get<Grid>()->grid_index(pos);
          sf::Vector2i end_idx = grid_entity->get<Grid>()->grid_index(end);
 
          // reset grid
-         grid_root->get<Space>()->position(0, 30); // reset to point which is not obscured by menubar
+         grid_root->space()->position(0, 30); // reset to point which is not obscured by menubar
          grid_entity->get<Grid>()->zoom_factor(1.f, 1.f);
 
          // recalculate tile selection visual
@@ -522,7 +517,7 @@ void BuilderScene::setup_keybindings(Game& game) {
          new_end.x = grid_entity->get<Grid>()->tile_width() * end_idx.x;
          new_end.y = grid_entity->get<Grid>()->tile_height() * end_idx.y;
 
-         tile_selection->get<Space>()->position(new_pos);
+         tile_selection->space()->position(new_pos);
          tile_selection->get<Rectangle>()->size(new_end - new_pos);
 
          tile_selection->get<Collision>()->volume(tile_selection->get<Rectangle>()->global_bounds());
@@ -535,23 +530,23 @@ void BuilderScene::setup_keybindings(Game& game) {
       }
 
       if (p1_bindings.get<MoveUpIntent>()->element()->is_pressed()) {
-         map_root->get<Space>()->move(sf::Vector2f(0, -10));
-         grid_root->get<Space>()->move(sf::Vector2f(0, -10));
+         map_root->space()->move(sf::Vector2f(0, -10));
+         grid_root->space()->move(sf::Vector2f(0, -10));
       }
 
       if (p1_bindings.get<MoveLeftIntent>()->element()->is_pressed()) {
-         map_root->get<Space>()->move(sf::Vector2f(-10, 0));
-         grid_root->get<Space>()->move(sf::Vector2f(-10, 0));
+         map_root->space()->move(sf::Vector2f(-10, 0));
+         grid_root->space()->move(sf::Vector2f(-10, 0));
       }
 
       if (p1_bindings.get<MoveRightIntent>()->element()->is_pressed()) {
-         map_root->get<Space>()->move(sf::Vector2f(10, 0));
-         grid_root->get<Space>()->move(sf::Vector2f(10, 0));
+         map_root->space()->move(sf::Vector2f(10, 0));
+         grid_root->space()->move(sf::Vector2f(10, 0));
       }
 
       if (p1_bindings.get<MoveDownIntent>()->element()->is_pressed()) {
-         map_root->get<Space>()->move(sf::Vector2f(0, 10));
-         grid_root->get<Space>()->move(sf::Vector2f(0, 10));
+         map_root->space()->move(sf::Vector2f(0, 10));
+         grid_root->space()->move(sf::Vector2f(0, 10));
       }
 
       if (p1_bindings.get<RemoveTilesIntent>()->element()->was_pressed()) {
@@ -616,18 +611,18 @@ void BuilderScene::load_from_file(std::string filename) {
       Entity* n_box = this->get_entity(this->create_notification(300, 110));
       Entity* error_message = this->create_entity("NotificationErrorMsg");
 
-      this->send_message<AddToEntityMessage>(n_box->handle(), error_message->handle());
+      this->add_to_scene_node(n_box, error_message);
 
       error_message->add<Text>("NotificationErrorMsgText", "ERROR: Invalid filename\nspecified!", this->fonts().get("retro"), 12);
       error_message->get<Text>()->color(Color(188, 45, 69, 255));
 
-      error_message->get<Space>()->position(
+      error_message->space()->position(
          (n_box->get<Rectangle>()->local_bounds().width - error_message->get<Text>()->local_bounds().width) / 2.f,
          20
       );
 
       Entity* ok_button = this->get_entity(this->create_button("NotificationErrorButton", sf::FloatRect(0, 0, 0, 30), "OK"));
-      ok_button->get<Space>()->position(
+      ok_button->space()->position(
          (n_box->get<Rectangle>()->local_bounds().width - ok_button->get<Rectangle>()->local_bounds().width) / 2.f,
          20 + error_message->get<Text>()->local_bounds().height + 20
       );
@@ -645,7 +640,7 @@ void BuilderScene::load_from_file(std::string filename) {
          }
       });
 
-      this->send_message<AddToEntityMessage>(n_box->handle(), ok_button->handle());
+      this->add_to_scene_node(n_box, ok_button);
 
       return;
    }
@@ -710,9 +705,9 @@ void BuilderScene::load_from_file(std::string filename) {
       );
 
       Entity* entity = this->create_entity(tile_data["id"] + "_tile_palette_button");
-      this->send_message<AddToEntityMessage>(tile_palette_layer1->handle(), entity->handle());
+      this->add_to_scene_node(tile_palette_layer1, entity);
 
-      entity->get<Space>()->position(tile_texture_pos);
+      entity->space()->position(tile_texture_pos);
 
       // scale tile sprites to normalize them so it's easy to look at and click on
       entity->add<Sprite>(tile_data["id"] + "_sprite", this->textures().get(tileset_data["id"]), tile_texture_rect);
@@ -725,12 +720,12 @@ void BuilderScene::load_from_file(std::string filename) {
       // define texture button behavior
       entity->add<Callback>(tile_data["id"] + "_callback");
       entity->get<Callback>()->mouse_in([entity, tile_palette_hover] () {
-         tile_palette_hover->get<Space>()->position(entity->get<Space>()->position());
-         tile_palette_hover->get<Space>()->visible(true);
+         tile_palette_hover->space()->position(entity->space()->position());
+         tile_palette_hover->space()->visible(true);
       });
 
       entity->get<Callback>()->mouse_out([entity, tile_palette_hover] () {
-         tile_palette_hover->get<Space>()->visible(false);
+         tile_palette_hover->space()->visible(false);
       });
 
       entity->get<Callback>()->left_release([this, entity, map_root, grid_entity] () {
@@ -783,10 +778,10 @@ void BuilderScene::create_mouse_entity(Game& game) {
       new_pos.x = this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position();
       new_pos.y = this->game().get_player(1).bindings().get<MouseYIntent>()->element()->position();
 
-      sf::Vector2f screen_pos = map_root->get<Space>()->inverse_transform().transformPoint(new_pos);
+      sf::Vector2f screen_pos = map_root->space()->inverse_transform().transformPoint(new_pos);
 
       // move mouse cursor
-      mouse_cursor->get<Space>()->position(new_pos);
+      mouse_cursor->space()->position(new_pos);
 
       // update mouse cursor text
       mouse_cursor->get<Text>()->string(
@@ -806,7 +801,7 @@ void BuilderScene::create_mouse_entity(Game& game) {
    mouse_cursor_script->add<Collision>("MouseCursorCollision", sf::FloatRect(0, 0, game.window().size().x, game.window().size().y));
    mouse_cursor_script->add<Callback>("MouseCursorScriptCallback");
 
-   this->send_message<AddToEntityMessage>(hud_root->handle(), mouse_cursor_script->handle(), 0);
+   this->add_to_scene_node(hud_root, mouse_cursor_script, 0);
 
    // put pan and zoom behavior on the parent mouse cursor_script and then have a child
    // script entity that will be swapped out with different tool behaviors
@@ -817,7 +812,7 @@ void BuilderScene::create_mouse_entity(Game& game) {
    mcs_swappable->add<Collision>("MouseCursorSwappableCollision", sf::FloatRect(0, 0, game.window().size().x, game.window().size().y));
    mcs_swappable->add<Callback>("MouseCursorSwappableScriptCallback");
 
-   this->send_message<AddToEntityMessage>(mouse_cursor_script->handle(), mcs_swappable->handle());
+   this->add_to_scene_node(mouse_cursor_script, mcs_swappable);
 
    this->mouse_script_add_zoom_behavior(game, mouse_cursor_script->handle());
    this->mouse_script_add_pan_behavior(game, mouse_cursor_script->handle());
@@ -826,7 +821,7 @@ void BuilderScene::create_mouse_entity(Game& game) {
 
 void BuilderScene::create_backdrop(GraphicalSystem* gs) {
    Entity* backdrop = this->create_entity("Backdrop Entity");
-   this->send_message<AddToEntityMessage>(this->space_handle(), backdrop->handle(), 0);
+   this->add_to_scene_node(this->scene_graph(), backdrop, 0);
    
    backdrop->add<VertexList>("BackdropVertexList", sf::TrianglesStrip, 4);
    backdrop->get<VertexList>()->vertex_color(0, Color(50, 50, 50, 255));
@@ -855,7 +850,7 @@ void BuilderScene::create_fps_display(GraphicalSystem* gs) {
    assert(hud_root);
 
    Entity* fps_display = this->create_entity("FPS Display Entity");
-   this->send_message<AddToEntityMessage>(hud_root->handle(), fps_display->handle());
+   this->add_to_scene_node(hud_root, fps_display);
 
    fps_display->add<Text>("FPS Display Text", "FPS: ??", this->fonts().get("retro"), 12);
    fps_display->get<Text>()->color(Color(216, 138, 0, 255));
@@ -873,7 +868,7 @@ void BuilderScene::create_fps_display(GraphicalSystem* gs) {
       camera_bounds.x *= gs->camera()->viewport().width / gs->camera()->zoom();
       camera_bounds.y *= gs->camera()->viewport().height / gs->camera()->zoom();
 
-      fps_display->get<Space>()->position(camera_bounds - text_size - sf::Vector2f(10, 10));
+      fps_display->space()->position(camera_bounds - text_size - sf::Vector2f(10, 10));
    });
 
    fps_display->get<Callback>()->on_update([this, fps_display, gs] () {
@@ -903,7 +898,7 @@ void BuilderScene::create_tile_palette(GraphicalSystem* gs) {
    // create hover sprite
    Entity* tile_palette_hover = this->create_entity("TilePaletteHover");
 
-   tile_palette_hover->get<Space>()->visible(false);
+   tile_palette_hover->space()->visible(false);
    tile_palette_hover->add<Rectangle>("TilePaletteRectangle", 0, 0, grid_entity->get<Grid>()->tile_width(), grid_entity->get<Grid>()->tile_height());
    tile_palette_hover->get<Rectangle>()->color(Color(255, 255, 255, 100));
    tile_palette_hover->get<Rectangle>()->outline_color(Color(108, 46, 167, 100));
@@ -922,17 +917,17 @@ void BuilderScene::create_tile_palette(GraphicalSystem* gs) {
    tile_palette->get<Callback>()->camera_resize([tile_palette, gs] () {
       float camera_width = gs->camera()->size().x * gs->camera()->viewport().width / gs->camera()->zoom();
       sf::Vector2f new_pos(camera_width - tile_palette->get<Rectangle>()->size().x - 10, 40);
-      sf::Vector2f old_pos(tile_palette->get<Space>()->position());
+      sf::Vector2f old_pos(tile_palette->space()->position());
 
       // move to the upper right corner
-      tile_palette->get<Space>()->move(new_pos - old_pos);
+      tile_palette->space()->move(new_pos - old_pos);
    });
 
    Entity* tile_palette_layer_1 = this->create_entity("TilePaletteLayer1");
-   this->send_message<AddToEntityMessage>(tile_palette->handle(), tile_palette_layer_1->handle());
+   this->add_to_scene_node(tile_palette, tile_palette_layer_1);
 
    // putting this on top of layer 1 (tiles are on this layer)
-   this->send_message<AddToEntityMessage>(tile_palette->handle(), tile_palette_hover->handle());
+   this->add_to_scene_node(tile_palette, tile_palette_hover);
 }
 
 void BuilderScene::mouse_script_add_zoom_behavior(Game& game, Handle mouse_entity) {
@@ -961,7 +956,7 @@ void BuilderScene::mouse_script_add_zoom_behavior(Game& game, Handle mouse_entit
       float mouse_wheel_pos = this->game().get_player(1).bindings().get<MouseWheelIntent>()->element()->position();
       float wheel_delta = mouse_wheel_pos - mouse_cursor_script->get<Callback>()->prev_mouse_wheel_pos();
 
-      sf::Vector2f new_scale(map_root->get<Space>()->scale() + sf::Vector2f(wheel_delta / 12.5f, wheel_delta / 12.5f));
+      sf::Vector2f new_scale(map_root->space()->scale() + sf::Vector2f(wheel_delta / 12.5f, wheel_delta / 12.5f));
       new_scale.x = std::max(new_scale.x, 0.25f);
       new_scale.y = std::max(new_scale.y, 0.25f);
 
@@ -971,16 +966,16 @@ void BuilderScene::mouse_script_add_zoom_behavior(Game& game, Handle mouse_entit
 
       if (tile_popup) {
          // need to get original grid index for tile popup adjustment
-         sf::Vector2f pos = tile_popup->get<Space>()->position();
-         pos = grid_root->get<Space>()->inverse_transform().transformPoint(pos);
+         sf::Vector2f pos = tile_popup->space()->position();
+         pos = grid_root->space()->inverse_transform().transformPoint(pos);
          pos_idx = grid_entity->get<Grid>()->grid_index(grid_entity->get<Grid>()->floor(pos));
       }
 
-      map_root->get<Space>()->scale(new_scale);
+      map_root->space()->scale(new_scale);
 
       // adjust tile selection visual on the grid layer
-      if (tile_selection->get<Space>()->visible()) {
-         sf::Vector2f pos = tile_selection->get<Space>()->position();
+      if (tile_selection->space()->visible()) {
+         sf::Vector2f pos = tile_selection->space()->position();
          sf::Vector2f end = pos + tile_selection->get<Rectangle>()->size();
 
          sf::Vector2i pos_idx = grid_entity->get<Grid>()->grid_index(pos);
@@ -994,7 +989,7 @@ void BuilderScene::mouse_script_add_zoom_behavior(Game& game, Handle mouse_entit
          new_end.x = grid_entity->get<Grid>()->tile_width() * end_idx.x * new_scale.x;
          new_end.y = grid_entity->get<Grid>()->tile_height() * end_idx.y * new_scale.y;
 
-         tile_selection->get<Space>()->position(new_pos);
+         tile_selection->space()->position(new_pos);
          tile_selection->get<Rectangle>()->size(new_end - new_pos);
 
          tile_selection->get<Collision>()->volume(tile_selection->get<Rectangle>()->global_bounds());
@@ -1008,9 +1003,9 @@ void BuilderScene::mouse_script_add_zoom_behavior(Game& game, Handle mouse_entit
          new_pos.x = grid_entity->get<Grid>()->tile_width() * pos_idx.x * new_scale.x;
          new_pos.y = grid_entity->get<Grid>()->tile_height() * pos_idx.y * new_scale.y;
 
-         new_pos = grid_root->get<Space>()->transform().transformPoint(new_pos);
+         new_pos = grid_root->space()->transform().transformPoint(new_pos);
 
-         tile_popup->get<Space>()->position(new_pos + sf::Vector2f(10, 5));
+         tile_popup->space()->position(new_pos + sf::Vector2f(10, 5));
       }
    });
 }
@@ -1047,12 +1042,12 @@ void BuilderScene::mouse_script_add_pan_behavior(Game& game, Handle mouse_entity
       // pan map camera if right click is down
       Callback* callback = mouse_cursor_script->get<Callback>();
       if (clickable && callback && clickable->is_right_clicked()) {
-         map_root->get<Space>()->move(new_pos - callback->prev_mouse_pos());
-         grid_root->get<Space>()->move(new_pos - callback->prev_mouse_pos());
+         map_root->space()->move(new_pos - callback->prev_mouse_pos());
+         grid_root->space()->move(new_pos - callback->prev_mouse_pos());
 
          Entity* tile_popup = this->get_entity("TilePopup");
          if (tile_popup) {
-            tile_popup->get<Space>()->move(new_pos - callback->prev_mouse_pos());
+            tile_popup->space()->move(new_pos - callback->prev_mouse_pos());
          }
       }
    });
@@ -1072,18 +1067,18 @@ void BuilderScene::mouse_script_add_pan_behavior(Game& game, Handle mouse_entity
       hud_click_pos.y = this->game().get_player(1).bindings().get<MouseYIntent>()->element()->position();
 
       // need to set scale to 1 temporarily to get inverse transform for tilemap search...
-      sf::Vector2f map_scale = map_root->get<Space>()->scale();
-      map_root->get<Space>()->scale(1.f, 1.f);
+      sf::Vector2f map_scale = map_root->space()->scale();
+      map_root->space()->scale(1.f, 1.f);
 
-      sf::Transform map_inverse_transform = map_root->get<Space>()->inverse_transform();
-      map_root->get<Space>()->scale(map_scale);
+      sf::Transform map_inverse_transform = map_root->space()->inverse_transform();
+      map_root->space()->scale(map_scale);
 
       sf::Vector2f release_pos = map_inverse_transform.transformPoint(hud_click_pos);
 
       Clickable* clickable = mouse_cursor_script->get<Clickable>();
       assert (clickable);
 
-      sf::Vector2f ts_origin = grid_root->get<Space>()->inverse_transform().transformPoint(clickable->right_click_pos());
+      sf::Vector2f ts_origin = grid_root->space()->inverse_transform().transformPoint(clickable->right_click_pos());
 
       // rectangle calculation
       sf::Vector2f pos;
@@ -1096,7 +1091,7 @@ void BuilderScene::mouse_script_add_pan_behavior(Game& game, Handle mouse_entity
       end.y = std::max(ts_origin.y, release_pos.y);
 
       // get rid of selection rect
-      selection_rect->get<Space>()->visible(false);
+      selection_rect->space()->visible(false);
 
       // update tile selection
       bool is_drag_gesture = (end.x - pos.x >= grid_entity->get<Grid>()->tile_width() / 3.f ||
@@ -1126,7 +1121,7 @@ void BuilderScene::mouse_script_add_pan_behavior(Game& game, Handle mouse_entity
 
          if (tiles.size() > 0) {
             sf::Vector2f panel_origin(clicked_tile.x * tile_width, clicked_tile.y * tile_height);
-            panel_origin = grid_root->get<Space>()->transform().transformPoint(panel_origin);
+            panel_origin = grid_root->space()->transform().transformPoint(panel_origin);
 
             sf::FloatRect panel_pos(
                panel_origin.x + tile_width + 10,
@@ -1140,7 +1135,7 @@ void BuilderScene::mouse_script_add_pan_behavior(Game& game, Handle mouse_entity
             }
 
             tile_popup = this->get_entity(this->create_panel("TilePopup", panel_pos, true, "Tiles"));
-            this->send_message<AddToEntityMessage>(hud_root->handle(), tile_popup->handle(), 1);
+            this->add_to_scene_node(hud_root, tile_popup, 1);
 
             tile_popup->add<PlayerProfile>("TilePopupPlayerProfile", 1);
             tile_popup->add<Clickable>("TilePopupClickable");
@@ -1206,9 +1201,9 @@ void BuilderScene::mouse_script_add_pan_behavior(Game& game, Handle mouse_entity
                   t->get<VertexList>()->scale(new_scale);
                }
 
-               t->get<Space>()->position(10, 64 * layer_idx + 20);
+               t->space()->position(10, 64 * layer_idx + 20);
 
-               this->send_message<AddToEntityMessage>(tile_popup->handle(), t->handle());
+               this->add_to_scene_node(tile_popup, t);
                ++layer_idx;
             }
 
@@ -1216,12 +1211,12 @@ void BuilderScene::mouse_script_add_pan_behavior(Game& game, Handle mouse_entity
             pos = grid_entity->get<Grid>()->floor(pos);
 
             // get rid of tile selection if present
-            tile_selection->get<Space>()->visible(false);
+            tile_selection->space()->visible(false);
             tile_selection_maproot->get<Collision>()->volume(sf::FloatRect(0, 0, 0, 0));
 
             // create a tile popup cursor
             tile_popup_cursor = this->create_entity("TilePopupCursor");
-            tile_popup_cursor->get<Space>()->position(panel_origin - sf::Vector2f(panel_pos.left, panel_pos.top));
+            tile_popup_cursor->space()->position(panel_origin - sf::Vector2f(panel_pos.left, panel_pos.top));
 
             tile_popup_cursor->add<Rectangle>("TilePopupCursorRectangle", 0, 0, 0, 0);
             tile_popup_cursor->get<Rectangle>()->size(tile_width, tile_height);
@@ -1232,7 +1227,7 @@ void BuilderScene::mouse_script_add_pan_behavior(Game& game, Handle mouse_entity
             tile_popup_cursor->add<Collision>("TilePopupCursorCollision", sf::FloatRect(0, 0, 0, 0));
             tile_popup_cursor->get<Collision>()->volume(pos, sf::Vector2f(tile_width, tile_height));
 
-            this->send_message<AddToEntityMessage>(tile_popup->handle(), tile_popup_cursor->handle());
+            this->add_to_scene_node(tile_popup, tile_popup_cursor);
 
             // add little tail to the tile popup pointing to the tile selection
             tile_popup->add<VertexList>("TilePopupTail", sf::TrianglesStrip, 3);
@@ -1289,7 +1284,7 @@ void BuilderScene::mouse_script_add_select_behavior(Game& game, Handle mouse_ent
          end.x = std::max(sr_origin.x, new_pos.x);
          end.y = std::max(sr_origin.y, new_pos.y);
 
-         selection_rect->get<Space>()->position(pos);
+         selection_rect->space()->position(pos);
          selection_rect->get<Rectangle>()->size(end - pos);
          selection_rect->get<Collision>()->volume(pos, end - pos);
       }
@@ -1303,8 +1298,8 @@ void BuilderScene::mouse_script_add_select_behavior(Game& game, Handle mouse_ent
       new_pos.y = this->game().get_player(1).bindings().get<MouseYIntent>()->element()->position();
 
       // summon selection rectangle
-      selection_rect->get<Space>()->visible(true);
-      selection_rect->get<Space>()->position(new_pos);
+      selection_rect->space()->visible(true);
+      selection_rect->space()->position(new_pos);
       selection_rect->get<Rectangle>()->size(0, 0);
       selection_rect->get<Collision>()->volume(new_pos, sf::Vector2f(0, 0));
    });
@@ -1319,12 +1314,12 @@ void BuilderScene::mouse_script_add_select_behavior(Game& game, Handle mouse_ent
       sf::Vector2f release_pos;
       release_pos.x = this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position();
       release_pos.y = this->game().get_player(1).bindings().get<MouseYIntent>()->element()->position();
-      release_pos = grid_root->get<Space>()->inverse_transform().transformPoint(release_pos);
+      release_pos = grid_root->space()->inverse_transform().transformPoint(release_pos);
 
       Clickable* clickable = mouse_cursor_script->get<Clickable>();
       assert (clickable);
 
-      sf::Vector2f ts_origin = grid_root->get<Space>()->inverse_transform().transformPoint(clickable->left_click_pos());
+      sf::Vector2f ts_origin = grid_root->space()->inverse_transform().transformPoint(clickable->left_click_pos());
 
       // rectangle calculation
       sf::Vector2f pos;
@@ -1337,14 +1332,14 @@ void BuilderScene::mouse_script_add_select_behavior(Game& game, Handle mouse_ent
       end.y = std::max(ts_origin.y, release_pos.y);
 
       // get rid of selection rect
-      selection_rect->get<Space>()->visible(false);
+      selection_rect->space()->visible(false);
 
       // update tile selection
       bool is_drag_gesture = (end.x - pos.x >= grid_entity->get<Grid>()->tile_width() / 3.f ||
                               end.y - pos.y >= grid_entity->get<Grid>()->tile_height() / 3.f);
 
-      if (!is_drag_gesture && tile_selection->get<Space>()->visible() && tile_selection->get<Collision>()->contains(release_pos)) {
-         tile_selection->get<Space>()->visible(false);
+      if (!is_drag_gesture && tile_selection->space()->visible() && tile_selection->get<Collision>()->contains(release_pos)) {
+         tile_selection->space()->visible(false);
          tile_selection_maproot->get<Collision>()->volume(sf::FloatRect(0, 0, 0, 0));
       } else {
          float tile_width = grid_entity->get<Grid>()->tile_width() * grid_entity->get<Grid>()->zoom_factor().x;
@@ -1365,8 +1360,8 @@ void BuilderScene::mouse_script_add_select_behavior(Game& game, Handle mouse_ent
          }
 
          // update tile selection entity
-         tile_selection->get<Space>()->position(pos);
-         tile_selection->get<Space>()->visible(true);
+         tile_selection->space()->position(pos);
+         tile_selection->space()->visible(true);
          tile_selection->get<Rectangle>()->size(end - pos);
          tile_selection->get<Collision>()->volume(pos, end - pos);
 
@@ -1385,7 +1380,7 @@ void BuilderScene::mouse_script_add_select_behavior(Game& game, Handle mouse_ent
          this->remove_entity(tile_popup->handle(), true);
 
          if (!is_drag_gesture) {
-            tile_selection->get<Space>()->visible(false);
+            tile_selection->space()->visible(false);
             tile_selection_maproot->get<Collision>()->volume(sf::FloatRect(0, 0, 0, 0));
          }
 
@@ -1446,7 +1441,7 @@ Handle BuilderScene::create_notification(float width, float height) {
       notification_root->get<Rectangle>()->size(this->game().window().size());
    });
 
-   this->send_message<AddToEntityMessage>(hud_root->handle(), notification_root->handle());
+   this->add_to_scene_node(hud_root, notification_root);
 
    Entity* notification_box = this->get_entity(this->create_panel("NotificationBox", sf::FloatRect(this->game().window().size().x / 2.f - width / 2.f, this->game().window().size().y / 2.f - height / 2.f, width, height), true));
 
@@ -1457,10 +1452,10 @@ Handle BuilderScene::create_notification(float width, float height) {
 
    notification_box->get<Callback>()->camera_resize([this, notification_box] () {
       sf::Vector2f screen_center(this->game().window().size() / 2.f);
-      notification_box->get<Space>()->position(screen_center - notification_box->get<Rectangle>()->size() / 2.f);
+      notification_box->space()->position(screen_center - notification_box->get<Rectangle>()->size() / 2.f);
    });
 
-   this->send_message<AddToEntityMessage>(notification_root->handle(), notification_box->handle());
+   this->add_to_scene_node(notification_root, notification_box);
 
    return notification_box->handle();
 }

@@ -4,7 +4,6 @@
 #include "Scene.h"
 #include "Color.h"
 
-#include "Space.h"
 #include "Rectangle.h"
 #include "Text.h"
 #include "Grid.h"
@@ -33,7 +32,7 @@ void GridSystem::force_update() {
 }
 
 void GridSystem::on_init(Game& game) {
-   this->subscribe_to().all_of<Space, Grid>();
+   this->subscribe_to().all_of<Grid>();
 
    // register grid visibility toggling
    this->install_message_handler<SetGridVisibilityMessage>([&] (SetGridVisibilityMessage& msg) {
@@ -41,7 +40,7 @@ void GridSystem::on_init(Game& game) {
 
       Entity* grid_entity = this->scene().get_entity(msg.grid_entity);
       if (grid_entity) {
-         grid_entity->get<Space>()->visible(msg.visibility);
+         grid_entity->space()->visible(msg.visibility);
       }
       this->is_visible_ = msg.visibility;
 
@@ -73,9 +72,9 @@ void GridSystem::on_update(Game& game, Entity& e) {
    this->force_update_ = false;
 
    // iterate through children and build list of existing rows and cols
-   Space* space = e.get<Space>();
+   SceneNode* space = e.space();
    for (unsigned int i = 0; i < space->num_children(); ++i) {
-      Entity* gridline_entity = this->scene().get_entity(space->get(i));
+      Entity* gridline_entity = this->scene().get_entity(space->get_child(i)->entity());
       if (!gridline_entity) {
          continue;
       }
@@ -114,8 +113,8 @@ void GridSystem::on_update(Game& game, Entity& e) {
          Rectangle* gridline = cols[gridline_id]->get<Rectangle>();
          gridline->size(1, camera_bounds.height);
 
-         cols[gridline_id]->get<Space>()->position(c, camera_bounds.top);
-         cols[gridline_id]->get<Space>()->visible(this->is_visible_);
+         cols[gridline_id]->space()->position(c, camera_bounds.top);
+         cols[gridline_id]->space()->visible(this->is_visible_);
       }
 
       ++gridline_id;
@@ -123,7 +122,7 @@ void GridSystem::on_update(Game& game, Entity& e) {
 
    // set the extraneous columns to be invisible
    for (unsigned int c = gridline_id; c < cols.size(); ++c) {
-      cols[c]->get<Space>()->visible(false);
+      cols[c]->space()->visible(false);
    }
 
    gridline_id = 0;
@@ -140,8 +139,8 @@ void GridSystem::on_update(Game& game, Entity& e) {
          Rectangle* gridline = rows[gridline_id]->get<Rectangle>();
          gridline->size(camera_bounds.width, 1);
 
-         rows[gridline_id]->get<Space>()->position(camera_bounds.left, r);
-         rows[gridline_id]->get<Space>()->visible(this->is_visible_);
+         rows[gridline_id]->space()->position(camera_bounds.left, r);
+         rows[gridline_id]->space()->visible(this->is_visible_);
       }
 
       ++gridline_id;
@@ -149,7 +148,7 @@ void GridSystem::on_update(Game& game, Entity& e) {
 
    // set the extraneous rows to be invisible
    for (unsigned int r = gridline_id; r < rows.size(); ++r) {
-      rows[r]->get<Space>()->visible(false);
+      rows[r]->space()->visible(false);
    }
 
    // make the text marker interval about every 200 pixels
@@ -161,13 +160,13 @@ void GridSystem::on_update(Game& game, Entity& e) {
    std::map<unsigned int, Entity*>::iterator tx;
    for (ty = rows.begin(); ty != rows.end(); ++ty) {
       for (tx = cols.begin(); tx != cols.end(); ++tx) {
-         float col_pos = tx->second->get<Space>()->position().x;
-         float row_pos = ty->second->get<Space>()->position().y;
+         float col_pos = tx->second->space()->position().x;
+         float row_pos = ty->second->space()->position().y;
 
          sf::Vector2f tm_pos(col_pos, row_pos);
          sf::Vector2i grid_idx = grid->grid_index(tm_pos);
 
-         if (!ty->second->get<Space>()->visible() || !tx->second->get<Space>()->visible() || std::abs(grid_idx.y) % interval != 0 || std::abs(grid_idx.x) % interval != 0) {
+         if (!ty->second->space()->visible() || !tx->second->space()->visible() || std::abs(grid_idx.y) % interval != 0 || std::abs(grid_idx.x) % interval != 0) {
             continue;
          }
 
@@ -187,8 +186,8 @@ void GridSystem::on_update(Game& game, Entity& e) {
             std::to_string((int)(grid_idx.y * grid->tile_height()))
          );
 
-         text_markers[gridline_id]->get<Space>()->position(tm_pos);
-         text_markers[gridline_id]->get<Space>()->visible(this->is_visible_);
+         text_markers[gridline_id]->space()->position(tm_pos);
+         text_markers[gridline_id]->space()->visible(this->is_visible_);
 
          ++gridline_id;
       }
@@ -196,16 +195,16 @@ void GridSystem::on_update(Game& game, Entity& e) {
 
    // set the extraneous text markers to be invisible
    for (unsigned int t = gridline_id; t < text_markers.size(); ++t) {
-      text_markers[t]->get<Space>()->visible(false);
+      text_markers[t]->space()->visible(false);
    }
 
 }
 
 Entity* GridSystem::create_gridline(Entity* grid_entity, std::string id, float x, float y, float width, float height) {
    Entity* e = this->scene().create_entity(id);
-   this->send_message<AddToEntityMessage>(grid_entity->handle(), e->handle());
+   this->add_to_scene_node(grid_entity, e);
 
-   e->get<Space>()->position(x, y);
+   e->space()->position(x, y);
 
    e->add<Rectangle>(id, 0, 0, width, height);
    e->get<Rectangle>()->color(Color(230, 230, 230, 90));
@@ -223,7 +222,7 @@ Entity* GridSystem::create_row(Entity* grid_entity, std::string id, float y) {
 
 Entity* GridSystem::create_text_marker(Entity* grid_entity, std::string id, const sf::Vector2f& pos) {
    Entity* e = this->scene().create_entity(id);
-   this->send_message<AddToEntityMessage>(grid_entity->handle(), e->handle());
+   this->add_to_scene_node(grid_entity, e);
    
    e->add<Text>(id + "Text_Component", "", this->scene().fonts().get("retro"), 9);
    e->get<Text>()->offset(3, 3);
