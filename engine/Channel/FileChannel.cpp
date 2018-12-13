@@ -49,7 +49,7 @@ bool FileChannel::receive(std::string& data, unsigned int num_bytes) {
 
    this->file_.read(buffer, length);
    data.assign(buffer, this->file_.gcount());
-   delete buffer;
+   delete [] buffer;
 
    return (bool)this->file_;
 }

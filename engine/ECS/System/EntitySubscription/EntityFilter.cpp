@@ -7,6 +7,9 @@ EntityFilter::EntityFilter(const std::string& id /* = "EntityFilter" */)
 }
 
 EntityFilter::~EntityFilter() {
+   for (Expression* e : this->filter_expressions_) {
+      delete e;
+   }
    this->filter_expressions_.clear();
 }
 

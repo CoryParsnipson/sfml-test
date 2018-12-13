@@ -80,6 +80,7 @@ Game::~Game() {
 
    // remove from input
    this->input_manager().detach(*this);
+   delete this->input_manager_;
 
    // destroy player profiles
    for (Players::const_iterator it = this->players_.begin(); it != this->players_.end(); ++it) {
@@ -87,7 +88,6 @@ Game::~Game() {
    }
    this->players_.clear();
 
-   // destroy logger
    delete Game::logger_;
 }
 
