@@ -33,7 +33,7 @@ std::vector<std::string> InputManager::KeyStr = {
 // InputManager class constructors
 // ----------------------------------------------------------------------------
 InputManager::InputManager(std::string id /* = "InputManager" */)
-: Subject<InputEvent>(id)
+: Subject<InputEventPtr>(id)
 {
 }
 
@@ -49,33 +49,33 @@ InputManager::~InputManager() {
 // ----------------------------------------------------------------------------
 void InputManager::poll_event(Game& game) {
    sf::Event sfml_event;
-   InputEvent* event = nullptr;
+   InputEventPtr event = nullptr;
 
    while (game.poll_event(sfml_event)) {
       switch (sfml_event.type) {
       case sf::Event::Closed:
          Game::logger().msg("InputManager", Logger::INFO, "Received close event.");
-         event = new CloseInputEvent();
+         event = std::make_shared<CloseInputEvent>();
          break;
       case sf::Event::LostFocus:
          Game::logger().msg("InputManager", Logger::INFO, "Received LostFocus event.");
-         event = new LostFocusInputEvent();
+         event = std::make_shared<LostFocusInputEvent>();
          break;
       case sf::Event::GainedFocus:
          Game::logger().msg("InputManager", Logger::INFO, "Received GainedFocus event.");
-         event = new GainedFocusInputEvent();
+         event = std::make_shared<GainedFocusInputEvent>();
          break;
       case sf::Event::MouseEntered:
          Game::logger().msg("InputManager", Logger::INFO, "Received MouseEntered event.");
-         event = new MouseEnteredInputEvent();
+         event = std::make_shared<MouseEnteredInputEvent>();
          break;
       case sf::Event::MouseLeft:
          Game::logger().msg("InputManager", Logger::INFO, "Received MouseLeft event.");
-         event = new MouseLeftInputEvent();
+         event = std::make_shared<MouseLeftInputEvent>();
          break;
       case sf::Event::Resized:
          Game::logger().msg("InputManager", Logger::INFO, "Received resize event.");
-         event = new ResizeInputEvent(sfml_event.size.width, sfml_event.size.height);
+         event = std::make_shared<ResizeInputEvent>(sfml_event.size.width, sfml_event.size.height);
          break;
       case sf::Event::KeyPressed:
          Game::logger().msg("InputManager", Logger::INFO, "Received key press event.");
@@ -86,7 +86,7 @@ void InputManager::poll_event(Game& game) {
             continue;
          }
 
-         event = new KeyPressInputEvent(
+         event = std::make_shared<KeyPressInputEvent>(
             static_cast<Key>(sfml_event.key.code), // convert from enum sf::Keyboard::Key to our enum class Key
             sfml_event.key.alt, sfml_event.key.control,
             sfml_event.key.shift,
@@ -102,7 +102,7 @@ void InputManager::poll_event(Game& game) {
             continue;
          }
 
-         event = new KeyReleaseInputEvent(
+         event = std::make_shared<KeyReleaseInputEvent>(
             static_cast<Key>(sfml_event.key.code), // convert from enum sf::Keyboard::Key to our enum class Key
             sfml_event.key.alt, sfml_event.key.control,
             sfml_event.key.shift,
@@ -111,12 +111,12 @@ void InputManager::poll_event(Game& game) {
          break;
       case sf::Event::MouseMoved:
          Game::logger().msg("InputManager", Logger::INFO, "Received mouse move event.");
-         event = new MouseMoveInputEvent(sfml_event.mouseMove.x, sfml_event.mouseMove.y);
+         event = std::make_shared<MouseMoveInputEvent>(sfml_event.mouseMove.x, sfml_event.mouseMove.y);
          break;
       case sf::Event::MouseWheelMoved:
          // this event type has been deprecated
          Game::logger().msg("InputManager", Logger::INFO, "Received mouse wheel event.");
-         event = new MouseWheelInputEvent(
+         event = std::make_shared<MouseWheelInputEvent>(
             sfml_event.mouseWheel.x,
             sfml_event.mouseWheel.y,
             sfml_event.mouseWheel.delta
@@ -127,7 +127,7 @@ void InputManager::poll_event(Game& game) {
          continue;
       case sf::Event::MouseButtonPressed:
          Game::logger().msg("InputManager", Logger::INFO, "Received mouse button pressed event.");
-         event = new MouseButtonInputEvent(
+         event = std::make_shared<MouseButtonInputEvent>(
             static_cast<MouseButton>(sfml_event.mouseButton.button),
             ButtonState::Pressed,
             sfml_event.mouseButton.x,
@@ -136,7 +136,7 @@ void InputManager::poll_event(Game& game) {
          break;
       case sf::Event::MouseButtonReleased:
          Game::logger().msg("InputManager", Logger::INFO, "Received mouse button released event.");
-         event = new MouseButtonInputEvent(
+         event = std::make_shared<MouseButtonInputEvent>(
             static_cast<MouseButton>(sfml_event.mouseButton.button),
             ButtonState::Released,
             sfml_event.mouseButton.x,
@@ -148,7 +148,7 @@ void InputManager::poll_event(Game& game) {
          return;
       }
 
-      this->notify(*event);
+      this->notify(event);
    }
 }
 

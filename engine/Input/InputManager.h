@@ -15,7 +15,6 @@
 // forward declarations
 // ----------------------------------------------------------------------------
 class Game;
-class InputEvent;
 
 // ----------------------------------------------------------------------------
 // enum classes
@@ -53,7 +52,7 @@ enum class Key {
 // objects and then broadcasts them to all attached InputEvent.
 // ----------------------------------------------------------------------------
 class InputManager
-: public Subject<InputEvent>
+: public Subject<InputEventPtr>
 , public Updateable
 {
 public:

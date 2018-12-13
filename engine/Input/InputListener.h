@@ -17,15 +17,15 @@ class MouseWheelInputEvent;
 class MouseButtonInputEvent;
 
 class InputListener
-: public Observer<InputEvent>
+: public Observer<InputEventPtr>
 {
 public:
-   InputListener(std::string id = "InputListener") : Observer<InputEvent>(id) {}
+   InputListener(std::string id = "InputListener") : Observer<InputEventPtr>(id) {}
    virtual ~InputListener() {}
 
    // observer interface
-   virtual void notify(InputEvent& event) {
-      event.execute(*this);
+   virtual void notify(InputEventPtr& event) {
+      event->execute(*this);
    }
 
    // input event processing
