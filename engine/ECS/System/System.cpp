@@ -67,11 +67,11 @@ void System::update(Game& game) {
 
    assert(this->scene_ != nullptr);
 
-   // TODO: don't init subscription every update loop! Tremendous optimization opportunity here
-   this->subscription_->init();
-
    this->pre_update(game);
    this->handle_queued_messages();
+
+   this->subscription_->handle_queued_messages();
+   this->subscription_->update();
 
    // perform system update on all subscribed entities
    std::function<void(Handle)> handle_on_update = [&](Handle h) {

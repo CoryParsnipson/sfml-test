@@ -11,7 +11,28 @@
 PostorderEntitySubscription::PostorderEntitySubscription(System* system, const std::string& id /* = "PostorderEntitySubscription" */, bool reverse_children /* = false */)
 : EntitySubscription(system, id)
 , reverse_children_(reverse_children)
+, needs_cache_rebuild_(false)
 {
+   // set some messaging callbacks for when to update the entity list
+   this->install_message_handler<EntityCreatedMessage>([this](EntityCreatedMessage& msg) {
+      this->needs_cache_rebuild_ = true;
+   });
+
+   this->install_message_handler<EntityDestroyedMessage>([this](EntityDestroyedMessage& msg) {
+      this->needs_cache_rebuild_ = true;
+   });
+
+   this->install_message_handler<ComponentAddedMessage>([this](ComponentAddedMessage& msg) {
+      if (this->filter(msg.entity) && std::find(this->entities_.begin(), this->entities_.end(), msg.entity) == this->entities_.end()) {
+         this->needs_cache_rebuild_ = true;
+      }
+   });
+
+   this->install_message_handler<ComponentRemovedMessage>([this](ComponentRemovedMessage& msg) {
+      if (this->filter(msg.entity) && std::find(this->entities_.begin(), this->entities_.end(), msg.entity) != this->entities_.end()) {
+         this->needs_cache_rebuild_ = true;
+      }
+   });
 }
 
 PostorderEntitySubscription::~PostorderEntitySubscription() {
@@ -66,4 +87,11 @@ void PostorderEntitySubscription::add(Handle entity) {
 
 void PostorderEntitySubscription::remove(Handle entity) {
    // empty
+}
+
+void PostorderEntitySubscription::update() {
+   if (this->needs_cache_rebuild_) {
+      this->init();
+      this->needs_cache_rebuild_ = false;
+   }
 }

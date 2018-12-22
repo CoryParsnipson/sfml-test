@@ -12,21 +12,26 @@
 PreorderEntitySubscription::PreorderEntitySubscription(System* system, const std::string& id /* = "PreorderEntitySubscription" */, bool reverse_children /* = false */)
 : EntitySubscription(system, id)
 , reverse_children_(reverse_children)
+, needs_cache_rebuild_(false)
 {
    // set some messaging callbacks for when to update the entity list
+   this->install_message_handler<EntityCreatedMessage>([this](EntityCreatedMessage& msg) {
+      this->needs_cache_rebuild_ = true;
+   });
+
    this->install_message_handler<EntityDestroyedMessage>([this](EntityDestroyedMessage& msg) {
-      this->init(); // rebuild entire entity list (is there an algorithm that can do better?)
+      this->needs_cache_rebuild_ = true;
    });
 
    this->install_message_handler<ComponentAddedMessage>([this](ComponentAddedMessage& msg) {
       if (this->filter(msg.entity) && std::find(this->entities_.begin(), this->entities_.end(), msg.entity) == this->entities_.end()) {
-         this->init(); // rebuild entire entity list (is there an algorithm that can do better?)
+         this->needs_cache_rebuild_ = true;
       }
    });
 
    this->install_message_handler<ComponentRemovedMessage>([this](ComponentRemovedMessage& msg) {
       if (this->filter(msg.entity) && std::find(this->entities_.begin(), this->entities_.end(), msg.entity) != this->entities_.end()) {
-         this->init(); // rebuild entire entity list (is there an algorithm that can do better?)
+         this->needs_cache_rebuild_ = true;
       }
    });
 }
@@ -75,4 +80,11 @@ void PreorderEntitySubscription::add(Handle entity) {
 
 void PreorderEntitySubscription::remove(Handle entity) {
    // empty
+}
+
+void PreorderEntitySubscription::update() {
+   if (this->needs_cache_rebuild_) {
+      this->init();
+      this->needs_cache_rebuild_ = false;
+   }
 }

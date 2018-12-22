@@ -19,8 +19,11 @@ public:
    virtual void add(Handle entity);
    virtual void remove(Handle entity);
 
+   virtual void update();
+
 private:
    bool reverse_children_;
+   bool needs_cache_rebuild_;
 };
 
 #endif

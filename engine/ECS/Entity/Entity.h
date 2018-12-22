@@ -123,7 +123,7 @@ Handle Entity::add(ComponentArgs&&... args) {
    Handle handle(this->component_manager_->add<ComponentType>(args...));
    this->components_[std::type_index(typeid(ComponentType))] = handle;
 
-   this->send_message<ComponentAddedMessage>(this->handle(), std::type_index(typeid(ComponentType)));
+   this->send_message_sync<ComponentAddedMessage>(this->handle(), std::type_index(typeid(ComponentType)));
 
    return handle;
 }
@@ -141,7 +141,7 @@ void Entity::remove() {
       this->component_manager_->remove<ComponentType>(it->second);
       this->components_.erase(it);
 
-      this->send_message<ComponentRemovedMessage>(this->handle(), std::type_index(typeid(ComponentType)));
+      this->send_message_sync<ComponentRemovedMessage>(this->handle(), std::type_index(typeid(ComponentType)));
    }
 }
 

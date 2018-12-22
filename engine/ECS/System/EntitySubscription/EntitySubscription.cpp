@@ -12,6 +12,21 @@ EntitySubscription::EntitySubscription(System* system, const std::string& id)
 , mailbox_(id + "Mailbox")
 , filter_(id + "EntityFilter")
 {
+   // add some reasonable defaults to certain message types
+   this->install_message_handler<ComponentAddedMessage>([this](ComponentAddedMessage& msg) {
+      this->clear();
+      this->init();
+   });
+
+   this->install_message_handler<ComponentRemovedMessage>([this](ComponentRemovedMessage& msg) {
+      this->clear();
+      this->init();
+   });
+
+   this->install_message_handler<EntityCreatedMessage>([this](EntityCreatedMessage& msg) {
+      this->clear();
+      this->init();
+   });
 }
 
 EntitySubscription::~EntitySubscription() {
@@ -28,6 +43,10 @@ Scene& EntitySubscription::scene() const {
 
 void EntitySubscription::break_out_of_update() {
    this->break_for_each_ = true;
+}
+
+void EntitySubscription::handle_queued_messages() {
+   Messageable::handle_queued_messages();
 }
 
 EntityFilter& EntitySubscription::filter() {
@@ -59,6 +78,9 @@ void EntitySubscription::clear() {
    this->pre_clear();
    this->entities_.clear();
    this->post_clear();
+}
+
+void EntitySubscription::update() {
 }
 
 const std::vector<Handle>& EntitySubscription::entity_list() const {

@@ -203,7 +203,7 @@ public:
       this->bookmark(e);
       
       // let Systems know a new Entity has been made
-      this->send_message<EntityCreatedMessage>(handle);
+      this->send_message_sync<EntityCreatedMessage>(handle);
 
       // add scene graph node
       SceneNode* node = new SceneNode();
@@ -263,7 +263,7 @@ public:
 
       if (!recursive) {
          // let Systems know a new Entity has been deallocated
-         this->send_message<EntityDestroyedMessage>(handle);
+         this->send_message_sync<EntityDestroyedMessage>(handle);
 
          for (unsigned int i = 0; i < space->num_children(); ++i) {
             space->parent()->add(space->get_child(i), parent_idx + i);
@@ -299,7 +299,7 @@ public:
 
          for (std::vector<Handle>::reverse_iterator it = postorder.rbegin(); it != postorder.rend(); ++it) {
             // let Systems know a new Entity has been deallocated
-            this->send_message<EntityDestroyedMessage>(*it);
+            this->send_message_sync<EntityDestroyedMessage>(*it);
 
             this->entities_.get(*it)->reset();
             this->entities_.remove(*it);

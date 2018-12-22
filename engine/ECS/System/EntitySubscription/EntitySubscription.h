@@ -31,6 +31,7 @@ public:
    Scene& scene() const;
 
    void break_out_of_update();
+   void handle_queued_messages();
 
    EntityFilter& filter();
    bool filter(Handle entity);
@@ -41,6 +42,8 @@ public:
    virtual void init() = 0;
    virtual void add(Handle entity) = 0;
    virtual void remove(Handle entity) = 0;
+
+   virtual void update();
 
    const std::vector<Handle>& entity_list() const;
 
