@@ -1069,10 +1069,16 @@ void BuilderScene::mouse_script_add_pan_behavior(Game& game, Handle mouse_entity
       Entity* selection_rect = this->get_entity("SelectionRectangleEntity");
       Entity* tile_selection = this->get_entity("TileSelectionEntity");
       Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
+      Entity* mouse_mode_select_dropdown = this->get_entity("MouseModeSelectDropdown");
 
       sf::Vector2f hud_click_pos;
       hud_click_pos.x = this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position();
       hud_click_pos.y = this->game().get_player(1).bindings().get<MouseYIntent>()->element()->position();
+
+      // TODO: not sure where to put this code...
+      if (mouse_mode_select_dropdown) {
+         this->remove_entity(mouse_mode_select_dropdown->handle(), true);
+      }
 
       // need to set scale to 1 temporarily to get inverse transform for tilemap search...
       sf::Vector2f map_scale = map_root->space()->scale();
@@ -1112,8 +1118,8 @@ void BuilderScene::mouse_script_add_pan_behavior(Game& game, Handle mouse_entity
       float tile_height = grid_entity->get<Grid>()->tile_height() * grid_entity->get<Grid>()->zoom_factor().y;
 
       if (!is_drag_gesture) {
-         // if the tile popup is already up and we right click on the popup square, remove it
-         if (tile_popup && tile_popup_cursor && tile_popup_cursor->get<Collision>()->contains(release_pos)) {
+         // if the tile popup is already up, remove it
+         if (tile_popup && tile_popup_cursor) {
             this->remove_entity(tile_popup->handle(), true);
             return;
          }
@@ -1318,6 +1324,7 @@ void BuilderScene::mouse_script_add_select_behavior(Game& game, Handle mouse_ent
       Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
       Entity* grid_root = this->get_entity("GridRootEntity");
       Entity* grid_entity = this->get_entity("GridEntity");
+      Entity* mouse_mode_select_dropdown = this->get_entity("MouseModeSelectDropdown");
 
       sf::Vector2f release_pos;
       release_pos.x = this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position();
@@ -1328,6 +1335,11 @@ void BuilderScene::mouse_script_add_select_behavior(Game& game, Handle mouse_ent
       assert (clickable);
 
       sf::Vector2f ts_origin = grid_root->space()->inverse_transform().transformPoint(clickable->left_click_pos());
+
+      // TODO: not sure where to put this code...
+      if (mouse_mode_select_dropdown) {
+         this->remove_entity(mouse_mode_select_dropdown->handle(), true);
+      }
 
       // rectangle calculation
       sf::Vector2f pos;
