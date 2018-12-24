@@ -64,12 +64,29 @@ void TileMap::set(TileMap::TileType tile) {
 
 void TileMap::remove(TileMap::TileType tile) {
    std::vector<TileMap::TileType>::iterator it;
-   for (it = this->tiles_.begin(); it != this->tiles_.end();) {
+   for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
+      bool is_match = false;
       sf::FloatRect tile_bounds = this->get_global_bounds_from_tile(tile);
-      if (this->get_global_bounds_from_tile(*it).intersects(tile_bounds)) {
-         it = this->tiles_.erase(it);
-      } else {
-         ++it;
+
+      if (!this->get_global_bounds_from_tile(*it).intersects(tile_bounds)) {
+         continue;
+      }
+
+      if (tile.type() == typeid(Circle)) {
+         is_match = boost::get<Circle>(tile).id() == boost::get<Circle>(*it).id();
+      } else if (tile.type() == typeid(Rectangle)) {
+         is_match = boost::get<Rectangle>(tile).id() == boost::get<Rectangle>(*it).id();
+      } else if (tile.type() == typeid(Sprite)) {
+         is_match = boost::get<Sprite>(tile).id() == boost::get<Sprite>(*it).id();
+      } else if (tile.type() == typeid(Text)) {
+         is_match = boost::get<Text>(tile).id() == boost::get<Text>(*it).id();
+      } else if (tile.type() == typeid(VertexList)) {
+         is_match = boost::get<VertexList>(tile).id() == boost::get<VertexList>(*it).id();
+      }
+
+      if (is_match) {
+         this->tiles_.erase(it);
+         return;
       }
    }
 }

@@ -68,6 +68,7 @@ BuilderScene::~BuilderScene() {
 
 void BuilderScene::init(Game& game) {
    this->load_fonts();
+   this->load_textures();
 
    // make map_root, grid_root, and hud_root (ordering is important here for layering reasons)
    Entity* map_root = this->create_entity("MapRootEntity");
@@ -129,6 +130,10 @@ void BuilderScene::process(Game& game, MouseLeftInputEvent& e) {
 void BuilderScene::load_fonts() {
    // load fonts
    this->fonts().load("retro", "retro.ttf");
+}
+
+void BuilderScene::load_textures() {
+   this->textures().load("ui_close_button", "ui_close_button.png");
 }
 
 Handle BuilderScene::create_panel(std::string entity_id, sf::FloatRect bounds, bool create_decoration /* = false */, std::string label /* = "" */) {
@@ -1218,6 +1223,68 @@ void BuilderScene::mouse_script_add_pan_behavior(Game& game, Handle mouse_entity
                t->space()->position(10, 64 * layer_idx + 20);
 
                this->add_to_scene_node(tile_popup, t);
+
+               // add x button
+               Entity* delete_button = this->create_entity("DeleteLayer" + std::to_string(layer_idx));
+
+               delete_button->add<Sprite>("DeleteLayer" + std::to_string(layer_idx) + "Sprite", this->textures().get("ui_close_button"));
+               delete_button->get<Sprite>()->scale(2.f, 2.f);
+
+               delete_button->add<PlayerProfile>("DeleteLayer" + std::to_string(layer_idx) + "PlayerProfile", 1);
+               delete_button->add<Clickable>("DeleteLayer" + std::to_string(layer_idx) + "Clickable");
+               delete_button->add<Collision>("DeleteLayer" + std::to_string(layer_idx) + "Collision", delete_button->get<Sprite>()->global_bounds());
+
+               delete_button->add<Callback>("DeleteLayer" + std::to_string(layer_idx) + "Callback");
+
+               auto tile_ref = *it;
+               delete_button->get<Callback>()->left_release([delete_button, tile_ref, t, layer_idx, this] () {
+                  Entity* map_root = this->get_entity("MapRootEntity");
+                  Entity* tile_popup = this->get_entity("TilePopup");
+                  Entity* tile_popup_decoration = this->get_entity("TilePopupDecoration");
+                  assert(map_root && tile_popup);
+
+                  map_root->get<TileMap>()->remove(*tile_ref);
+
+                  int num_tiles_in_popup = 0;
+                  for (unsigned int i = 0; i < tile_popup->space()->num_children(); ++i) {
+                     Entity* e = this->get_entity(tile_popup->space()->get_child(i)->entity());
+                     if (e->id().rfind("tile_layer_", 0) == 0) {
+                        num_tiles_in_popup++;
+                     }
+                  }
+
+                  if (num_tiles_in_popup <= 1) {
+                     // tile popup only has 1 tile in it, so delete the whole thing
+                     this->remove_entity(tile_popup->handle(), true);
+                     return;
+                  }
+
+                  // shift tiles up by one
+                  for (unsigned int l_idx = layer_idx + 1; l_idx < tile_popup->space()->num_children() - 3 - 1; ++l_idx) {
+                     tile_popup->space()->get_child(l_idx + 3)->move(0, -64);
+                  }
+
+                  this->remove_entity(t->handle(), true);
+
+                  // resize tile popup window
+                  sf::Vector2f new_popup_size(tile_popup->get<Rectangle>()->size());
+                  new_popup_size.y -= 64;
+
+                  tile_popup->get<Rectangle>()->size(new_popup_size);
+                  tile_popup->get<Collision>()->volume(tile_popup->get<Rectangle>()->local_bounds());
+
+                  if (tile_popup_decoration) {
+                     new_popup_size = tile_popup_decoration->get<Rectangle>()->size();
+                     new_popup_size.y -= 64;
+
+                     tile_popup_decoration->get<Rectangle>()->size(new_popup_size);
+                  }
+               });
+
+               delete_button->space()->move(64 - delete_button->get<Sprite>()->global_bounds().width, 0);
+
+               this->add_to_scene_node(t, delete_button);
+
                ++layer_idx;
             }
 
