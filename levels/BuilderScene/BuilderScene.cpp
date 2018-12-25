@@ -1236,6 +1236,14 @@ void BuilderScene::mouse_script_add_pan_behavior(Game& game, Handle mouse_entity
 
                delete_button->add<Callback>("DeleteLayer" + std::to_string(layer_idx) + "Callback");
 
+               delete_button->get<Callback>()->mouse_in([delete_button, this] () {
+                  delete_button->get<Sprite>()->color(sf::Color(255, 255, 255, 127));
+               });
+
+               delete_button->get<Callback>()->mouse_out([delete_button, this] () {
+                  delete_button->get<Sprite>()->color(sf::Color(255, 255, 255, 255));
+               });
+
                auto tile_ref = *it;
                delete_button->get<Callback>()->left_release([delete_button, tile_ref, t, layer_idx, this] () {
                   Entity* map_root = this->get_entity("MapRootEntity");
@@ -1245,13 +1253,19 @@ void BuilderScene::mouse_script_add_pan_behavior(Game& game, Handle mouse_entity
 
                   map_root->get<TileMap>()->remove(*tile_ref);
 
+                  int tile_idx = -1;
                   int num_tiles_in_popup = 0;
                   for (unsigned int i = 0; i < tile_popup->space()->num_children(); ++i) {
                      Entity* e = this->get_entity(tile_popup->space()->get_child(i)->entity());
                      if (e->id().rfind("tile_layer_", 0) == 0) {
                         num_tiles_in_popup++;
                      }
+
+                     if(e->id() == "tile_layer_" + std::to_string(layer_idx)) {
+                        tile_idx = i;
+                     }
                   }
+                  assert(tile_idx != -1);
 
                   if (num_tiles_in_popup <= 1) {
                      // tile popup only has 1 tile in it, so delete the whole thing
@@ -1260,8 +1274,8 @@ void BuilderScene::mouse_script_add_pan_behavior(Game& game, Handle mouse_entity
                   }
 
                   // shift tiles up by one
-                  for (unsigned int l_idx = layer_idx + 1; l_idx < tile_popup->space()->num_children() - 3 - 1; ++l_idx) {
-                     tile_popup->space()->get_child(l_idx + 3)->move(0, -64);
+                  for (unsigned int l_idx = tile_idx + 1; l_idx < tile_popup->space()->num_children() - 1; ++l_idx) {
+                     tile_popup->space()->get_child(l_idx)->move(0, -64);
                   }
 
                   this->remove_entity(t->handle(), true);

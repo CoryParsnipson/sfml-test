@@ -63,8 +63,8 @@ void TileMap::set(TileMap::TileType tile) {
 }
 
 void TileMap::remove(TileMap::TileType tile) {
-   std::vector<TileMap::TileType>::iterator it;
-   for (it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
+   std::vector<TileMap::TileType>::reverse_iterator it;
+   for (it = this->tiles_.rbegin(); it != this->tiles_.rend(); ++it) {
       bool is_match = false;
       sf::FloatRect tile_bounds = this->get_global_bounds_from_tile(tile);
 
@@ -85,7 +85,13 @@ void TileMap::remove(TileMap::TileType tile) {
       }
 
       if (is_match) {
-         this->tiles_.erase(it);
+         // okay so you can find why this is written this way on stackoverflow or something
+         // the basic gist is that reverse iterator can't be used in erase(). And reverse
+         // iterator actually points to the element to the right of the position it represents
+         // so this calculation (of incrementing the reverse iterator and then calling base() 
+         // to get the "forward" iterator) is needed
+         std::vector<TileMap::TileType>::reverse_iterator j_it = ++it;
+         this->tiles_.erase(j_it.base());
          return;
       }
    }
