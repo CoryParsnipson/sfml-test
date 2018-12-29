@@ -86,20 +86,18 @@ void GraphicalSystem::on_update(Game& game, Entity& e) {
       std::vector<TileMap::TileType*> tiles = tilemap->find(states.transform.getInverse().transformRect(this->camera()->bounds()));
 
       // draw map tiles
-      std::for_each(tiles.begin(), tiles.end(),
-         [&] (TileMap::TileType* tile) {
-            if (tile->type() == typeid(Circle)) {
-               boost::get<Circle>(*tile).draw(*this->surface(), states);
-            } else if (tile->type() == typeid(Rectangle)) {
-               boost::get<Rectangle>(*tile).draw(*this->surface(), states);
-            } else if (tile->type() == typeid(Sprite)) {
-               boost::get<Sprite>(*tile).draw(*this->surface(), states);
-            } else if (tile->type() == typeid(Text)) {
-               boost::get<Text>(*tile).draw(*this->surface(), states);
-            } else if (tile->type() == typeid(VertexList)) {
-               boost::get<VertexList>(*tile).draw(*this->surface(), states);
-            }
+      for (auto tile : tiles) {
+         if (tile->type() == typeid(Circle)) {
+            boost::get<Circle>(*tile).draw(*this->surface(), states);
+         } else if (tile->type() == typeid(Rectangle)) {
+            boost::get<Rectangle>(*tile).draw(*this->surface(), states);
+         } else if (tile->type() == typeid(Sprite)) {
+            boost::get<Sprite>(*tile).draw(*this->surface(), states);
+         } else if (tile->type() == typeid(Text)) {
+            boost::get<Text>(*tile).draw(*this->surface(), states);
+         } else if (tile->type() == typeid(VertexList)) {
+            boost::get<VertexList>(*tile).draw(*this->surface(), states);
          }
-      );
+      }
    }
 }

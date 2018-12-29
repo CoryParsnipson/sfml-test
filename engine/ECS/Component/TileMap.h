@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <string>
+#include <unordered_map>
+#include <functional>
 #include <boost/variant.hpp>
 #include <SFML/Graphics.hpp>
 
@@ -21,7 +23,22 @@
 // ----------------------------------------------------------------------------
 class TileMap : public Component {
 public:
+   // -------------------------------------------------------------------------
+   // This is provided to the unordered map to hash map tile graphics by
+   // position.
+   // -------------------------------------------------------------------------
+   class TileHash {
+   public:
+      std::size_t operator()(const sf::Vector2f& k) const {
+         std::size_t mask = -1;
+         mask = mask << (sizeof(std::size_t) / 2);
+
+         return (std::hash<float>()(k.x) & mask) | (std::hash<float>()(k.y) & ~mask);
+      }
+   };
+
    using TileType = boost::variant<Circle, Rectangle, Sprite, Text, VertexList>;
+   using TileStore = std::unordered_map<sf::Vector2f, TileType, TileHash>;
 
    explicit TileMap(const std::string& id = "TileMap Component");
    TileMap(const TileMap& other);
@@ -43,7 +60,7 @@ public:
    virtual void deserialize(Serializer& s, Scene& scene, std::string& d);
 
 private:
-   std::vector<TileType> tiles_;
+   TileStore tiles_;
 
    sf::Vector2f get_position_from_tile(TileType& tile);
    sf::FloatRect get_global_bounds_from_tile(TileType& tile);

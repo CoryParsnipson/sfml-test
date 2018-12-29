@@ -7,6 +7,7 @@
 
 TileMap::TileMap(const std::string& id /* = "TileMap Component" */)
 : Component(id)
+, tiles_()
 {
 }
 
@@ -32,12 +33,10 @@ void TileMap::swap(TileMap& other) {
 }
 
 TileMap::TileType* TileMap::get(const sf::Vector2f& pos) {
-   sf::Vector2f tile_pos;
+   TileMap::TileStore::iterator it = this->tiles_.find(pos);
 
-   for (std::vector<TileMap::TileType>::iterator it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
-      if (this->get_position_from_tile(*it) == pos) {
-         return &(*it);
-      }
+   if (it != this->tiles_.end()) {
+      return &(it->second);
    }
 
    return nullptr;
@@ -45,65 +44,114 @@ TileMap::TileType* TileMap::get(const sf::Vector2f& pos) {
 
 std::vector<TileMap::TileType*> TileMap::find(const sf::FloatRect& search_area) {
    std::vector<TileMap::TileType*> matching_tiles;
-
-   std::for_each(this->tiles_.begin(), this->tiles_.end(),
-      [&] (TileMap::TileType& tile) {
-         sf::FloatRect gbounds = this->get_global_bounds_from_tile(tile);
-         if (search_area.intersects(gbounds)) {
-            matching_tiles.push_back(&tile);
-         }
+   for (TileMap::TileStore::iterator it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
+      sf::FloatRect gbounds = this->get_global_bounds_from_tile(it->second);
+      if (search_area.intersects(gbounds)) {
+         matching_tiles.push_back(&it->second);
       }
-   );
+   }
 
    return matching_tiles;
 }
 
 void TileMap::set(TileMap::TileType tile) {
-   this->tiles_.push_back(tile);
+   this->tiles_[this->get_position_from_tile(tile)] = tile;
 }
 
 void TileMap::remove(TileMap::TileType tile) {
-   std::vector<TileMap::TileType>::reverse_iterator it;
-   for (it = this->tiles_.rbegin(); it != this->tiles_.rend(); ++it) {
-      bool is_match = false;
-      sf::FloatRect tile_bounds = this->get_global_bounds_from_tile(tile);
+   bool is_match = false;
+   sf::Vector2f tile_pos = this->get_position_from_tile(tile);
+   TileMap::TileType* t = this->get(tile_pos);
 
-      if (!this->get_global_bounds_from_tile(*it).intersects(tile_bounds)) {
-         continue;
-      }
+   if (tile.type() == typeid(Circle)) {
+      is_match = boost::get<Circle>(tile).id() == boost::get<Circle>(*t).id();
+   } else if (tile.type() == typeid(Rectangle)) {
+      is_match = boost::get<Rectangle>(tile).id() == boost::get<Rectangle>(*t).id();
+   } else if (tile.type() == typeid(Sprite)) {
+      is_match = boost::get<Sprite>(tile).id() == boost::get<Sprite>(*t).id();
+   } else if (tile.type() == typeid(Text)) {
+      is_match = boost::get<Text>(tile).id() == boost::get<Text>(*t).id();
+   } else if (tile.type() == typeid(VertexList)) {
+      is_match = boost::get<VertexList>(tile).id() == boost::get<VertexList>(*t).id();
+   }
 
-      if (tile.type() == typeid(Circle)) {
-         is_match = boost::get<Circle>(tile).id() == boost::get<Circle>(*it).id();
-      } else if (tile.type() == typeid(Rectangle)) {
-         is_match = boost::get<Rectangle>(tile).id() == boost::get<Rectangle>(*it).id();
-      } else if (tile.type() == typeid(Sprite)) {
-         is_match = boost::get<Sprite>(tile).id() == boost::get<Sprite>(*it).id();
-      } else if (tile.type() == typeid(Text)) {
-         is_match = boost::get<Text>(tile).id() == boost::get<Text>(*it).id();
-      } else if (tile.type() == typeid(VertexList)) {
-         is_match = boost::get<VertexList>(tile).id() == boost::get<VertexList>(*it).id();
-      }
-
-      if (is_match) {
-         // okay so you can find why this is written this way on stackoverflow or something
-         // the basic gist is that reverse iterator can't be used in erase(). And reverse
-         // iterator actually points to the element to the right of the position it represents
-         // so this calculation (of incrementing the reverse iterator and then calling base() 
-         // to get the "forward" iterator) is needed
-         std::vector<TileMap::TileType>::reverse_iterator j_it = ++it;
-         this->tiles_.erase(j_it.base());
-         return;
-      }
+   if (is_match) {
+      this->tiles_.erase(tile_pos);
    }
 }
 
 void TileMap::remove(const sf::FloatRect& search_area) {
-   std::vector<TileMap::TileType>::iterator it;
-   for (it = this->tiles_.begin(); it != this->tiles_.end();) {
-      if (this->get_global_bounds_from_tile(*it).intersects(search_area)) {
-         it = this->tiles_.erase(it);
+   std::vector<TileMap::TileType*> tiles = this->find(search_area);
+
+   for (auto tile : tiles) {
+      this->tiles_.erase(this->get_position_from_tile(*tile));
+   }
+}
+
+std::string TileMap::serialize(Serializer& s) {
+   Serializer::SerialData data;
+
+   data["type"] = "TileMap";
+   data["id"] = this->id();
+   
+   data["num_tiles"] = std::to_string(this->tiles_.size());
+
+   for (TileMap::TileStore::iterator it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
+      std::size_t tile_hash = TileMap::TileHash()(it->first);
+
+      if (it->second.type() == typeid(Circle)) {
+         data["tile_" + std::to_string(tile_hash)] = boost::get<Circle>(it->second).serialize(s);
+      } else if (it->second.type() == typeid(Rectangle)) {
+         data["tile_" + std::to_string(tile_hash)] = boost::get<Rectangle>(it->second).serialize(s);
+      } else if (it->second.type() == typeid(Sprite)) {
+         data["tile_" + std::to_string(tile_hash)] = boost::get<Sprite>(it->second).serialize(s);
+      } else if (it->second.type() == typeid(Text)) {
+         data["tile_" + std::to_string(tile_hash)] = boost::get<Text>(it->second).serialize(s);
+      } else if (it->second.type() == typeid(VertexList)) {
+         data["tile_" + std::to_string(tile_hash)] = boost::get<VertexList>(it->second).serialize(s);
       } else {
-         ++it;
+         throw std::domain_error("Received invalid tile type: " + std::string(it->second.type().name()));
+      }
+   }
+   
+   return s.serialize(data);
+}
+
+void TileMap::deserialize(Serializer& s, Scene& scene, std::string& d) {
+   Serializer::SerialData data = s.deserialize(scene, d);
+
+   this->tiles_.clear();
+   this->id(data["id"]);
+
+   for (auto kv_pair : data) {
+      if (kv_pair.first.rfind("tile_", 0) != 0) {
+         continue;
+      }
+
+      Serializer::SerialData tile_data = s.deserialize(scene, kv_pair.second);
+
+      if (tile_data["type"] == "Circle") {
+         Circle c;
+         c.deserialize(s, scene, kv_pair.second);
+         this->set(c);
+      } else if (tile_data["type"] == "Rectangle") {
+         Rectangle r;
+         r.deserialize(s, scene, kv_pair.second);
+         this->set(r);
+      } else if (tile_data["type"] == "Sprite") {
+         Sprite sprite;
+         sprite.deserialize(s, scene, kv_pair.second);
+         this->set(sprite);
+      } else if (tile_data["type"] == "Text") {
+         Text t;
+         t.deserialize(s, scene, kv_pair.second);
+         this->set(t);
+      } else if (tile_data["type"] == "VertexList") {
+         VertexList v;
+         v.deserialize(s, scene, kv_pair.second);
+         this->set(v);
+      } else {
+         throw std::domain_error("Received invalid tile type: " + tile_data["type"]);
       }
    }
 }
@@ -138,68 +186,4 @@ sf::FloatRect TileMap::get_global_bounds_from_tile(TileType& tile) {
    }
 
    throw std::domain_error("Received invalid tile type: " + std::string(tile.type().name()));
-}
-
-std::string TileMap::serialize(Serializer& s) {
-   Serializer::SerialData data;
-
-   data["type"] = "TileMap";
-   data["id"] = this->id();
-   
-   data["num_tiles"] = std::to_string(this->tiles_.size());
-
-   for (unsigned int i = 0; i < this->tiles_.size(); ++i) {
-      TileType& tile(this->tiles_[i]);
-
-      if (tile.type() == typeid(Circle)) {
-         data["tile_" + std::to_string(i)] = boost::get<Circle>(tile).serialize(s);
-      } else if (tile.type() == typeid(Rectangle)) {
-         data["tile_" + std::to_string(i)] = boost::get<Rectangle>(tile).serialize(s);
-      } else if (tile.type() == typeid(Sprite)) {
-         data["tile_" + std::to_string(i)] = boost::get<Sprite>(tile).serialize(s);
-      } else if (tile.type() == typeid(Text)) {
-         data["tile_" + std::to_string(i)] = boost::get<Text>(tile).serialize(s);
-      } else if (tile.type() == typeid(VertexList)) {
-         data["tile_" + std::to_string(i)] = boost::get<VertexList>(tile).serialize(s);
-      } else {
-         throw std::domain_error("Received invalid tile type: " + std::string(tile.type().name()));
-      }
-   }
-
-   return s.serialize(data);
-}
-
-void TileMap::deserialize(Serializer& s, Scene& scene, std::string& d) {
-   Serializer::SerialData data = s.deserialize(scene, d);
-
-   this->tiles_.clear();
-   this->id(data["id"]);
-
-   for (int i = 0; i < std::stoi(data["num_tiles"]); ++i) {
-      Serializer::SerialData tile_data = s.deserialize(scene, data["tile_" + std::to_string(i)]);
-
-      if (tile_data["type"] == "Circle") {
-         Circle c;
-         c.deserialize(s, scene, data["tile_" + std::to_string(i)]);
-         this->set(c);
-      } else if (tile_data["type"] == "Rectangle") {
-         Rectangle r;
-         r.deserialize(s, scene, data["tile_" + std::to_string(i)]);
-         this->set(r);
-      } else if (tile_data["type"] == "Sprite") {
-         Sprite sprite;
-         sprite.deserialize(s, scene, data["tile_" + std::to_string(i)]);
-         this->set(sprite);
-      } else if (tile_data["type"] == "Text") {
-         Text t;
-         t.deserialize(s, scene, data["tile_" + std::to_string(i)]);
-         this->set(t);
-      } else if (tile_data["type"] == "VertexList") {
-         VertexList v;
-         v.deserialize(s, scene, data["tile_" + std::to_string(i)]);
-         this->set(v);
-      } else {
-         throw std::domain_error("Received invalid tile type: " + tile_data["type"]);
-      }
-   }
 }
