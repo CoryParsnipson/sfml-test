@@ -361,12 +361,19 @@ public:
    }
 
    sf::Transform global_transform(Entity& e) {
+      std::vector<sf::Transform> transforms;
       sf::Transform g_transform = sf::Transform();
       SceneNode* space = e.space();
 
       while (space != nullptr) {
-         g_transform *= space->transform();
+         transforms.push_back(space->transform());
          space = space->parent();
+      }
+
+      // matrices aren't communitative, so they need to applied in order starting from the scene graph root
+      std::vector<sf::Transform>::const_reverse_iterator it;
+      for (it = transforms.rbegin(); it != transforms.rend(); ++it) {
+         g_transform *= *it;
       }
 
       return g_transform;
