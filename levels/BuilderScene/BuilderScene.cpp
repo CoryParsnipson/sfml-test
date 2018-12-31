@@ -303,6 +303,8 @@ void BuilderScene::create_hud(Game& game) {
    Entity* tile_selection = this->create_entity("TileSelectionEntity");
    this->add_to_scene_node(grid_root, tile_selection, 0);
 
+   tile_selection->space()->visible(false);
+
    tile_selection->add<Rectangle>("TileSelectionRectangle", 0, 0, 0, 0);
    tile_selection->get<Rectangle>()->color(Color(255, 255, 255, 128));
    tile_selection->get<Rectangle>()->outline_color(Color(255, 255, 255, 192));
@@ -523,7 +525,7 @@ void BuilderScene::setup_keybindings(Game& game) {
          tile_selection->space()->position(new_pos);
          tile_selection->get<Rectangle>()->size(new_end - new_pos);
 
-         tile_selection->get<Collision>()->volume(tile_selection->get<Rectangle>()->global_bounds());
+         tile_selection->get<Collision>()->volume(sf::FloatRect(sf::Vector2f(0, 0), new_end - new_pos));
 
          // remove tile popup
          Entity* tile_popup = this->get_entity("TilePopup");
@@ -558,7 +560,12 @@ void BuilderScene::setup_keybindings(Game& game) {
             Collision* collision = tile_selection_maproot->get<Collision>();
 
             if (map && collision) {
-               map->remove(collision->volume());
+               map->remove(
+                  // don't use global transform (need translation but not zoom from map_root)
+                  tile_selection_maproot->space()->transform().transformRect(
+                     tile_selection_maproot->get<Collision>()->volume()
+                  )
+               );
             }
          }
       }
@@ -591,7 +598,10 @@ void BuilderScene::setup_keybindings(Game& game) {
       }
 
       if (this->game().input_manager().get_device(1)->get("F")->was_pressed() && p1_bindings.get<ModalIntent>()->element()->is_pressed()) {
-         this->file_dialog_box();
+         Entity* notification_root = this->get_entity("NotificationRootEntity");
+         if (!notification_root) {
+            this->file_dialog_box();
+         }
       }
    });
 }
@@ -735,8 +745,11 @@ void BuilderScene::load_from_file(std::string filename) {
          Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
          assert(tile_selection_maproot);
 
-         // on click, fill the selected area (if it is active) with the clicked on tile
          sf::FloatRect tsc = tile_selection_maproot->get<Collision>()->volume();
+         tsc.left = tile_selection_maproot->space()->position().x;
+         tsc.top = tile_selection_maproot->space()->position().y;
+
+         // on click, fill the selected area (if it is active) with the clicked on tile
          for (int x_pos = tsc.left; x_pos < tsc.left + tsc.width; x_pos += grid_entity->get<Grid>()->tile_width()) {
             for (int y_pos = tsc.top; y_pos < tsc.top + tsc.height; y_pos += grid_entity->get<Grid>()->tile_height()) {
                Sprite sprite(*entity->get<Sprite>());
@@ -1384,19 +1397,21 @@ void BuilderScene::mouse_script_add_select_behavior(Game& game, Handle mouse_ent
 
    mouse_cursor_script->get<Callback>()->left_click([&game, mouse_entity, this] () {
       Entity* selection_rect = this->get_entity("SelectionRectangleEntity");
-      //Entity* tile_selection = this->get_entity("TileSelectionEntity");
-      //assert(tile_selection);
+      Entity* tile_selection = this->get_entity("TileSelectionEntity");
+      assert(tile_selection);
 
       sf::Vector2f new_pos;
       new_pos.x = this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position();
       new_pos.y = this->game().get_player(1).bindings().get<MouseYIntent>()->element()->position();
 
-      //sf::FloatRect tile_select_global_vol;
-      //tile_select_global_vol = this->global_transform(*tile_selection).transformRect(tile_selection->get<Collision>()->volume());
+      sf::FloatRect tile_select_global_vol;
+      tile_select_global_vol = this->global_transform(*tile_selection).transformRect(tile_selection->get<Collision>()->volume());
 
+      // TODO: still under construction
       //// add this here to convert to move behavior if you click on the tile selection
       //if (tile_selection->space()->visible() && tile_select_global_vol.contains(new_pos)) {
       //   this->mouse_script_add_move_behavior(game, mouse_entity, true);
+      //   this->get_entity(mouse_entity)->get<Callback>()->left_click(); // fire the left click on move behavior code
       //   return;
       //}
 
@@ -1414,15 +1429,15 @@ void BuilderScene::mouse_script_add_select_behavior(Game& game, Handle mouse_ent
       Entity* grid_entity = this->get_entity("GridEntity");
       Entity* mouse_mode_select_dropdown = this->get_entity("MouseModeSelectDropdown");
 
+      // release_pos and ts_origin are in screen space
       sf::Vector2f release_pos;
       release_pos.x = this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position();
       release_pos.y = this->game().get_player(1).bindings().get<MouseYIntent>()->element()->position();
-      release_pos = grid_root->space()->inverse_transform().transformPoint(release_pos);
 
       Clickable* clickable = mouse_cursor_script->get<Clickable>();
       assert (clickable);
 
-      sf::Vector2f ts_origin = grid_root->space()->inverse_transform().transformPoint(clickable->left_click_pos());
+      sf::Vector2f ts_origin = clickable->left_click_pos();
 
       // TODO: not sure where to put this code...
       if (mouse_mode_select_dropdown) {
@@ -1447,42 +1462,54 @@ void BuilderScene::mouse_script_add_select_behavior(Game& game, Handle mouse_ent
                               end.y - pos.y >= grid_entity->get<Grid>()->tile_height() / 3.f);
 
       sf::FloatRect tile_selection_global_vol = this->global_transform(*tile_selection).transformRect(tile_selection->get<Collision>()->volume());
+      bool clicked_on_tile_selection = tile_selection_global_vol.contains(release_pos);
 
-      if (!is_drag_gesture && tile_selection->space()->visible() && tile_selection_global_vol.contains(this->global_transform(*grid_root).transformPoint(release_pos))) {
+      if (!is_drag_gesture && tile_selection->space()->visible() && clicked_on_tile_selection) {
          tile_selection->space()->visible(false);
          tile_selection_maproot->get<Collision>()->volume(sf::FloatRect(0, 0, 0, 0));
       } else {
          float tile_width = grid_entity->get<Grid>()->tile_width() * grid_entity->get<Grid>()->zoom_factor().x;
          float tile_height = grid_entity->get<Grid>()->tile_height() * grid_entity->get<Grid>()->zoom_factor().y;
 
+         // get inverse to reverse grid_root translation
+         sf::Vector2f world_pos = this->global_transform(*grid_root).getInverse().transformPoint(pos);
+         sf::Vector2f world_end = this->global_transform(*grid_root).getInverse().transformPoint(end);
+
          // round rectangle to nearest grid point
-         pos = grid_entity->get<Grid>()->floor(pos);
-         end = grid_entity->get<Grid>()->ceil(end);
+         world_pos = grid_entity->get<Grid>()->floor(world_pos);
+         world_end = grid_entity->get<Grid>()->ceil(world_end);
 
          // make this at least 1 tile big (if you provide grid with value that falls
          // directly on gridline it can give identical values for floor and ceil)
-         if (end.x - pos.x < tile_width) {
-            end.x = pos.x + tile_width;
-         }
-
-         if (end.y - pos.y < tile_height) {
-            end.y = pos.y + tile_height;
-         }
+         world_end.x = std::max(world_end.x, world_pos.x + tile_width);
+         world_end.y = std::max(world_end.y, world_pos.y + tile_height);
 
          // update tile selection entity
-         tile_selection->space()->position(pos);
+         tile_selection->space()->position(world_pos);
          tile_selection->space()->visible(true);
-         tile_selection->get<Rectangle>()->size(end - pos);
-         tile_selection->get<Collision>()->volume(sf::Vector2f(0, 0), end - pos);
+         tile_selection->get<Rectangle>()->size(world_end - world_pos);
+         tile_selection->get<Collision>()->volume(sf::Vector2f(0, 0), world_end - world_pos);
 
          // update tile selection maproot entity
-         sf::Vector2i pos_idx = grid_entity->get<Grid>()->grid_index(pos);
-         sf::Vector2i end_idx = grid_entity->get<Grid>()->grid_index(end);
+         // So the strategy here is that we need to convert pos and end from screen coordinates to map_root coordinates
+         // but not including the zoom. Thus using getInverse transform of map_root won't work.
+         // We can get the grid indices of the world_pos and world_end and then calculate the
+         // corresponding map_root values
+         sf::Vector2i map_pos_idx = grid_entity->get<Grid>()->grid_index(world_pos);
+         sf::Vector2i map_end_idx = grid_entity->get<Grid>()->grid_index(world_end);
 
-         sf::Vector2f maproot_pos(grid_entity->get<Grid>()->tile_width() * pos_idx.x, grid_entity->get<Grid>()->tile_height() * pos_idx.y);
-         sf::Vector2f maproot_end(grid_entity->get<Grid>()->tile_width() * end_idx.x, grid_entity->get<Grid>()->tile_height() * end_idx.y);
+         sf::Vector2f map_pos(
+            map_pos_idx.x * grid_entity->get<Grid>()->tile_width(),
+            map_pos_idx.y * grid_entity->get<Grid>()->tile_height()
+         );
 
-         tile_selection_maproot->get<Collision>()->volume(maproot_pos, maproot_end - maproot_pos);
+         sf::Vector2f map_end(
+            map_end_idx.x * grid_entity->get<Grid>()->tile_width(),
+            map_end_idx.y * grid_entity->get<Grid>()->tile_height()
+         );
+
+         tile_selection_maproot->space()->position(map_pos);
+         tile_selection_maproot->get<Collision>()->volume(sf::Vector2f(0, 0), map_end - map_pos);
       }
 
       // close tile popup if it exists (do not finish selection)
@@ -1509,6 +1536,7 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
 
    // HACKITY HACK
    std::shared_ptr<bool> is_clicked = std::make_shared<bool>(is_clicked_initial);
+   std::shared_ptr<std::vector<Handle>> move_list = std::make_shared<std::vector<Handle>>();
 
    mouse_cursor_script->get<Callback>()->camera_resize([mouse_cursor_script, this] () {
       GraphicalSystem* gs = this->get_system<GraphicalSystem>("GraphicalSystem");
@@ -1521,14 +1549,9 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
       mouse_cursor_script->get<Collision>()->volume(sf::Vector2f(0, 0), new_size);
    });
 
-   mouse_cursor_script->get<Callback>()->mouse_move([mouse_cursor_script, is_clicked, this] () {
-      Entity* map_root = this->get_entity("MapRootEntity");
+   mouse_cursor_script->get<Callback>()->mouse_move([mouse_cursor_script, is_clicked, move_list, this] () {
       Entity* tile_selection = this->get_entity("TileSelectionEntity");
       Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
-
-      if (!(*is_clicked)) {
-         return;
-      }
 
       // calculate mouse move delta
       sf::Vector2f mouse_delta;
@@ -1537,37 +1560,148 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
 
       mouse_delta -= mouse_cursor_script->get<Callback>()->prev_mouse_pos();
 
-      sf::FloatRect selection_area = this->global_transform(*tile_selection_maproot).transformRect(tile_selection_maproot->get<Collision>()->volume());
-
-      // move map tiles
-      std::vector<TileMap::TileType*> tiles = map_root->get<TileMap>()->find(selection_area);
-
-      for (auto tile : tiles) {
-         if (tile->type() == typeid(Circle)) {
-            boost::get<Circle>(tile)->move_offset(mouse_delta);
-         } else if (tile->type() == typeid(Rectangle)) {
-            boost::get<Rectangle>(tile)->move_offset(mouse_delta);
-         } else if (tile->type() == typeid(Sprite)) {
-            boost::get<Sprite>(tile)->move_offset(mouse_delta);
-         } else if (tile->type() == typeid(Text)) {
-            boost::get<Text>(tile)->move_offset(mouse_delta);
-         } else if (tile->type() == typeid(VertexList)) {
-            boost::get<VertexList>(tile)->move_offset(mouse_delta);
-         }
-      }
-
       // move tile selection cursor
       tile_selection->space()->move(mouse_delta);
       tile_selection_maproot->space()->move(mouse_delta);
+
+      if (!(*is_clicked) || move_list->empty()) {
+         return;
+      }
+
+      // move map tiles
+      for (Handle handle : *move_list) {
+         Entity* e = this->get_entity(handle);
+         e->space()->move(mouse_delta);
+      }
    });
 
-   mouse_cursor_script->get<Callback>()->left_click([is_clicked, this] () {
+   mouse_cursor_script->get<Callback>()->left_click([is_clicked, move_list, this] () {
+      Entity* map_root = this->get_entity("MapRootEntity");
+      Entity* tile_selection = this->get_entity("TileSelectionEntity");
+      Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
+
+      // don't need global transform because the TileMap doesn't use the global transform
+      sf::FloatRect selection_area = tile_selection_maproot->get<Collision>()->volume();
+      selection_area.left = tile_selection_maproot->space()->position().x;
+      selection_area.top = tile_selection_maproot->space()->position().y;
+
+      // populate move list
+      std::vector<TileMap::TileType*> tiles = map_root->get<TileMap>()->find(selection_area);
+
+      for (auto tile : tiles) {
+         Entity* e = this->create_entity("move_list_" + std::to_string(move_list->size()));
+         this->add_to_scene_node(map_root, e);
+         move_list->push_back(e->handle());
+
+         // set opacity to 50%
+         if (tile->type() == typeid(Circle)) {
+            e->add<Circle>(boost::get<Circle>(*tile));
+
+            Color c(e->get<Circle>()->color());
+            c.a(192);
+
+            e->get<Circle>()->color(c);
+         } else if (tile->type() == typeid(Rectangle)) {
+            e->add<Rectangle>(boost::get<Rectangle>(*tile));
+
+            Color c(e->get<Circle>()->color());
+            c.a(192);
+
+            e->get<Rectangle>()->color(c);
+         } else if (tile->type() == typeid(Sprite)) {
+            e->add<Sprite>(boost::get<Sprite>(*tile));
+            e->get<Sprite>()->color(sf::Color(255, 255, 255, 192));
+         } else if (tile->type() == typeid(Text)) {
+            e->add<Text>(boost::get<Text>(*tile));
+
+            Color c(e->get<Circle>()->color());
+            c.a(192);
+
+            e->get<Text>()->color(c);
+         } else if (tile->type() == typeid(VertexList)) {
+            e->add<VertexList>(boost::get<VertexList>(*tile));
+
+            Color c(e->get<Circle>()->color());
+            c.a(192);
+
+            e->get<VertexList>()->color(c);
+         }
+      }
+         
+      map_root->get<TileMap>()->remove(selection_area);
+      tile_selection->space()->visible(false); // hide selection cursor during drag
       *is_clicked = true;
    });
 
-   mouse_cursor_script->get<Callback>()->left_release([&game, mouse_entity, mouse_cursor_script, is_clicked, this] () {
+   mouse_cursor_script->get<Callback>()->left_release([&game, mouse_entity, mouse_cursor_script, is_clicked, move_list, this] () {
+      Entity* map_root = this->get_entity("MapRootEntity");
+      Entity* grid_entity = this->get_entity("GridEntity");
+      Entity* tile_selection = this->get_entity("TileSelectionEntity");
+      Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
+
       *is_clicked = false;
 
+      // snap tile selection and move_list tiles to grid
+      tile_selection->space()->position(grid_entity->get<Grid>()->round(tile_selection->space()->position()));
+      tile_selection_maproot->space()->position(grid_entity->get<Grid>()->round(tile_selection_maproot->space()->position()));
+
+      // add move_list tiles back to TileMap
+      for (std::vector<Handle>::const_iterator it = move_list->begin(); it != move_list->end(); ++it) {
+         Entity* e = this->get_entity(*it);
+
+         // note: the move behavior mouse delta is stored in e->space()->position(), but
+         // each tile's offset is still kept in [component]->offset(), so we need to add
+         // them together before rounding to the grid and then overwriting the offset()
+
+         if (e->get<Circle>()) {
+            Circle* c = e->get<Circle>();
+            c->offset(grid_entity->get<Grid>()->round(e->space()->position() + c->offset()));
+
+            Color color(c->color());
+            color.a(255);
+            c->color(color);
+
+            map_root->get<TileMap>()->set(*c);
+         } else if (e->get<Rectangle>()) {
+            Rectangle* r = e->get<Rectangle>();
+            r->offset(grid_entity->get<Grid>()->round(e->space()->position() + r->offset()));
+
+            Color color(r->color());
+            color.a(255);
+            r->color(color);
+
+            map_root->get<TileMap>()->set(*r);
+         } else if (e->get<Sprite>()) {
+            Sprite* s = e->get<Sprite>();
+            s->offset(grid_entity->get<Grid>()->round(e->space()->position() + s->offset()));
+            s->color(sf::Color(255, 255, 255, 255));
+
+            map_root->get<TileMap>()->set(*s);
+         } else if (e->get<Text>()) {
+            Text* t = e->get<Text>();
+            t->offset(grid_entity->get<Grid>()->round(e->space()->position() + t->offset()));
+
+            Color color(t->color());
+            color.a(255);
+            t->color(color);
+
+            map_root->get<TileMap>()->set(*t);
+         } else if (e->get<VertexList>()) {
+            VertexList* v = e->get<VertexList>();
+            v->offset(grid_entity->get<Grid>()->round(e->space()->position() + v->offset()));
+
+            Color color(v->color());
+            color.a(255);
+            v->color(color);
+
+            map_root->get<TileMap>()->set(*v);
+         }
+
+         this->remove_entity(*it);
+      }
+
+      move_list->clear();
+      tile_selection->space()->visible(true); // unhide after move is finished
       this->mouse_script_add_select_behavior(game, mouse_entity);
    });
 }

@@ -1,6 +1,7 @@
 #include "VisualDebugSystem.h"
 
 #include "Game.h"
+#include "Scene.h"
 #include "Entity.h"
 
 #include "Collision.h"
@@ -29,11 +30,13 @@ void VisualDebugSystem::on_init(Game& game) {
    });
 }
 
+void VisualDebugSystem::pre_update(Game& game) {
+   this->camera()->draw(*this->surface()); // apply the camera
+}
+
 void VisualDebugSystem::on_update(Game& game, Entity& e) {
    Collision* c = e.get<Collision>();
    if (c && this->is_visible(e.handle())) {
-      this->camera()->draw(*this->surface()); // apply the camera
-
       sf::RenderStates states;
       states.transform = this->global_transform(e);
 
@@ -50,7 +53,15 @@ void VisualDebugSystem::on_update(Game& game, Entity& e) {
       center_dot.setSize(sf::Vector2f(1, 1));
       center_dot.setPosition(c->center());
 
+      sf::Text t;
+      t.setFont(this->scene().fonts().get("retro")->get_font());
+      t.setFillColor(sf::Color::White);
+      t.setString(c->id());
+      t.setCharacterSize(10);
+      t.setPosition(c->volume().left + 5, c->volume().top + 5);
+
       this->surface()->draw(r, states);
       this->surface()->draw(center_dot, states);
+      this->surface()->draw(t, states);
    }
 }
