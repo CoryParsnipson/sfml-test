@@ -78,9 +78,12 @@ const sf::Vector2f& Grid::zoom_factor() const {
    return this->zoom_factor_;
 }
 
-sf::Vector2f Grid::floor(const sf::Vector2f& pos) {
-   float tile_width = this->tile_width() * this->zoom_factor().x;
-   float tile_height = this->tile_height() * this->zoom_factor().y;
+sf::Vector2f Grid::floor(const sf::Vector2f& pos, float zoom_factor /* = 0.f */) {
+   float eff_zoom_factor_x = zoom_factor == 0.f ? this->zoom_factor().x : zoom_factor;
+   float eff_zoom_factor_y = zoom_factor == 0.f ? this->zoom_factor().y : zoom_factor;
+
+   float tile_width = this->tile_width() * eff_zoom_factor_x;
+   float tile_height = this->tile_height() * eff_zoom_factor_y;
 
    sf::Vector2f origin_offset(std::fmod(this->origin_.x, tile_width), std::fmod(this->origin_.y, tile_height));
 
@@ -90,9 +93,12 @@ sf::Vector2f Grid::floor(const sf::Vector2f& pos) {
    );
 }
 
-sf::Vector2f Grid::round(const sf::Vector2f& pos) {
-   float tile_width = this->tile_width() * this->zoom_factor().x;
-   float tile_height = this->tile_height() * this->zoom_factor().y;
+sf::Vector2f Grid::round(const sf::Vector2f& pos, float zoom_factor /* = 0.f */) {
+   float eff_zoom_factor_x = zoom_factor == 0.f ? this->zoom_factor().x : zoom_factor;
+   float eff_zoom_factor_y = zoom_factor == 0.f ? this->zoom_factor().y : zoom_factor;
+
+   float tile_width = this->tile_width() * eff_zoom_factor_x;
+   float tile_height = this->tile_height() * eff_zoom_factor_y;
 
    sf::Vector2f origin_offset(std::fmod(this->origin_.x, tile_width), std::fmod(this->origin_.y, tile_height));
 
@@ -102,9 +108,12 @@ sf::Vector2f Grid::round(const sf::Vector2f& pos) {
    );
 }
 
-sf::Vector2f Grid::ceil(const sf::Vector2f& pos) {
-   float tile_width = this->tile_width() * this->zoom_factor().x;
-   float tile_height = this->tile_height() * this->zoom_factor().y;
+sf::Vector2f Grid::ceil(const sf::Vector2f& pos, float zoom_factor /* = 0.f */) {
+   float eff_zoom_factor_x = zoom_factor == 0.f ? this->zoom_factor().x : zoom_factor;
+   float eff_zoom_factor_y = zoom_factor == 0.f ? this->zoom_factor().y : zoom_factor;
+
+   float tile_width = this->tile_width() * eff_zoom_factor_x;
+   float tile_height = this->tile_height() * eff_zoom_factor_y;
 
    sf::Vector2f origin_offset(std::fmod(this->origin_.x, tile_width), std::fmod(this->origin_.y, tile_height));
 

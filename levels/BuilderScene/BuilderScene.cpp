@@ -1,4 +1,5 @@
 #include <cmath>
+#include <cstdio>
 
 #include <SFML/Graphics.hpp>
 
@@ -746,8 +747,8 @@ void BuilderScene::load_from_file(std::string filename) {
          assert(tile_selection_maproot);
 
          sf::FloatRect tsc = tile_selection_maproot->get<Collision>()->volume();
-         tsc.left = tile_selection_maproot->space()->position().x;
-         tsc.top = tile_selection_maproot->space()->position().y;
+         tsc.left += tile_selection_maproot->space()->position().x;
+         tsc.top += tile_selection_maproot->space()->position().y;
 
          // on click, fill the selected area (if it is active) with the clicked on tile
          for (int x_pos = tsc.left; x_pos < tsc.left + tsc.width; x_pos += grid_entity->get<Grid>()->tile_width()) {
@@ -1404,16 +1405,13 @@ void BuilderScene::mouse_script_add_select_behavior(Game& game, Handle mouse_ent
       new_pos.x = this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position();
       new_pos.y = this->game().get_player(1).bindings().get<MouseYIntent>()->element()->position();
 
-      sf::FloatRect tile_select_global_vol;
-      tile_select_global_vol = this->global_transform(*tile_selection).transformRect(tile_selection->get<Collision>()->volume());
-
-      // TODO: still under construction
-      //// add this here to convert to move behavior if you click on the tile selection
-      //if (tile_selection->space()->visible() && tile_select_global_vol.contains(new_pos)) {
-      //   this->mouse_script_add_move_behavior(game, mouse_entity, true);
-      //   this->get_entity(mouse_entity)->get<Callback>()->left_click(); // fire the left click on move behavior code
-      //   return;
-      //}
+      // add this here to convert to move behavior if you click on the tile selection
+      sf::FloatRect tile_select_global_vol = this->global_transform(*tile_selection).transformRect(tile_selection->get<Collision>()->volume());
+      if (tile_selection->space()->visible() && tile_select_global_vol.contains(new_pos)) {
+         this->mouse_script_add_move_behavior(game, mouse_entity, true);
+         this->get_entity(mouse_entity)->get<Callback>()->left_click(); // fire the left click on move behavior code
+         return;
+      }
 
       // summon selection rectangle
       selection_rect->space()->visible(true);
@@ -1550,6 +1548,11 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
    });
 
    mouse_cursor_script->get<Callback>()->mouse_move([mouse_cursor_script, is_clicked, move_list, this] () {
+      if (mouse_cursor_script->get<Clickable>()->is_right_clicked()) {
+         return;
+      }
+
+      Entity* map_root = this->get_entity("MapRootEntity");
       Entity* tile_selection = this->get_entity("TileSelectionEntity");
       Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
 
@@ -1562,6 +1565,11 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
 
       // move tile selection cursor
       tile_selection->space()->move(mouse_delta);
+
+      // need to multiply delta by inverse zoom factor for everything under map_root
+      mouse_delta.x /= map_root->space()->scale().x;
+      mouse_delta.y /= map_root->space()->scale().y;
+
       tile_selection_maproot->space()->move(mouse_delta);
 
       if (!(*is_clicked) || move_list->empty()) {
@@ -1643,8 +1651,11 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
 
       // snap tile selection and move_list tiles to grid
       tile_selection->space()->position(grid_entity->get<Grid>()->round(tile_selection->space()->position()));
-      tile_selection_maproot->space()->position(grid_entity->get<Grid>()->round(tile_selection_maproot->space()->position()));
-
+      tile_selection_maproot->space()->position(
+         // note: don't use the grid's zoom factor for this round because tile_selection_maproot is on map_root
+         grid_entity->get<Grid>()->round(tile_selection_maproot->space()->position(), 1.f)
+      );
+      
       // add move_list tiles back to TileMap
       for (std::vector<Handle>::const_iterator it = move_list->begin(); it != move_list->end(); ++it) {
          Entity* e = this->get_entity(*it);
@@ -1655,7 +1666,7 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
 
          if (e->get<Circle>()) {
             Circle* c = e->get<Circle>();
-            c->offset(grid_entity->get<Grid>()->round(e->space()->position() + c->offset()));
+            c->offset(grid_entity->get<Grid>()->round(e->space()->position() + c->offset(), 1.f));
 
             Color color(c->color());
             color.a(255);
@@ -1664,7 +1675,7 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
             map_root->get<TileMap>()->set(*c);
          } else if (e->get<Rectangle>()) {
             Rectangle* r = e->get<Rectangle>();
-            r->offset(grid_entity->get<Grid>()->round(e->space()->position() + r->offset()));
+            r->offset(grid_entity->get<Grid>()->round(e->space()->position() + r->offset(), 1.f));
 
             Color color(r->color());
             color.a(255);
@@ -1673,13 +1684,13 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
             map_root->get<TileMap>()->set(*r);
          } else if (e->get<Sprite>()) {
             Sprite* s = e->get<Sprite>();
-            s->offset(grid_entity->get<Grid>()->round(e->space()->position() + s->offset()));
+            s->offset(grid_entity->get<Grid>()->round(e->space()->position() + s->offset(), 1.f));
             s->color(sf::Color(255, 255, 255, 255));
 
             map_root->get<TileMap>()->set(*s);
          } else if (e->get<Text>()) {
             Text* t = e->get<Text>();
-            t->offset(grid_entity->get<Grid>()->round(e->space()->position() + t->offset()));
+            t->offset(grid_entity->get<Grid>()->round(e->space()->position() + t->offset(), 1.f));
 
             Color color(t->color());
             color.a(255);
@@ -1688,7 +1699,7 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
             map_root->get<TileMap>()->set(*t);
          } else if (e->get<VertexList>()) {
             VertexList* v = e->get<VertexList>();
-            v->offset(grid_entity->get<Grid>()->round(e->space()->position() + v->offset()));
+            v->offset(grid_entity->get<Grid>()->round(e->space()->position() + v->offset(), 1.f));
 
             Color color(v->color());
             color.a(255);
