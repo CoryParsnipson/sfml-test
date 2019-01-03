@@ -135,6 +135,7 @@ void BuilderScene::load_fonts() {
 
 void BuilderScene::load_textures() {
    this->textures().load("ui_close_button", "ui_close_button.png");
+   this->textures().load("cursors", "mouse_cursor.png");
 }
 
 Handle BuilderScene::create_panel(std::string entity_id, sf::FloatRect bounds, bool create_decoration /* = false */, std::string label /* = "" */) {
@@ -781,9 +782,9 @@ void BuilderScene::create_mouse_entity(Game& game) {
 
    mouse_cursor->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
 
-   mouse_cursor->add<Rectangle>("MouseCursorRectangle", 0, 0, 6, 6);
-   mouse_cursor->get<Rectangle>()->offset(-3, -3);
-   mouse_cursor->get<Rectangle>()->color(Color(sf::Color::Red));
+   mouse_cursor->add<Sprite>("MouseCursorSprite", this->textures().get("cursors"), sf::IntRect(0, 0, 3, 3));
+   mouse_cursor->get<Sprite>()->scale(2, 2);
+   mouse_cursor->get<Sprite>()->offset(-3, -3);
 
    mouse_cursor->add<Text>("MouseCursorText", "0, 0", this->fonts().get("retro"), 12);
    mouse_cursor->get<Text>()->offset(0, 10);

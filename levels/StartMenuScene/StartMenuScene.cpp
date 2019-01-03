@@ -32,7 +32,7 @@ void StartMenuScene::init(Game& game) {
    this->fonts().load("retro", "retro.ttf");
 
    // load textures
-   this->textures().load("cursor", "cursor.png");
+   this->textures().load("cursor", "mouse_cursor.png");
    
    // setup player's input mapping
    game.add_player(1);
@@ -102,7 +102,7 @@ void StartMenuScene::init(Game& game) {
 
    cursor->space()->position(menu_item_1->space()->position() - cursor_offset);
 
-   cursor->add<Sprite>("CursorSprite", this->textures().get("cursor"));
+   cursor->add<Sprite>("CursorSprite", this->textures().get("cursor"), sf::IntRect(10, 0, 6, 8));
    cursor->get<Sprite>()->scale(3, 3);
 
    cursor->add<Callback>("CursorCallback");
