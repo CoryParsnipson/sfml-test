@@ -1,5 +1,6 @@
 #include <cmath>
 #include <cstdio>
+#include <limits>
 
 #include <SFML/Graphics.hpp>
 
@@ -1594,8 +1595,21 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
       selection_area.left = tile_selection_maproot->space()->position().x;
       selection_area.top = tile_selection_maproot->space()->position().y;
 
+      // hide tile selection cursor during drag
+      tile_selection->space()->visible(false);
+
       // populate move list
       std::vector<TileMap::TileType*> tiles = map_root->get<TileMap>()->find(selection_area);
+
+      if (tiles.size() == 0) {
+         return;
+      }
+
+      sf::Vector2f min_ts_pos(std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
+      sf::Vector2f max_ts_pos(std::numeric_limits<float>::min(), std::numeric_limits<float>::min());
+
+      sf::Vector2f tile_pos;
+      sf::FloatRect tile_bounds;
 
       for (auto tile : tiles) {
          Entity* e = this->create_entity("move_list_" + std::to_string(move_list->size()));
@@ -1604,41 +1618,71 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
 
          // set opacity to 50%
          if (tile->type() == typeid(Circle)) {
+            Color c(boost::get<Circle>(*tile).color());
+            c.a(192);
+
             e->add<Circle>(boost::get<Circle>(*tile));
-
-            Color c(e->get<Circle>()->color());
-            c.a(192);
-
             e->get<Circle>()->color(c);
-         } else if (tile->type() == typeid(Rectangle)) {
-            e->add<Rectangle>(boost::get<Rectangle>(*tile));
 
-            Color c(e->get<Circle>()->color());
+            tile_pos = boost::get<Circle>(*tile).offset();
+            tile_bounds = boost::get<Circle>(*tile).local_bounds();
+         } else if (tile->type() == typeid(Rectangle)) {
+            Color c(boost::get<Rectangle>(*tile).color());
             c.a(192);
 
+            e->add<Rectangle>(boost::get<Rectangle>(*tile));
             e->get<Rectangle>()->color(c);
+
+            tile_pos = boost::get<Rectangle>(*tile).offset();
+            tile_bounds = boost::get<Rectangle>(*tile).local_bounds();
          } else if (tile->type() == typeid(Sprite)) {
             e->add<Sprite>(boost::get<Sprite>(*tile));
             e->get<Sprite>()->color(sf::Color(255, 255, 255, 192));
+
+            tile_pos = boost::get<Sprite>(*tile).offset();
+            tile_bounds = boost::get<Sprite>(*tile).local_bounds();
          } else if (tile->type() == typeid(Text)) {
+            Color c(boost::get<Text>(*tile).color());
+            c.a(192);
+
             e->add<Text>(boost::get<Text>(*tile));
-
-            Color c(e->get<Circle>()->color());
-            c.a(192);
-
             e->get<Text>()->color(c);
-         } else if (tile->type() == typeid(VertexList)) {
-            e->add<VertexList>(boost::get<VertexList>(*tile));
 
-            Color c(e->get<Circle>()->color());
+            tile_pos = boost::get<Text>(*tile).offset();
+            tile_bounds = boost::get<Text>(*tile).local_bounds();
+         } else if (tile->type() == typeid(VertexList)) {
+            Color c(boost::get<VertexList>(*tile).color());
             c.a(192);
 
+            e->add<VertexList>(boost::get<VertexList>(*tile));
             e->get<VertexList>()->color(c);
+
+            tile_pos = boost::get<VertexList>(*tile).offset();
+            tile_bounds = boost::get<VertexList>(*tile).local_bounds();
+         }
+
+         if (tile_pos.x < min_ts_pos.x) {
+            min_ts_pos.x = tile_pos.x;
+         } else if (tile_pos.x + tile_bounds.width > max_ts_pos.x) {
+            max_ts_pos.x = tile_pos.x + tile_bounds.width;
+         }
+
+         if (tile_pos.y < min_ts_pos.y) {
+            min_ts_pos.y = tile_pos.y;
+         } else if (tile_pos.y + tile_bounds.height > max_ts_pos.y) {
+            max_ts_pos.y = tile_pos.y + tile_bounds.height;
          }
       }
-         
+
       map_root->get<TileMap>()->remove(selection_area);
-      tile_selection->space()->visible(false); // hide selection cursor during drag
+
+      // resize the tile selection rectangle to fit the selected tiles only
+      tile_selection->space()->position();
+      tile_selection->get<Rectangle>()->size(max_ts_pos - min_ts_pos);
+      tile_selection->get<Collision>()->volume(sf::Vector2f(0, 0), max_ts_pos - min_ts_pos);
+
+      tile_selection_maproot->get<Collision>()->volume(sf::Vector2f(0, 0), max_ts_pos - min_ts_pos);
+
       *is_clicked = true;
    });
 
