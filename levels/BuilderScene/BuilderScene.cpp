@@ -39,6 +39,7 @@
 #include "MoveDownIntent.h"
 #include "SerializeMapIntent.h"
 #include "ModalIntent.h"
+#include "UseMoveToolIntent.h"
 
 #include "GraphicalSystem.h"
 #include "VisualDebugSystem.h"
@@ -500,11 +501,15 @@ void BuilderScene::setup_keybindings(Game& game) {
    game.get_player(1).bindings().set<MoveRightIntent>(1, game.input_manager().get_device(1)->get("Right"));
    game.get_player(1).bindings().set<MoveDownIntent>(1, game.input_manager().get_device(1)->get("Down"));
 
+   game.get_player(1).bindings().set<UseMoveToolIntent>(1, game.input_manager().get_device(1)->get("C"));
+
+   std::shared_ptr<bool> move_tool_toggle = std::make_shared<bool>(false);
+
    // add responses to keyboard inputs
    hud_root->add<Callback>("HudRootCallback");
    hud_root->add<PlayerProfile>("HudRootPlayerProfile", 1);
 
-   hud_root->get<Callback>()->on_update([this, grid_root, grid_entity, map_root, tile_selection, tile_selection_maproot] () {
+   hud_root->get<Callback>()->on_update([this, grid_root, grid_entity, map_root, tile_selection, tile_selection_maproot, move_tool_toggle] () {
       InputBinding& p1_bindings = this->game().get_player(1).bindings();
 
       if (p1_bindings.get<GridVisibilityToggleIntent>()->element()->was_pressed() && p1_bindings.get<ModalIntent>()->element()->is_pressed()) {
@@ -619,6 +624,39 @@ void BuilderScene::setup_keybindings(Game& game) {
          Entity* notification_root = this->get_entity("NotificationRootEntity");
          if (!notification_root) {
             this->file_dialog_box();
+         }
+      }
+
+      // move tool on press and hold
+      if (p1_bindings.get<ModalIntent>()->element()->is_pressed()) {
+         if (p1_bindings.get<UseMoveToolIntent>()->element()->was_pressed()) {
+            // set move tool behavior
+            this->mouse_script_add_move_behavior(this->game(), this->get_entity_handle("MouseCursorScriptSwappable"));
+         } else if (p1_bindings.get<UseMoveToolIntent>()->element()->was_released()) {
+            Entity* mouse_cursor_script = this->get_entity("MouseCursorScriptSwappable");
+            mouse_cursor_script->get<Callback>()->left_release();
+
+            // set select tool behavior
+            this->mouse_script_add_select_behavior(this->game(), this->get_entity_handle("MouseCursorScriptSwappable"));
+         }
+      } else {
+         // move tool toggle
+         if (p1_bindings.get<UseMoveToolIntent>()->element()->was_pressed() && !(*move_tool_toggle)) {
+            // set move tool behavior
+            this->mouse_script_add_move_behavior(this->game(), this->get_entity_handle("MouseCursorScriptSwappable"));
+            *move_tool_toggle = true;
+         } else if (p1_bindings.get<UseMoveToolIntent>()->element()->was_pressed() && *move_tool_toggle) {
+            Entity* mouse_cursor_script = this->get_entity("MouseCursorScriptSwappable");
+            mouse_cursor_script->get<Callback>()->left_release();
+
+            // set select tool behavior
+            this->mouse_script_add_select_behavior(this->game(), this->get_entity_handle("MouseCursorScriptSwappable"));
+            *move_tool_toggle = false;
+         } else if (p1_bindings.get<UseMoveToolIntent>()->element()->is_pressed() && !(*move_tool_toggle)) {
+            Entity* mouse_cursor_script = this->get_entity("MouseCursorScriptSwappable");
+            mouse_cursor_script->get<Callback>()->left_release();
+
+            this->mouse_script_add_select_behavior(this->game(), this->get_entity_handle("MouseCursorScriptSwappable"));
          }
       }
    });
@@ -1723,6 +1761,10 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
       Entity* grid_entity = this->get_entity("GridEntity");
       Entity* tile_selection = this->get_entity("TileSelectionEntity");
       Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
+
+      if (!(*is_clicked)) {
+         return;
+      }
 
       *is_clicked = false;
 
