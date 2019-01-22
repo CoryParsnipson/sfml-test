@@ -652,12 +652,14 @@ void BuilderScene::setup_keybindings(Game& game) {
             // set select tool behavior
             this->mouse_script_add_select_behavior(this->game(), this->get_entity_handle("MouseCursorScriptSwappable"));
             *move_tool_toggle = false;
-         } else if (p1_bindings.get<UseMoveToolIntent>()->element()->is_pressed() && !(*move_tool_toggle)) {
+         }
+      }
+
+      if (p1_bindings.get<ModalIntent>()->element()->was_released() && p1_bindings.get<UseMoveToolIntent>()->element()->is_pressed()) {
             Entity* mouse_cursor_script = this->get_entity("MouseCursorScriptSwappable");
             mouse_cursor_script->get<Callback>()->left_release();
 
             this->mouse_script_add_select_behavior(this->game(), this->get_entity_handle("MouseCursorScriptSwappable"));
-         }
       }
    });
 }
