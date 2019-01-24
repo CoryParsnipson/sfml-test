@@ -130,6 +130,13 @@ void BuilderScene::process(Game& game, MouseLeftInputEvent& e) {
    }
 }
 
+void BuilderScene::process(Game& game, GainedFocusInputEvent& e) {
+   Entity* cursor = this->get_entity("MouseCursorEntity");
+   if (cursor) {
+      cursor->space()->visible(true);
+   }
+}
+
 void BuilderScene::load_fonts() {
    // load fonts
    this->fonts().load("retro", "retro.ttf");
@@ -838,12 +845,11 @@ void BuilderScene::create_mouse_entity(Game& game) {
 
    mouse_cursor->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
 
-   mouse_cursor->add<Sprite>("MouseCursorSprite", this->textures().get("cursors"), sf::IntRect(0, 0, 3, 3));
-   mouse_cursor->get<Sprite>()->scale(2, 2);
-   mouse_cursor->get<Sprite>()->offset(-3, -3);
+   mouse_cursor->add<Sprite>("MouseCursorSprite", this->textures().get("cursors"), sf::IntRect(0, 0, 4, 4));
+   mouse_cursor->get<Sprite>()->scale(3, 3);
 
    mouse_cursor->add<Text>("MouseCursorText", "0, 0", this->fonts().get("retro"), 12);
-   mouse_cursor->get<Text>()->offset(0, 10);
+   mouse_cursor->get<Text>()->offset(0, 18);
    mouse_cursor->get<Text>()->color(Color(sf::Color::White));
 
    mouse_cursor->add<Callback>("MouseCursorCallback");
@@ -1417,6 +1423,13 @@ void BuilderScene::mouse_script_add_select_behavior(Game& game, Handle mouse_ent
       return;
    }
 
+   Entity* mouse_cursor = this->get_entity("MouseCursorEntity");
+
+   // change mouse cursor to pointer
+   mouse_cursor->get<Sprite>()->texture(this->textures().get("cursors"));
+   mouse_cursor->get<Sprite>()->texture_rect(sf::IntRect(0, 0, 4, 4));
+   mouse_cursor->get<Sprite>()->offset(0, 0);
+
    // turn tile selection white
    Entity* tile_selection = this->get_entity("TileSelectionEntity");
    tile_selection->get<Rectangle>()->color(Color(255, 255, 255, 128));
@@ -1580,6 +1593,13 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
       Game::logger().msg(this->id(), Logger::WARNING, "(mouse_script_add_select_behavior) Mouse cursor script entity not found.");
       return;
    }
+
+   Entity* mouse_cursor = this->get_entity("MouseCursorEntity");
+
+   // change mouse cursor to crosshairs
+   mouse_cursor->get<Sprite>()->texture(this->textures().get("cursors"));
+   mouse_cursor->get<Sprite>()->texture_rect(sf::IntRect(20, 0, 7, 7));
+   mouse_cursor->get<Sprite>()->offset(-10, -10);
 
    // HACKITY HACK
    std::shared_ptr<bool> is_clicked = std::make_shared<bool>(is_clicked_initial);

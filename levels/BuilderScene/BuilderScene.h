@@ -31,6 +31,7 @@ public:
    virtual void process(Game& game, CloseInputEvent& e);
    virtual void process(Game& game, MouseEnteredInputEvent& e);
    virtual void process(Game& game, MouseLeftInputEvent& e);
+   virtual void process(Game& game, GainedFocusInputEvent& e);
 
 private:
    bool grid_visible_;

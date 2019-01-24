@@ -84,7 +84,7 @@ void Sprite::update(Game& game) {
       }
 
       if (need_to_change_frame) {
-         this->set_texture_rect(this->animation_->frame(this->current_frame_idx_));
+         this->texture_rect(this->animation_->frame(this->current_frame_idx_));
       }
    }
 }
@@ -154,11 +154,11 @@ std::shared_ptr<Texture> Sprite::texture() const {
    return this->texture_;
 }
 
-void Sprite::set_texture_rect(const sf::IntRect& rectangle) {
+void Sprite::texture_rect(const sf::IntRect& rectangle) {
    this->drawable_.setTextureRect(rectangle);
 }
 
-const sf::IntRect& Sprite::get_texture_rect() const {
+const sf::IntRect& Sprite::texture_rect() const {
    return this->drawable_.getTextureRect();
 }
 
@@ -175,7 +175,7 @@ void Sprite::animation(AnimationPtr animation) {
 
       // update the sprite to show the first frame, if this animation has any frames
       if (this->animation_->num_frames() >= 1) {
-         this->set_texture_rect(this->animation_->frame(0));
+         this->texture_rect(this->animation_->frame(0));
          this->current_frame_duration_ = this->animation_->duration(0);
       }
    }
@@ -199,10 +199,10 @@ std::string Sprite::serialize(Serializer& s) {
    data["origin_y"] = std::to_string(this->origin().y);
    data["color"] = color.serialize(s);
    data["texture"] = (this->texture_ ? this->texture_->id() : "");
-   data["texture_rect_top"] = std::to_string(this->get_texture_rect().top);
-   data["texture_rect_left"] = std::to_string(this->get_texture_rect().left);
-   data["texture_rect_width"] = std::to_string(this->get_texture_rect().width);
-   data["texture_rect_height"] = std::to_string(this->get_texture_rect().height);
+   data["texture_rect_top"] = std::to_string(this->texture_rect().top);
+   data["texture_rect_left"] = std::to_string(this->texture_rect().left);
+   data["texture_rect_width"] = std::to_string(this->texture_rect().width);
+   data["texture_rect_height"] = std::to_string(this->texture_rect().height);
 
    return s.serialize(data);
 }
@@ -229,6 +229,6 @@ void Sprite::deserialize(Serializer& s, Scene& scene, std::string& d) {
       texture_rect.width = std::stoi(data["texture_rect_width"]);
       texture_rect.height = std::stoi(data["texture_rect_height"]);
 
-      this->set_texture_rect(texture_rect);
+      this->texture_rect(texture_rect);
    }
 }

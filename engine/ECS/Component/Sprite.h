@@ -71,8 +71,8 @@ public:
    void texture(std::shared_ptr<Texture> texture);
    std::shared_ptr<Texture> texture() const;
 
-   void set_texture_rect(const sf::IntRect& rectangle);
-   const sf::IntRect& get_texture_rect() const;
+   void texture_rect(const sf::IntRect& rectangle);
+   const sf::IntRect& texture_rect() const;
 
    void animation(AnimationPtr animation);
    AnimationPtr animation() const;
