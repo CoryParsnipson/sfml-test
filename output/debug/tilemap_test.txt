@@ -13,7 +13,7 @@
          "id": "pokemon_tileset"
       }
    },
-   "Tilemap0": {
+   "TileMap0": {
       "id": "TileMap Component",
       "num_tiles": "195",
       "tile_0": {

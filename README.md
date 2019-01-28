@@ -16,13 +16,9 @@ Setup
 
 TODO
 ----
-* Encapsulate sf::Font and sf::Color into wrapper classes (for serialization and stuff)
-* Work on adding animations
-   * need to upgrade graphicscomponent to take in animations capability?
-
 * Jesus fucking christ this scene graph bullshit with the "global transform" and having to calculate the global transform of every entity when swapping back and forth between screen/world space is killing me. FUCK
 
-* Optimize Messaging system - need to add ability to send point to point messages instead of broadcast all the time. Optimization opportunity to have all messageables share a single mailbox?
+* Optimize Messaging system - need to add ability to send point to point messages instead of broadcast all the time. Optimization opportunity to have all messageables share a single mailbox data structure?
 
 * Refactor EntitySubscription - seriously this whole concept is terrible. Find a better way to iterate through entities while updating systems.
 

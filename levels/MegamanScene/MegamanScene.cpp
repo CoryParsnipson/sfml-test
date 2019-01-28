@@ -73,7 +73,10 @@ void MegamanScene::init(Game& game) {
    this->add_system(cs);
 
    Entity* map_root = this->create_entity("MapRootEntity");
-   map_root->add<TileMap>();
+   Entity* map0 = this->create_entity("Map0Entity");
+   this->add_to_scene_node(map_root, map0);
+
+   map0->add<TileMap>();
 
    // load in scene data
    this->load_scene_data();
@@ -396,8 +399,8 @@ void MegamanScene::exit(Game& game) {
 void MegamanScene::load_scene_data() {
    std::string filename = "scenedata_megaman.txt";
 
-   Entity* map_root = this->get_entity("MapRootEntity");
-   assert (map_root);
+   Entity* map0= this->get_entity("Map0Entity");
+   assert (map0);
 
    // load or create a tile map
    JSONSerializer serializer;
@@ -423,7 +426,7 @@ void MegamanScene::load_scene_data() {
    Game::logger().msg(this->id(), Logger::INFO, this->textures());
 
    // deserialize tilemap
-   if (scene_data.find("Tilemap0") != scene_data.end()) {
-      map_root->get<TileMap>()->deserialize(static_cast<Serializer&>(serializer), *this, scene_data["Tilemap0"]);
+   if (scene_data.find("TileMap0") != scene_data.end()) {
+      map0->get<TileMap>()->deserialize(static_cast<Serializer&>(serializer), *this, scene_data["TileMap0"]);
    }
 }
