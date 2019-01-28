@@ -30,10 +30,9 @@ public:
    class TileHash {
    public:
       std::size_t operator()(const sf::Vector2f& k) const {
-         std::size_t mask = -1;
-         mask = mask << (sizeof(std::size_t) / 2);
-
-         return (std::hash<float>()(k.x) & mask) | (std::hash<float>()(k.y) & ~mask);
+         // to combine hashes, multiple one by a prime constant first
+         // (this generalizes to higher dimensions)
+         return std::hash<float>()(k.x) ^ (std::hash<float>()(k.y) << 1);
       }
    };
 
