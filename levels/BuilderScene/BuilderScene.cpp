@@ -48,6 +48,10 @@
 #include "SetGridVisibilityMessage.h"
 #include "SetVisualDebugMessage.h"
 #include "EntityIdChangedMessage.h"
+#include "LeftClickMessage.h"
+#include "LeftReleaseMessage.h"
+#include "RightClickMessage.h"
+#include "RightReleaseMessage.h"
 
 #define KB_CAPTURE(keycode, key, shifted_key) \
    if (keyboard->get(keycode)->was_pressed()) { \
@@ -305,6 +309,42 @@ Handle BuilderScene::create_dropdown(std::string entity_id, sf::FloatRect bounds
    dropdown->add<Collision>(entity_id + "Collision", dropdown->get<Rectangle>()->local_bounds());
    dropdown->add<Callback>(entity_id + "Callback", true);
 
+   dropdown->install_message_handler<LeftReleaseMessage>([this, dropdown](LeftReleaseMessage& msg) {
+      Clickable* clickable = dropdown->get<Clickable>();
+      Collision* collision = dropdown->get<Collision>();
+
+      if (!clickable || !collision) {
+         return;
+      }
+
+      sf::FloatRect bounds(dropdown->space()->position(), sf::Vector2f(0, 0));
+      bounds.width = collision->volume().width;
+      bounds.height = collision->volume().height;
+
+      if (!bounds.contains(msg.click_pos)) {
+         dropdown->space()->visible(false);
+         clickable->is_enabled(false);
+      }
+   });
+
+   dropdown->install_message_handler<RightReleaseMessage>([this, dropdown](RightReleaseMessage& msg) {
+      Clickable* clickable = dropdown->get<Clickable>();
+      Collision* collision = dropdown->get<Collision>();
+
+      if (!clickable || !collision) {
+         return;
+      }
+
+      sf::FloatRect bounds(dropdown->space()->position(), sf::Vector2f(0, 0));
+      bounds.width = collision->volume().width;
+      bounds.height = collision->volume().height;
+
+      if (!bounds.contains(msg.click_pos)) {
+         dropdown->space()->visible(false);
+         clickable->is_enabled(false);
+      }
+   });
+
    return dropdown->handle();
 }
 
@@ -408,7 +448,7 @@ void BuilderScene::create_hud(Game& game) {
             mouse_mode_select_button->space()->position().x,
             menu_panel->space()->position().y + menu_panel->get<Rectangle>()->local_bounds().height,
             150,
-            100
+            70 
          )
       )
    );
@@ -902,6 +942,55 @@ void BuilderScene::create_mouse_entity(Game& game) {
 
    this->add_to_scene_node(hud_root, mouse_cursor_script, 0);
 
+   Entity* mouse_cursor_script_gui = this->create_entity("MouseCursorScriptGuiEntity");
+   this->add_to_scene_node(mouse_cursor_script, mouse_cursor_script_gui);
+
+   mouse_cursor_script_gui->add<PlayerProfile>("MouseCursorScriptGuiPlayerProfile", 1);
+   mouse_cursor_script_gui->add<Clickable>("MouseCursorScriptGuiClickable");
+   mouse_cursor_script_gui->add<Collision>("MouseCursorScriptGuiCollision", sf::FloatRect(0, 0, game.window().size().x, game.window().size().y));
+   mouse_cursor_script_gui->add<Callback>("MouseCursorScriptGuiCallback");
+
+   mouse_cursor_script_gui->get<Callback>()->camera_resize([mouse_cursor_script_gui, this] () {
+      GraphicalSystem* gs = this->get_system<GraphicalSystem>("GraphicalSystem");
+
+      sf::Vector2f new_size = gs->camera()->size();
+      new_size.x *= gs->camera()->viewport().width;
+      new_size.y *= gs->camera()->viewport().height;
+
+      // make sure the collision volume fills the whole camera
+      mouse_cursor_script_gui->get<Collision>()->volume(sf::Vector2f(0, 0), new_size);
+   });
+
+   mouse_cursor_script_gui->get<Callback>()->left_click([this, mouse_cursor_script_gui] () {
+      this->send_message<LeftClickMessage>(mouse_cursor_script_gui->get<Clickable>()->left_click_pos());
+   });
+
+   mouse_cursor_script_gui->get<Callback>()->left_release([this, mouse_cursor_script_gui] () {
+      sf::Vector2f release_pos;
+      release_pos.x = this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position();
+      release_pos.y = this->game().get_player(1).bindings().get<MouseYIntent>()->element()->position();
+
+      this->send_message<LeftReleaseMessage>(
+         mouse_cursor_script_gui->get<Clickable>()->left_click_pos(),
+         release_pos
+      );
+   });
+
+   mouse_cursor_script_gui->get<Callback>()->right_click([this, mouse_cursor_script_gui] () {
+      this->send_message<RightClickMessage>(mouse_cursor_script_gui->get<Clickable>()->right_click_pos());
+   });
+
+   mouse_cursor_script_gui->get<Callback>()->right_release([this, mouse_cursor_script_gui] () {
+      sf::Vector2f release_pos;
+      release_pos.x = this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position();
+      release_pos.y = this->game().get_player(1).bindings().get<MouseYIntent>()->element()->position();
+
+      this->send_message<LeftReleaseMessage>(
+         mouse_cursor_script_gui->get<Clickable>()->right_click_pos(),
+         release_pos
+      );
+   });
+
    // put pan and zoom behavior on the parent mouse cursor_script and then have a child
    // script entity that will be swapped out with different tool behaviors
    Entity* mcs_swappable = this->create_entity("MouseCursorScriptSwappable");
@@ -911,7 +1000,7 @@ void BuilderScene::create_mouse_entity(Game& game) {
    mcs_swappable->add<Collision>("MouseCursorSwappableCollision", sf::FloatRect(0, 0, game.window().size().x, game.window().size().y));
    mcs_swappable->add<Callback>("MouseCursorSwappableScriptCallback");
 
-   this->add_to_scene_node(mouse_cursor_script, mcs_swappable);
+   this->add_to_scene_node(mouse_cursor_script_gui, mcs_swappable);
 
    this->mouse_script_add_zoom_behavior(game, mouse_cursor_script->handle());
    this->mouse_script_add_pan_behavior(game, mouse_cursor_script->handle());
@@ -1159,15 +1248,6 @@ void BuilderScene::mouse_script_add_pan_behavior(Game& game, Handle mouse_entity
       }
    });
 
-   mouse_cursor_script->get<Callback>()->left_release([mouse_cursor_script, this] () {
-      // TODO: not sure where to put this code...
-      Entity* dropdown = this->get_entity("MouseModeSelectDropdown");
-      assert (dropdown);
-
-      dropdown->space()->visible(false);
-      dropdown->get<Clickable>()->is_enabled(false);
-   });
-
    // TODO: this should go in a "tile_inspector_behavior function"
    mouse_cursor_script->get<Callback>()->right_release([mouse_cursor_script, this] () {
       Entity* map_root = this->get_entity("MapRootEntity");
@@ -1182,13 +1262,6 @@ void BuilderScene::mouse_script_add_pan_behavior(Game& game, Handle mouse_entity
       sf::Vector2f hud_click_pos;
       hud_click_pos.x = this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position();
       hud_click_pos.y = this->game().get_player(1).bindings().get<MouseYIntent>()->element()->position();
-
-      // TODO: not sure where to put this code...
-      Entity* dropdown = this->get_entity("MouseModeSelectDropdown");
-      assert (dropdown);
-
-      dropdown->space()->visible(false);
-      dropdown->get<Clickable>()->is_enabled(false);
 
       // need to set scale to 1 temporarily to get inverse transform for tilemap search...
       sf::Vector2f map_scale = map_root->space()->scale();

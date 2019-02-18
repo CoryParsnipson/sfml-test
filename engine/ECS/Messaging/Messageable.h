@@ -24,6 +24,18 @@ public:
    >
    void receive_message(std::shared_ptr<MsgT> message);
 
+   template <
+      typename MsgT,
+      typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr
+   >
+   void install_message_handler(const Mailbox::MessageHandlerT<MsgT>& handler);
+
+   template <
+      typename MsgT,
+      typename LambdaT
+   >
+   void install_message_handler(LambdaT handler);
+
 protected:
    template <
       typename MsgT,
@@ -38,18 +50,6 @@ protected:
       typename... Args
    >
    void send_message_sync(Args&&... args);
-
-   template <
-      typename MsgT,
-      typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr
-   >
-   void install_message_handler(const Mailbox::MessageHandlerT<MsgT>& handler);
-
-   template <
-      typename MsgT,
-      typename LambdaT
-   >
-   void install_message_handler(LambdaT handler);
 
    void handle_queued_messages();
 
