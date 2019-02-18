@@ -69,7 +69,7 @@ private:
 
    Handle create_notification(float width, float height);
    Handle create_textbox(std::string entity_id, float width, int charsize = 12, unsigned int max_len = 30);
-   Handle create_dropdown(std::string entity_id, sf::FloatRect bounds);
+   Handle create_dropdown(std::string entity_id, sf::FloatRect bounds, Handle root_element);
 };
 
 #endif

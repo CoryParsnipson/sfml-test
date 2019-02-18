@@ -16,6 +16,10 @@
 #include "PostorderEntitySubscription.h"
 
 #include "ResizeCameraMessage.h"
+#include "LeftClickMessage.h"
+#include "LeftReleaseMessage.h"
+#include "RightClickMessage.h"
+#include "RightReleaseMessage.h"
 
 CallbackSystem::CallbackSystem(const std::string& id /* = "CallbackSystem" */)
 : System(id, new PostorderEntitySubscription(this, id + "EntitySubscription"))
@@ -127,6 +131,11 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
          clickable->is_left_clicked(true);
          clickable->left_click_pos(new_pos);
 
+         // send out left click message
+         if (!this->target_hit_[CallbackKey::LEFT_CLICK]) {
+            this->send_message<LeftClickMessage>(new_pos);
+         }
+
          callback->left_click();
 
          // propagate this event upward in the scene graph
@@ -157,6 +166,11 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
          clickable->is_right_clicked(true);
          clickable->right_click_pos(new_pos);
 
+         // send out right click message
+         if (!this->target_hit_[CallbackKey::RIGHT_CLICK]) {
+            this->send_message<RightClickMessage>(new_pos);
+         }
+
          callback->right_click();
 
          // propagate this event upward in the scene graph
@@ -182,6 +196,12 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
           clickable->is_left_clicked()) {
 
          clickable->is_left_clicked(false);
+
+         // send out left release message
+         if (this->target_hit_[CallbackKey::LEFT_CLICK]) {
+            this->send_message<LeftReleaseMessage>(clickable->left_click_pos(), new_pos);
+         }
+
          callback->left_release();
 
          this->target_hit_[CallbackKey::LEFT_CLICK] = false;
@@ -194,6 +214,12 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
           clickable->is_right_clicked()) {
 
          clickable->is_right_clicked(false);
+
+         // send out right release message
+         if (this->target_hit_[CallbackKey::RIGHT_CLICK]) {
+            this->send_message<RightReleaseMessage>(clickable->right_click_pos(), new_pos);
+         }
+
          callback->right_release();
 
          this->target_hit_[CallbackKey::RIGHT_CLICK] = false;
