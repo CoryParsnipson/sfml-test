@@ -13,7 +13,7 @@
 // ----------------------------------------------------------------------------
 class Clickable : public Component {
 public:
-   explicit Clickable(const std::string& id = "Clickable Component");
+   explicit Clickable(const std::string& id = "Clickable Component", bool is_enabled = true);
    Clickable(const Clickable& other);
    virtual ~Clickable();
 
@@ -26,6 +26,9 @@ public:
    bool is_right_clicked() const;
    void is_right_clicked(bool is_clicked);
 
+   bool is_enabled() const;
+   void is_enabled(bool is_enabled);
+
    const sf::Vector2f& left_click_pos() const;
    void left_click_pos(sf::Vector2f pos);
 
@@ -35,6 +38,8 @@ public:
 private:
    bool is_left_clicked_;
    bool is_right_clicked_;
+
+   bool is_enabled_;
 
    sf::Vector2f left_click_pos_;
    sf::Vector2f right_click_pos_;

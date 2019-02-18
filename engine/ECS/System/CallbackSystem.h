@@ -28,6 +28,8 @@ private:
 
    virtual void on_update(Game& game, Entity& e);
    virtual void post_update(Game& game);
+
+   bool is_click_enabled(Entity& e);
 };
 
 #endif

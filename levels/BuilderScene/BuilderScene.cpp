@@ -297,6 +297,17 @@ Handle BuilderScene::create_button(std::string entity_id, sf::FloatRect bounds, 
    return button->handle();
 }
 
+Handle BuilderScene::create_dropdown(std::string entity_id, sf::FloatRect bounds) {
+   Entity* dropdown = this->get_entity(this->create_panel(entity_id, bounds));
+
+   dropdown->add<PlayerProfile>(entity_id + "PlayerProfile", 1);
+   dropdown->add<Clickable>(entity_id + "Clickable");
+   dropdown->add<Collision>(entity_id + "Collision", dropdown->get<Rectangle>()->local_bounds());
+   dropdown->add<Callback>(entity_id + "Callback", true);
+
+   return dropdown->handle();
+}
+
 void BuilderScene::create_hud(Game& game) {
    Entity* hud_root = this->get_entity("HudRootEntity");
    Entity* map_root = this->get_entity("MapRootEntity");
@@ -383,52 +394,44 @@ void BuilderScene::create_hud(Game& game) {
    this->add_to_scene_node(menu_panel, mouse_mode_select_button);
 
    mouse_mode_select_button->get<Callback>()->left_release([&game, this] () {
-      Entity* menu_panel = this->get_entity("Menu");
-      Entity* mouse_mode_select_button = this->get_entity("MouseModeSelectButton");
-
-      sf::Vector2f release_pos;
-      release_pos.x = this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position();
-      release_pos.y = this->game().get_player(1).bindings().get<MouseYIntent>()->element()->position();
-
       Entity* dropdown = this->get_entity("MouseModeSelectDropdown");
-      if (dropdown) {
-         this->remove_entity(dropdown->handle(), true);
-      } else {
-         dropdown = this->get_entity(
-            this->create_panel(
-               "MouseModeSelectDropdown",
-               sf::FloatRect(
-                  mouse_mode_select_button->space()->position().x,
-                  menu_panel->space()->position().y + menu_panel->get<Rectangle>()->local_bounds().height,
-                  150,
-                  100
-               )
-            )
-         );
+      assert (dropdown);
 
-         dropdown->add<PlayerProfile>("MouseModeSelectDropdownPlayerProfile", 1);
-         dropdown->add<Clickable>("MouseModeSelectDropdownClickable");
-         dropdown->add<Collision>("MouseModeSelectDropdownCollision", dropdown->get<Rectangle>()->local_bounds());
-         dropdown->add<Callback>("MouseModeSelectDropdownCallback", false);
-   
-         this->add_to_scene_node(menu_panel, dropdown);
+      dropdown->space()->visible(!dropdown->space()->visible());
+      dropdown->get<Clickable>()->is_enabled(!dropdown->get<Clickable>()->is_enabled());
+   });
 
-         // select tool
-         Entity* select_button = this->get_entity(this->create_button("SelectToolButton", sf::FloatRect(0, 10, 150, 30), "Select Tool"));
-         this->add_to_scene_node(dropdown, select_button->handle());
+   Entity* mms_dropdown = this->get_entity(
+      this->create_dropdown(
+         "MouseModeSelectDropdown",
+         sf::FloatRect(
+            mouse_mode_select_button->space()->position().x,
+            menu_panel->space()->position().y + menu_panel->get<Rectangle>()->local_bounds().height,
+            150,
+            100
+         )
+      )
+   );
+   this->add_to_scene_node(menu_panel, mms_dropdown);
 
-         select_button->get<Callback>()->left_release([&game, this] () {
-            this->mouse_script_add_select_behavior(game, this->get_entity_handle("MouseCursorScriptSwappable"));
-         });
+   // start dropdown invisible and disabled
+   mms_dropdown->space()->visible(false);
+   mms_dropdown->get<Clickable>()->is_enabled(false);
 
-         // move tool
-         Entity* move_button = this->get_entity(this->create_button("MoveToolButton", sf::FloatRect(0, 40, 150, 30), "Move Tool"));
-         this->add_to_scene_node(dropdown, move_button->handle());
+   // add select tool to the mms dropdown
+   Entity* select_button = this->get_entity(this->create_button("SelectToolButton", sf::FloatRect(0, 10, 150, 30), "Select Tool"));
+   this->add_to_scene_node(mms_dropdown, select_button->handle());
 
-         move_button->get<Callback>()->left_release([&game, this] () {
-            this->mouse_script_add_move_behavior(game, this->get_entity_handle("MouseCursorScriptSwappable"));
-         });
-      }
+   select_button->get<Callback>()->left_release([&game, this] () {
+      this->mouse_script_add_select_behavior(game, this->get_entity_handle("MouseCursorScriptSwappable"));
+   });
+
+   // add move tool to the mms dropdown
+   Entity* move_button = this->get_entity(this->create_button("MoveToolButton", sf::FloatRect(0, 40, 150, 30), "Move Tool"));
+   this->add_to_scene_node(mms_dropdown, move_button->handle());
+
+   move_button->get<Callback>()->left_release([&game, this] () {
+      this->mouse_script_add_move_behavior(game, this->get_entity_handle("MouseCursorScriptSwappable"));
    });
 }
 
@@ -1157,12 +1160,12 @@ void BuilderScene::mouse_script_add_pan_behavior(Game& game, Handle mouse_entity
    });
 
    mouse_cursor_script->get<Callback>()->left_release([mouse_cursor_script, this] () {
-      Entity* mouse_mode_select_dropdown = this->get_entity("MouseModeSelectDropdown");
-
       // TODO: not sure where to put this code...
-      if (mouse_mode_select_dropdown) {
-         this->remove_entity(mouse_mode_select_dropdown->handle(), true);
-      }
+      Entity* dropdown = this->get_entity("MouseModeSelectDropdown");
+      assert (dropdown);
+
+      dropdown->space()->visible(false);
+      dropdown->get<Clickable>()->is_enabled(false);
    });
 
    // TODO: this should go in a "tile_inspector_behavior function"
@@ -1175,16 +1178,17 @@ void BuilderScene::mouse_script_add_pan_behavior(Game& game, Handle mouse_entity
       Entity* selection_rect = this->get_entity("SelectionRectangleEntity");
       Entity* tile_selection = this->get_entity("TileSelectionEntity");
       Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
-      Entity* mouse_mode_select_dropdown = this->get_entity("MouseModeSelectDropdown");
 
       sf::Vector2f hud_click_pos;
       hud_click_pos.x = this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position();
       hud_click_pos.y = this->game().get_player(1).bindings().get<MouseYIntent>()->element()->position();
 
       // TODO: not sure where to put this code...
-      if (mouse_mode_select_dropdown) {
-         this->remove_entity(mouse_mode_select_dropdown->handle(), true);
-      }
+      Entity* dropdown = this->get_entity("MouseModeSelectDropdown");
+      assert (dropdown);
+
+      dropdown->space()->visible(false);
+      dropdown->get<Clickable>()->is_enabled(false);
 
       // need to set scale to 1 temporarily to get inverse transform for tilemap search...
       sf::Vector2f map_scale = map_root->space()->scale();

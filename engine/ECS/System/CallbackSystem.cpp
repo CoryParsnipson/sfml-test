@@ -67,6 +67,8 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
    assert(callback != nullptr);
    assert(e.get<PlayerProfile>() != nullptr);
 
+   bool is_click_enabled = this->is_click_enabled(e);
+
    prev_pos = e.get<Callback>()->prev_mouse_pos();
    if (bindings.get<MouseXIntent>() && bindings.get<MouseYIntent>()) {
       new_pos.x = bindings.get<MouseXIntent>()->element()->position();
@@ -114,7 +116,7 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
       }
 
       // left click calculation
-      if (clickable &&
+      if (is_click_enabled &&
           contains_new &&
           !this->target_hit_[CallbackKey::LEFT_CLICK] &&
           bindings.get<LeftClickIntent>() && 
@@ -144,7 +146,7 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
       }
 
       // right click calculation
-      if (clickable &&
+      if (is_click_enabled &&
           contains_new &&
           !this->target_hit_[CallbackKey::RIGHT_CLICK] &&
           bindings.get<RightClickIntent>() && 
@@ -174,7 +176,7 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
       }
       
       // left release calculation (release all clicked elements no matter collision)
-      if (clickable &&
+      if (is_click_enabled && 
           bindings.get<LeftClickIntent>() && 
           !bindings.get<LeftClickIntent>()->element()->is_pressed() &&
           clickable->is_left_clicked()) {
@@ -186,7 +188,7 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
       }
       
       // right release calculation (release all clicked elements no matter collision)
-      if (clickable &&
+      if (is_click_enabled && 
           bindings.get<RightClickIntent>() && 
           !bindings.get<RightClickIntent>()->element()->is_pressed() &&
           clickable->is_right_clicked()) {
@@ -223,4 +225,24 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
    if (this->camera_was_resized_) {
       callback->camera_resize();
    }
+}
+
+bool CallbackSystem::is_click_enabled(Entity& e) {
+   bool is_click_enabled = true;
+
+   if (!e.get<Clickable>()) {
+      return false;
+   }
+
+   Entity* current_entity = &e;
+   while (current_entity && is_click_enabled) {
+      if (current_entity->get<Clickable>()) {
+         is_click_enabled &= current_entity->get<Clickable>()->is_enabled();
+      }
+
+      current_entity = current_entity->space()->parent() ?
+         this->scene().get_entity(current_entity->space()->parent()->entity()) : nullptr;
+   }
+
+   return is_click_enabled;
 }
