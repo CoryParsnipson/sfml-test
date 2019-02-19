@@ -421,7 +421,7 @@ void BuilderScene::create_hud(Game& game) {
 
    // this is the window that contains tiles you click on to populate the tilemap
    this->create_tile_palette(gs);
-   assert(this->get_entity("TilePalette"));
+   this->hide_tile_palette();
 
    // put tile palette window over selection_rect but under mouse cursor
    this->add_to_scene_node(hud_root, this->get_entity("TilePalette"));
@@ -508,7 +508,7 @@ void BuilderScene::create_hud(Game& game) {
          "MouseModeSelectDropdown",
          "Tools",
          sf::FloatRect(
-            file_dropdown->space()->position().x + file_dropdown_button->get<Rectangle>()->local_bounds().width,
+            file_dropdown_menu->space()->position().x + file_dropdown_button->get<Rectangle>()->local_bounds().width,
             0,
             0,
             30
@@ -524,6 +524,7 @@ void BuilderScene::create_hud(Game& game) {
    this->add_to_scene_node(menu_panel, mms_dropdown);
 
    Entity* mms_dropdown_menu = this->get_entity("MouseModeSelectDropdownPanel");
+   Entity* mms_dropdown_button = this->get_entity("MouseModeSelectDropdownButton");
 
    // start dropdown invisible and disabled
    mms_dropdown_menu->space()->visible(false);
@@ -543,6 +544,54 @@ void BuilderScene::create_hud(Game& game) {
 
    move_button->get<Callback>()->left_release([&game, this] () {
       this->mouse_script_add_move_behavior(game, this->get_entity_handle("MouseCursorScriptSwappable"));
+   });
+
+   sf::Vector2f window_dropdown_pos;
+   window_dropdown_pos.x = mms_dropdown_button->space()->position().x +
+      mms_dropdown_button->get<Rectangle>()->local_bounds().width;
+   window_dropdown_pos.y = menu_panel->space()->position().y + menu_panel->get<Rectangle>()->local_bounds().height;
+
+   Entity* window_dropdown = this->get_entity(
+      this->create_dropdown(
+         "WindowDropdown",
+         "Windows",
+         sf::FloatRect(
+            window_dropdown_pos.x,
+            0,
+            0,
+            30
+         ),
+         sf::FloatRect(
+            window_dropdown_pos.x,
+            window_dropdown_pos.y,
+            250,
+            70
+         )
+      )
+   );
+   this->add_to_scene_node(menu_panel, window_dropdown);
+
+   Entity* window_dropdown_menu = this->get_entity("WindowDropdownPanel");
+
+   // start dropdown invisible and disabled
+   window_dropdown_menu->space()->visible(false);
+   window_dropdown_menu->get<Clickable>()->is_enabled(false);
+
+   // add show/hide tile palette to window dropdown
+   Entity* show_hide_tile_palette_button = this->get_entity(this->create_button("ShowHideTilePaletteButton", sf::FloatRect(0, 10, 250, 30), "Show/Hide Tile Palette"));
+   this->add_to_scene_node(window_dropdown_menu, show_hide_tile_palette_button);
+
+   show_hide_tile_palette_button->get<Callback>()->left_release([&game, this] () {
+      Entity* tile_palette = this->get_entity("TilePalette");
+      if (!tile_palette) {
+         return;
+      }
+
+      if (tile_palette->space()->visible()) {
+         this->hide_tile_palette();
+      } else {
+         this->show_tile_palette();
+      }
    });
 }
 
@@ -811,7 +860,6 @@ void BuilderScene::load_from_file(std::string filename) {
    JSONSerializer serializer;
    FileChannel save_file(filename);
 
-   // TODO: loading scene data should be in scene's serialization/deserialization?
    save_file.seek(0);
    std::string raw_save_file = serializer.read(save_file);
 
@@ -853,7 +901,6 @@ void BuilderScene::load_from_file(std::string filename) {
       return;
    }
 
-   // TODO: catch parse errors
    Serializer::SerialData scene_data = serializer.deserialize(*this, raw_save_file);
 
    this->scene_data_filename = filename;
@@ -876,89 +923,8 @@ void BuilderScene::load_from_file(std::string filename) {
       grid_entity->get<Grid>()->deserialize(static_cast<Serializer&>(serializer), *this, scene_data["Grid0"]);
    }
 
-   Serializer::SerialData tileset_data = serializer.deserialize(*this, scene_data["Tileset0"]);
-
-   // add tile textures to the tile palette window
-   Entity* tile_palette = this->get_entity("TilePalette");
-   Entity* tile_palette_layer1 = this->get_entity("TilePaletteLayer1");
-   Entity* tile_palette_hover = this->get_entity("TilePaletteHover");
-   Entity* tile_palette_outline = this->get_entity("TilePaletteDecoration");
-   assert(tile_palette && tile_palette_layer1 && tile_palette_hover);
-
-   int tile_scale_factor = std::round(64 / std::max(grid_entity->get<Grid>()->tile_width(), grid_entity->get<Grid>()->tile_height()));
-   int tiles_per_row = tile_palette->get<Rectangle>()->size().x / (tile_scale_factor * grid_entity->get<Grid>()->tile_width());
-   int side_padding = (tile_palette->get<Rectangle>()->size().x - (tile_scale_factor * grid_entity->get<Grid>()->tile_width() * tiles_per_row)) / 2;
-   int top_padding = 20;
-   int bottom_padding = 10;
-
-   // resize tile palette to be tall enough
-   int tile_palette_height = top_padding + bottom_padding + (tile_scale_factor * grid_entity->get<Grid>()->tile_height()) * std::ceil(std::stoi(tileset_data["num_tiles"]) / static_cast<float>(tiles_per_row));
-   tile_palette->get<Rectangle>()->size(tile_palette->get<Rectangle>()->size().x, tile_palette_height);
-   tile_palette_outline->get<Rectangle>()->size(tile_palette_outline->get<Rectangle>()->size().x, tile_palette_height - 15);
-
-   for (int tile_idx = 0; tile_idx < std::stoi(tileset_data["num_tiles"]); ++tile_idx) {
-      // TODO: move this to some sort of tileset object?
-      Serializer::SerialData tile_data = serializer.deserialize(*this, tileset_data["tile_" + std::to_string(tile_idx)]);
-
-      sf::IntRect tile_texture_rect(
-         std::stoi(tile_data["left"]),
-         std::stoi(tile_data["top"]),
-         std::stoi(tile_data["width"]),
-         std::stoi(tile_data["height"])
-      );
-
-      sf::Vector2f tile_texture_pos(
-         (tile_idx % tiles_per_row) * tile_scale_factor * grid_entity->get<Grid>()->tile_width() + side_padding,
-         (tile_idx / tiles_per_row) * tile_scale_factor * grid_entity->get<Grid>()->tile_height() + top_padding
-      );
-
-      Entity* entity = this->create_entity(tile_data["id"] + "_tile_palette_button");
-      this->add_to_scene_node(tile_palette_layer1, entity);
-
-      entity->space()->position(tile_texture_pos);
-
-      // scale tile sprites to normalize them so it's easy to look at and click on
-      entity->add<Sprite>(tile_data["id"] + "_sprite", this->textures().get(tileset_data["id"]), tile_texture_rect);
-      entity->get<Sprite>()->scale(tile_scale_factor, tile_scale_factor);
-
-      entity->add<PlayerProfile>(tile_data["id"] + "_playerProfile", 1);
-      entity->add<Clickable>(tile_data["id"] + "_clickable");
-      entity->add<Collision>(tile_data["id"] + "_collision", entity->get<Sprite>()->global_bounds());
-
-      // define texture button behavior
-      entity->add<Callback>(tile_data["id"] + "_callback");
-      entity->get<Callback>()->mouse_in([entity, tile_palette_hover] () {
-         tile_palette_hover->space()->position(entity->space()->position());
-         tile_palette_hover->space()->visible(true);
-      });
-
-      entity->get<Callback>()->mouse_out([entity, tile_palette_hover] () {
-         tile_palette_hover->space()->visible(false);
-      });
-
-      entity->get<Callback>()->left_release([this, entity, map0, grid_entity] () {
-         Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
-         assert(tile_selection_maproot);
-
-         sf::FloatRect tsc = tile_selection_maproot->get<Collision>()->volume();
-         tsc.left += tile_selection_maproot->space()->position().x;
-         tsc.top += tile_selection_maproot->space()->position().y;
-
-         // on click, fill the selected area (if it is active) with the clicked on tile
-         for (int x_pos = tsc.left; x_pos < tsc.left + tsc.width; x_pos += grid_entity->get<Grid>()->tile_width()) {
-            for (int y_pos = tsc.top; y_pos < tsc.top + tsc.height; y_pos += grid_entity->get<Grid>()->tile_height()) {
-               Sprite sprite(*entity->get<Sprite>());
-               sprite.offset(x_pos, y_pos);
-               sprite.scale(1.f, 1.f); // reset any scaling done on palette tiles
-
-               map0->get<TileMap>()->set(sprite);
-            }
-         }
-      });
-   }
-
-   // resize tile palette hover entity to match the deserialized grid
-   tile_palette_hover->get<Rectangle>()->size(static_cast<float>(tile_scale_factor) * sf::Vector2f(grid_entity->get<Grid>()->tile_width(), grid_entity->get<Grid>()->tile_height()));
+   this->populate_tile_palette(serializer.deserialize(*this, scene_data["Tileset0"]), serializer);
+   this->show_tile_palette();
 
    // refresh the grid, it won't refresh since the camera hasn't changed
    // (this might not be the best solution)
@@ -1173,6 +1139,116 @@ void BuilderScene::create_tile_palette(GraphicalSystem* gs) {
 
    // putting this on top of layer 1 (tiles are on this layer)
    this->add_to_scene_node(tile_palette, tile_palette_hover);
+}
+
+void BuilderScene::hide_tile_palette() {
+   Entity* tile_palette = this->get_entity("TilePalette");
+   assert (tile_palette);
+
+   tile_palette->space()->visible(false);
+   tile_palette->get<Clickable>()->is_enabled(false);
+}
+
+void BuilderScene::show_tile_palette() {
+   Entity* tile_palette = this->get_entity("TilePalette");
+   assert (tile_palette);
+
+   tile_palette->space()->visible(true);
+   tile_palette->get<Clickable>()->is_enabled(true);
+}
+
+void BuilderScene::populate_tile_palette(Serializer::SerialData tileset_data, Serializer& serializer) {
+   Entity* map0 = this->get_entity("Map0Entity");
+   Entity* grid_entity = this->get_entity("GridEntity");
+
+   // add tile textures to the tile palette window
+   Entity* tile_palette = this->get_entity("TilePalette");
+   Entity* tile_palette_layer1 = this->get_entity("TilePaletteLayer1");
+   Entity* tile_palette_hover = this->get_entity("TilePaletteHover");
+   Entity* tile_palette_outline = this->get_entity("TilePaletteDecoration");
+   assert(tile_palette && tile_palette_layer1 && tile_palette_hover);
+
+   int tile_scale_factor = std::round(64 / std::max(grid_entity->get<Grid>()->tile_width(), grid_entity->get<Grid>()->tile_height()));
+   int tiles_per_row = tile_palette->get<Rectangle>()->size().x / (tile_scale_factor * grid_entity->get<Grid>()->tile_width());
+   int side_padding = (tile_palette->get<Rectangle>()->size().x - (tile_scale_factor * grid_entity->get<Grid>()->tile_width() * tiles_per_row)) / 2;
+   int top_padding = 20;
+   int bottom_padding = 10;
+
+   // resize tile palette to be tall enough
+   int tile_palette_height = top_padding + bottom_padding + (tile_scale_factor * grid_entity->get<Grid>()->tile_height()) * std::ceil(std::stoi(tileset_data["num_tiles"]) / static_cast<float>(tiles_per_row));
+   tile_palette->get<Rectangle>()->size(tile_palette->get<Rectangle>()->size().x, tile_palette_height);
+   tile_palette_outline->get<Rectangle>()->size(tile_palette_outline->get<Rectangle>()->size().x, tile_palette_height - 15);
+
+   for (int tile_idx = 0; tile_idx < std::stoi(tileset_data["num_tiles"]); ++tile_idx) {
+      // TODO: move this to some sort of tileset object?
+      Serializer::SerialData tile_data = serializer.deserialize(*this, tileset_data["tile_" + std::to_string(tile_idx)]);
+
+      sf::IntRect tile_texture_rect(
+         std::stoi(tile_data["left"]),
+         std::stoi(tile_data["top"]),
+         std::stoi(tile_data["width"]),
+         std::stoi(tile_data["height"])
+      );
+
+      sf::Vector2f tile_texture_pos(
+         (tile_idx % tiles_per_row) * tile_scale_factor * grid_entity->get<Grid>()->tile_width() + side_padding,
+         (tile_idx / tiles_per_row) * tile_scale_factor * grid_entity->get<Grid>()->tile_height() + top_padding
+      );
+
+      Entity* entity = this->create_entity(tile_data["id"] + "_tile_palette_button");
+      this->add_to_scene_node(tile_palette_layer1, entity);
+
+      entity->space()->position(tile_texture_pos);
+
+      // scale tile sprites to normalize them so it's easy to look at and click on
+      entity->add<Sprite>(tile_data["id"] + "_sprite", this->textures().get(tileset_data["id"]), tile_texture_rect);
+      entity->get<Sprite>()->scale(tile_scale_factor, tile_scale_factor);
+
+      entity->add<PlayerProfile>(tile_data["id"] + "_playerProfile", 1);
+      entity->add<Clickable>(tile_data["id"] + "_clickable");
+      entity->add<Collision>(tile_data["id"] + "_collision", entity->get<Sprite>()->global_bounds());
+
+      // define texture button behavior
+      entity->add<Callback>(tile_data["id"] + "_callback");
+      entity->get<Callback>()->mouse_in([entity, tile_palette_hover] () {
+         tile_palette_hover->space()->position(entity->space()->position());
+         tile_palette_hover->space()->visible(true);
+      });
+
+      entity->get<Callback>()->mouse_out([entity, tile_palette_hover] () {
+         tile_palette_hover->space()->visible(false);
+      });
+
+      entity->get<Callback>()->left_release([this, entity, map0, grid_entity] () {
+         Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
+         assert(tile_selection_maproot);
+
+         sf::FloatRect tsc = tile_selection_maproot->get<Collision>()->volume();
+         tsc.left += tile_selection_maproot->space()->position().x;
+         tsc.top += tile_selection_maproot->space()->position().y;
+
+         // on click, fill the selected area (if it is active) with the clicked on tile
+         for (int x_pos = tsc.left; x_pos < tsc.left + tsc.width; x_pos += grid_entity->get<Grid>()->tile_width()) {
+            for (int y_pos = tsc.top; y_pos < tsc.top + tsc.height; y_pos += grid_entity->get<Grid>()->tile_height()) {
+               Sprite sprite(*entity->get<Sprite>());
+               sprite.offset(x_pos, y_pos);
+               sprite.scale(1.f, 1.f); // reset any scaling done on palette tiles
+
+               map0->get<TileMap>()->set(sprite);
+            }
+         }
+      });
+   }
+
+   // resize tile palette hover entity to match the deserialized grid
+   tile_palette_hover->get<Rectangle>()->size(static_cast<float>(tile_scale_factor) * sf::Vector2f(grid_entity->get<Grid>()->tile_width(), grid_entity->get<Grid>()->tile_height()));
+}
+
+void BuilderScene::clear_tile_palette() {
+   GraphicalSystem* gs = this->get_system<GraphicalSystem>("GraphicalSystem");
+
+   this->remove_entity(this->get_entity_handle("TilePalette"));
+   this->create_tile_palette(gs);
 }
 
 void BuilderScene::mouse_script_add_zoom_behavior(Game& game, Handle mouse_entity) {

@@ -62,7 +62,12 @@ private:
    void create_mouse_entity(Game& game);
    void create_backdrop(GraphicalSystem* gs);
    void create_fps_display(GraphicalSystem* gs);
+
    void create_tile_palette(GraphicalSystem* gs);
+   void hide_tile_palette();
+   void show_tile_palette();
+   void populate_tile_palette(Serializer::SerialData tileset_data, Serializer& serializer);
+   void clear_tile_palette();
 
    void mouse_script_add_zoom_behavior(Game& game, Handle mouse_entity);
    void mouse_script_add_pan_behavior(Game& game, Handle mouse_entity);
