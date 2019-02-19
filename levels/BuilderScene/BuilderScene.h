@@ -52,10 +52,12 @@ private:
    Handle create_button(std::string entity_id, sf::FloatRect bounds, std::string button_text = "Button", std::function<void()> action = nullptr);
 
    void create_hud(Game& game);
-   void file_dialog_box();
+   void load_file_dialog_box();
+   void save_file_dialog_box();
 
    void setup_keybindings(Game& game);
    void load_from_file(std::string filename);
+   void save_to_file(std::string filename);
 
    void create_mouse_entity(Game& game);
    void create_backdrop(GraphicalSystem* gs);
@@ -68,6 +70,7 @@ private:
    void mouse_script_add_move_behavior(Game& game, Handle mouse_entity, bool is_clicked_initial = false);
 
    Handle create_notification(float width, float height);
+   Handle create_dialog_box(std::string display_text, sf::Vector2f size);
    Handle create_textbox(std::string entity_id, float width, int charsize = 12, unsigned int max_len = 30);
    Handle create_dropdown(std::string entity_id, std::string dropdown_button_text, sf::FloatRect button_bounds, sf::FloatRect dropdown_bounds);
 };

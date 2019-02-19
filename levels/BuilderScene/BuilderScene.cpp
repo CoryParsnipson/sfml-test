@@ -461,7 +461,7 @@ void BuilderScene::create_hud(Game& game) {
             0,
             menu_panel->space()->position().y + menu_panel->get<Rectangle>()->local_bounds().height,
             150,
-            40
+            100 
          )
       )
    );
@@ -476,10 +476,31 @@ void BuilderScene::create_hud(Game& game) {
 
    // add file load button to the file dropdown
    Entity* file_load_button = this->get_entity(this->create_button("FileLoadButton", sf::FloatRect(0, 10, 150, 30), "Load From File"));
-   this->add_to_scene_node(file_dropdown_menu, file_load_button->handle());
+   this->add_to_scene_node(file_dropdown_menu, file_load_button);
 
    file_load_button->get<Callback>()->left_release([this] () {
-      this->file_dialog_box();
+      this->load_file_dialog_box();
+   });
+
+   Entity* file_save_button = this->get_entity(this->create_button("FileSaveButton", sf::FloatRect(0, 40, 150, 30), "Save"));
+   this->add_to_scene_node(file_dropdown_menu, file_save_button);
+
+   file_save_button->get<Callback>()->left_release([this] () {
+      if (this->scene_data_filename == "") {
+         // need to specify file to save
+         this->save_file_dialog_box();
+      } else {
+         // serialize back to map file
+         this->save_to_file(this->scene_data_filename);
+      }
+   });
+
+   Entity* file_save_as_button = this->get_entity(this->create_button("FileSaveAsButton", sf::FloatRect(0, 70, 150, 30), "Save As"));
+   this->add_to_scene_node(file_dropdown_menu, file_save_as_button);
+
+   file_save_as_button->get<Callback>()->left_release([this] () {
+      // need to specify file to save
+      this->save_file_dialog_box();
    });
 
    Entity* mms_dropdown = this->get_entity(
@@ -525,28 +546,15 @@ void BuilderScene::create_hud(Game& game) {
    });
 }
 
-void BuilderScene::file_dialog_box() {
-   Entity* n_box = this->get_entity(this->create_notification(300, 110));
+void BuilderScene::load_file_dialog_box() {
+   this->create_dialog_box("Load from File", sf::Vector2f(300, 110));
 
-   Entity* n_box_title = this->create_entity("n_box_title");
+   Entity* submit_button = this->get_entity("DialogBoxSubmitButton");
 
-   n_box_title->add<Text>("n_box_title_text", "Load from File", this->fonts().get("retro"), 12);
-   n_box_title->space()->position(10, 10);
+   submit_button->get<Callback>()->left_release([this] () {
+      Entity* textbox = this->get_entity("DialogBoxTextbox");
+      assert (textbox);
 
-   this->add_to_scene_node(n_box, n_box_title);
-
-   Entity* textbox = this->get_entity(this->create_textbox("FileLoadTextbox", 250, 12));
-   textbox->space()->position((n_box->get<Rectangle>()->local_bounds().width - textbox->get<Rectangle>()->local_bounds().width) / 2.f, 40);
-
-   this->add_to_scene_node(n_box, textbox);
-
-   Entity* submit_button = this->get_entity(this->create_button("FileLoadSubmitButton", sf::FloatRect(0, 0, 0, 30), "Submit"));
-   submit_button->space()->position(
-      (n_box->get<Rectangle>()->local_bounds().width - submit_button->get<Rectangle>()->local_bounds().width) / 2.f,
-      40 + textbox->get<Rectangle>()->local_bounds().height + 10
-   );
-
-   submit_button->get<Callback>()->left_release([this, textbox] () {
       std::string filename = textbox->get<Text>()->string();
 
       this->remove_entity(this->get_entity_handle("NotificationRootEntity"), true);
@@ -554,8 +562,10 @@ void BuilderScene::file_dialog_box() {
    });
 
    // do the same thing as left_release if enter is pressed
-   submit_button->get<Callback>()->on_update([this, textbox] () {
+   submit_button->get<Callback>()->on_update([this] () {
       InputDevice* keyboard = this->game().input_manager().get_device(1);
+      Entity* textbox = this->get_entity("DialogBoxTextbox");
+      assert (textbox);
 
       if (keyboard->get("Return")->was_pressed()) {
          std::string filename = textbox->get<Text>()->string();
@@ -568,8 +578,46 @@ void BuilderScene::file_dialog_box() {
          this->remove_entity(this->get_entity_handle("NotificationRootEntity"), true);
       }
    });
+}
 
-   this->add_to_scene_node(n_box, submit_button);
+void BuilderScene::save_file_dialog_box() {
+   this->create_dialog_box("Save as File", sf::Vector2f(300, 110));
+
+   Entity* submit_button = this->get_entity("DialogBoxSubmitButton");
+
+   submit_button->get<Callback>()->left_release([this] () {
+      Entity* textbox = this->get_entity("DialogBoxTextbox");
+      assert (textbox);
+
+      std::string filename = textbox->get<Text>()->string();
+         
+      // change scene_data_filename to specified filename
+      this->scene_data_filename = filename;
+
+      this->remove_entity(this->get_entity_handle("NotificationRootEntity"), true);
+      this->save_to_file(filename);
+   });
+
+   // do the same thing as left_release if enter is pressed
+   submit_button->get<Callback>()->on_update([this] () {
+      InputDevice* keyboard = this->game().input_manager().get_device(1);
+      Entity* textbox = this->get_entity("DialogBoxTextbox");
+      assert (textbox);
+
+      if (keyboard->get("Return")->was_pressed()) {
+         std::string filename = textbox->get<Text>()->string();
+
+         this->remove_entity(this->get_entity_handle("NotificationRootEntity"), true);
+         this->save_to_file(filename);
+
+         // change scene_data_filename to specified filename
+         this->scene_data_filename = filename;
+      }
+
+      if (keyboard->get("Escape")->was_pressed()) {
+         this->remove_entity(this->get_entity_handle("NotificationRootEntity"), true);
+      }
+   });
 }
 
 void BuilderScene::setup_keybindings(Game& game) {
@@ -703,43 +751,16 @@ void BuilderScene::setup_keybindings(Game& game) {
 
       if (p1_bindings.get<SerializeMapIntent>()->element()->was_pressed() && p1_bindings.get<ModalIntent>()->element()->is_pressed()) {
          if (this->scene_data_filename == "") {
-            return;
+            this->save_file_dialog_box();
+         } else {
+            this->save_to_file(this->scene_data_filename);
          }
-
-         FileChannel* fc = new FileChannel(this->scene_data_filename);
-         Serializer* serializer = new JSONSerializer(3);
-
-         fc->seek(0);
-         std::string old_file_contents = serializer->read(static_cast<Channel&>(*fc));
-
-         // TODO: this should go in scene serialize/deserialize function?
-         Serializer::SerialData scene_data = serializer->deserialize(*this, old_file_contents);
-
-         scene_data["TileMap0"] = "";
-
-         // modify the tilemap0 entry
-         Entity* map0 = this->get_entity("Map0Entity");
-         if (map0) {
-            TileMap* tilemap0 = map0->get<TileMap>();
-            if (tilemap0) {
-               scene_data["TileMap0"] = tilemap0->serialize(*serializer);
-            }
-         }
-
-         // write back to file
-         fc->remove();
-         fc->seek(0);
-         fc->send(serializer->serialize(scene_data));
-
-         Game::logger().msg("BuilderSceneInputSystem", Logger::INFO, "Saving map to file '" + fc->filename());
-
-         delete serializer;
       }
 
       if (this->game().input_manager().get_device(1)->get("F")->was_pressed() && p1_bindings.get<ModalIntent>()->element()->is_pressed()) {
          Entity* notification_root = this->get_entity("NotificationRootEntity");
          if (!notification_root) {
-            this->file_dialog_box();
+            this->load_file_dialog_box();
          }
       }
 
@@ -943,6 +964,41 @@ void BuilderScene::load_from_file(std::string filename) {
    // (this might not be the best solution)
    GridSystem* grid_system = this->get_system<GridSystem>("GridSystem");
    grid_system->force_update(); 
+}
+
+void BuilderScene::save_to_file(std::string filename) {
+   Serializer::SerialData scene_data;
+   FileChannel* fc = new FileChannel(filename);
+   Serializer* serializer = new JSONSerializer(3);
+   
+   fc->seek(0);
+
+   std::string old_file_contents = serializer->read(static_cast<Channel&>(*fc));
+   if (old_file_contents != "") {
+      scene_data = serializer->deserialize(*this, old_file_contents);
+   }
+   
+   // TODO: save textures and grids too
+   // TODO: need to change this when layers are added
+   scene_data["TileMap0"] = "";
+   
+   // modify the tilemap0 entry
+   Entity* map0 = this->get_entity("Map0Entity");
+   if (map0) {
+      TileMap* tilemap0 = map0->get<TileMap>();
+      if (tilemap0) {
+         scene_data["TileMap0"] = tilemap0->serialize(*serializer);
+      }
+   }
+   
+   // write back to file
+   fc->remove();
+   fc->seek(0);
+   fc->send(serializer->serialize(scene_data));
+   
+   Game::logger().msg("BuilderSceneInputSystem", Logger::INFO, "Saving map to file '" + fc->filename());
+   
+   delete serializer;
 }
 
 void BuilderScene::create_mouse_entity(Game& game) {
@@ -1992,6 +2048,31 @@ Handle BuilderScene::create_notification(float width, float height) {
    this->add_to_scene_node(notification_root, notification_box);
 
    return notification_box->handle();
+}
+
+Handle BuilderScene::create_dialog_box(std::string display_text, sf::Vector2f size) {
+   Entity* dialog_box = this->get_entity(this->create_notification(size.x, size.y));
+   Entity* dialog_box_text = this->create_entity("dialog_box_text");
+
+   dialog_box_text->add<Text>("dialog_box_text_text", display_text, this->fonts().get("retro"), 12);
+   dialog_box_text->space()->position(10, 10);
+
+   this->add_to_scene_node(dialog_box, dialog_box_text);
+
+   Entity* textbox = this->get_entity(this->create_textbox("DialogBoxTextbox", 250, 12));
+   textbox->space()->position((dialog_box->get<Rectangle>()->local_bounds().width - textbox->get<Rectangle>()->local_bounds().width) / 2.f, 40);
+
+   this->add_to_scene_node(dialog_box, textbox);
+
+   Entity* submit_button = this->get_entity(this->create_button("DialogBoxSubmitButton", sf::FloatRect(0, 0, 0, 30), "Submit"));
+   submit_button->space()->position(
+      (dialog_box->get<Rectangle>()->local_bounds().width - submit_button->get<Rectangle>()->local_bounds().width) / 2.f,
+      40 + textbox->get<Rectangle>()->local_bounds().height + 10
+   );
+
+   this->add_to_scene_node(dialog_box, submit_button);
+
+   return dialog_box->handle();
 }
 
 Handle BuilderScene::create_textbox(
