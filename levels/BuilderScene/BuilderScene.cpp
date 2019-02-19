@@ -299,16 +299,27 @@ Handle BuilderScene::create_button(std::string entity_id, sf::FloatRect bounds, 
    return button->handle();
 }
 
-Handle BuilderScene::create_dropdown(std::string entity_id, sf::FloatRect bounds, Handle root_element) {
-   Entity* dropdown = this->get_entity(this->create_panel(entity_id, bounds));
+Handle BuilderScene::create_dropdown(std::string entity_id, std::string dropdown_button_text, sf::FloatRect button_bounds, sf::FloatRect dropdown_bounds) {
+   Entity* dropdown_container = this->create_entity(entity_id);
+
+   Entity* dropdown_button = this->get_entity(
+      this->create_button(
+         entity_id + "Button",
+         button_bounds,
+         dropdown_button_text
+      )
+   );
+
+   Entity* dropdown = this->get_entity(this->create_panel(entity_id + "Panel", dropdown_bounds));
 
    dropdown->add<PlayerProfile>(entity_id + "PlayerProfile", 1);
    dropdown->add<Clickable>(entity_id + "Clickable");
    dropdown->add<Collision>(entity_id + "Collision", dropdown->get<Rectangle>()->local_bounds());
    dropdown->add<Callback>(entity_id + "Callback", true);
 
-   dropdown->install_message_handler<LeftReleaseMessage>([this, root_element, dropdown](LeftReleaseMessage& msg) {
-      Entity* root = this->get_entity(root_element);
+   dropdown->install_message_handler<LeftReleaseMessage>([this, entity_id, dropdown](LeftReleaseMessage& msg) {
+      Entity* root = this->get_entity(entity_id + "Button");
+      assert (root);
 
       Clickable* clickable = dropdown->get<Clickable>();
       Collision* collision = dropdown->get<Collision>();
@@ -325,14 +336,16 @@ Handle BuilderScene::create_dropdown(std::string entity_id, sf::FloatRect bounds
       root_bounds.width = root->get<Collision>()->volume().width;
       root_bounds.height = root->get<Collision>()->volume().height;
 
-      if (!bounds.contains(msg.click_pos) && !root_bounds.contains(msg.click_pos)) {
+      //if (!bounds.contains(msg.click_pos) && !root_bounds.contains(msg.click_pos)) {
+      if (!root_bounds.contains(msg.click_pos)) {
          dropdown->space()->visible(false);
          clickable->is_enabled(false);
       }
    });
 
-   dropdown->install_message_handler<RightReleaseMessage>([this, root_element, dropdown](RightReleaseMessage& msg) {
-      Entity* root = this->get_entity(root_element);
+   dropdown->install_message_handler<RightReleaseMessage>([this, entity_id, dropdown](RightReleaseMessage& msg) {
+      Entity* root = this->get_entity(entity_id + "Button");
+      assert (root);
 
       Clickable* clickable = dropdown->get<Clickable>();
       Collision* collision = dropdown->get<Collision>();
@@ -349,13 +362,25 @@ Handle BuilderScene::create_dropdown(std::string entity_id, sf::FloatRect bounds
       root_bounds.width = root->get<Collision>()->volume().width;
       root_bounds.height = root->get<Collision>()->volume().height;
 
-      if (!bounds.contains(msg.click_pos) && !root_bounds.contains(msg.click_pos)) {
+      //if (!bounds.contains(msg.click_pos) && !root_bounds.contains(msg.click_pos)) {
+      if (!root_bounds.contains(msg.click_pos)) {
          dropdown->space()->visible(false);
          clickable->is_enabled(false);
       }
    });
 
-   return dropdown->handle();
+   dropdown_button->get<Callback>()->left_release([this, entity_id] () {
+      Entity* dropdown = this->get_entity(entity_id + "Panel");
+      assert (dropdown);
+
+      dropdown->space()->visible(!dropdown->space()->visible());
+      dropdown->get<Clickable>()->is_enabled(!dropdown->get<Clickable>()->is_enabled());
+   });
+
+   this->add_to_scene_node(dropdown_container, dropdown);
+   this->add_to_scene_node(dropdown_container, dropdown_button);
+
+   return dropdown_container->handle();
 }
 
 void BuilderScene::create_hud(Game& game) {
@@ -427,86 +452,65 @@ void BuilderScene::create_hud(Game& game) {
 
    this->add_to_scene_node(hud_root, menu_panel);
 
-   Entity* file_menu_button = this->get_entity(this->create_button("FileMenuButton", sf::FloatRect(0, 0, 0, 30), "File"));
-   this->add_to_scene_node(menu_panel, file_menu_button);
-
-   file_menu_button->get<Callback>()->left_release([this] () {
-      Entity* dropdown = this->get_entity("FileDropdown");
-      assert (dropdown);
-
-      dropdown->space()->visible(!dropdown->space()->visible());
-      dropdown->get<Clickable>()->is_enabled(!dropdown->get<Clickable>()->is_enabled());
-   });
-
    Entity* file_dropdown = this->get_entity(
       this->create_dropdown(
          "FileDropdown",
+         "File",
+         sf::FloatRect(0, 0, 0, 30),
          sf::FloatRect(
-            file_menu_button->space()->position().x,
+            0,
             menu_panel->space()->position().y + menu_panel->get<Rectangle>()->local_bounds().height,
             150,
             40
-         ),
-         file_menu_button->handle()
+         )
       )
    );
    this->add_to_scene_node(menu_panel, file_dropdown);
 
+   Entity* file_dropdown_menu = this->get_entity("FileDropdownPanel");
+   Entity* file_dropdown_button = this->get_entity("FileDropdownButton");
+
    // start dropdown invisible and disabled
-   file_dropdown->space()->visible(false);
-   file_dropdown->get<Clickable>()->is_enabled(false);
+   file_dropdown_menu->space()->visible(false);
+   file_dropdown_menu->get<Clickable>()->is_enabled(false);
 
    // add file load button to the file dropdown
    Entity* file_load_button = this->get_entity(this->create_button("FileLoadButton", sf::FloatRect(0, 10, 150, 30), "Load From File"));
-   this->add_to_scene_node(file_dropdown, file_load_button->handle());
+   this->add_to_scene_node(file_dropdown_menu, file_load_button->handle());
 
    file_load_button->get<Callback>()->left_release([this] () {
       this->file_dialog_box();
    });
 
-   Entity* mouse_mode_select_button = this->get_entity(
-      this->create_button(
-         "MouseModeSelectButton",
+   Entity* mms_dropdown = this->get_entity(
+      this->create_dropdown(
+         "MouseModeSelectDropdown",
+         "Tools",
          sf::FloatRect(
-            file_menu_button->space()->position().x + file_menu_button->get<Rectangle>()->local_bounds().width,
+            file_dropdown->space()->position().x + file_dropdown_button->get<Rectangle>()->local_bounds().width,
             0,
             0,
             30
          ),
-         "Tools"
-      )
-   );
-   this->add_to_scene_node(menu_panel, mouse_mode_select_button);
-
-   mouse_mode_select_button->get<Callback>()->left_release([&game, this] () {
-      Entity* dropdown = this->get_entity("MouseModeSelectDropdown");
-      assert (dropdown);
-
-      dropdown->space()->visible(!dropdown->space()->visible());
-      dropdown->get<Clickable>()->is_enabled(!dropdown->get<Clickable>()->is_enabled());
-   });
-
-   Entity* mms_dropdown = this->get_entity(
-      this->create_dropdown(
-         "MouseModeSelectDropdown",
          sf::FloatRect(
-            mouse_mode_select_button->space()->position().x,
+            file_dropdown->space()->position().x + file_dropdown_button->get<Rectangle>()->local_bounds().width,
             menu_panel->space()->position().y + menu_panel->get<Rectangle>()->local_bounds().height,
             150,
             70 
-         ),
-         mouse_mode_select_button->handle()
+         )
       )
    );
    this->add_to_scene_node(menu_panel, mms_dropdown);
 
+   Entity* mms_dropdown_menu = this->get_entity("MouseModeSelectDropdownPanel");
+
    // start dropdown invisible and disabled
-   mms_dropdown->space()->visible(false);
-   mms_dropdown->get<Clickable>()->is_enabled(false);
+   mms_dropdown_menu->space()->visible(false);
+   mms_dropdown_menu->get<Clickable>()->is_enabled(false);
 
    // add select tool to the mms dropdown
    Entity* select_button = this->get_entity(this->create_button("SelectToolButton", sf::FloatRect(0, 10, 150, 30), "Select Tool"));
-   this->add_to_scene_node(mms_dropdown, select_button->handle());
+   this->add_to_scene_node(mms_dropdown_menu, select_button->handle());
 
    select_button->get<Callback>()->left_release([&game, this] () {
       this->mouse_script_add_select_behavior(game, this->get_entity_handle("MouseCursorScriptSwappable"));
@@ -514,7 +518,7 @@ void BuilderScene::create_hud(Game& game) {
 
    // add move tool to the mms dropdown
    Entity* move_button = this->get_entity(this->create_button("MoveToolButton", sf::FloatRect(0, 40, 150, 30), "Move Tool"));
-   this->add_to_scene_node(mms_dropdown, move_button->handle());
+   this->add_to_scene_node(mms_dropdown_menu, move_button->handle());
 
    move_button->get<Callback>()->left_release([&game, this] () {
       this->mouse_script_add_move_behavior(game, this->get_entity_handle("MouseCursorScriptSwappable"));

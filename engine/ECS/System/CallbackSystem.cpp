@@ -130,13 +130,12 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
 
          clickable->is_left_clicked(true);
          clickable->left_click_pos(new_pos);
+         callback->left_click();
 
          // send out left click message
          if (!this->target_hit_[CallbackKey::LEFT_CLICK]) {
             this->send_message<LeftClickMessage>(new_pos);
          }
-
-         callback->left_click();
 
          // propagate this event upward in the scene graph
          Entity* parent_entity = e.space()->parent() ? game.current_scene()->get_entity(e.space()->parent()->entity()) : nullptr;
@@ -165,13 +164,12 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
 
          clickable->is_right_clicked(true);
          clickable->right_click_pos(new_pos);
+         callback->right_click();
 
          // send out right click message
          if (!this->target_hit_[CallbackKey::RIGHT_CLICK]) {
             this->send_message<RightClickMessage>(new_pos);
          }
-
-         callback->right_click();
 
          // propagate this event upward in the scene graph
          Entity* parent_entity = e.space()->parent() ? game.current_scene()->get_entity(e.space()->parent()->entity()) : nullptr;
@@ -196,15 +194,27 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
           clickable->is_left_clicked()) {
 
          clickable->is_left_clicked(false);
+         callback->left_release();
 
          // send out left release message
          if (this->target_hit_[CallbackKey::LEFT_CLICK]) {
             this->send_message<LeftReleaseMessage>(clickable->left_click_pos(), new_pos);
          }
-
-         callback->left_release();
-
          this->target_hit_[CallbackKey::LEFT_CLICK] = false;
+
+         // propagate this event upward in the scene graph
+         Entity* parent_entity = e.space()->parent() ? game.current_scene()->get_entity(e.space()->parent()->entity()) : nullptr;
+         bool propagate = callback->propagate();
+         while (parent_entity && propagate) {
+            if (parent_entity->get<Callback>() && parent_entity->get<Clickable>()) {
+               parent_entity->get<Clickable>()->is_left_clicked(false);
+
+               parent_entity->get<Callback>()->left_release();
+               propagate = parent_entity->get<Callback>()->propagate();
+            }
+
+            parent_entity = parent_entity->space()->parent() ? game.current_scene()->get_entity(parent_entity->space()->parent()->entity()) : nullptr;
+         }
       }
       
       // right release calculation (release all clicked elements no matter collision)
@@ -214,15 +224,28 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
           clickable->is_right_clicked()) {
 
          clickable->is_right_clicked(false);
+         callback->right_release();
 
          // send out right release message
          if (this->target_hit_[CallbackKey::RIGHT_CLICK]) {
             this->send_message<RightReleaseMessage>(clickable->right_click_pos(), new_pos);
          }
 
-         callback->right_release();
-
          this->target_hit_[CallbackKey::RIGHT_CLICK] = false;
+
+         // propagate this event upward in the scene graph
+         Entity* parent_entity = e.space()->parent() ? game.current_scene()->get_entity(e.space()->parent()->entity()) : nullptr;
+         bool propagate = callback->propagate();
+         while (parent_entity && propagate) {
+            if (parent_entity->get<Callback>() && parent_entity->get<Clickable>()) {
+               parent_entity->get<Clickable>()->is_right_clicked(false);
+
+               parent_entity->get<Callback>()->right_release();
+               propagate = parent_entity->get<Callback>()->propagate();
+            }
+
+            parent_entity = parent_entity->space()->parent() ? game.current_scene()->get_entity(parent_entity->space()->parent()->entity()) : nullptr;
+         }
       }
 
       // mouse in calculation
