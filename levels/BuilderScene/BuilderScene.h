@@ -12,6 +12,7 @@
 class Channel;
 class Texture;
 class Map;
+class Tileset;
 
 // ----------------------------------------------------------------------------
 // BuilderScene
@@ -66,7 +67,7 @@ private:
    void create_tile_palette(GraphicalSystem* gs);
    void hide_tile_palette();
    void show_tile_palette();
-   void populate_tile_palette(Serializer::SerialData tileset_data, Serializer& serializer);
+   void populate_tile_palette(Tileset& tileset);
    void clear_tile_palette();
 
    void mouse_script_add_zoom_behavior(Game& game, Handle mouse_entity);

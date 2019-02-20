@@ -21,6 +21,8 @@
 #include "TileMap.h"
 #include "Grid.h"
 
+#include "Tileset.h"
+
 #include "FileChannel.h"
 #include "JSONSerializer.h"
 
@@ -905,12 +907,11 @@ void BuilderScene::load_from_file(std::string filename) {
 
    this->scene_data_filename = filename;
 
-   // load in map textures
-   Serializer::SerialData texture_data = serializer.deserialize(*this, scene_data["Textures"]);
-   for (Serializer::SerialData::iterator it = texture_data.begin(); it != texture_data.end(); ++it) {
-      Serializer::SerialData texture_item = serializer.deserialize(*this, it->second);
-      this->textures().load(texture_item["id"], texture_item["filename"]);
-   }
+   // deserialize tileset
+   Tileset tileset;
+   tileset.deserialize(serializer, *this, scene_data["Tileset0"]);
+
+   this->textures().load(tileset.id(), tileset.texture_filename());
    Game::logger().msg(this->id(), Logger::INFO, this->textures());
 
    // deserialize tilemap
@@ -923,7 +924,7 @@ void BuilderScene::load_from_file(std::string filename) {
       grid_entity->get<Grid>()->deserialize(static_cast<Serializer&>(serializer), *this, scene_data["Grid0"]);
    }
 
-   this->populate_tile_palette(serializer.deserialize(*this, scene_data["Tileset0"]), serializer);
+   this->populate_tile_palette(tileset);
    this->show_tile_palette();
 
    // refresh the grid, it won't refresh since the camera hasn't changed
@@ -1157,7 +1158,7 @@ void BuilderScene::show_tile_palette() {
    tile_palette->get<Clickable>()->is_enabled(true);
 }
 
-void BuilderScene::populate_tile_palette(Serializer::SerialData tileset_data, Serializer& serializer) {
+void BuilderScene::populate_tile_palette(Tileset& tileset) {
    Entity* map0 = this->get_entity("Map0Entity");
    Entity* grid_entity = this->get_entity("GridEntity");
 
@@ -1175,13 +1176,12 @@ void BuilderScene::populate_tile_palette(Serializer::SerialData tileset_data, Se
    int bottom_padding = 10;
 
    // resize tile palette to be tall enough
-   int tile_palette_height = top_padding + bottom_padding + (tile_scale_factor * grid_entity->get<Grid>()->tile_height()) * std::ceil(std::stoi(tileset_data["num_tiles"]) / static_cast<float>(tiles_per_row));
+   int tile_palette_height = top_padding + bottom_padding + (tile_scale_factor * grid_entity->get<Grid>()->tile_height()) * std::ceil(tileset.num_tiles() / static_cast<float>(tiles_per_row));
    tile_palette->get<Rectangle>()->size(tile_palette->get<Rectangle>()->size().x, tile_palette_height);
    tile_palette_outline->get<Rectangle>()->size(tile_palette_outline->get<Rectangle>()->size().x, tile_palette_height - 15);
 
-   for (int tile_idx = 0; tile_idx < std::stoi(tileset_data["num_tiles"]); ++tile_idx) {
-      // TODO: move this to some sort of tileset object?
-      Serializer::SerialData tile_data = serializer.deserialize(*this, tileset_data["tile_" + std::to_string(tile_idx)]);
+   for (unsigned int tile_idx = 0; tile_idx < tileset.num_tiles(); ++tile_idx) {
+      Serializer::SerialData tile_data = tileset.get_tile(tile_idx);
 
       sf::IntRect tile_texture_rect(
          std::stoi(tile_data["left"]),
@@ -1201,7 +1201,7 @@ void BuilderScene::populate_tile_palette(Serializer::SerialData tileset_data, Se
       entity->space()->position(tile_texture_pos);
 
       // scale tile sprites to normalize them so it's easy to look at and click on
-      entity->add<Sprite>(tile_data["id"] + "_sprite", this->textures().get(tileset_data["id"]), tile_texture_rect);
+      entity->add<Sprite>(tile_data["id"] + "_sprite", this->textures().get(tileset.id()), tile_texture_rect);
       entity->get<Sprite>()->scale(tile_scale_factor, tile_scale_factor);
 
       entity->add<PlayerProfile>(tile_data["id"] + "_playerProfile", 1);

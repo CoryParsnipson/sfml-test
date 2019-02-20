@@ -7,12 +7,6 @@
       "tile_width": "64.000000",
       "type": "Grid"
    },
-   "Textures": {
-      "texture0": {
-         "filename": "pkmn_tiles_outdoor1.png",
-         "id": "pokemon_tileset"
-      }
-   },
    "TileMap0": {
       "id": "TileMap Component",
       "num_tiles": "187",
@@ -3908,7 +3902,6 @@
          "left": "0",
          "top": "192",
          "width": "64"
-      },
-      "type": ""
+      }
    }
 }
