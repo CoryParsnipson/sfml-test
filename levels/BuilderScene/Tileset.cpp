@@ -49,7 +49,7 @@ std::string Tileset::serialize(Serializer& s) {
 
    data["id"] = this->id();
    data["filename"] = this->texture_filename();
-   data["num_tiles"] = this->num_tiles();
+   data["num_tiles"] = std::to_string(this->num_tiles());
 
    for (TileData::iterator it = this->tiledata_.begin(); it != this->tiledata_.end(); ++it) {
       data[it->first] = s.serialize(it->second);

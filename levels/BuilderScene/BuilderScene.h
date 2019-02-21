@@ -1,6 +1,7 @@
 #ifndef BUILDER_SCENE_H
 #define BUILDER_SCENE_H
 
+#include <memory>
 #include <functional>
 
 #include "Scene.h"
@@ -44,6 +45,8 @@ private:
    int frame_count;
 
    std::string scene_data_filename;
+
+   std::vector<std::shared_ptr<Tileset>> tilesets_;
 
    void load_fonts();
    void load_textures();

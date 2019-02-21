@@ -907,11 +907,19 @@ void BuilderScene::load_from_file(std::string filename) {
 
    this->scene_data_filename = filename;
 
-   // deserialize tileset
-   Tileset tileset;
-   tileset.deserialize(serializer, *this, scene_data["Tileset0"]);
+   // deserialize tileset(s)
+   unsigned int tileset_id = 0;
+   Serializer::SerialData::iterator tileset_it = scene_data.find("Tileset" + std::to_string(tileset_id));
+   while (tileset_it != scene_data.end()) {
+      std::shared_ptr<Tileset> tileset = std::make_shared<Tileset>();
+      tileset->deserialize(serializer, *this, tileset_it->second);
 
-   this->textures().load(tileset.id(), tileset.texture_filename());
+      this->textures().load(tileset->id(), tileset->texture_filename());
+      this->tilesets_.push_back(tileset);
+
+      ++tileset_id;
+      tileset_it = scene_data.find("Tileset" + std::to_string(tileset_id));
+   }
    Game::logger().msg(this->id(), Logger::INFO, this->textures());
 
    // deserialize tilemap
@@ -924,8 +932,10 @@ void BuilderScene::load_from_file(std::string filename) {
       grid_entity->get<Grid>()->deserialize(static_cast<Serializer&>(serializer), *this, scene_data["Grid0"]);
    }
 
-   this->populate_tile_palette(tileset);
-   this->show_tile_palette();
+   if (this->tilesets_.size() > 0) {
+      this->populate_tile_palette(*this->tilesets_[0]);
+      this->show_tile_palette();
+   }
 
    // refresh the grid, it won't refresh since the camera hasn't changed
    // (this might not be the best solution)
@@ -944,8 +954,13 @@ void BuilderScene::save_to_file(std::string filename) {
    if (old_file_contents != "") {
       scene_data = serializer->deserialize(*this, old_file_contents);
    }
+
+   // save tilesets
+   for (unsigned int i = 0; i < this->tilesets_.size(); ++i) {
+      scene_data["Tileset" + std::to_string(i)] = this->tilesets_[i]->serialize(*serializer);
+   }
    
-   // TODO: save textures and grids too
+   // TODO: save grids too
    // TODO: need to change this when layers are added
    scene_data["TileMap0"] = "";
    
