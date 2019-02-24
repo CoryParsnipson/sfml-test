@@ -32,7 +32,7 @@ void StartMenuScene::init(Game& game) {
    this->fonts().load("retro", "retro.ttf");
 
    // load textures
-   this->textures().load("cursor", "mouse_cursor.png");
+   this->textures().load("cursor", "builder_scene_icons.png");
    
    // setup player's input mapping
    game.add_player(1);

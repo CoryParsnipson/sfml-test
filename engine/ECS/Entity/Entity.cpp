@@ -79,7 +79,8 @@ void Entity::handle(Handle handle) {
 void Entity::reset() {
    assert(this->component_manager_);
 
-   for (ComponentList::iterator it = this->components_.begin(); it != this->components_.end(); ++it) {
+   ComponentList::iterator it = this->components_.begin();
+   while (it != this->components_.end()) {
       this->component_manager_->remove(it->first, it->second);
       it = this->components_.erase(it);
    }

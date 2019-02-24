@@ -1,6 +1,7 @@
 #include <cmath>
 #include <cstdio>
 #include <limits>
+#include <regex>
 
 #include <SFML/Graphics.hpp>
 
@@ -151,8 +152,7 @@ void BuilderScene::load_fonts() {
 }
 
 void BuilderScene::load_textures() {
-   this->textures().load("ui_close_button", "ui_close_button.png");
-   this->textures().load("cursors", "mouse_cursor.png");
+   this->textures().load("builder_scene_icons", "builder_scene_icons.png");
 }
 
 Handle BuilderScene::create_panel(std::string entity_id, sf::FloatRect bounds, bool create_decoration /* = false */, std::string label /* = "" */) {
@@ -422,11 +422,18 @@ void BuilderScene::create_hud(Game& game) {
    tile_selection_maproot->add<Collision>("TileSelectionMapRootCollider", sf::FloatRect(0, 0, 0, 0));
 
    // this is the window that contains tiles you click on to populate the tilemap
-   this->create_tile_palette(gs);
-   this->hide_tile_palette();
+   this->create_tile_palette();
+   this->hide_entity("TilePalette");
 
    // put tile palette window over selection_rect but under mouse cursor
    this->add_to_scene_node(hud_root, this->get_entity("TilePalette"));
+
+   // create panel that shows ordering and status of tile map layers
+   this->create_layers_panel();
+   this->populate_layers_panel();
+   this->hide_entity("LayersPanel");
+
+   this->add_to_scene_node(hud_root, this->get_entity("LayersPanel"));
 
    // create menu panel
    Entity* menu_panel = this->get_entity(this->create_panel("Menu", sf::FloatRect(0, 0, game.window().size().x, 30)));
@@ -590,9 +597,25 @@ void BuilderScene::create_hud(Game& game) {
       }
 
       if (tile_palette->space()->visible()) {
-         this->hide_tile_palette();
+         this->hide_entity("TilePalette");
       } else {
-         this->show_tile_palette();
+         this->show_entity("TilePalette");
+      }
+   });
+
+   Entity* show_hide_layers_panel_button = this->get_entity(this->create_button("ShowHideLayersPanelButton", sf::FloatRect(0, 40, 250, 30), "Show/Hide Layers Panel"));
+   this->add_to_scene_node(window_dropdown_menu, show_hide_layers_panel_button);
+
+   show_hide_layers_panel_button->get<Callback>()->left_release([&game, this] () {
+      Entity* layers_panel = this->get_entity("LayersPanel");
+      if (!layers_panel) {
+         return;
+      }
+
+      if (layers_panel->space()->visible()) {
+         this->hide_entity("LayersPanel");
+      } else {
+         this->show_entity("LayersPanel");
       }
    });
 }
@@ -934,7 +957,7 @@ void BuilderScene::load_from_file(std::string filename) {
 
    if (this->tilesets_.size() > 0) {
       this->populate_tile_palette(*this->tilesets_[0]);
-      this->show_tile_palette();
+      this->show_entity("TilePalette");
    }
 
    // refresh the grid, it won't refresh since the camera hasn't changed
@@ -992,7 +1015,7 @@ void BuilderScene::create_mouse_entity(Game& game) {
 
    mouse_cursor->add<PlayerProfile>("MouseCursorPlayerProfile", 1);
 
-   mouse_cursor->add<Sprite>("MouseCursorSprite", this->textures().get("cursors"), sf::IntRect(0, 0, 4, 4));
+   mouse_cursor->add<Sprite>("MouseCursorSprite", this->textures().get("builder_scene_icons"), sf::IntRect(0, 0, 4, 4));
    mouse_cursor->get<Sprite>()->scale(3, 3);
 
    mouse_cursor->add<Text>("MouseCursorText", "0, 0", this->fonts().get("retro"), 12);
@@ -1111,11 +1134,29 @@ void BuilderScene::create_fps_display(GraphicalSystem* gs) {
    });
 }
 
-void BuilderScene::create_tile_palette(GraphicalSystem* gs) {
+void BuilderScene::hide_entity(std::string entity_id) {
+   Entity* entity = this->get_entity(entity_id);
+   assert (entity);
+
+   entity->space()->visible(false);
+   entity->get<Clickable>()->is_enabled(false);
+}
+
+void BuilderScene::show_entity(std::string entity_id) {
+   Entity* entity = this->get_entity(entity_id);
+   assert (entity);
+
+   entity->space()->visible(true);
+   entity->get<Clickable>()->is_enabled(true);
+}
+
+void BuilderScene::create_tile_palette() {
    Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
    Entity* map_root = this->get_entity("MapRootEntity");
    Entity* grid_root = this->get_entity("GridRootEntity");
    Entity* grid_entity = this->get_entity("GridEntity");
+
+   GraphicalSystem* gs = this->get_system<GraphicalSystem>("GraphicalSystem");
 
    assert(tile_selection_maproot);
    assert(map_root);
@@ -1155,22 +1196,6 @@ void BuilderScene::create_tile_palette(GraphicalSystem* gs) {
 
    // putting this on top of layer 1 (tiles are on this layer)
    this->add_to_scene_node(tile_palette, tile_palette_hover);
-}
-
-void BuilderScene::hide_tile_palette() {
-   Entity* tile_palette = this->get_entity("TilePalette");
-   assert (tile_palette);
-
-   tile_palette->space()->visible(false);
-   tile_palette->get<Clickable>()->is_enabled(false);
-}
-
-void BuilderScene::show_tile_palette() {
-   Entity* tile_palette = this->get_entity("TilePalette");
-   assert (tile_palette);
-
-   tile_palette->space()->visible(true);
-   tile_palette->get<Clickable>()->is_enabled(true);
 }
 
 void BuilderScene::populate_tile_palette(Tileset& tileset) {
@@ -1260,10 +1285,83 @@ void BuilderScene::populate_tile_palette(Tileset& tileset) {
 }
 
 void BuilderScene::clear_tile_palette() {
-   GraphicalSystem* gs = this->get_system<GraphicalSystem>("GraphicalSystem");
-
    this->remove_entity(this->get_entity_handle("TilePalette"));
-   this->create_tile_palette(gs);
+   this->create_tile_palette();
+}
+
+void BuilderScene::create_layers_panel() {
+   Entity* layers_panel = this->get_entity(this->create_panel("LayersPanel", sf::FloatRect(0, 0, 220, 320), true, "Map Layers"));
+
+   layers_panel->add<PlayerProfile>("LayersPanelPlayerProfile", 1);
+   layers_panel->add<Clickable>("LayersPanelClickable");
+   layers_panel->add<Collision>("LayersPanelCollision", layers_panel->get<Rectangle>()->local_bounds());
+
+   layers_panel->add<Callback>("LayersPanelCallback", false);
+
+   layers_panel->get<Callback>()->camera_resize([this] () {
+      GraphicalSystem* gs = this->get_system<GraphicalSystem>("GraphicalSystem");
+
+      Entity* tile_palette = this->get_entity("TilePalette");
+      assert (tile_palette);
+
+      Entity* layers_panel = this->get_entity("LayersPanel");
+      assert (layers_panel);
+
+      float camera_width = gs->camera()->size().x * gs->camera()->viewport().width / gs->camera()->zoom();
+      sf::Vector2f new_pos(camera_width - layers_panel->get<Rectangle>()->size().x - 10 - tile_palette->get<Rectangle>()->size().x - 10, 40);
+      sf::Vector2f old_pos(layers_panel->space()->position());
+
+      // move to the upper right corner
+      layers_panel->space()->move(new_pos - old_pos);
+   });
+
+   Entity* layers_panel_contents = this->create_entity("LayersPanelContents");
+   this->add_to_scene_node(layers_panel, layers_panel_contents);
+}
+
+void BuilderScene::populate_layers_panel() {
+   Entity* layers_panel = this->get_entity("LayersPanel");
+   Entity* layers_panel_contents = this->get_entity("LayersPanelContents");
+   Entity* map_root = this->get_entity("MapRootEntity");
+
+   assert (layers_panel && layers_panel_contents && map_root);
+
+   int label_height = 50;
+   int label_side_padding = 10;
+   int label_bottom_padding = 5;
+   int y_pos = layers_panel->get<Rectangle>()->size().y - label_height - label_bottom_padding;
+
+   for (unsigned int i = 0; i < map_root->space()->num_children(); ++i) {
+      std::smatch map_idx;
+      Entity* map = this->get_entity(map_root->space()->get_child(i)->entity());
+
+      if (!map || !std::regex_match(map->id(), map_idx, std::regex("Map([0-9]+)Entity"))) {
+         continue;
+      }
+
+      assert (map_idx.size() == 2);
+
+      int layer_idx = std::stoi(map_idx.str(1));
+
+      Entity* map_layer = this->get_entity(
+         this->create_button(
+            "MapLayer" + std::to_string(layer_idx),
+            sf::FloatRect(
+               label_side_padding / 2,
+               y_pos,
+               layers_panel->get<Rectangle>()->size().x - label_side_padding,
+               label_height
+            ),
+            "Layer " + std::to_string(layer_idx)
+         )
+      );
+
+      this->add_to_scene_node(layers_panel_contents, map_layer);
+   }
+}
+
+void BuilderScene::clear_layers_panel() {
+   this->remove_entity(this->get_entity_handle("LayersPanelContents"), true);
 }
 
 void BuilderScene::mouse_script_add_zoom_behavior(Game& game, Handle mouse_entity) {
@@ -1545,7 +1643,7 @@ void BuilderScene::mouse_script_add_pan_behavior(Game& game, Handle mouse_entity
                // add x button
                Entity* delete_button = this->create_entity("DeleteLayer" + std::to_string(layer_idx));
 
-               delete_button->add<Sprite>("DeleteLayer" + std::to_string(layer_idx) + "Sprite", this->textures().get("ui_close_button"));
+               delete_button->add<Sprite>("DeleteLayer" + std::to_string(layer_idx) + "Sprite", this->textures().get("builder_scene_icons"), sf::IntRect(30, 0, 10, 10));
                delete_button->get<Sprite>()->scale(2.f, 2.f);
 
                delete_button->add<PlayerProfile>("DeleteLayer" + std::to_string(layer_idx) + "PlayerProfile", 1);
@@ -1668,7 +1766,7 @@ void BuilderScene::mouse_script_add_select_behavior(Game& game, Handle mouse_ent
    Entity* mouse_cursor = this->get_entity("MouseCursorEntity");
 
    // change mouse cursor to pointer
-   mouse_cursor->get<Sprite>()->texture(this->textures().get("cursors"));
+   mouse_cursor->get<Sprite>()->texture(this->textures().get("builder_scene_icons"));
    mouse_cursor->get<Sprite>()->texture_rect(sf::IntRect(0, 0, 4, 4));
    mouse_cursor->get<Sprite>()->offset(0, 0);
 
@@ -1839,7 +1937,7 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
    Entity* mouse_cursor = this->get_entity("MouseCursorEntity");
 
    // change mouse cursor to crosshairs
-   mouse_cursor->get<Sprite>()->texture(this->textures().get("cursors"));
+   mouse_cursor->get<Sprite>()->texture(this->textures().get("builder_scene_icons"));
    mouse_cursor->get<Sprite>()->texture_rect(sf::IntRect(20, 0, 7, 7));
    mouse_cursor->get<Sprite>()->offset(-10, -10);
 
