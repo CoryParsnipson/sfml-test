@@ -44,6 +44,8 @@ private:
    int frame_measurement_interval;
    int frame_count;
 
+   int next_map_idx_;
+
    std::string scene_data_filename;
 
    std::vector<std::shared_ptr<Tileset>> tilesets_;
@@ -63,12 +65,18 @@ private:
    void load_from_file(std::string filename);
    void save_to_file(std::string filename);
 
+   void unload_scene_data();
+
    void create_mouse_entity(Game& game);
    void create_backdrop(GraphicalSystem* gs);
    void create_fps_display(GraphicalSystem* gs);
 
    void hide_entity(std::string entity_id);
    void show_entity(std::string entity_id);
+
+   Handle add_map_layer();
+   void remove_map_layer(int map_idx);
+   void clear_map_layers();
 
    void create_tile_palette();
    void populate_tile_palette(Tileset& tileset);

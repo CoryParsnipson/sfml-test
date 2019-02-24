@@ -249,30 +249,32 @@ public:
       SceneNode* space = e->space();
       assert(space->entity() == handle);
 
-      int parent_idx = -1;
+      int child_idx = -1;
       SceneNode* parent = space->parent();
       assert (parent); // don't allow deletion of root node
 
       for (unsigned int i = 0; i < parent->num_children(); ++i) {
          if (space == parent->get_child(i)) {
-            parent_idx = i;
+            child_idx = i;
             break;
          }
       }
-      parent->remove(parent_idx);
+      assert (child_idx != -1);
+      parent->remove(child_idx);
 
       if (!recursive) {
          // let Systems know a new Entity has been deallocated
          this->send_message_sync<EntityDestroyedMessage>(handle);
 
          for (unsigned int i = 0; i < space->num_children(); ++i) {
-            space->parent()->add(space->get_child(i), parent_idx + i);
-            space->get_child(i)->parent(space->parent());
+            parent->add(space->get_child(i), child_idx + i);
+            space->get_child(i)->parent(parent);
          }
-         delete space;
 
          this->entities_.get(handle)->reset();
          this->entities_.remove(handle);
+
+         delete space;
       } else {
          // if recursive is set, delete all children of handle too
          std::vector<Handle> entities;

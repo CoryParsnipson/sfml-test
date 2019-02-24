@@ -67,6 +67,7 @@ BuilderScene::BuilderScene()
 , last_frame_time(0)
 , frame_measurement_interval(6)
 , frame_count(0)
+, next_map_idx_(0)
 , scene_data_filename()
 {
 }
@@ -92,12 +93,9 @@ void BuilderScene::init(Game& game) {
    this->create_entity("HudRootEntity");
 
    // create a single map layer by default
-   Entity* map0 = this->create_entity("Map0Entity");
-   map0->add<TileMap>();
-   this->add_to_scene_node(map_root, map0);
+   this->add_map_layer();
 
    GraphicalSystem* gs = this->get_system<GraphicalSystem>("GraphicalSystem");
-
    VisualDebugSystem* vds = new VisualDebugSystem("VisualDebugSystem", game.window(), gs->camera());
    vds->disable(); // start with this off
    this->add_system(vds);
@@ -470,7 +468,7 @@ void BuilderScene::create_hud(Game& game) {
             0,
             menu_panel->space()->position().y + menu_panel->get<Rectangle>()->local_bounds().height,
             150,
-            100 
+            130 
          )
       )
    );
@@ -510,6 +508,51 @@ void BuilderScene::create_hud(Game& game) {
    file_save_as_button->get<Callback>()->left_release([this] () {
       // need to specify file to save
       this->save_file_dialog_box();
+   });
+
+   Entity* file_close_button = this->get_entity(this->create_button("FileCloseButton", sf::FloatRect(0, 100, 150, 30), "Close File"));
+   this->add_to_scene_node(file_dropdown_menu, file_close_button);
+
+   file_close_button->get<Callback>()->left_release([this] () {
+      this->create_dialog_box("Do you want to save before\nclosing?", sf::Vector2f(300, 110));
+
+      Entity* dialog = this->get_entity("NotificationBox");
+      assert (dialog);
+
+      this->remove_entity(this->get_entity_handle("DialogBoxSubmitButton"), true);
+      this->remove_entity(this->get_entity_handle("DialogBoxTextbox"), true);
+
+      Entity* yes_button = this->get_entity(this->create_button("DialogConfirmButton", sf::FloatRect(0, 0, 0, 30), "Yes"));
+      Entity* no_button = this->get_entity(this->create_button("DialogDenyButton", sf::FloatRect(0, 0, 0, 30), "No"));
+
+      this->add_to_scene_node(dialog, yes_button);
+      this->add_to_scene_node(dialog, no_button);
+
+      int buttons_width = yes_button->get<Rectangle>()->size().x + no_button->get<Rectangle>()->size().x + 10;
+
+      yes_button->space()->position(
+         (dialog->get<Rectangle>()->size().x - buttons_width) / 2.f,
+         dialog->get<Rectangle>()->size().y - 50
+      );
+      
+      no_button->space()->position(
+         (dialog->get<Rectangle>()->size().x - buttons_width) / 2.f + yes_button->get<Rectangle>()->size().x + 10,
+         dialog->get<Rectangle>()->size().y - 50
+      );
+
+      yes_button->get<Callback>()->left_release([this] () {
+         if (this->scene_data_filename != "") {
+            this->save_to_file(this->scene_data_filename);
+            this->unload_scene_data();
+         }
+
+         this->remove_entity(this->get_entity_handle("NotificationRootEntity"), true);
+      });
+
+      no_button->get<Callback>()->left_release([this] () {
+         this->remove_entity(this->get_entity_handle("NotificationRootEntity"), true);
+         this->unload_scene_data();
+      });
    });
 
    Entity* mms_dropdown = this->get_entity(
@@ -876,11 +919,6 @@ void BuilderScene::setup_keybindings(Game& game) {
 }
 
 void BuilderScene::load_from_file(std::string filename) {
-   Entity* map0 = this->get_entity("Map0Entity");
-   Entity* grid_entity = this->get_entity("GridEntity");
-
-   assert(map0 && grid_entity);
-
    // load or create a tile map
    JSONSerializer serializer;
    FileChannel save_file(filename);
@@ -927,8 +965,9 @@ void BuilderScene::load_from_file(std::string filename) {
    }
 
    Serializer::SerialData scene_data = serializer.deserialize(*this, raw_save_file);
-
    this->scene_data_filename = filename;
+
+   this->unload_scene_data();
 
    // deserialize tileset(s)
    unsigned int tileset_id = 0;
@@ -944,6 +983,11 @@ void BuilderScene::load_from_file(std::string filename) {
       tileset_it = scene_data.find("Tileset" + std::to_string(tileset_id));
    }
    Game::logger().msg(this->id(), Logger::INFO, this->textures());
+
+   Entity* map0 = this->get_entity("Map0Entity");
+   Entity* grid_entity = this->get_entity("GridEntity");
+
+   assert(map0 && grid_entity);
 
    // deserialize tilemap
    if (scene_data.find("TileMap0") != scene_data.end()) {
@@ -1001,9 +1045,22 @@ void BuilderScene::save_to_file(std::string filename) {
    fc->seek(0);
    fc->send(serializer->serialize(scene_data));
    
-   Game::logger().msg("BuilderSceneInputSystem", Logger::INFO, "Saving map to file '" + fc->filename());
+   Game::logger().msg("BuilderSceneInputSystem", Logger::INFO, "Saving map to file '" + fc->filename() + "'");
    
    delete serializer;
+}
+
+void BuilderScene::unload_scene_data() {
+   this->clear_tile_palette();
+   this->clear_layers_panel();
+
+   this->clear_map_layers();
+
+   this->next_map_idx_ = 0;
+
+   // add empty Map0
+   this->add_map_layer();
+   this->populate_layers_panel();
 }
 
 void BuilderScene::create_mouse_entity(Game& game) {
@@ -1150,6 +1207,52 @@ void BuilderScene::show_entity(std::string entity_id) {
    entity->get<Clickable>()->is_enabled(true);
 }
 
+Handle BuilderScene::add_map_layer() {
+   Entity* map_root = this->get_entity("MapRootEntity");
+   assert (map_root);
+
+   while (this->get_entity("Map" + std::to_string(this->next_map_idx_) + "Entity")) {
+      ++this->next_map_idx_;
+   }
+
+   Entity* new_map = this->create_entity("Map" + std::to_string(this->next_map_idx_) + "Entity");
+   new_map->add<TileMap>("TileMap" + std::to_string(this->next_map_idx_));
+   this->add_to_scene_node(map_root, new_map);
+
+   return new_map->handle();
+}
+
+void BuilderScene::remove_map_layer(int map_idx) {
+   Entity* map_root = this->get_entity("MapRootEntity");
+   assert (map_root);
+
+   for (unsigned int i = 0; i < map_root->space()->num_children(); ++i) {
+      Entity* map = this->get_entity(map_root->space()->get_child(i)->entity());
+      if (!map) {
+         continue;
+      }
+
+      if (map->id() == ("Map" + std::to_string(map_idx) + "Entity")) {
+         this->remove_entity(map->handle());
+         return;
+      }
+   }
+}
+
+void BuilderScene::clear_map_layers() {
+   Entity* map_root = this->get_entity("MapRootEntity");
+   assert (map_root);
+
+   for (int i = static_cast<int>(map_root->space()->num_children()) - 1; i >= 0; --i) {
+      Entity* map = this->get_entity(map_root->space()->get_child(i)->entity());
+      if (!map || !std::regex_match(map->id(), std::regex("Map([0-9]+)Entity"))) {
+         continue;
+      }
+
+      this->remove_entity(map->handle(), true);
+   }
+}
+
 void BuilderScene::create_tile_palette() {
    Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
    Entity* map_root = this->get_entity("MapRootEntity");
@@ -1285,8 +1388,10 @@ void BuilderScene::populate_tile_palette(Tileset& tileset) {
 }
 
 void BuilderScene::clear_tile_palette() {
-   this->remove_entity(this->get_entity_handle("TilePalette"));
-   this->create_tile_palette();
+   Entity* tile_palette_contents = this->get_entity("TilePaletteLayer1");
+   while (tile_palette_contents->space()->num_children() > 0) {
+      this->remove_entity(tile_palette_contents->space()->get_child(0)->entity(), true);
+   }
 }
 
 void BuilderScene::create_layers_panel() {
@@ -1317,6 +1422,21 @@ void BuilderScene::create_layers_panel() {
 
    Entity* layers_panel_contents = this->create_entity("LayersPanelContents");
    this->add_to_scene_node(layers_panel, layers_panel_contents);
+
+   Entity* add_layer_button = this->get_entity(this->create_button("AddLayerButton", sf::FloatRect(0, 0, 0, 30), "  +  "));
+   this->add_to_scene_node(layers_panel, add_layer_button);
+
+   add_layer_button->space()->position(
+      layers_panel->get<Rectangle>()->size().x - add_layer_button->get<Rectangle>()->size().x - 5,
+      layers_panel->get<Rectangle>()->size().y - add_layer_button->get<Rectangle>()->size().y - 5
+   );
+
+   add_layer_button->get<Callback>()->left_release([this] () {
+      this->add_map_layer();
+
+      this->clear_layers_panel();
+      this->populate_layers_panel();
+   });
 }
 
 void BuilderScene::populate_layers_panel() {
@@ -1328,40 +1448,50 @@ void BuilderScene::populate_layers_panel() {
 
    int label_height = 50;
    int label_side_padding = 10;
-   int label_bottom_padding = 5;
+   int label_bottom_padding = 35;
    int y_pos = layers_panel->get<Rectangle>()->size().y - label_height - label_bottom_padding;
 
    for (unsigned int i = 0; i < map_root->space()->num_children(); ++i) {
-      std::smatch map_idx;
+      std::smatch matches;
       Entity* map = this->get_entity(map_root->space()->get_child(i)->entity());
 
-      if (!map || !std::regex_match(map->id(), map_idx, std::regex("Map([0-9]+)Entity"))) {
+      if (!map || !std::regex_match(map->id(), matches, std::regex("Map([0-9]+)Entity"))) {
          continue;
       }
 
-      assert (map_idx.size() == 2);
+      TileMap* tilemap = map->get<TileMap>();
 
-      int layer_idx = std::stoi(map_idx.str(1));
+      assert (matches.size() == 2);
+      assert (tilemap);
+
+      int map_idx = std::stoi(matches.str(1));
 
       Entity* map_layer = this->get_entity(
          this->create_button(
-            "MapLayer" + std::to_string(layer_idx),
+            "MapLayer" + std::to_string(map_idx) + "Button",
             sf::FloatRect(
                label_side_padding / 2,
                y_pos,
                layers_panel->get<Rectangle>()->size().x - label_side_padding,
                label_height
             ),
-            "Layer " + std::to_string(layer_idx)
+            tilemap->id()
          )
       );
 
       this->add_to_scene_node(layers_panel_contents, map_layer);
+
+      y_pos -= label_height;
    }
 }
 
 void BuilderScene::clear_layers_panel() {
-   this->remove_entity(this->get_entity_handle("LayersPanelContents"), true);
+   Entity* layers_panel_contents = this->get_entity("LayersPanelContents");
+   assert (layers_panel_contents);
+
+   while (layers_panel_contents->space()->num_children() > 0) {
+      this->remove_entity(layers_panel_contents->space()->get_child(0)->entity(), true);
+   }
 }
 
 void BuilderScene::mouse_script_add_zoom_behavior(Game& game, Handle mouse_entity) {
@@ -2241,9 +2371,9 @@ Handle BuilderScene::create_notification(float width, float height) {
 
 Handle BuilderScene::create_dialog_box(std::string display_text, sf::Vector2f size) {
    Entity* dialog_box = this->get_entity(this->create_notification(size.x, size.y));
-   Entity* dialog_box_text = this->create_entity("dialog_box_text");
+   Entity* dialog_box_text = this->create_entity("DialogBoxText");
 
-   dialog_box_text->add<Text>("dialog_box_text_text", display_text, this->fonts().get("retro"), 12);
+   dialog_box_text->add<Text>("DialogBoxTextText", display_text, this->fonts().get("retro"), 12);
    dialog_box_text->space()->position(10, 10);
 
    this->add_to_scene_node(dialog_box, dialog_box_text);

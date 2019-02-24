@@ -146,6 +146,11 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
                parent_entity->get<Clickable>()->left_click_pos(new_pos);
 
                parent_entity->get<Callback>()->left_click();
+
+               if (!game.current_scene()->get_entity(parent_entity->handle())) {
+                  // if parent entity is removed or scene graph is changed by callback, abort propagation
+                  break;
+               }
                propagate = parent_entity->get<Callback>()->propagate();
             }
 
@@ -180,6 +185,11 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
                parent_entity->get<Clickable>()->right_click_pos(new_pos);
 
                parent_entity->get<Callback>()->right_click();
+
+               if (!game.current_scene()->get_entity(parent_entity->handle())) {
+                  // if parent entity is removed or scene graph is changed by callback, abort propagation
+                  break;
+               }
                propagate = parent_entity->get<Callback>()->propagate();
             }
 
@@ -210,6 +220,11 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
                parent_entity->get<Clickable>()->is_left_clicked(false);
 
                parent_entity->get<Callback>()->left_release();
+
+               if (!game.current_scene()->get_entity(parent_entity->handle())) {
+                  // if parent entity is removed or scene graph is changed by callback, abort propagation
+                  break;
+               }
                propagate = parent_entity->get<Callback>()->propagate();
             }
 
@@ -241,6 +256,11 @@ void CallbackSystem::on_update(Game& game, Entity& e) {
                parent_entity->get<Clickable>()->is_right_clicked(false);
 
                parent_entity->get<Callback>()->right_release();
+
+               if (!game.current_scene()->get_entity(parent_entity->handle())) {
+                  // if parent entity is removed or scene graph is changed by callback, abort propagation
+                  break;
+               }
                propagate = parent_entity->get<Callback>()->propagate();
             }
 
