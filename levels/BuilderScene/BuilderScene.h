@@ -45,6 +45,7 @@ private:
    int frame_count;
 
    int next_map_idx_;
+   Handle active_map_layer_;
 
    std::string scene_data_filename;
 
@@ -55,7 +56,7 @@ private:
 
    // helper methods
    Handle create_panel(std::string entity_id, sf::FloatRect bounds, bool create_decoration = false, std::string label = "");
-   Handle create_button(std::string entity_id, sf::FloatRect bounds, std::string button_text = "Button", std::function<void()> action = nullptr);
+   Handle create_button(std::string entity_id, sf::FloatRect bounds, std::string button_text = "Button", Color button_bg_color = Color(113, 94, 122));
 
    void create_hud(Game& game);
    void load_file_dialog_box();
@@ -77,6 +78,9 @@ private:
    Handle add_map_layer();
    void remove_map_layer(int map_idx);
    void clear_map_layers();
+
+   void set_active_layer(Handle map_layer);
+   Handle get_active_layer();
 
    void create_tile_palette();
    void populate_tile_palette(Tileset& tileset);

@@ -94,6 +94,7 @@ void BuilderScene::init(Game& game) {
 
    // create a single map layer by default
    this->add_map_layer();
+   this->set_active_layer(this->get_entity_handle("Map0Entity"));
 
    GraphicalSystem* gs = this->get_system<GraphicalSystem>("GraphicalSystem");
    VisualDebugSystem* vds = new VisualDebugSystem("VisualDebugSystem", game.window(), gs->camera());
@@ -222,10 +223,20 @@ Handle BuilderScene::create_panel(std::string entity_id, sf::FloatRect bounds, b
    return panel->handle();
 }
 
-Handle BuilderScene::create_button(std::string entity_id, sf::FloatRect bounds, std::string button_text /* = "Button" */, std::function<void()> action /* = nullptr */) {
-   Color button_bg_color(113, 94, 122, 255);
-   Color button_bg_highlight(141, 116, 153, 255);
-   Color button_bg_down(103, 84, 112, 255);
+Handle BuilderScene::create_button(std::string entity_id, sf::FloatRect bounds, std::string button_text /* = "Button" */, Color button_bg_color /* = Color(113, 94, 122) */) {
+   Color button_bg_highlight(
+      button_bg_color.r() < 225 ? button_bg_color.r() + 30 : 255,
+      button_bg_color.g() < 225 ? button_bg_color.g() + 30 : 255,
+      button_bg_color.b() < 225 ? button_bg_color.b() + 30 : 255,
+      button_bg_color.a()
+   );
+
+   Color button_bg_down(
+      button_bg_color.r() > 10 ? button_bg_color.r() - 10 : 0,
+      button_bg_color.g() > 10 ? button_bg_color.g() - 10 : 0,
+      button_bg_color.b() > 10 ? button_bg_color.b() - 10 : 0,
+      button_bg_color.a()
+   );
 
    Entity* button_text_entity = this->create_entity(entity_id + "ButtonText");
 
@@ -242,16 +253,14 @@ Handle BuilderScene::create_button(std::string entity_id, sf::FloatRect bounds, 
    }
 
    Entity* button = this->get_entity(this->create_panel(entity_id, bounds, true));
+   button->get<Rectangle>()->color(button_bg_color);
 
    button->add<PlayerProfile>(entity_id + "PlayerProfile", 1);
    button->add<Collision>(entity_id + "Collision", button->get<Rectangle>()->local_bounds());
    button->add<Clickable>(entity_id + "Clickable");
 
    button->add<Callback>(entity_id + "Callback", false);
-   if (action) {
-      button->get<Callback>()->left_release(action);
-   }
-   
+
    // put common callback functions on a different entity on top of the button entity
    // so that users who override callbacks on the button won't overwrite these
    // NOTE: if the size of the button changes, you need to remember to change the
@@ -844,26 +853,15 @@ void BuilderScene::setup_keybindings(Game& game) {
       }
 
       if (p1_bindings.get<RemoveTilesIntent>()->element()->was_pressed()) {
-         if (map_root && tile_selection_maproot) {
-            for (unsigned int i = 0; i < map_root->space()->num_children(); ++i) {
-               Entity* map = this->get_entity(map_root->space()->get_child(i)->entity());
-               if (!map) {
-                  continue;
-               }
+         Entity* active_map = this->get_entity(this->get_active_layer());
+         assert (active_map->get<TileMap>() && tile_selection_maproot);
 
-               TileMap* tilemap = map->get<TileMap>();
-               Collision* collision = tile_selection_maproot->get<Collision>();
-
-               if (tilemap && collision) {
-                  tilemap->remove(
-                     // don't use global transform (need translation but not zoom from map_root)
-                     tile_selection_maproot->space()->transform().transformRect(
-                        tile_selection_maproot->get<Collision>()->volume()
-                     )
-                  );
-               }
-            }
-         }
+         active_map->get<TileMap>()->remove(
+            // don't use global transform (need translation but not zoom from map_root)
+            tile_selection_maproot->space()->transform().transformRect(
+               tile_selection_maproot->get<Collision>()->volume()
+            )
+         );
       }
 
       if (p1_bindings.get<SerializeMapIntent>()->element()->was_pressed() && p1_bindings.get<ModalIntent>()->element()->is_pressed()) {
@@ -1060,6 +1058,8 @@ void BuilderScene::unload_scene_data() {
 
    // add empty Map0
    this->add_map_layer();
+   this->set_active_layer(this->get_entity_handle("Map0Entity"));
+
    this->populate_layers_panel();
 }
 
@@ -1253,6 +1253,26 @@ void BuilderScene::clear_map_layers() {
    }
 }
 
+void BuilderScene::set_active_layer(Handle map_layer) {
+   Entity* map = this->get_entity(map_layer);
+   if (!map) {
+      map = this->get_entity("Map0Entity");
+      assert (map);
+   }
+
+   this->active_map_layer_ = map->handle();
+}
+
+Handle BuilderScene::get_active_layer() {
+   Entity* map_layer = this->get_entity(this->active_map_layer_);
+   if (!map_layer) {
+      map_layer = this->get_entity("Map0Entity");
+      assert (map_layer);
+   }
+
+   return map_layer->handle();
+}
+
 void BuilderScene::create_tile_palette() {
    Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
    Entity* map_root = this->get_entity("MapRootEntity");
@@ -1302,7 +1322,6 @@ void BuilderScene::create_tile_palette() {
 }
 
 void BuilderScene::populate_tile_palette(Tileset& tileset) {
-   Entity* map0 = this->get_entity("Map0Entity");
    Entity* grid_entity = this->get_entity("GridEntity");
 
    // add tile textures to the tile palette window
@@ -1362,9 +1381,11 @@ void BuilderScene::populate_tile_palette(Tileset& tileset) {
          tile_palette_hover->space()->visible(false);
       });
 
-      entity->get<Callback>()->left_release([this, entity, map0, grid_entity] () {
+      entity->get<Callback>()->left_release([this, entity, grid_entity] () {
          Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
          assert(tile_selection_maproot);
+
+         Entity* active_map = this->get_entity(this->get_active_layer());
 
          sf::FloatRect tsc = tile_selection_maproot->get<Collision>()->volume();
          tsc.left += tile_selection_maproot->space()->position().x;
@@ -1377,7 +1398,7 @@ void BuilderScene::populate_tile_palette(Tileset& tileset) {
                sprite.offset(x_pos, y_pos);
                sprite.scale(1.f, 1.f); // reset any scaling done on palette tiles
 
-               map0->get<TileMap>()->set(sprite);
+               active_map->get<TileMap>()->set(sprite);
             }
          }
       });
@@ -1466,20 +1487,60 @@ void BuilderScene::populate_layers_panel() {
 
       int map_idx = std::stoi(matches.str(1));
 
-      Entity* map_layer = this->get_entity(
-         this->create_button(
-            "MapLayer" + std::to_string(map_idx) + "Button",
-            sf::FloatRect(
-               label_side_padding / 2,
-               y_pos,
-               layers_panel->get<Rectangle>()->size().x - label_side_padding,
-               label_height
-            ),
-            tilemap->id()
-         )
-      );
+      // handle visual indication of active layer
+      Entity* map_layer_button;
+      if (map->handle() == this->get_active_layer()) {
+         map_layer_button = this->get_entity(
+            this->create_button(
+               "MapLayer" + std::to_string(map_idx) + "Button",
+               sf::FloatRect(
+                  label_side_padding / 2,
+                  y_pos,
+                  layers_panel->get<Rectangle>()->size().x - label_side_padding,
+                  label_height
+               ),
+               tilemap->id(),
+               Color(206, 107, 2)
+            )
+         );
+      } else {
+         map_layer_button = this->get_entity(
+            this->create_button(
+               "MapLayer" + std::to_string(map_idx) + "Button",
+               sf::FloatRect(
+                  label_side_padding / 2,
+                  y_pos,
+                  layers_panel->get<Rectangle>()->size().x - label_side_padding,
+                  label_height
+               ),
+               tilemap->id()
+            )
+         );
+      }
 
-      this->add_to_scene_node(layers_panel_contents, map_layer);
+      this->add_to_scene_node(layers_panel_contents, map_layer_button);
+
+      // set up map layer button actions
+      map_layer_button->get<Callback>()->left_release([this, map_layer_button, map] () {
+         Entity* grid_entity = this->get_entity("GridEntity");
+
+         sf::Vector2f release_pos(
+            this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position(),
+            this->game().get_player(1).bindings().get<MouseYIntent>()->element()->position()
+         );
+         sf::Vector2f mouse_delta = release_pos - map_layer_button->get<Clickable>()->left_click_pos();
+
+         int drag_threshold = grid_entity->get<Grid>()->tile_width() / 3.f;
+         bool is_drag_gesture = std::sqrt(std::pow(mouse_delta.x, 2) + std::pow(mouse_delta.y, 2)) > drag_threshold;
+
+         if (is_drag_gesture) {
+            // need to re-order layers
+         } else {
+            this->set_active_layer(map->handle());
+            this->clear_layers_panel();
+            this->populate_layers_panel();
+         }
+      });
 
       y_pos -= label_height;
    }
@@ -2128,10 +2189,10 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
    });
 
    mouse_cursor_script->get<Callback>()->left_click([is_clicked, move_list, this] () {
-      Entity* map0 = this->get_entity("Map0Entity");
       Entity* map_root = this->get_entity("MapRootEntity");
       Entity* tile_selection = this->get_entity("TileSelectionEntity");
       Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
+      Entity* active_map = this->get_entity(this->get_active_layer());
 
       sf::Vector2f new_pos;
       new_pos.x = this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position();
@@ -2148,7 +2209,7 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
       selection_area.top = tile_selection_maproot->space()->position().y;
 
       // populate move list
-      std::vector<TileMap::TileType*> tiles = map0->get<TileMap>()->find(selection_area);
+      std::vector<TileMap::TileType*> tiles = active_map->get<TileMap>()->find(selection_area);
 
       if (tiles.size() == 0) {
          return;
@@ -2227,7 +2288,7 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
          }
       }
 
-      map0->get<TileMap>()->remove(selection_area);
+      active_map->get<TileMap>()->remove(selection_area);
 
       // resize the tile selection rectangle to fit the selected tiles only
       // we want the corresponding grid_root position of this map_root location
@@ -2250,10 +2311,10 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
    });
 
    mouse_cursor_script->get<Callback>()->left_release([&game, mouse_entity, mouse_cursor_script, is_clicked, move_list, this] () {
-      Entity* map0 = this->get_entity("Map0Entity");
       Entity* grid_entity = this->get_entity("GridEntity");
       Entity* tile_selection = this->get_entity("TileSelectionEntity");
       Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
+      Entity* active_map = this->get_entity(this->get_active_layer());
 
       if (!(*is_clicked)) {
          return;
@@ -2283,7 +2344,7 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
             color.a(255);
             c->color(color);
 
-            map0->get<TileMap>()->set(*c);
+            active_map->get<TileMap>()->set(*c);
          } else if (e->get<Rectangle>()) {
             Rectangle* r = e->get<Rectangle>();
             r->offset(grid_entity->get<Grid>()->round(e->space()->position() + r->offset(), 1.f));
@@ -2292,13 +2353,13 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
             color.a(255);
             r->color(color);
 
-            map0->get<TileMap>()->set(*r);
+            active_map->get<TileMap>()->set(*r);
          } else if (e->get<Sprite>()) {
             Sprite* s = e->get<Sprite>();
             s->offset(grid_entity->get<Grid>()->round(e->space()->position() + s->offset(), 1.f));
             s->color(sf::Color(255, 255, 255, 255));
 
-            map0->get<TileMap>()->set(*s);
+            active_map->get<TileMap>()->set(*s);
          } else if (e->get<Text>()) {
             Text* t = e->get<Text>();
             t->offset(grid_entity->get<Grid>()->round(e->space()->position() + t->offset(), 1.f));
@@ -2307,7 +2368,7 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
             color.a(255);
             t->color(color);
 
-            map0->get<TileMap>()->set(*t);
+            active_map->get<TileMap>()->set(*t);
          } else if (e->get<VertexList>()) {
             VertexList* v = e->get<VertexList>();
             v->offset(grid_entity->get<Grid>()->round(e->space()->position() + v->offset(), 1.f));
@@ -2316,7 +2377,7 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
             color.a(255);
             v->color(color);
 
-            map0->get<TileMap>()->set(*v);
+            active_map->get<TileMap>()->set(*v);
          }
 
          this->remove_entity(*it);

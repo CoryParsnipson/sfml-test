@@ -1,6 +1,6 @@
 #include "Color.h"
 
-Color::Color(std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a)
+Color::Color(std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a /* = 255 */)
 : color_(r, g, b, a)
 {
 }

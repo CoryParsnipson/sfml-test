@@ -13,7 +13,7 @@
 // ----------------------------------------------------------------------------
 class Color final : public Serializable {
 public:
-   Color(std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a);
+   Color(std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a = 255);
    explicit Color(const sf::Color& color);
    Color(const Color& other);
    ~Color();
