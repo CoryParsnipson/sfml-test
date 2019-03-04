@@ -87,7 +87,7 @@ void BuilderScene::init(Game& game) {
    grid_root->space()->position(0, 30); // move so origin is not obscured by menubar
 
    Entity* grid_entity = this->create_entity("GridEntity");
-   grid_entity->add<Grid>("Grid Component");
+   grid_entity->add<Grid>("Grid0");
    this->add_to_scene_node(grid_root, grid_entity);
 
    this->create_entity("HudRootEntity");
@@ -1077,8 +1077,13 @@ void BuilderScene::save_to_file(std::string filename) {
    for (unsigned int i = 0; i < this->tilesets_.size(); ++i) {
       scene_data["Tileset" + std::to_string(i)] = this->tilesets_[i]->serialize(*serializer);
    }
-   
-   // TODO: save grids too
+
+   // save grid
+   Entity* grid_entity = this->get_entity("GridEntity");
+   assert (grid_entity && grid_entity->get<Grid>());
+
+   scene_data[grid_entity->get<Grid>()->id()] = grid_entity->get<Grid>()->serialize(*serializer);
+
    // TODO: need to change this when layers are added
    scene_data["TileMap0"] = "";
 
