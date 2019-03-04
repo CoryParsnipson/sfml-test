@@ -299,7 +299,7 @@ Handle BuilderScene::create_button(std::string entity_id, sf::FloatRect bounds, 
    // center button text
    button_text_entity->get<Text>()->origin(
       button_text_entity->get<Text>()->local_bounds().left + button_text_entity->get<Text>()->local_bounds().width / 2.f,
-      button_text_entity->get<Text>()->local_bounds().top + button_text_entity->get<Text>()->local_bounds().height/ 2.f
+      button_text_entity->get<Text>()->local_bounds().top + button_text_entity->get<Text>()->local_bounds().height / 2.f
    );
    button_text_entity->get<Text>()->offset(button->get<Rectangle>()->size() / 2.f);
 
@@ -1106,6 +1106,22 @@ void BuilderScene::save_to_file(std::string filename) {
       scene_data[tilemap->id()] = tilemap->serialize(*serializer);
    }
 
+   // remove tilemaps that are in the save file but not in the scene graph
+   for (Serializer::SerialData::iterator it = scene_data.begin(); it != scene_data.end(); ++it) {
+      std::smatch matches;
+      if (!std::regex_match(it->first, matches, std::regex("TileMap([0-9]+)"))) {
+         continue;
+      }
+
+      assert (matches.size() == 2);
+
+      if (this->get_entity("Map" + matches.str(1) + "Entity")) {
+         continue;
+      }
+
+      scene_data.erase("TileMap" + matches.str(1));
+   }
+
    // write back to file
    fc->remove();
    fc->seek(0);
@@ -1311,7 +1327,8 @@ void BuilderScene::remove_map_layer(int map_idx) {
       }
 
       if (map->id() == ("Map" + std::to_string(map_idx) + "Entity")) {
-         this->tilemap_schema_.erase(map->id());
+         assert (map->get<TileMap>());
+         this->tilemap_schema_.erase(map->get<TileMap>()->id());
          this->remove_entity(map->handle());
          return;
       }
@@ -1600,6 +1617,36 @@ void BuilderScene::populate_layers_panel() {
       }
 
       this->add_to_scene_node(layers_panel_contents, map_layer_button);
+
+      // uncenter button text
+      Entity* map_layer_button_text = this->get_entity(map_layer_button->id() + "ButtonText");
+      map_layer_button_text->get<Text>()->origin(0, map_layer_button_text->get<Text>()->origin().y);
+      map_layer_button_text->get<Text>()->offset(10, map_layer_button->get<Rectangle>()->size().y / 2.f);
+
+      // add delete layer button (only for non active layers)
+      if (map->handle() != this->get_active_layer()) {
+         Entity* delete_layer_button = this->get_entity(
+            this->create_button(
+               "DeleteLayer" + std::to_string(map_idx) + "Button",
+               sf::FloatRect(0, 0, 0, 30),
+               "-",
+               Color(147, 22, 22)
+            )
+         );
+         
+         delete_layer_button->space()->position(
+            map_layer_button->get<Rectangle>()->size().x - delete_layer_button->get<Rectangle>()->size().x - 10,
+            (map_layer_button->get<Rectangle>()->size().y - delete_layer_button->get<Rectangle>()->size().y) / 2.f
+         );
+
+         delete_layer_button->get<Callback>()->left_release([this, map_idx] () {
+            this->remove_map_layer(map_idx);
+            this->clear_layers_panel();
+            this->populate_layers_panel();
+         });
+
+         this->add_to_scene_node(map_layer_button, delete_layer_button);
+      }
 
       // set up map layer button actions
       map_layer_button->get<Callback>()->left_release([this, map_layer_button, map] () {
