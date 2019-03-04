@@ -46,6 +46,9 @@ public:
    TileMap& operator=(const TileMap& other);
    void swap(TileMap& other);
 
+   int z_index() const;
+   void z_index(int z_index);
+
    TileType* get(const sf::Vector2f& pos);
    std::vector<TileType*> find(const sf::FloatRect& search_area);
 
@@ -60,6 +63,7 @@ public:
 
 private:
    TileStore tiles_;
+   int z_index_;
 
    sf::Vector2f get_position_from_tile(TileType& tile);
    sf::FloatRect get_global_bounds_from_tile(TileType& tile);

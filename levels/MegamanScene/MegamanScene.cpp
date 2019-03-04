@@ -1,3 +1,5 @@
+#include <regex>
+
 #include "MegamanScene.h"
 
 #include "Game.h"
@@ -406,7 +408,6 @@ void MegamanScene::load_scene_data() {
    JSONSerializer serializer;
    FileChannel save_file(filename);
 
-   // TODO: loading scene data should be in scene's serialization/deserialization?
    save_file.seek(0);
    std::string raw_save_file = serializer.read(save_file);
 
@@ -417,11 +418,20 @@ void MegamanScene::load_scene_data() {
 
    Serializer::SerialData scene_data = serializer.deserialize(*this, raw_save_file);
 
-   // load in map textures
-   Serializer::SerialData texture_data = serializer.deserialize(*this, scene_data["Textures"]);
-   for (Serializer::SerialData::iterator it = texture_data.begin(); it != texture_data.end(); ++it) {
-      Serializer::SerialData texture_item = serializer.deserialize(*this, it->second);
-      this->textures().load(texture_item["id"], texture_item["filename"]);
+   // deserialize tilesets
+   for (Serializer::SerialData::iterator it = scene_data.begin(); it != scene_data.end(); ++it) {
+      if (!std::regex_match(it->first, std::regex("Tileset([0-9]+)"))) {
+         continue;
+      }
+
+      Serializer::SerialData tileset_data = serializer.deserialize(*this, it->second);
+
+      std::string tileset_texture_file = tileset_data["filename"];
+      std::string tileset_texture_id = tileset_data["id"];
+
+      if (!this->textures().get(tileset_texture_id)) {
+         this->textures().load(tileset_texture_id, tileset_texture_file);
+      }
    }
    Game::logger().msg(this->id(), Logger::INFO, this->textures());
 

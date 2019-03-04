@@ -46,10 +46,9 @@ private:
 
    int next_map_idx_;
    Handle active_map_layer_;
-
    std::string scene_data_filename;
-
    std::vector<std::shared_ptr<Tileset>> tilesets_;
+   std::map<std::string, Serializer::SerialData> tilemap_schema_;
 
    void load_fonts();
    void load_textures();

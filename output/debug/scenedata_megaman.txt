@@ -10,47 +10,107 @@
    "TileMap0": {
       "id": "TileMap Component",
       "num_tiles": "109",
-      "tile_0": {
+      "tile_10222106653221875809": {
          "color": {
             "a": "255",
             "b": "255",
             "g": "255",
             "r": "255"
          },
-         "id": "old_green3_sprite",
+         "id": "black_pillar6_sprite",
          "origin_x": "0.000000",
          "origin_y": "0.000000",
          "rotation": "0.000000",
          "texture": "megaman_tileset",
          "texture_rect_height": "16",
-         "texture_rect_left": "160",
+         "texture_rect_left": "240",
          "texture_rect_top": "0",
          "texture_rect_width": "16",
          "type": "Sprite",
          "x": "16.000000",
-         "y": "256.000000"
+         "y": "320.000000"
       },
-      "tile_1": {
+      "tile_10650205355604151152": {
          "color": {
             "a": "255",
             "b": "255",
             "g": "255",
             "r": "255"
          },
-         "id": "old_green4_sprite",
+         "id": "black_pillar1_sprite",
          "origin_x": "0.000000",
          "origin_y": "0.000000",
          "rotation": "0.000000",
          "texture": "megaman_tileset",
          "texture_rect_height": "16",
-         "texture_rect_left": "176",
+         "texture_rect_left": "64",
          "texture_rect_top": "0",
          "texture_rect_width": "16",
          "type": "Sprite",
-         "x": "32.000000",
-         "y": "256.000000"
+         "x": "160.000000",
+         "y": "288.000000"
       },
-      "tile_10": {
+      "tile_10835076204080654625": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar5_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "224",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "208.000000",
+         "y": "304.000000"
+      },
+      "tile_10933413884181046694": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar1_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "64",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "160.000000",
+         "y": "272.000000"
+      },
+      "tile_11001505733358560222": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "rock_pillar2_middle_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "112",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "192.000000",
+         "y": "240.000000"
+      },
+      "tile_11015125829670489219": {
          "color": {
             "a": "255",
             "b": "255",
@@ -70,7 +130,127 @@
          "x": "144.000000",
          "y": "256.000000"
       },
-      "tile_100": {
+      "tile_1118508042977861174": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "old_green2_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "80",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "48.000000",
+         "y": "256.000000"
+      },
+      "tile_11235718348411437294": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "rock_pillar2_left_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "96",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "176.000000",
+         "y": "240.000000"
+      },
+      "tile_11329348262956944549": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "rock_pillar2_middle_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "112",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "256.000000",
+         "y": "240.000000"
+      },
+      "tile_11329752974270955639": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "metal_pit_right_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "304",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "96.000000",
+         "y": "256.000000"
+      },
+      "tile_11455563805285373157": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar2_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "144",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "272.000000",
+         "y": "256.000000"
+      },
+      "tile_11730483836845664200": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "old_green1_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "160.000000",
+         "y": "224.000000"
+      },
+      "tile_11913278860738615873": {
          "color": {
             "a": "255",
             "b": "255",
@@ -90,147 +270,87 @@
          "x": "208.000000",
          "y": "256.000000"
       },
-      "tile_101": {
+      "tile_12339932648793383598": {
          "color": {
             "a": "255",
             "b": "255",
             "g": "255",
             "r": "255"
          },
-         "id": "black_pillar4_sprite",
+         "id": "rock_pillar2_left_sprite",
          "origin_x": "0.000000",
          "origin_y": "0.000000",
          "rotation": "0.000000",
          "texture": "megaman_tileset",
          "texture_rect_height": "16",
-         "texture_rect_left": "208",
+         "texture_rect_left": "96",
          "texture_rect_top": "0",
          "texture_rect_width": "16",
          "type": "Sprite",
-         "x": "176.000000",
-         "y": "256.000000"
+         "x": "240.000000",
+         "y": "240.000000"
       },
-      "tile_102": {
+      "tile_12381524519712489443": {
          "color": {
             "a": "255",
             "b": "255",
             "g": "255",
             "r": "255"
          },
-         "id": "black_pillar3_sprite",
+         "id": "side1_sprite",
          "origin_x": "0.000000",
          "origin_y": "0.000000",
          "rotation": "0.000000",
          "texture": "megaman_tileset",
          "texture_rect_height": "16",
-         "texture_rect_left": "192",
+         "texture_rect_left": "32",
          "texture_rect_top": "0",
          "texture_rect_width": "16",
          "type": "Sprite",
-         "x": "192.000000",
-         "y": "256.000000"
+         "x": "144.000000",
+         "y": "304.000000"
       },
-      "tile_103": {
+      "tile_12534576531418539909": {
          "color": {
             "a": "255",
             "b": "255",
             "g": "255",
             "r": "255"
          },
-         "id": "rubble_pile1_bl_sprite",
+         "id": "black_pillar5_sprite",
          "origin_x": "0.000000",
          "origin_y": "0.000000",
          "rotation": "0.000000",
          "texture": "megaman_tileset",
          "texture_rect_height": "16",
-         "texture_rect_left": "240",
-         "texture_rect_top": "32",
+         "texture_rect_left": "224",
+         "texture_rect_top": "0",
          "texture_rect_width": "16",
          "type": "Sprite",
-         "x": "176.000000",
-         "y": "208.000000"
+         "x": "272.000000",
+         "y": "304.000000"
       },
-      "tile_104": {
+      "tile_12552317397444702999": {
          "color": {
             "a": "255",
             "b": "255",
             "g": "255",
             "r": "255"
          },
-         "id": "rubble_pile1_tl_sprite",
+         "id": "metal_pit_right_sprite",
          "origin_x": "0.000000",
          "origin_y": "0.000000",
          "rotation": "0.000000",
          "texture": "megaman_tileset",
          "texture_rect_height": "16",
-         "texture_rect_left": "240",
-         "texture_rect_top": "16",
+         "texture_rect_left": "304",
+         "texture_rect_top": "0",
          "texture_rect_width": "16",
          "type": "Sprite",
-         "x": "176.000000",
-         "y": "192.000000"
+         "x": "96.000000",
+         "y": "304.000000"
       },
-      "tile_105": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "rubble_pile1_bm_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "256",
-         "texture_rect_top": "32",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "192.000000",
-         "y": "208.000000"
-      },
-      "tile_106": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "rubble_pile1_br_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "272",
-         "texture_rect_top": "32",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "208.000000",
-         "y": "208.000000"
-      },
-      "tile_107": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "rubble_pile1_tm_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "256",
-         "texture_rect_top": "16",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "192.000000",
-         "y": "192.000000"
-      },
-      "tile_108": {
+      "tile_12573419225944818871": {
          "color": {
             "a": "255",
             "b": "255",
@@ -250,407 +370,7 @@
          "x": "208.000000",
          "y": "192.000000"
       },
-      "tile_11": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "side1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "32",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "144.000000",
-         "y": "272.000000"
-      },
-      "tile_12": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "side1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "32",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "144.000000",
-         "y": "288.000000"
-      },
-      "tile_13": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "side1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "32",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "144.000000",
-         "y": "304.000000"
-      },
-      "tile_14": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "side1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "32",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "144.000000",
-         "y": "320.000000"
-      },
-      "tile_15": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "old_green1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "0",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "160.000000",
-         "y": "224.000000"
-      },
-      "tile_16": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "old_green3_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "160",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "176.000000",
-         "y": "224.000000"
-      },
-      "tile_17": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "old_green4_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "176",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "192.000000",
-         "y": "224.000000"
-      },
-      "tile_18": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "old_green2_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "80",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "208.000000",
-         "y": "224.000000"
-      },
-      "tile_19": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "old_green1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "0",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "224.000000",
-         "y": "224.000000"
-      },
-      "tile_2": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "old_green2_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "80",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "48.000000",
-         "y": "256.000000"
-      },
-      "tile_20": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "old_green3_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "160",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "240.000000",
-         "y": "224.000000"
-      },
-      "tile_21": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "old_green4_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "176",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "256.000000",
-         "y": "224.000000"
-      },
-      "tile_22": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "old_green2_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "80",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "272.000000",
-         "y": "224.000000"
-      },
-      "tile_23": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "metal_pit_right_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "304",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "96.000000",
-         "y": "272.000000"
-      },
-      "tile_24": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "metal_pit_right_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "304",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "96.000000",
-         "y": "288.000000"
-      },
-      "tile_25": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "metal_pit_right_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "304",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "96.000000",
-         "y": "304.000000"
-      },
-      "tile_26": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "metal_pit_right_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "304",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "96.000000",
-         "y": "320.000000"
-      },
-      "tile_27": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "metal_pit_left_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "272",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "128.000000",
-         "y": "272.000000"
-      },
-      "tile_28": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "metal_pit_left_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "272",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "128.000000",
-         "y": "288.000000"
-      },
-      "tile_29": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "metal_pit_left_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "272",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "128.000000",
-         "y": "304.000000"
-      },
-      "tile_3": {
+      "tile_12737772713729276804": {
          "color": {
             "a": "255",
             "b": "255",
@@ -670,7 +390,7 @@
          "x": "64.000000",
          "y": "256.000000"
       },
-      "tile_30": {
+      "tile_13027053562791533249": {
          "color": {
             "a": "255",
             "b": "255",
@@ -688,489 +408,9 @@
          "texture_rect_width": "16",
          "type": "Sprite",
          "x": "128.000000",
-         "y": "320.000000"
-      },
-      "tile_31": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "ladder_top_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "288",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "112.000000",
-         "y": "272.000000"
-      },
-      "tile_32": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "ladder_top_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "288",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "112.000000",
-         "y": "288.000000"
-      },
-      "tile_33": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "ladder_top_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "288",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "112.000000",
-         "y": "304.000000"
-      },
-      "tile_34": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "ladder_top_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "288",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "112.000000",
-         "y": "320.000000"
-      },
-      "tile_35": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "rock_pillar2_left_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "96",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "16.000000",
-         "y": "272.000000"
-      },
-      "tile_36": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "rock_pillar2_middle_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "112",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "32.000000",
-         "y": "272.000000"
-      },
-      "tile_37": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "rock_pillar2__sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "128",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "48.000000",
-         "y": "272.000000"
-      },
-      "tile_38": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "rock_pillar1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "48",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "64.000000",
-         "y": "272.000000"
-      },
-      "tile_39": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "side1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "32",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "80.000000",
-         "y": "272.000000"
-      },
-      "tile_4": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "rock_ledge_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "16",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "80.000000",
          "y": "256.000000"
       },
-      "tile_40": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "side1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "32",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "80.000000",
-         "y": "288.000000"
-      },
-      "tile_41": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "side1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "32",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "80.000000",
-         "y": "304.000000"
-      },
-      "tile_42": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "side1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "32",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "80.000000",
-         "y": "320.000000"
-      },
-      "tile_43": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "64",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "64.000000",
-         "y": "288.000000"
-      },
-      "tile_44": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "64",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "64.000000",
-         "y": "304.000000"
-      },
-      "tile_45": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "64",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "64.000000",
-         "y": "320.000000"
-      },
-      "tile_46": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar5_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "224",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "48.000000",
-         "y": "304.000000"
-      },
-      "tile_47": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar5_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "224",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "48.000000",
-         "y": "320.000000"
-      },
-      "tile_48": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar2_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "144",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "48.000000",
-         "y": "288.000000"
-      },
-      "tile_49": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar4_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "208",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "16.000000",
-         "y": "288.000000"
-      },
-      "tile_5": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "metal_pit_right_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "304",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "96.000000",
-         "y": "256.000000"
-      },
-      "tile_50": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar6_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "240",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "16.000000",
-         "y": "304.000000"
-      },
-      "tile_51": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar6_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "240",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "16.000000",
-         "y": "320.000000"
-      },
-      "tile_52": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar7_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "256",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "32.000000",
-         "y": "304.000000"
-      },
-      "tile_53": {
+      "tile_13371041897409290763": {
          "color": {
             "a": "255",
             "b": "255",
@@ -1190,827 +430,67 @@
          "x": "32.000000",
          "y": "320.000000"
       },
-      "tile_54": {
+      "tile_14034298999546979283": {
          "color": {
             "a": "255",
             "b": "255",
             "g": "255",
             "r": "255"
          },
-         "id": "black_pillar3_sprite",
+         "id": "black_pillar7_sprite",
          "origin_x": "0.000000",
          "origin_y": "0.000000",
          "rotation": "0.000000",
          "texture": "megaman_tileset",
          "texture_rect_height": "16",
-         "texture_rect_left": "192",
+         "texture_rect_left": "256",
          "texture_rect_top": "0",
          "texture_rect_width": "16",
          "type": "Sprite",
-         "x": "32.000000",
-         "y": "288.000000"
-      },
-      "tile_55": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "64",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "160.000000",
-         "y": "256.000000"
-      },
-      "tile_56": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "64",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "160.000000",
-         "y": "272.000000"
-      },
-      "tile_57": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "64",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "160.000000",
-         "y": "288.000000"
-      },
-      "tile_58": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "64",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "160.000000",
+         "x": "256.000000",
          "y": "304.000000"
       },
-      "tile_59": {
+      "tile_14129899672659423128": {
          "color": {
             "a": "255",
             "b": "255",
             "g": "255",
             "r": "255"
          },
-         "id": "black_pillar1_sprite",
+         "id": "black_pillar6_sprite",
          "origin_x": "0.000000",
          "origin_y": "0.000000",
          "rotation": "0.000000",
          "texture": "megaman_tileset",
          "texture_rect_height": "16",
-         "texture_rect_left": "64",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "160.000000",
-         "y": "320.000000"
-      },
-      "tile_6": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "ladder_top_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "288",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "112.000000",
-         "y": "256.000000"
-      },
-      "tile_60": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "rock_pillar1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "48",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "160.000000",
-         "y": "240.000000"
-      },
-      "tile_61": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "rock_pillar2_left_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "96",
+         "texture_rect_left": "240",
          "texture_rect_top": "0",
          "texture_rect_width": "16",
          "type": "Sprite",
          "x": "176.000000",
-         "y": "240.000000"
+         "y": "304.000000"
       },
-      "tile_62": {
+      "tile_14363955585896959144": {
          "color": {
             "a": "255",
             "b": "255",
             "g": "255",
             "r": "255"
          },
-         "id": "rock_pillar2_middle_sprite",
+         "id": "black_pillar7_sprite",
          "origin_x": "0.000000",
          "origin_y": "0.000000",
          "rotation": "0.000000",
          "texture": "megaman_tileset",
          "texture_rect_height": "16",
-         "texture_rect_left": "112",
+         "texture_rect_left": "256",
          "texture_rect_top": "0",
          "texture_rect_width": "16",
          "type": "Sprite",
          "x": "192.000000",
-         "y": "240.000000"
-      },
-      "tile_63": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "rock_pillar2__sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "128",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "208.000000",
-         "y": "240.000000"
-      },
-      "tile_64": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "rock_pillar1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "48",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "224.000000",
-         "y": "240.000000"
-      },
-      "tile_65": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "rock_pillar2_left_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "96",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "240.000000",
-         "y": "240.000000"
-      },
-      "tile_66": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "rock_pillar2_middle_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "112",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "256.000000",
-         "y": "240.000000"
-      },
-      "tile_67": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "rock_pillar2__sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "128",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "272.000000",
-         "y": "240.000000"
-      },
-      "tile_68": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar6_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "240",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "176.000000",
-         "y": "272.000000"
-      },
-      "tile_69": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar6_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "240",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "176.000000",
-         "y": "288.000000"
-      },
-      "tile_7": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "metal_pit_left_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "272",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "128.000000",
-         "y": "256.000000"
-      },
-      "tile_70": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar6_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "240",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "176.000000",
          "y": "304.000000"
       },
-      "tile_71": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar6_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "240",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "176.000000",
-         "y": "320.000000"
-      },
-      "tile_72": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar5_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "224",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "208.000000",
-         "y": "272.000000"
-      },
-      "tile_73": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar5_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "224",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "208.000000",
-         "y": "288.000000"
-      },
-      "tile_74": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar5_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "224",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "208.000000",
-         "y": "304.000000"
-      },
-      "tile_75": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar5_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "224",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "208.000000",
-         "y": "320.000000"
-      },
-      "tile_76": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "64",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "224.000000",
-         "y": "256.000000"
-      },
-      "tile_77": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "64",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "224.000000",
-         "y": "272.000000"
-      },
-      "tile_78": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "64",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "224.000000",
-         "y": "288.000000"
-      },
-      "tile_79": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "64",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "224.000000",
-         "y": "304.000000"
-      },
-      "tile_8": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "rock_ledge_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "16",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "144.000000",
-         "y": "224.000000"
-      },
-      "tile_80": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "64",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "224.000000",
-         "y": "320.000000"
-      },
-      "tile_81": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar6_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "240",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "240.000000",
-         "y": "272.000000"
-      },
-      "tile_82": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar6_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "240",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "240.000000",
-         "y": "288.000000"
-      },
-      "tile_83": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar6_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "240",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "240.000000",
-         "y": "304.000000"
-      },
-      "tile_84": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar6_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "240",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "240.000000",
-         "y": "320.000000"
-      },
-      "tile_85": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar5_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "224",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "272.000000",
-         "y": "272.000000"
-      },
-      "tile_86": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar5_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "224",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "272.000000",
-         "y": "288.000000"
-      },
-      "tile_87": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar5_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "224",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "272.000000",
-         "y": "304.000000"
-      },
-      "tile_88": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar5_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "224",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "272.000000",
-         "y": "320.000000"
-      },
-      "tile_89": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar2_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "144",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "272.000000",
-         "y": "256.000000"
-      },
-      "tile_9": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "side1_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "32",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "144.000000",
-         "y": "240.000000"
-      },
-      "tile_90": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar3_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "192",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "256.000000",
-         "y": "256.000000"
-      },
-      "tile_91": {
+      "tile_14390018509344931512": {
          "color": {
             "a": "255",
             "b": "255",
@@ -2030,7 +510,727 @@
          "x": "240.000000",
          "y": "256.000000"
       },
-      "tile_92": {
+      "tile_14413737467540435966": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "ladder_top_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "288",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "112.000000",
+         "y": "304.000000"
+      },
+      "tile_14530823291756676695": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "rock_pillar2__sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "128",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "208.000000",
+         "y": "240.000000"
+      },
+      "tile_14953092217074692794": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar1_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "64",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "160.000000",
+         "y": "320.000000"
+      },
+      "tile_15102004026308872619": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar4_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "208",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "16.000000",
+         "y": "288.000000"
+      },
+      "tile_15124646563746174618": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "rock_pillar2__sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "128",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "48.000000",
+         "y": "272.000000"
+      },
+      "tile_15184345450168610807": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "side1_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "32",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "80.000000",
+         "y": "272.000000"
+      },
+      "tile_15389892027256453196": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar2_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "144",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "48.000000",
+         "y": "288.000000"
+      },
+      "tile_15412285554854209405": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "rock_pillar2_left_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "96",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "16.000000",
+         "y": "272.000000"
+      },
+      "tile_15478811534738489633": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "side1_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "32",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "80.000000",
+         "y": "288.000000"
+      },
+      "tile_15718196925223058814": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar1_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "64",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "224.000000",
+         "y": "272.000000"
+      },
+      "tile_16020474283962553256": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar1_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "64",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "224.000000",
+         "y": "288.000000"
+      },
+      "tile_16262564333370242327": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "rock_pillar2_middle_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "112",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "32.000000",
+         "y": "272.000000"
+      },
+      "tile_16557014200101673921": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar3_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "192",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "32.000000",
+         "y": "288.000000"
+      },
+      "tile_17244852291715235600": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "old_green1_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "0",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "224.000000",
+         "y": "224.000000"
+      },
+      "tile_17422822714013585587": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar3_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "192",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "256.000000",
+         "y": "256.000000"
+      },
+      "tile_17440739711307254003": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "rock_pillar2__sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "128",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "272.000000",
+         "y": "240.000000"
+      },
+      "tile_17595058373099950229": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "side1_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "32",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "144.000000",
+         "y": "240.000000"
+      },
+      "tile_17608672018484264904": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar3_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "192",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "192.000000",
+         "y": "256.000000"
+      },
+      "tile_17634418218228633048": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar6_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "240",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "240.000000",
+         "y": "304.000000"
+      },
+      "tile_1775866884015622997": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar5_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "224",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "272.000000",
+         "y": "320.000000"
+      },
+      "tile_17806925630340127992": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar4_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "208",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "176.000000",
+         "y": "256.000000"
+      },
+      "tile_18090526201503367326": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "ladder_top_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "288",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "112.000000",
+         "y": "256.000000"
+      },
+      "tile_18174085730178171406": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "rubble_pile1_tl_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "240",
+         "texture_rect_top": "16",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "176.000000",
+         "y": "192.000000"
+      },
+      "tile_18408230163899851070": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "rubble_pile1_tm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "256",
+         "texture_rect_top": "16",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "192.000000",
+         "y": "192.000000"
+      },
+      "tile_1861017293664581140": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar6_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "240",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "240.000000",
+         "y": "272.000000"
+      },
+      "tile_1934926209609194097": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "old_green4_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "176",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "256.000000",
+         "y": "224.000000"
+      },
+      "tile_1973752422297919431": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "metal_pit_right_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "304",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "96.000000",
+         "y": "320.000000"
+      },
+      "tile_2021721868943398458": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "old_green3_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "160",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "176.000000",
+         "y": "224.000000"
+      },
+      "tile_2136326861988075714": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar6_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "240",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "240.000000",
+         "y": "288.000000"
+      },
+      "tile_2198571937373328179": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "side1_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "32",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "144.000000",
+         "y": "320.000000"
+      },
+      "tile_2255986994467779850": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "old_green4_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "176",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "192.000000",
+         "y": "224.000000"
+      },
+      "tile_2384702020660569828": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "ladder_top_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "288",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "112.000000",
+         "y": "288.000000"
+      },
+      "tile_2525124191121049073": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar5_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "224",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "208.000000",
+         "y": "320.000000"
+      },
+      "tile_2677636255834976540": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "rock_pillar1_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "48",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "160.000000",
+         "y": "240.000000"
+      },
+      "tile_2697165186433927218": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "ladder_top_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "288",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "112.000000",
+         "y": "272.000000"
+      },
+      "tile_2990069429905675348": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar6_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "240",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "176.000000",
+         "y": "272.000000"
+      },
+      "tile_3044052015562749796": {
          "color": {
             "a": "255",
             "b": "255",
@@ -2047,10 +1247,30 @@
          "texture_rect_top": "0",
          "texture_rect_width": "16",
          "type": "Sprite",
-         "x": "256.000000",
+         "x": "192.000000",
          "y": "272.000000"
       },
-      "tile_93": {
+      "tile_306935382870472146": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar1_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "64",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "224.000000",
+         "y": "256.000000"
+      },
+      "tile_3160419262745769673": {
          "color": {
             "a": "255",
             "b": "255",
@@ -2070,67 +1290,47 @@
          "x": "256.000000",
          "y": "288.000000"
       },
-      "tile_94": {
+      "tile_3216674351578788986": {
          "color": {
             "a": "255",
             "b": "255",
             "g": "255",
             "r": "255"
          },
-         "id": "black_pillar7_sprite",
+         "id": "old_green3_sprite",
          "origin_x": "0.000000",
          "origin_y": "0.000000",
          "rotation": "0.000000",
          "texture": "megaman_tileset",
          "texture_rect_height": "16",
-         "texture_rect_left": "256",
+         "texture_rect_left": "160",
          "texture_rect_top": "0",
          "texture_rect_width": "16",
          "type": "Sprite",
-         "x": "256.000000",
-         "y": "304.000000"
+         "x": "240.000000",
+         "y": "224.000000"
       },
-      "tile_95": {
+      "tile_3245042431155550850": {
          "color": {
             "a": "255",
             "b": "255",
             "g": "255",
             "r": "255"
          },
-         "id": "black_pillar7_sprite",
+         "id": "black_pillar6_sprite",
          "origin_x": "0.000000",
          "origin_y": "0.000000",
          "rotation": "0.000000",
          "texture": "megaman_tileset",
          "texture_rect_height": "16",
-         "texture_rect_left": "256",
+         "texture_rect_left": "240",
          "texture_rect_top": "0",
          "texture_rect_width": "16",
          "type": "Sprite",
-         "x": "256.000000",
-         "y": "320.000000"
+         "x": "176.000000",
+         "y": "288.000000"
       },
-      "tile_96": {
-         "color": {
-            "a": "255",
-            "b": "255",
-            "g": "255",
-            "r": "255"
-         },
-         "id": "black_pillar7_sprite",
-         "origin_x": "0.000000",
-         "origin_y": "0.000000",
-         "rotation": "0.000000",
-         "texture": "megaman_tileset",
-         "texture_rect_height": "16",
-         "texture_rect_left": "256",
-         "texture_rect_top": "0",
-         "texture_rect_width": "16",
-         "type": "Sprite",
-         "x": "192.000000",
-         "y": "272.000000"
-      },
-      "tile_97": {
+      "tile_3335141499883821490": {
          "color": {
             "a": "255",
             "b": "255",
@@ -2150,7 +1350,7 @@
          "x": "192.000000",
          "y": "288.000000"
       },
-      "tile_98": {
+      "tile_3434689861294200863": {
          "color": {
             "a": "255",
             "b": "255",
@@ -2167,10 +1367,490 @@
          "texture_rect_top": "0",
          "texture_rect_width": "16",
          "type": "Sprite",
-         "x": "192.000000",
+         "x": "256.000000",
+         "y": "272.000000"
+      },
+      "tile_3645126384907961713": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "metal_pit_left_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "272",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "128.000000",
+         "y": "320.000000"
+      },
+      "tile_3934698946068603956": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar1_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "64",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "64.000000",
+         "y": "320.000000"
+      },
+      "tile_3984525124123690674": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar1_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "64",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "224.000000",
          "y": "304.000000"
       },
-      "tile_99": {
+      "tile_4074298213731245233": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar6_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "240",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "16.000000",
+         "y": "304.000000"
+      },
+      "tile_4362907511500696918": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar5_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "224",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "48.000000",
+         "y": "304.000000"
+      },
+      "tile_4598176399647560763": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "side1_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "32",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "80.000000",
+         "y": "304.000000"
+      },
+      "tile_4598184912716627387": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "old_green4_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "176",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "32.000000",
+         "y": "256.000000"
+      },
+      "tile_4655141328738049097": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar5_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "224",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "272.000000",
+         "y": "272.000000"
+      },
+      "tile_4750433958430646536": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar6_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "240",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "240.000000",
+         "y": "320.000000"
+      },
+      "tile_4813163781290797817": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "side1_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "32",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "144.000000",
+         "y": "288.000000"
+      },
+      "tile_4853590141226715355": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "metal_pit_right_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "304",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "96.000000",
+         "y": "272.000000"
+      },
+      "tile_4966356548813795999": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar5_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "224",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "272.000000",
+         "y": "288.000000"
+      },
+      "tile_5097408874454828079": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "side1_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "32",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "144.000000",
+         "y": "272.000000"
+      },
+      "tile_5128757941271848461": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "metal_pit_right_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "304",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "96.000000",
+         "y": "288.000000"
+      },
+      "tile_5321985055845772554": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar1_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "64",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "160.000000",
+         "y": "256.000000"
+      },
+      "tile_5639643427286323331": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "old_green2_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "80",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "208.000000",
+         "y": "224.000000"
+      },
+      "tile_6729213472768715308": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "rubble_pile1_bm_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "256",
+         "texture_rect_top": "32",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "192.000000",
+         "y": "208.000000"
+      },
+      "tile_6783126254465009948": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "rubble_pile1_bl_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "240",
+         "texture_rect_top": "32",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "176.000000",
+         "y": "208.000000"
+      },
+      "tile_7544047040664299972": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "rock_pillar1_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "48",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "224.000000",
+         "y": "240.000000"
+      },
+      "tile_7685763265659245165": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "metal_pit_left_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "272",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "128.000000",
+         "y": "272.000000"
+      },
+      "tile_7697765200352468478": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar1_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "64",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "64.000000",
+         "y": "288.000000"
+      },
+      "tile_7972950248975741736": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "rock_pillar1_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "48",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "64.000000",
+         "y": "272.000000"
+      },
+      "tile_7989166180697734331": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "metal_pit_left_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "272",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "128.000000",
+         "y": "288.000000"
+      },
+      "tile_8160975075160490824": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar6_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "240",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "176.000000",
+         "y": "320.000000"
+      },
+      "tile_8215096734542962808": {
          "color": {
             "a": "255",
             "b": "255",
@@ -2190,7 +1870,328 @@
          "x": "192.000000",
          "y": "320.000000"
       },
-      "type": "TileMap"
+      "tile_829582365046648785": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "old_green3_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "160",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "16.000000",
+         "y": "256.000000"
+      },
+      "tile_8344579967363253825": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "rock_ledge_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "16",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "144.000000",
+         "y": "224.000000"
+      },
+      "tile_8496646829543333415": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "old_green2_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "80",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "272.000000",
+         "y": "224.000000"
+      },
+      "tile_8616863698995760899": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar7_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "256",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "256.000000",
+         "y": "320.000000"
+      },
+      "tile_8850392754512125546": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar1_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "64",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "160.000000",
+         "y": "304.000000"
+      },
+      "tile_8877805190570201837": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar5_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "224",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "208.000000",
+         "y": "272.000000"
+      },
+      "tile_893984209839148965": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "rubble_pile1_br_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "272",
+         "texture_rect_top": "32",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "208.000000",
+         "y": "208.000000"
+      },
+      "tile_9030006046973468462": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "ladder_top_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "288",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "112.000000",
+         "y": "320.000000"
+      },
+      "tile_9169931789242645563": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar5_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "224",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "208.000000",
+         "y": "288.000000"
+      },
+      "tile_925935529444173659": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "rock_ledge_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "16",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "80.000000",
+         "y": "256.000000"
+      },
+      "tile_925943509552582363": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar7_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "256",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "32.000000",
+         "y": "304.000000"
+      },
+      "tile_9375657735917726306": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar1_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "64",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "224.000000",
+         "y": "320.000000"
+      },
+      "tile_9497032424345962724": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar1_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "64",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "64.000000",
+         "y": "304.000000"
+      },
+      "tile_9782082644934142369": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "metal_pit_left_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "272",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "128.000000",
+         "y": "304.000000"
+      },
+      "tile_9933478633704653190": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "black_pillar5_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "224",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "48.000000",
+         "y": "320.000000"
+      },
+      "tile_9981918953507928299": {
+         "color": {
+            "a": "255",
+            "b": "255",
+            "g": "255",
+            "r": "255"
+         },
+         "id": "side1_sprite",
+         "origin_x": "0.000000",
+         "origin_y": "0.000000",
+         "rotation": "0.000000",
+         "texture": "megaman_tileset",
+         "texture_rect_height": "16",
+         "texture_rect_left": "32",
+         "texture_rect_top": "0",
+         "texture_rect_width": "16",
+         "type": "Sprite",
+         "x": "80.000000",
+         "y": "320.000000"
+      },
+      "type": "TileMap",
+      "z_index": "0"
    },
    "Tileset0": {
       "filename": "megaman_zero_bg.png",
@@ -2377,6 +2378,12 @@
          "left": "144",
          "top": "0",
          "width": "16"
-      },
+      }
+   },
+   "tilemap_schema": {
+      "TileMap0": {
+         "is_locked": "0",
+         "is_visible": "1"
+      }
    }
 }

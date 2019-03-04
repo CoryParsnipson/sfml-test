@@ -345,7 +345,6 @@ Handle BuilderScene::create_dropdown(std::string entity_id, std::string dropdown
       root_bounds.width = root->get<Collision>()->volume().width;
       root_bounds.height = root->get<Collision>()->volume().height;
 
-      //if (!bounds.contains(msg.click_pos) && !root_bounds.contains(msg.click_pos)) {
       if (!root_bounds.contains(msg.click_pos)) {
          dropdown->space()->visible(false);
          clickable->is_enabled(false);
@@ -371,7 +370,6 @@ Handle BuilderScene::create_dropdown(std::string entity_id, std::string dropdown
       root_bounds.width = root->get<Collision>()->volume().width;
       root_bounds.height = root->get<Collision>()->volume().height;
 
-      //if (!bounds.contains(msg.click_pos) && !root_bounds.contains(msg.click_pos)) {
       if (!root_bounds.contains(msg.click_pos)) {
          dropdown->space()->visible(false);
          clickable->is_enabled(false);
@@ -394,7 +392,6 @@ Handle BuilderScene::create_dropdown(std::string entity_id, std::string dropdown
 
 void BuilderScene::create_hud(Game& game) {
    Entity* hud_root = this->get_entity("HudRootEntity");
-   Entity* map_root = this->get_entity("MapRootEntity");
    Entity* grid_root = this->get_entity("GridRootEntity");
 
    GraphicalSystem* gs = this->get_system<GraphicalSystem>("GraphicalSystem");
@@ -424,7 +421,7 @@ void BuilderScene::create_hud(Game& game) {
 
    // create tile selection map_root portion
    Entity* tile_selection_maproot = this->create_entity("TileSelectionMapRootEntity");
-   this->add_to_scene_node(map_root, tile_selection_maproot, 0);
+   this->add_to_scene_node(grid_root, tile_selection_maproot, 0);
 
    tile_selection_maproot->add<Collision>("TileSelectionMapRootCollider", sf::FloatRect(0, 0, 0, 0));
 
@@ -857,7 +854,7 @@ void BuilderScene::setup_keybindings(Game& game) {
          assert (active_map->get<TileMap>() && tile_selection_maproot);
 
          active_map->get<TileMap>()->remove(
-            // don't use global transform (need translation but not zoom from map_root)
+            //// don't use global transform (need translation but not zoom from map_root)
             tile_selection_maproot->space()->transform().transformRect(
                tile_selection_maproot->get<Collision>()->volume()
             )
@@ -963,34 +960,83 @@ void BuilderScene::load_from_file(std::string filename) {
    }
 
    Serializer::SerialData scene_data = serializer.deserialize(*this, raw_save_file);
-   this->scene_data_filename = filename;
-
    this->unload_scene_data();
 
-   // deserialize tileset(s)
-   unsigned int tileset_id = 0;
-   Serializer::SerialData::iterator tileset_it = scene_data.find("Tileset" + std::to_string(tileset_id));
-   while (tileset_it != scene_data.end()) {
-      std::shared_ptr<Tileset> tileset = std::make_shared<Tileset>();
-      tileset->deserialize(serializer, *this, tileset_it->second);
+   this->scene_data_filename = filename;
 
-      this->textures().load(tileset->id(), tileset->texture_filename());
+   // deserialize tileset(s)
+   for (Serializer::SerialData::iterator it = scene_data.begin(); it != scene_data.end(); ++it) {
+      if (!std::regex_match(it->first, std::regex("Tileset([0-9]+)"))) {
+         continue;
+      }
+
+      std::shared_ptr<Tileset> tileset = std::make_shared<Tileset>();
+      tileset->deserialize(serializer, *this, it->second);
       this->tilesets_.push_back(tileset);
 
-      ++tileset_id;
-      tileset_it = scene_data.find("Tileset" + std::to_string(tileset_id));
+      if (!this->textures().get(tileset->texture_filename())) {
+         this->textures().load(tileset->id(), tileset->texture_filename());
+      }
    }
    Game::logger().msg(this->id(), Logger::INFO, this->textures());
 
-   Entity* map0 = this->get_entity("Map0Entity");
-   Entity* grid_entity = this->get_entity("GridEntity");
+   // deserialize tilemaps
+   std::vector<std::tuple<int, Handle>> zsorted_tilemaps;
+   Handle map_root = this->get_entity_handle("MapRootEntity");
+   for (Serializer::SerialData::iterator it = scene_data.begin(); it != scene_data.end(); ++it) {
+      std::smatch matches;
+      if (!std::regex_match(it->first, matches, std::regex("TileMap([0-9]+)"))) {
+         continue;
+      }
+      assert (matches.size() == 2);
 
-   assert(map0 && grid_entity);
+      int map_idx = std::stoi(matches.str(1));
+      if (this->next_map_idx_ < map_idx) {
+         this->next_map_idx_ = map_idx;
+      }
 
-   // deserialize tilemap
-   if (scene_data.find("TileMap0") != scene_data.end()) {
-      map0->get<TileMap>()->deserialize(static_cast<Serializer&>(serializer), *this, scene_data["TileMap0"]);
+      Entity* tilemap = this->get_entity("Map" + matches.str(1) + "Entity");
+      if (!tilemap) {
+         // create new entity if one doesn't already exist
+         tilemap = this->create_entity("Map" + matches.str(1) + "Entity");
+         tilemap->add<TileMap>("TileMap" + matches.str(1));
+         this->add_to_scene_node(map_root, tilemap);
+      }
+
+      tilemap->get<TileMap>()->deserialize(static_cast<Serializer&>(serializer), *this, it->second);
+
+      for (unsigned int i = 0; i < zsorted_tilemaps.size(); ++i) {
+         if (std::get<0>(zsorted_tilemaps[i]) > tilemap->get<TileMap>()->z_index()) {
+            zsorted_tilemaps.insert(
+               zsorted_tilemaps.begin() + i,
+               std::make_tuple(
+                  tilemap->get<TileMap>()->z_index(),
+                  tilemap->handle()
+               )
+            );
+            break;
+         }
+      }
    }
+
+   // sort tilemaps by z-index
+   for (unsigned int i = 0; i < zsorted_tilemaps.size(); ++i) {
+      Entity* tilemap = this->get_entity(std::get<1>(zsorted_tilemaps[i]));
+      assert (tilemap);
+
+      this->add_to_scene_node(map_root, tilemap, 0);
+   }
+
+   // deserialize tilemap schema
+   if (scene_data.find("tilemap_schema") != scene_data.end()) {
+      Serializer::SerialData schema_data = serializer.deserialize(*this, scene_data["tilemap_schema"]);
+      for (Serializer::SerialData::iterator it = schema_data.begin(); it != schema_data.end(); ++it) {
+         tilemap_schema_[it->first] = serializer.deserialize(*this, it->second);
+      }
+   }
+
+   Entity* grid_entity = this->get_entity("GridEntity");
+   assert(grid_entity);
 
    // deserialize grid
    if (scene_data.find("Grid0") != scene_data.end()) {
@@ -1020,6 +1066,13 @@ void BuilderScene::save_to_file(std::string filename) {
       scene_data = serializer->deserialize(*this, old_file_contents);
    }
 
+   // save tilemap schema
+   Serializer::SerialData tilemap_schema;
+   for (std::map<std::string, Serializer::SerialData>::iterator it = this->tilemap_schema_.begin(); it != this->tilemap_schema_.end(); ++it) {
+      tilemap_schema[it->first] = serializer->serialize(it->second);
+   }
+   scene_data["tilemap_schema"] = serializer->serialize(tilemap_schema);
+
    // save tilesets
    for (unsigned int i = 0; i < this->tilesets_.size(); ++i) {
       scene_data["Tileset" + std::to_string(i)] = this->tilesets_[i]->serialize(*serializer);
@@ -1028,6 +1081,8 @@ void BuilderScene::save_to_file(std::string filename) {
    // TODO: save grids too
    // TODO: need to change this when layers are added
    scene_data["TileMap0"] = "";
+
+   // TODO: set z-index values on all tile maps
    
    // modify the tilemap0 entry
    Entity* map0 = this->get_entity("Map0Entity");
@@ -1054,7 +1109,11 @@ void BuilderScene::unload_scene_data() {
 
    this->clear_map_layers();
 
+   // reset scene state
    this->next_map_idx_ = 0;
+   this->scene_data_filename = "";
+   this->tilesets_.clear();
+   this->tilemap_schema_.clear();
 
    // add empty Map0
    this->add_map_layer();
@@ -1219,6 +1278,12 @@ Handle BuilderScene::add_map_layer() {
    new_map->add<TileMap>("TileMap" + std::to_string(this->next_map_idx_));
    this->add_to_scene_node(map_root, new_map);
 
+   // update tilemap_schema
+   Serializer::SerialData schema;
+   schema["is_locked"] = "0";
+   schema["is_visible"] = "1";
+   this->tilemap_schema_[new_map->get<TileMap>()->id()] = schema;
+
    return new_map->handle();
 }
 
@@ -1233,6 +1298,7 @@ void BuilderScene::remove_map_layer(int map_idx) {
       }
 
       if (map->id() == ("Map" + std::to_string(map_idx) + "Entity")) {
+         this->tilemap_schema_.erase(map->id());
          this->remove_entity(map->handle());
          return;
       }
@@ -1251,6 +1317,8 @@ void BuilderScene::clear_map_layers() {
 
       this->remove_entity(map->handle(), true);
    }
+
+   this->tilemap_schema_.clear();
 }
 
 void BuilderScene::set_active_layer(Handle map_layer) {

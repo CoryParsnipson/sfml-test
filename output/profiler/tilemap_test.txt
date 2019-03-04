@@ -10,6 +10,7 @@
    "TileMap0": {
       "id": "TileMap0",
       "num_tiles": "187",
+      "z_index": "0",
       "tile_0": {
          "color": {
             "a": "255",

@@ -8,12 +8,14 @@
 TileMap::TileMap(const std::string& id /* = "TileMap Component" */)
 : Component(id)
 , tiles_()
+, z_index_(0)
 {
 }
 
 TileMap::TileMap(const TileMap& other)
 : Component(other.id())
 , tiles_(other.tiles_)
+, z_index_(other.z_index_)
 {
 }
 
@@ -30,6 +32,15 @@ TileMap& TileMap::operator=(const TileMap& other) {
 void TileMap::swap(TileMap& other) {
    std::swap(static_cast<Component&>(*this), static_cast<Component&>(other));
    this->tiles_.swap(other.tiles_);
+   std::swap(this->z_index_, other.z_index_);
+}
+
+int TileMap::z_index() const {
+   return this->z_index_;
+}
+
+void TileMap::z_index(int z_index) {
+   this->z_index_ = z_index;
 }
 
 TileMap::TileType* TileMap::get(const sf::Vector2f& pos) {
@@ -95,6 +106,7 @@ std::string TileMap::serialize(Serializer& s) {
    data["id"] = this->id();
    
    data["num_tiles"] = std::to_string(this->tiles_.size());
+   data["z_index"] = std::to_string(this->z_index());
 
    for (TileMap::TileStore::iterator it = this->tiles_.begin(); it != this->tiles_.end(); ++it) {
       std::size_t tile_hash = TileMap::TileHash()(it->first);
@@ -122,6 +134,7 @@ void TileMap::deserialize(Serializer& s, Scene& scene, std::string& d) {
 
    this->tiles_.clear();
    this->id(data["id"]);
+   this->z_index(std::stoi(data["z_index"]));
 
    for (auto kv_pair : data) {
       if (kv_pair.first.rfind("tile_", 0) != 0) {
