@@ -1043,15 +1043,26 @@ void BuilderScene::load_from_file(std::string filename) {
       grid_entity->get<Grid>()->deserialize(static_cast<Serializer&>(serializer), *this, scene_data["Grid0"]);
    }
 
+   // refresh all BuilderScene UI things
    if (this->tilesets_.size() > 0) {
       this->populate_tile_palette(*this->tilesets_[0]);
       this->show_entity("TilePalette");
    }
 
-   // refresh the grid, it won't refresh since the camera hasn't changed
-   // (this might not be the best solution)
-   GridSystem* grid_system = this->get_system<GridSystem>("GridSystem");
-   grid_system->force_update(); 
+   this->clear_layers_panel();
+   this->populate_layers_panel();
+   this->show_entity("LayersPanel");
+
+   // hide tile selection cursor
+   Entity* tile_selection = this->get_entity("TileSelectionEntity");
+   Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
+   assert (tile_selection && tile_selection_maproot);
+
+   tile_selection->space()->visible(false);
+   tile_selection_maproot->get<Collision>()->volume(sf::FloatRect(0, 0, 0, 0));
+
+   // need to refresh the grid, since the camera hasn't changed
+   this->get_system<GridSystem>("GridSystem")->force_update();
 }
 
 void BuilderScene::save_to_file(std::string filename) {
@@ -1084,20 +1095,17 @@ void BuilderScene::save_to_file(std::string filename) {
 
    scene_data[grid_entity->get<Grid>()->id()] = grid_entity->get<Grid>()->serialize(*serializer);
 
-   // TODO: need to change this when layers are added
-   scene_data["TileMap0"] = "";
+   // save tilemaps
+   Entity* map_root = this->get_entity("MapRootEntity");
+   for (unsigned int i = 0; i < map_root->space()->num_children(); ++i) {
+      Entity* map_layer = this->get_entity(map_root->space()->get_child(i)->entity());
+      TileMap* tilemap = map_layer->get<TileMap>();
+      assert (tilemap);
 
-   // TODO: set z-index values on all tile maps
-   
-   // modify the tilemap0 entry
-   Entity* map0 = this->get_entity("Map0Entity");
-   if (map0) {
-      TileMap* tilemap0 = map0->get<TileMap>();
-      if (tilemap0) {
-         scene_data["TileMap0"] = tilemap0->serialize(*serializer);
-      }
+      tilemap->z_index(i);
+      scene_data[tilemap->id()] = tilemap->serialize(*serializer);
    }
-   
+
    // write back to file
    fc->remove();
    fc->seek(0);
