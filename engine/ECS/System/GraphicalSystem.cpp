@@ -37,6 +37,10 @@ RenderSurface* GraphicalSystem::surface() const {
    return this->surface_;
 }
 
+void GraphicalSystem::rebuild_entity_subscription() {
+   this->subscription().init();
+}
+
 void GraphicalSystem::on_init(Game& game) {
    this->subscribe_to().one_of<Circle, Rectangle, Sprite, Text, VertexList, TileMap>();
 }

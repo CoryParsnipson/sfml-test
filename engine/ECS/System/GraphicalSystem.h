@@ -26,6 +26,8 @@ public:
    CameraPtr camera() const;
    RenderSurface* surface() const;
 
+   void rebuild_entity_subscription();
+
 private:
    RenderSurface* surface_;
    CameraPtr camera_;

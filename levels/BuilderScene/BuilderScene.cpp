@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <limits>
 #include <regex>
+#include <algorithm>
 
 #include <SFML/Graphics.hpp>
 
@@ -1649,8 +1650,24 @@ void BuilderScene::populate_layers_panel() {
       }
 
       // set up map layer button actions
-      map_layer_button->get<Callback>()->left_release([this, map_layer_button, map] () {
+      map_layer_button->get<Callback>()->mouse_move([this, map_layer_button] () {
+         assert (map_layer_button->get<Clickable>());
+
+         if (map_layer_button->get<Clickable>()->is_left_clicked()) {
+            sf::Vector2f curr_pos(
+               this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position(),
+               this->game().get_player(1).bindings().get<MouseYIntent>()->element()->position()
+            );
+
+            sf::Vector2f delta = curr_pos - map_layer_button->get<Callback>()->prev_mouse_pos();
+
+            map_layer_button->space()->move(0, delta.y);
+         }
+      });
+
+      map_layer_button->get<Callback>()->left_release([this, label_bottom_padding, map_layer_button, label_height, map] () {
          Entity* grid_entity = this->get_entity("GridEntity");
+         Entity* layers_panel = this->get_entity("LayersPanel");
 
          sf::Vector2f release_pos(
             this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position(),
@@ -1661,12 +1678,60 @@ void BuilderScene::populate_layers_panel() {
          int drag_threshold = grid_entity->get<Grid>()->tile_width() / 3.f;
          bool is_drag_gesture = std::sqrt(std::pow(mouse_delta.x, 2) + std::pow(mouse_delta.y, 2)) > drag_threshold;
 
-         if (is_drag_gesture) {
-            // need to re-order layers
-         } else {
+         if (!is_drag_gesture) {
             this->set_active_layer(map->handle());
             this->clear_layers_panel();
             this->populate_layers_panel();
+         } else {
+            // need to re-order layers
+            Entity* map_root = this->get_entity("MapRootEntity");
+            Entity* map_layers_root = this->get_entity("LayersPanelContents");
+
+            // comparison function for sorting map layer buttons
+            auto cmp = [this, label_height] (Entity* left, Entity* right) {
+               assert (left && right);
+               return (left->space()->position().y + (label_height / 2.f)) > (right->space()->position().y + label_height / 2.f);
+            };
+            std::vector<Entity*> layers_sorted;
+
+            // get the center y coordinate of all existing map layer buttons
+            for (unsigned int i = 0; i < map_layers_root->space()->num_children(); ++i) {
+               Entity* layer = this->get_entity(map_layers_root->space()->get_child(i)->entity());
+               if (!layer) {
+                  continue;
+               }
+
+               layers_sorted.push_back(layer);
+            }
+
+            // sort all map layer buttons in order of y-axis value
+            std::sort(layers_sorted.begin(), layers_sorted.end(), cmp);
+
+            int sorted_map_idx = 0;
+            int bottom_of_layers_panel = layers_panel->get<Rectangle>()->size().y - label_height - label_bottom_padding;
+            std::smatch matches;
+            for (std::vector<Entity*>::iterator it = layers_sorted.begin(); it != layers_sorted.end(); ++it) {
+               std::regex_match((*it)->id(), matches, std::regex("MapLayer([0-9]+)Button"));
+               assert (matches.size() == 2);
+
+               // reorder the map layers based on the ordering of the buttons
+               Entity* tilemap = this->get_entity("Map" + matches.str(1) + "Entity");
+               assert (tilemap && tilemap->get<TileMap>());
+
+               this->add_to_scene_node(map_root, tilemap);
+
+               // adjust the positions of the map layer buttons to the correct values
+               sf::Vector2f button_pos = (*it)->space()->position();
+               (*it)->space()->position(
+                  button_pos.x,
+                  bottom_of_layers_panel - sorted_map_idx * label_height
+               );
+
+               ++sorted_map_idx;
+            }
+
+            // refresh entity subscripton on graphics system (because entity subscription sucks)
+            this->get_system<GraphicalSystem>("GraphicalSystem")->rebuild_entity_subscription();
          }
       });
 
