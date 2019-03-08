@@ -982,7 +982,12 @@ void BuilderScene::load_from_file(std::string filename) {
    Game::logger().msg(this->id(), Logger::INFO, this->textures());
 
    // deserialize tilemaps
-   std::vector<std::tuple<int, Handle>> zsorted_tilemaps;
+   auto zidx_cmp = [this] (Entity* left, Entity* right) {
+      assert (left && right && left->get<TileMap>() && right->get<TileMap>());
+      return (left->get<TileMap>()->z_index() > right->get<TileMap>()->z_index());
+   };
+
+   std::vector<Entity*> zsorted_tilemaps;
    Handle map_root = this->get_entity_handle("MapRootEntity");
    for (Serializer::SerialData::iterator it = scene_data.begin(); it != scene_data.end(); ++it) {
       std::smatch matches;
@@ -1005,27 +1010,13 @@ void BuilderScene::load_from_file(std::string filename) {
       }
 
       tilemap->get<TileMap>()->deserialize(static_cast<Serializer&>(serializer), *this, it->second);
-
-      for (unsigned int i = 0; i < zsorted_tilemaps.size(); ++i) {
-         if (std::get<0>(zsorted_tilemaps[i]) > tilemap->get<TileMap>()->z_index()) {
-            zsorted_tilemaps.insert(
-               zsorted_tilemaps.begin() + i,
-               std::make_tuple(
-                  tilemap->get<TileMap>()->z_index(),
-                  tilemap->handle()
-               )
-            );
-            break;
-         }
-      }
+      zsorted_tilemaps.push_back(tilemap);
    }
 
    // sort tilemaps by z-index
+   std::sort(zsorted_tilemaps.begin(), zsorted_tilemaps.end(), zidx_cmp);
    for (unsigned int i = 0; i < zsorted_tilemaps.size(); ++i) {
-      Entity* tilemap = this->get_entity(std::get<1>(zsorted_tilemaps[i]));
-      assert (tilemap);
-
-      this->add_to_scene_node(map_root, tilemap, 0);
+      this->add_to_scene_node(map_root, zsorted_tilemaps[i], 0);
    }
 
    // deserialize tilemap schema
