@@ -35,6 +35,13 @@ public:
    virtual void process(Game& game, MouseLeftInputEvent& e);
    virtual void process(Game& game, GainedFocusInputEvent& e);
 
+   enum class ToolType {
+      PAN,
+      ZOOM,
+      SELECT,
+      MOVE
+   };
+
 private:
    bool grid_visible_;
    bool visual_debug_enable_;
@@ -49,6 +56,9 @@ private:
    std::string scene_data_filename;
    std::vector<std::shared_ptr<Tileset>> tilesets_;
    std::map<std::string, Serializer::SerialData> tilemap_schema_;
+
+   ToolType prev_tool_;
+   ToolType curr_tool_;
 
    void load_fonts();
    void load_textures();
@@ -92,7 +102,10 @@ private:
    void mouse_script_add_zoom_behavior(Game& game, Handle mouse_entity);
    void mouse_script_add_pan_behavior(Game& game, Handle mouse_entity);
    void mouse_script_add_select_behavior(Game& game, Handle mouse_entity);
-   void mouse_script_add_move_behavior(Game& game, Handle mouse_entity, bool is_clicked_initial = false);
+   void mouse_script_add_move_behavior(Game& game, Handle mouse_entity);
+
+   void mouse_script_set_behavior(Game& game, ToolType new_tool);
+   void mouse_script_swap_behavior(Game& game);
 
    Handle create_notification(float width, float height);
    Handle create_dialog_box(std::string display_text, sf::Vector2f size);

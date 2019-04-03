@@ -70,6 +70,8 @@ BuilderScene::BuilderScene()
 , frame_count(0)
 , next_map_idx_(0)
 , scene_data_filename()
+, prev_tool_(ToolType::SELECT)
+, curr_tool_(ToolType::SELECT)
 {
 }
 
@@ -594,7 +596,7 @@ void BuilderScene::create_hud(Game& game) {
    this->add_to_scene_node(mms_dropdown_menu, select_button->handle());
 
    select_button->get<Callback>()->left_release([&game, this] () {
-      this->mouse_script_add_select_behavior(game, this->get_entity_handle("MouseCursorScriptSwappable"));
+      this->mouse_script_set_behavior(game, ToolType::SELECT);
    });
 
    // add move tool to the mms dropdown
@@ -602,7 +604,7 @@ void BuilderScene::create_hud(Game& game) {
    this->add_to_scene_node(mms_dropdown_menu, move_button->handle());
 
    move_button->get<Callback>()->left_release([&game, this] () {
-      this->mouse_script_add_move_behavior(game, this->get_entity_handle("MouseCursorScriptSwappable"));
+      this->mouse_script_set_behavior(game, ToolType::MOVE);
    });
 
    sf::Vector2f window_dropdown_pos;
@@ -776,13 +778,11 @@ void BuilderScene::setup_keybindings(Game& game) {
 
    game.get_player(1).bindings().set<UseMoveToolIntent>(1, game.input_manager().get_device(1)->get("C"));
 
-   std::shared_ptr<bool> move_tool_toggle = std::make_shared<bool>(false);
-
    // add responses to keyboard inputs
    hud_root->add<Callback>("HudRootCallback");
    hud_root->add<PlayerProfile>("HudRootPlayerProfile", 1);
 
-   hud_root->get<Callback>()->on_update([this, grid_root, grid_entity, map_root, tile_selection, tile_selection_maproot, move_tool_toggle] () {
+   hud_root->get<Callback>()->on_update([this, grid_root, grid_entity, map_root, tile_selection, tile_selection_maproot] () {
       InputBinding& p1_bindings = this->game().get_player(1).bindings();
 
       if (p1_bindings.get<GridVisibilityToggleIntent>()->element()->was_pressed() && p1_bindings.get<ModalIntent>()->element()->is_pressed()) {
@@ -880,36 +880,33 @@ void BuilderScene::setup_keybindings(Game& game) {
       // move tool on press and hold
       if (p1_bindings.get<ModalIntent>()->element()->is_pressed()) {
          if (p1_bindings.get<UseMoveToolIntent>()->element()->was_pressed()) {
-            // set move tool behavior
-            this->mouse_script_add_move_behavior(this->game(), this->get_entity_handle("MouseCursorScriptSwappable"));
+            this->mouse_script_set_behavior(this->game(), ToolType::MOVE);
          } else if (p1_bindings.get<UseMoveToolIntent>()->element()->was_released()) {
             Entity* mouse_cursor_script = this->get_entity("MouseCursorScriptSwappable");
             mouse_cursor_script->get<Callback>()->left_release();
 
-            // set select tool behavior
-            this->mouse_script_add_select_behavior(this->game(), this->get_entity_handle("MouseCursorScriptSwappable"));
+            // swap back to previous tool
+            this->mouse_script_swap_behavior(this->game());
          }
       } else {
          // move tool toggle
-         if (p1_bindings.get<UseMoveToolIntent>()->element()->was_pressed() && !(*move_tool_toggle)) {
-            // set move tool behavior
-            this->mouse_script_add_move_behavior(this->game(), this->get_entity_handle("MouseCursorScriptSwappable"));
-            *move_tool_toggle = true;
-         } else if (p1_bindings.get<UseMoveToolIntent>()->element()->was_pressed() && *move_tool_toggle) {
+         if (p1_bindings.get<UseMoveToolIntent>()->element()->was_pressed() && this->curr_tool_ != ToolType::MOVE) {
+            this->mouse_script_set_behavior(this->game(), ToolType::MOVE);
+         } else if (p1_bindings.get<UseMoveToolIntent>()->element()->was_pressed() && this->curr_tool_ == ToolType::MOVE) {
             Entity* mouse_cursor_script = this->get_entity("MouseCursorScriptSwappable");
             mouse_cursor_script->get<Callback>()->left_release();
 
-            // set select tool behavior
-            this->mouse_script_add_select_behavior(this->game(), this->get_entity_handle("MouseCursorScriptSwappable"));
-            *move_tool_toggle = false;
+            // swap back to previous tool
+            this->mouse_script_swap_behavior(this->game());
          }
       }
 
       if (p1_bindings.get<ModalIntent>()->element()->was_released() && p1_bindings.get<UseMoveToolIntent>()->element()->is_pressed()) {
-            Entity* mouse_cursor_script = this->get_entity("MouseCursorScriptSwappable");
-            mouse_cursor_script->get<Callback>()->left_release();
+         Entity* mouse_cursor_script = this->get_entity("MouseCursorScriptSwappable");
+         mouse_cursor_script->get<Callback>()->left_release();
 
-            this->mouse_script_add_select_behavior(this->game(), this->get_entity_handle("MouseCursorScriptSwappable"));
+         // swap back to previous tool
+         this->mouse_script_swap_behavior(this->game());
       }
    });
 }
@@ -1203,7 +1200,9 @@ void BuilderScene::create_mouse_entity(Game& game) {
 
    this->mouse_script_add_zoom_behavior(game, mouse_cursor_script->handle());
    this->mouse_script_add_pan_behavior(game, mouse_cursor_script->handle());
-   this->mouse_script_add_select_behavior(game, mcs_swappable->handle());
+
+   // set initialize behavior
+   this->mouse_script_set_behavior(game, ToolType::SELECT);
 }
 
 void BuilderScene::create_backdrop(GraphicalSystem* gs) {
@@ -1506,7 +1505,7 @@ void BuilderScene::clear_tile_palette() {
 }
 
 void BuilderScene::create_layers_panel() {
-   Entity* layers_panel = this->get_entity(this->create_panel("LayersPanel", sf::FloatRect(0, 0, 220, 320), true, "Map Layers"));
+   Entity* layers_panel = this->get_entity(this->create_panel("LayersPanel", sf::FloatRect(0, 0, 220, 480), true, "Map Layers"));
 
    layers_panel->add<PlayerProfile>("LayersPanelPlayerProfile", 1);
    layers_panel->add<Clickable>("LayersPanelClickable");
@@ -2302,7 +2301,7 @@ void BuilderScene::mouse_script_add_select_behavior(Game& game, Handle mouse_ent
    });
 }
 
-void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entity, bool is_clicked_initial /* = false */) {
+void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entity) {
    Entity* mouse_cursor_script = this->get_entity(mouse_entity);
    if (!mouse_cursor_script) {
       Game::logger().msg(this->id(), Logger::WARNING, "(mouse_script_add_select_behavior) Mouse cursor script entity not found.");
@@ -2317,7 +2316,7 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
    mouse_cursor->get<Sprite>()->offset(-10, -10);
 
    // HACKITY HACK
-   std::shared_ptr<bool> is_clicked = std::make_shared<bool>(is_clicked_initial);
+   std::shared_ptr<bool> is_clicked = std::make_shared<bool>(false);
    std::shared_ptr<std::vector<Handle>> move_list = std::make_shared<std::vector<Handle>>();
 
    // turn tile selection blue
@@ -2569,6 +2568,41 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
 
       move_list->clear();
    });
+}
+
+void BuilderScene::mouse_script_set_behavior(Game& game, ToolType new_tool) {
+   // make curr_tool_ into prev_tool_
+   this->prev_tool_ = this->curr_tool_;
+   this->curr_tool_ = new_tool;
+
+   // operate on swappable mouse cursor entity only
+   Entity* mcs_swappable = this->get_entity("MouseCursorScriptSwappable");
+   assert (mcs_swappable);
+
+   // remove old behavior
+   mcs_swappable->remove<Callback>();
+   mcs_swappable->add<Callback>("MouseCursorSwappableScriptCallback");
+
+   // add new behavior
+   switch(new_tool) {
+      case ToolType::PAN:
+         this->mouse_script_add_pan_behavior(game, mcs_swappable->handle());
+         break;
+      case ToolType::ZOOM:
+         this->mouse_script_add_zoom_behavior(game, mcs_swappable->handle());
+         break;
+      case ToolType:: SELECT:
+         this->mouse_script_add_select_behavior(game, mcs_swappable->handle());
+         break;
+      case ToolType::MOVE:
+         this->mouse_script_add_move_behavior(game, mcs_swappable->handle());
+         break;
+   }
+}
+
+void BuilderScene::mouse_script_swap_behavior(Game& game) {
+   // swap curr_tool_ and prev_tool_
+   this->mouse_script_set_behavior(game, this->prev_tool_);
 }
 
 Handle BuilderScene::create_notification(float width, float height) {
