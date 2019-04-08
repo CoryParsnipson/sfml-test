@@ -2391,10 +2391,12 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
       selection_area.left = tile_selection_maproot->space()->position().x;
       selection_area.top = tile_selection_maproot->space()->position().y;
 
+      *is_clicked = true;
+
       // populate move list
       std::vector<TileMap::TileType*> tiles = active_map->get<TileMap>()->find(selection_area);
 
-      if (tiles.size() == 0) {
+      if (tiles.size() == 0 || move_list->size() > 0) {
          return;
       }
 
@@ -2489,8 +2491,6 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
       tile_selection->get<Collision>()->volume(sf::Vector2f(0, 0), corresponding_map_end - corresponding_map_pos);
 
       tile_selection_maproot->get<Collision>()->volume(sf::Vector2f(0, 0), max_ts_pos - min_ts_pos);
-
-      *is_clicked = true;
    });
 
    mouse_cursor_script->get<Callback>()->left_release([&game, mouse_entity, mouse_cursor_script, is_clicked, move_list, this] () {
@@ -2499,7 +2499,9 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
       Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
       Entity* active_map = this->get_entity(this->get_active_layer());
 
-      if (!(*is_clicked)) {
+      // this is a hack to get the code that moves tiles from the move list entity to the TileMap to run only when switching tools
+      // There is a scene function that set's behavior and calls left_release() manually if we are switching away frome the MOVE tool
+      if (!(*is_clicked) && this->curr_tool_ == ToolType::MOVE) {
          return;
       }
 
@@ -2511,6 +2513,22 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
          // note: don't use the grid's zoom factor for this round because tile_selection_maproot is on map_root
          grid_entity->get<Grid>()->round(tile_selection_maproot->space()->position(), 1.f)
       );
+
+      for (std::vector<Handle>::const_iterator it = move_list->begin(); it != move_list->end(); ++it) {
+         Entity* e = this->get_entity(*it);
+         if (!e) {
+            continue;
+         }
+
+         e->space()->position(
+            grid_entity->get<Grid>()->round(e->space()->position(), 1.f)
+         );
+      }
+
+      // (MESSY) if the move tool is no longer active, then add move list tiles back to TileMap
+      if (this->curr_tool_ == ToolType::MOVE) {
+         return;
+      }
       
       // add move_list tiles back to TileMap
       for (std::vector<Handle>::const_iterator it = move_list->begin(); it != move_list->end(); ++it) {
@@ -2578,6 +2596,11 @@ void BuilderScene::mouse_script_set_behavior(Game& game, ToolType new_tool) {
    // operate on swappable mouse cursor entity only
    Entity* mcs_swappable = this->get_entity("MouseCursorScriptSwappable");
    assert (mcs_swappable);
+
+   // add some special behavior here...
+   if (this->prev_tool_ == ToolType::MOVE && this->curr_tool_ != ToolType::MOVE) {
+      mcs_swappable->get<Callback>()->left_release();
+   }
 
    // remove old behavior
    mcs_swappable->remove<Callback>();
