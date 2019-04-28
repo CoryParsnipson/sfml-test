@@ -39,7 +39,8 @@ public:
       PAN,
       ZOOM,
       SELECT,
-      MOVE
+      MOVE,
+      CLONE
    };
 
 private:
@@ -103,6 +104,7 @@ private:
    void mouse_script_add_pan_behavior(Game& game, Handle mouse_entity);
    void mouse_script_add_select_behavior(Game& game, Handle mouse_entity);
    void mouse_script_add_move_behavior(Game& game, Handle mouse_entity);
+   void mouse_script_add_clone_behavior(Game& game, Handle mouse_entity);
 
    void mouse_script_set_behavior(Game& game, ToolType new_tool);
    void mouse_script_swap_behavior(Game& game);

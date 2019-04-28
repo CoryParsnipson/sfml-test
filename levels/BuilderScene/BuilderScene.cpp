@@ -1,4 +1,5 @@
 #include <cmath>
+#include <cctype>
 #include <cstdio>
 #include <limits>
 #include <regex>
@@ -44,6 +45,7 @@
 #include "SerializeMapIntent.h"
 #include "ModalIntent.h"
 #include "UseMoveToolIntent.h"
+#include "UseCloneToolIntent.h"
 
 #include "GraphicalSystem.h"
 #include "VisualDebugSystem.h"
@@ -607,6 +609,14 @@ void BuilderScene::create_hud(Game& game) {
       this->mouse_script_set_behavior(game, ToolType::MOVE);
    });
 
+   // add clone tool to the mms dropdown
+   Entity* clone_button = this->get_entity(this->create_button("CloneToolButton", sf::FloatRect(0, 70, 150, 30), "Clone Tool"));
+   this->add_to_scene_node(mms_dropdown_menu, clone_button->handle());
+
+   clone_button->get<Callback>()->left_release([&game, this] () {
+      this->mouse_script_set_behavior(game, ToolType::CLONE);
+   });
+
    sf::Vector2f window_dropdown_pos;
    window_dropdown_pos.x = mms_dropdown_button->space()->position().x +
       mms_dropdown_button->get<Rectangle>()->local_bounds().width;
@@ -626,7 +636,7 @@ void BuilderScene::create_hud(Game& game) {
             window_dropdown_pos.x,
             window_dropdown_pos.y,
             250,
-            70
+            100 
          )
       )
    );
@@ -776,7 +786,8 @@ void BuilderScene::setup_keybindings(Game& game) {
    game.get_player(1).bindings().set<MoveRightIntent>(1, game.input_manager().get_device(1)->get("Right"));
    game.get_player(1).bindings().set<MoveDownIntent>(1, game.input_manager().get_device(1)->get("Down"));
 
-   game.get_player(1).bindings().set<UseMoveToolIntent>(1, game.input_manager().get_device(1)->get("C"));
+   game.get_player(1).bindings().set<UseMoveToolIntent>(1, game.input_manager().get_device(1)->get("V"));
+   game.get_player(1).bindings().set<UseCloneToolIntent>(1, game.input_manager().get_device(1)->get("C"));
 
    // add responses to keyboard inputs
    hud_root->add<Callback>("HudRootCallback");
@@ -908,10 +919,25 @@ void BuilderScene::setup_keybindings(Game& game) {
          // swap back to previous tool
          this->mouse_script_swap_behavior(this->game());
       }
+
+      // clone tool toggle
+      if (p1_bindings.get<UseCloneToolIntent>()->element()->was_pressed()) {
+         if (this->curr_tool_ != ToolType::CLONE) {
+            this->mouse_script_set_behavior(this->game(), ToolType::CLONE);
+         } else {
+            // swap back to previous tool
+            this->mouse_script_swap_behavior(this->game());
+         }
+      }
    });
 }
 
 void BuilderScene::load_from_file(std::string filename) {
+   // convert filename to all lowercase
+   for (long unsigned int i = 0; i < filename.size(); ++i) {
+      filename[i] = tolower((unsigned char)filename[i]);
+   }
+
    // load or create a tile map
    JSONSerializer serializer;
    FileChannel save_file(filename);
@@ -1720,6 +1746,12 @@ void BuilderScene::populate_layers_panel() {
                ++sorted_map_idx;
             }
 
+            // (MESSY) make sure clone list layer is on top of all map layers, if exists
+            Entity* clone_list = this->get_entity("CloneListRootEntity");
+            if (clone_list) {
+               this->add_to_scene_node(map_root, clone_list);
+            }
+
             // refresh entity subscripton on graphics system (because entity subscription sucks)
             this->get_system<GraphicalSystem>("GraphicalSystem")->rebuild_entity_subscription();
          }
@@ -1823,6 +1855,20 @@ void BuilderScene::mouse_script_add_zoom_behavior(Game& game, Handle mouse_entit
          // I'm not sure how this is working... (offset calculation is VERY messy)
          tile_popup_cursor->space()->position(sf::Vector2f(-1 * grid_entity->get<Grid>()->tile_width() * new_scale.x, 0) - sf::Vector2f(10, 5));
       }
+
+      // (MESSY) adjust clone tool entity if exists
+      Entity* clone_list = this->get_entity("CloneListRootEntity");
+      if (clone_list) {
+         sf::Vector2f new_pos;
+         new_pos.x = this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position();
+         new_pos.y = this->game().get_player(1).bindings().get<MouseYIntent>()->element()->position();
+
+         sf::Vector2f delta = delta - clone_list->space()->position();
+         delta.x *= map_root->space()->scale().x;
+         delta.y *= map_root->space()->scale().y;
+         
+         clone_list->space()->move(delta);
+      }
    });
 }
 
@@ -1864,6 +1910,18 @@ void BuilderScene::mouse_script_add_pan_behavior(Game& game, Handle mouse_entity
          Entity* tile_popup = this->get_entity("TilePopup");
          if (tile_popup) {
             tile_popup->space()->move(new_pos - callback->prev_mouse_pos());
+         }
+
+         // clone tool code is needed here... (MESSY)
+         Entity* clone_list = this->get_entity("CloneListRootEntity");
+         if (clone_list) {
+            Entity* map_root = this->get_entity("MapRootEntity");
+
+            sf::Vector2f delta = callback->prev_mouse_pos() - new_pos;
+            delta.x /= map_root->space()->scale().x;
+            delta.y /= map_root->space()->scale().y;
+
+            clone_list->space()->move(delta);
          }
       }
    });
@@ -2395,7 +2453,6 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
 
       // populate move list
       std::vector<TileMap::TileType*> tiles = active_map->get<TileMap>()->find(selection_area);
-
       if (tiles.size() == 0 || move_list->size() > 0) {
          return;
       }
@@ -2588,6 +2645,269 @@ void BuilderScene::mouse_script_add_move_behavior(Game& game, Handle mouse_entit
    });
 }
 
+void BuilderScene::mouse_script_add_clone_behavior(Game& game, Handle mouse_entity) {
+   Entity* mouse_cursor_script = this->get_entity(mouse_entity);
+   if (!mouse_cursor_script) {
+      Game::logger().msg(this->id(), Logger::WARNING, "(mouse_script_add_select_behavior) Mouse cursor script entity not found.");
+      return;
+   }
+
+   // change mouse cursor to stamp
+   Entity* mouse_cursor = this->get_entity("MouseCursorEntity");
+   mouse_cursor->get<Sprite>()->texture(this->textures().get("builder_scene_icons"));
+   mouse_cursor->get<Sprite>()->texture_rect(sf::IntRect(40, 0, 7, 7));
+   mouse_cursor->get<Sprite>()->offset(-3, -5);
+
+   // HACKITY HACK
+   std::shared_ptr<std::vector<Handle>> clone_list = std::make_shared<std::vector<Handle>>();
+
+   // turn tile selection green
+   Entity* tile_selection = this->get_entity("TileSelectionEntity");
+   tile_selection->get<Rectangle>()->color(Color(64, 239, 73, 128));
+   tile_selection->get<Rectangle>()->outline_color(Color(44, 163, 50, 192));
+
+   mouse_cursor_script->get<Callback>()->camera_resize([mouse_cursor_script, this] () {
+      GraphicalSystem* gs = this->get_system<GraphicalSystem>("GraphicalSystem");
+
+      sf::Vector2f new_size = gs->camera()->size();
+      new_size.x *= gs->camera()->viewport().width;
+      new_size.y *= gs->camera()->viewport().height;
+
+      // make sure the collision volume fills the whole camera
+      mouse_cursor_script->get<Collision>()->volume(sf::Vector2f(0, 0), new_size);
+   });
+
+   mouse_cursor_script->get<Callback>()->on_update([clone_list, this] () {
+      if (this->curr_tool_ != ToolType::CLONE) {
+         for (auto handle : *clone_list) {
+            this->remove_entity(handle, true);
+         }
+
+         clone_list->clear();
+         this->remove_entity(this->get_entity_handle("CloneListRootEntity"));
+      }
+   });
+
+   mouse_cursor_script->get<Callback>()->mouse_move([mouse_cursor_script, clone_list, this] () {
+      if (clone_list->empty()) {
+         return;
+      }
+
+      sf::Vector2f mouse_pos;
+      mouse_pos.x = this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position();
+      mouse_pos.y = this->game().get_player(1).bindings().get<MouseYIntent>()->element()->position();
+
+      // need to multiply delta by inverse zoom factor for everything under map_root
+      Entity* map_root = this->get_entity("MapRootEntity");
+      mouse_pos.x /= map_root->space()->scale().x;
+      mouse_pos.y /= map_root->space()->scale().y;
+
+      // move the clone section
+      for (Handle handle : *clone_list) {
+         Entity* e = this->get_entity(handle);
+         e->space()->position(mouse_pos);
+      }
+   });
+
+   mouse_cursor_script->get<Callback>()->left_click([clone_list, this] () {
+      if (clone_list->size() > 0) {
+         // don't need to rebuild the clone list if it's already made
+         return;
+      }
+
+      Entity* map_root = this->get_entity("MapRootEntity");
+      Entity* tile_selection = this->get_entity("TileSelectionEntity");
+      Entity* tile_selection_maproot = this->get_entity("TileSelectionMapRootEntity");
+      Entity* active_map = this->get_entity(this->get_active_layer());
+
+      sf::Vector2f new_pos;
+      new_pos.x = this->game().get_player(1).bindings().get<MouseXIntent>()->element()->position();
+      new_pos.y = this->game().get_player(1).bindings().get<MouseYIntent>()->element()->position();
+
+      sf::FloatRect tile_select_global_vol = this->global_transform(*tile_selection).transformRect(tile_selection->get<Collision>()->volume());
+      if (!tile_selection->space()->visible() || !tile_select_global_vol.contains(new_pos)) {
+         return;
+      }
+
+      // don't need global transform because the TileMap doesn't use the global transform
+      sf::FloatRect selection_area = tile_selection_maproot->get<Collision>()->volume();
+      selection_area.left = tile_selection_maproot->space()->position().x;
+      selection_area.top = tile_selection_maproot->space()->position().y;
+
+      // create a copy of the selected tiles and store it in clone list
+      std::vector<TileMap::TileType*> tiles = active_map->get<TileMap>()->find(selection_area);
+      if (tiles.size() == 0) {
+         return;
+      }
+
+      sf::Vector2f min_ts_pos(std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
+      sf::Vector2f max_ts_pos(std::numeric_limits<float>::min(), std::numeric_limits<float>::min());
+
+      sf::Vector2f tile_pos;
+      sf::FloatRect tile_bounds;
+
+      Entity* clone_list_root = this->create_entity("CloneListRootEntity");
+      this->add_to_scene_node(map_root, clone_list_root);
+
+      sf::Vector2f tile_offset = new_pos;
+      tile_offset.x /= map_root->space()->scale().x;
+      tile_offset.y /= map_root->space()->scale().y;
+
+      for (auto tile : tiles) {
+         Entity* e = this->create_entity("clone_list_" + std::to_string(clone_list->size()));
+         this->add_to_scene_node(clone_list_root, e);
+         clone_list->push_back(e->handle());
+
+         // set opacity to 50%
+         if (tile->type() == typeid(Circle)) {
+            Color c(boost::get<Circle>(*tile).color());
+            c.a(192);
+
+            e->add<Circle>(boost::get<Circle>(*tile));
+            e->get<Circle>()->color(c);
+            e->get<Circle>()->move_offset(-tile_offset);
+
+            tile_pos = boost::get<Circle>(*tile).offset();
+            tile_bounds = boost::get<Circle>(*tile).local_bounds();
+         } else if (tile->type() == typeid(Rectangle)) {
+            Color c(boost::get<Rectangle>(*tile).color());
+            c.a(192);
+
+            e->add<Rectangle>(boost::get<Rectangle>(*tile));
+            e->get<Rectangle>()->color(c);
+            e->get<Rectangle>()->move_offset(-tile_offset);
+
+            tile_pos = boost::get<Rectangle>(*tile).offset();
+            tile_bounds = boost::get<Rectangle>(*tile).local_bounds();
+         } else if (tile->type() == typeid(Sprite)) {
+            e->add<Sprite>(boost::get<Sprite>(*tile));
+            e->get<Sprite>()->color(sf::Color(255, 255, 255, 192));
+            e->get<Sprite>()->move_offset(-tile_offset);
+
+            tile_pos = boost::get<Sprite>(*tile).offset();
+            tile_bounds = boost::get<Sprite>(*tile).local_bounds();
+         } else if (tile->type() == typeid(Text)) {
+            Color c(boost::get<Text>(*tile).color());
+            c.a(192);
+
+            e->add<Text>(boost::get<Text>(*tile));
+            e->get<Text>()->color(c);
+            e->get<Text>()->move_offset(-tile_offset);
+
+            tile_pos = boost::get<Text>(*tile).offset();
+            tile_bounds = boost::get<Text>(*tile).local_bounds();
+         } else if (tile->type() == typeid(VertexList)) {
+            Color c(boost::get<VertexList>(*tile).color());
+            c.a(192);
+
+            e->add<VertexList>(boost::get<VertexList>(*tile));
+            e->get<VertexList>()->color(c);
+            e->get<VertexList>()->move_offset(-tile_offset);
+
+            tile_pos = boost::get<VertexList>(*tile).offset();
+            tile_bounds = boost::get<VertexList>(*tile).local_bounds();
+         }
+
+         if (tile_pos.x < min_ts_pos.x) {
+            min_ts_pos.x = tile_pos.x;
+         }
+
+         if (tile_pos.x + tile_bounds.width > max_ts_pos.x) {
+            max_ts_pos.x = tile_pos.x + tile_bounds.width;
+         }
+
+         if (tile_pos.y < min_ts_pos.y) {
+            min_ts_pos.y = tile_pos.y;
+         }
+
+         if (tile_pos.y + tile_bounds.height > max_ts_pos.y) {
+            max_ts_pos.y = tile_pos.y + tile_bounds.height;
+         }
+      }
+
+      // resize the tile selection rectangle to fit the selected tiles only
+      // we want the corresponding grid_root position of this map_root location
+      // so we apply the map_root transform to it (position and zoom) after
+      // removing the map root's translational component
+      sf::Vector2f corresponding_map_pos = this->global_transform(*map_root).transformPoint(min_ts_pos);
+      sf::Vector2f corresponding_map_end = this->global_transform(*map_root).transformPoint(max_ts_pos);
+
+      // remove the translational component
+      corresponding_map_pos -= this->global_transform(*map_root).transformPoint(0, 0);
+      corresponding_map_end -= this->global_transform(*map_root).transformPoint(0, 0);
+
+      tile_selection->space()->position(corresponding_map_pos);
+      tile_selection->get<Rectangle>()->size(corresponding_map_end - corresponding_map_pos);
+      tile_selection->get<Collision>()->volume(sf::Vector2f(0, 0), corresponding_map_end - corresponding_map_pos);
+
+      tile_selection_maproot->get<Collision>()->volume(sf::Vector2f(0, 0), max_ts_pos - min_ts_pos);
+   });
+
+   mouse_cursor_script->get<Callback>()->left_release([&game, mouse_entity, mouse_cursor_script, clone_list, this] () {
+      Entity* grid_entity = this->get_entity("GridEntity");
+      Entity* active_map = this->get_entity(this->get_active_layer());
+
+      Entity* clone_list_root = this->get_entity("CloneListRootEntity");
+
+      // add clone_list tiles back to TileMap
+      for (std::vector<Handle>::const_iterator it = clone_list->begin(); it != clone_list->end(); ++it) {
+         Entity* e = this->get_entity(*it);
+
+         // note: the move behavior mouse delta is stored in e->space()->position(), but
+         // each tile's offset is still kept in [component]->offset(), so we need to add
+         // them together before rounding to the grid and then overwriting the offset()
+         if (e->get<Circle>()) {
+            Circle* c = new Circle(*e->get<Circle>());
+            c->move_offset(clone_list_root->space()->position());
+            c->offset(grid_entity->get<Grid>()->round(e->space()->position() + c->offset(), 1.f));
+
+            Color color(c->color());
+            color.a(255);
+            c->color(color);
+
+            active_map->get<TileMap>()->set(*c);
+         } else if (e->get<Rectangle>()) {
+            Rectangle* r = new Rectangle(*e->get<Rectangle>());
+            r->move_offset(clone_list_root->space()->position());
+            r->offset(grid_entity->get<Grid>()->round(e->space()->position() + r->offset(), 1.f));
+
+            Color color(r->color());
+            color.a(255);
+            r->color(color);
+
+            active_map->get<TileMap>()->set(*r);
+         } else if (e->get<Sprite>()) {
+            Sprite* s = new Sprite(*e->get<Sprite>());
+            s->move_offset(clone_list_root->space()->position());
+            s->offset(grid_entity->get<Grid>()->round(e->space()->position() + s->offset(), 1.f));
+            s->color(sf::Color(255, 255, 255, 255));
+
+            active_map->get<TileMap>()->set(*s);
+         } else if (e->get<Text>()) {
+            Text* t = new Text(*e->get<Text>());
+            t->move_offset(clone_list_root->space()->position());
+            t->offset(grid_entity->get<Grid>()->round(e->space()->position() + t->offset(), 1.f));
+
+            Color color(t->color());
+            color.a(255);
+            t->color(color);
+
+            active_map->get<TileMap>()->set(*t);
+         } else if (e->get<VertexList>()) {
+            VertexList* v = new VertexList(*e->get<VertexList>());
+            v->move_offset(clone_list_root->space()->position());
+            v->offset(grid_entity->get<Grid>()->round(e->space()->position() + v->offset(), 1.f));
+
+            Color color(v->color());
+            color.a(255);
+            v->color(color);
+
+            active_map->get<TileMap>()->set(*v);
+         }
+      }
+   });
+}
+
 void BuilderScene::mouse_script_set_behavior(Game& game, ToolType new_tool) {
    // make curr_tool_ into prev_tool_
    this->prev_tool_ = this->curr_tool_;
@@ -2600,6 +2920,8 @@ void BuilderScene::mouse_script_set_behavior(Game& game, ToolType new_tool) {
    // add some special behavior here...
    if (this->prev_tool_ == ToolType::MOVE && this->curr_tool_ != ToolType::MOVE) {
       mcs_swappable->get<Callback>()->left_release();
+   } else if (this->curr_tool_ != ToolType::CLONE && this->prev_tool_ == ToolType::CLONE) {
+      mcs_swappable->get<Callback>()->on_update();
    }
 
    // remove old behavior
@@ -2619,6 +2941,13 @@ void BuilderScene::mouse_script_set_behavior(Game& game, ToolType new_tool) {
          break;
       case ToolType::MOVE:
          this->mouse_script_add_move_behavior(game, mcs_swappable->handle());
+         break;
+      case ToolType::CLONE:
+         this->mouse_script_add_clone_behavior(game, mcs_swappable->handle());
+         break;
+      default:
+         // implement all the tools!
+         assert(0);
          break;
    }
 }
