@@ -50,8 +50,8 @@ public:
    template <typename ...Tokens>
    class ExpressionTuple : public Expression {
    public:
-      ExpressionTuple<Tokens...>(bool in_result) : Expression(in_result) {}
-      virtual ~ExpressionTuple<Tokens...>() {}
+      ExpressionTuple(bool in_result) : Expression(in_result) {}
+      virtual ~ExpressionTuple() {}
 
       virtual bool filter(Entity& e) {
          return this->traverse_tuple<std::tuple_size<std::tuple<Tokens...>>::value>(e, this->in_result());

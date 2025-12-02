@@ -1,5 +1,6 @@
 #include <cmath>
 #include <cassert>
+#include <limits>
 
 #include "PhysicsSystem.h"
 

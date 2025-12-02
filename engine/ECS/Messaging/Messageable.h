@@ -70,7 +70,7 @@ private:
 // ----------------------------------------------------------------------------
 template <
    typename MsgT,
-   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr
+   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type*
 >
 void Messageable::receive_message(std::shared_ptr<MsgT> message) {
    assert(message != nullptr);
@@ -90,7 +90,7 @@ void Messageable::receive_message(std::shared_ptr<MsgT> message) {
 
 template <
    typename MsgT,
-   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
+   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type*,
    typename... Args
 >
 void Messageable::send_message(Args&&... args) {
@@ -104,7 +104,7 @@ void Messageable::send_message(Args&&... args) {
 
 template <
    typename MsgT,
-   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr,
+   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type*,
    typename... Args
 >
 void Messageable::send_message_sync(Args&&... args) {
@@ -117,7 +117,7 @@ void Messageable::send_message_sync(Args&&... args) {
 
 template <
    typename MsgT,
-   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr
+   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type*
 >
 void Messageable::install_message_handler(const Mailbox::MessageHandlerT<MsgT>& handler) {
    this->mailbox_.handle<MsgT>(handler);

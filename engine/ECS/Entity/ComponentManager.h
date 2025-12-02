@@ -22,26 +22,26 @@ public:
 
    template <
       typename ComponentType,
-      typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*  = nullptr
+      typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type* = nullptr
    >
    void create_pool(std::string pool_id = "", unsigned int size = ObjectPool<ComponentType>::default_size, ComponentType allocator = ComponentType());
 
    template <
       typename ComponentType,
-      typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*  = nullptr
+      typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type* = nullptr
    >
    ComponentType* get(Handle handle);
 
    template <
       typename ComponentType,
       typename... ComponentArgs,
-      typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*  = nullptr
+      typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type* = nullptr
    >
    Handle add(ComponentArgs&&... args);
 
    template <
       typename ComponentType,
-      typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*  = nullptr
+      typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type* = nullptr
    >
    void remove(Handle handle);
 
@@ -56,7 +56,7 @@ private:
 // ----------------------------------------------------------------------------
 template <
    typename ComponentType,
-   typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*  = nullptr
+   typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*
 >
 void ComponentManager::create_pool(std::string pool_id /* = "" */, unsigned int size /* = ObjectPool<ComponentType>::default_size */, ComponentType allocator /* = ComponentType() */) {
    ObjectPoolBasePtr pool;
@@ -70,7 +70,7 @@ void ComponentManager::create_pool(std::string pool_id /* = "" */, unsigned int 
 
 template <
    typename ComponentType,
-   typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*  = nullptr
+   typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*
 >
 ComponentType* ComponentManager::get(Handle handle) {
    ObjectPoolBasePtr& pool_ptr = this->components_[std::type_index(typeid(ComponentType))];
@@ -85,7 +85,7 @@ ComponentType* ComponentManager::get(Handle handle) {
 template <
    typename ComponentType,
    typename... ComponentArgs,
-   typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*  = nullptr
+   typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*
 >
 Handle ComponentManager::add(ComponentArgs&&... args) {
    ObjectPoolBasePtr& pool_ptr = this->components_[std::type_index(typeid(ComponentType))];
@@ -99,7 +99,7 @@ Handle ComponentManager::add(ComponentArgs&&... args) {
 
 template <
    typename ComponentType,
-   typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*  = nullptr
+   typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*
 >
 void ComponentManager::remove(Handle handle) {
    ObjectPoolBasePtr& pool_ptr = this->components_[std::type_index(typeid(ComponentType))];

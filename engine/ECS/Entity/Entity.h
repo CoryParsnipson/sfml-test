@@ -94,7 +94,7 @@ private:
 // ----------------------------------------------------------------------------
 template <
    typename ComponentType,
-   typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*  = nullptr
+   typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*
 >
 ComponentType* Entity::get() {
    Handle handle = this->components_[std::type_index(typeid(ComponentType))];
@@ -105,7 +105,7 @@ ComponentType* Entity::get() {
 
 template <
    typename ComponentType,
-   typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*  = nullptr
+   typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*
 >
 void Entity::set(Handle& handle) {
    this->components_[std::type_index(typeid(ComponentType))] = handle;
@@ -114,7 +114,7 @@ void Entity::set(Handle& handle) {
 template <
    typename ComponentType,
    typename... ComponentArgs,
-   typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*  = nullptr
+   typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*
 >
 Handle Entity::add(ComponentArgs&&... args) {
    assert(this->component_manager_);
@@ -130,7 +130,7 @@ Handle Entity::add(ComponentArgs&&... args) {
 
 template <
    typename ComponentType,
-   typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*  = nullptr
+   typename std::enable_if<std::is_base_of<Component, ComponentType>::value>::type*
 >
 void Entity::remove() {
    ComponentList::const_iterator it = this->components_.find(std::type_index(typeid(ComponentType)));

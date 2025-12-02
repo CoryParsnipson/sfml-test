@@ -1,6 +1,7 @@
 #ifndef COLOR_H
 #define COLOR_H
 
+#include <cstdint>
 #include <SFML/Graphics.hpp>
 
 #include "Serializable.h"

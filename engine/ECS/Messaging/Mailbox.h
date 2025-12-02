@@ -152,7 +152,7 @@ private:
 // ----------------------------------------------------------------------------
 template <
    typename MsgT,
-   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr
+   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type*
 >
 void Mailbox::handle(const MessageHandlerT<MsgT>& handler) {
    std::shared_ptr<HandlerEntry> entry = std::make_shared<HandlerEntryImpl<MsgT>>(handler);
@@ -161,7 +161,7 @@ void Mailbox::handle(const MessageHandlerT<MsgT>& handler) {
 
 template <
    typename MsgT,
-   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr
+   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type*
 >
 void Mailbox::process(std::shared_ptr<MsgT> message) {
    this->handle_message(message);
@@ -169,7 +169,7 @@ void Mailbox::process(std::shared_ptr<MsgT> message) {
 
 template <
    typename MsgT,
-   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type* = nullptr
+   typename std::enable_if<std::is_base_of<Message, MsgT>::value>::type*
 >
 void Mailbox::enqueue(std::shared_ptr<MsgT> message) {
    assert(message != nullptr);
