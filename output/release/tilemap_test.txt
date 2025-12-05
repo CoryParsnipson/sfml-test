@@ -1,6 +1,6 @@
 {
    "Grid0": {
-      "id": "Grid Component",
+      "id": "Grid0",
       "origin_x": "0.000000",
       "origin_y": "0.000000",
       "tile_height": "64.000000",
@@ -3903,6 +3903,6 @@
          "left": "0",
          "top": "192",
          "width": "64"
-      },
+      }
    }
 }
